@@ -1,24 +1,17 @@
-﻿
+﻿#include "BBRenderer.h"
+
 #ifndef UNICODE
 #define UNICODE
-#endif 
-
-#include <windows.h>
-#include <stdio.h>
-#include <windows.h>
-#include <d3d11.h>
-#include <string>
+#endif
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-int RenderInit()
+int BBWinRenderer::RenderInit()
 {
-    printf("hoi");
-
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
     // Register the window class.
-    const wchar_t CLASS_NAME[] = L"DX11Window";
+    const char* CLASS_NAME = { "DX11Window" };
 
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(wc);
@@ -39,7 +32,7 @@ int RenderInit()
     HWND hwnd = CreateWindowEx(
         0,
         CLASS_NAME,
-        L"DX11Example",
+        "DX11Example",
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
         NULL,
@@ -65,7 +58,7 @@ int RenderInit()
     return 0;
 }
 
-LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK BBWinRenderer::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     switch (uMsg)
     {

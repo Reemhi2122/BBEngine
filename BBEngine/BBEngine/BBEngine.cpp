@@ -1,11 +1,10 @@
-#include <iostream>
-#include <stdio.h>
-#include "../BBRenderer/BBRenderer.h"
+#pragma once
+#include "BBEngine.h"
 
-int main() {
-	printf("test");
+int BBEngine::InitBBEngine()
+{
+	//Initialize the renderer
+	m_BBWinRen.RenderInit();
 
-	renderInit();
-
-	return 1;
+	return 0;
 }
