@@ -9,3 +9,8 @@ install_manifest.txt
 compile_commands.json
 CTestTestfile.cmake
 _deps
+# Visual Studio 2019 cache/options directory
+.vs/
+
+# Add this line
+out/
