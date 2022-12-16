@@ -8,4 +8,6 @@ cmake_minimum_required (VERSION 3.8)
 add_library (Renderer STATIC 
 "BBRenderer.h"
 "BBRenderer.cpp"
-)
+ "BBWin.h" 
+ "Window/BBWindow.h"
+ "Window/BBWindow.cpp")
