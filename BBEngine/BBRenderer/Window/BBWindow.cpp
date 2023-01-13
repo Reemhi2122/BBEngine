@@ -1,4 +1,5 @@
 #include "BBWindow.h"
+#include <sstream>
 
 
 BBWindow::WindowClass BBWindow::WindowClass::wndClass;
@@ -40,7 +41,10 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name) noexcept{
     wr.right = a_Width + wr.left;
     wr.top = 100;
     wr.bottom = a_Height + wr.top;
-    AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE);
+    
+    if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE))) {
+        throw BBWD_EXCEPT_LAST();
+    }
 
     m_hWnd = CreateWindow(
         WindowClass::GetName(), a_Name,
@@ -48,6 +52,10 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name) noexcept{
         CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
         NULL, NULL, WindowClass::GetInstance(), this
     );
+
+    if (m_hWnd == nullptr) {
+        throw BBWD_EXCEPT_LAST();
+    }
 
     ShowWindow(m_hWnd, SW_SHOWDEFAULT);
 }
@@ -102,4 +110,47 @@ LRESULT BBWindow::BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a
     }
 
     return DefWindowProc(a_hWnd, a_Msg, a_WParam, a_LParam);
+}
+
+BBWindow::WindowException::WindowException(int a_Line, const char* a_File, HRESULT a_HR) noexcept 
+    : BBException(a_Line, a_File),
+      m_HR(a_HR)
+{}
+
+const char* BBWindow::WindowException::what() const noexcept{
+    std::ostringstream oss;
+    oss << GetType() << std::endl
+        << "[Error Code]" << GetErrorCode() << std::endl
+        << "[Descriptoin]" << GetErrorString() << std::endl
+        << GetOriginString() << std::endl;
+    m_WhatBuffer = oss.str();
+    return m_WhatBuffer.c_str();
+}
+
+const char* BBWindow::WindowException::GetType() const noexcept {
+    return "BBWindow Exception";
+}
+
+std::string BBWindow::WindowException::TranslateErrorCode(HRESULT a_HR) noexcept {
+    char* pMsgBuf = nullptr;
+    DWORD nMsgLen = FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr, a_HR, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr);
+
+    if (nMsgLen == 0)
+        return "Unidentified error code";
+    
+    std::string errorString = pMsgBuf;
+    LocalFree(pMsgBuf);
+    return errorString;
+}
+
+HRESULT BBWindow::WindowException::GetErrorCode() const noexcept {
+    return m_HR;
+}
+
+std::string BBWindow::WindowException::GetErrorString() const noexcept {
+    return TranslateErrorCode(m_HR);
 }

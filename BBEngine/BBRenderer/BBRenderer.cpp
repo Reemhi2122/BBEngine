@@ -2,19 +2,31 @@
 
 int BBWinRenderer::RenderInit()
 {
-    BBWindow wnd(800, 300, "BBWindow test");
+    try {
+        BBWindow wnd(800, 300, "BBWindow test");
 
-    MSG msg;
-    BOOL gResult;
-    while ((gResult = GetMessage(&msg, NULL, 0, 0)) > 0) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
+        MSG msg;
+        BOOL gResult;
+        while ((gResult = GetMessage(&msg, NULL, 0, 0)) > 0) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+
+        if (gResult == -1) {
+            return -1;
+        }
+
+        return msg.wParam;
     }
-
-    if (gResult == -1) {
-        return -1;
+    catch (const BBException& e) {
+        MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
     }
-
-    return msg.wParam;
+    catch (const std::exception& e) {
+        MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
+    }
+    catch (...) {
+        MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
+    }
+    return -1;
 }
 
