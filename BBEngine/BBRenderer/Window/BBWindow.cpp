@@ -35,15 +35,16 @@ HINSTANCE BBWindow::WindowClass::GetInstance() noexcept {
     return wndClass.hInst;
 }
 
-BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name){
+BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name)
+: m_Width(a_Width), m_Height(a_Height) {
     RECT wr;
     wr.left = 100;
     wr.right = a_Width + wr.left;
     wr.top = 100;
     wr.bottom = a_Height + wr.top;
     
-    if (FAILED(AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE))) {
-        throw BBWD_EXCEPT_LAST();
+    if (AdjustWindowRect(&wr, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, FALSE) == 0) {
+        throw BBWND_EXCEPT_LAST();
     }
 
     m_hWnd = CreateWindow(
@@ -54,7 +55,7 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name){
     );
 
     if (m_hWnd == nullptr) {
-        throw BBWD_EXCEPT_LAST();
+        throw BBWND_EXCEPT_LAST();
     }
 
     ShowWindow(m_hWnd, SW_SHOWDEFAULT);
@@ -62,6 +63,26 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name){
 
 BBWindow::~BBWindow() {
     DestroyWindow(m_hWnd);
+}
+
+void BBWindow::SetTitle(const std::string a_Title) {
+    if (SetWindowText(m_hWnd, a_Title.c_str()) == 0) {
+        throw BBWND_EXCEPT_LAST();
+    }
+}
+
+std::optional<int> BBWindow::ProcessMessages() {
+    MSG msg;
+    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+
+        if (msg.message == WM_QUIT)
+            return msg.wParam;
+
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return {};
 }
 
 LRESULT CALLBACK BBWindow::BBHandleMsgSetup(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept
@@ -91,15 +112,17 @@ LRESULT BBWindow::BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a
         PostQuitMessage(0);
         return 0;
     case WM_PAINT:
-    {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(a_hWnd, &ps);
+        {
+            PAINTSTRUCT ps;
+            HDC hdc = BeginPaint(a_hWnd, &ps);
 
-        FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
+            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
 
-        EndPaint(a_hWnd, &ps);
-    }
-    break;
+            EndPaint(a_hWnd, &ps);
+        }
+        break;
+
+    // Keyboard
     case WM_KEYDOWN:
     case WM_SYSKEYDOWN:
         if(!(a_LParam & 0x40000000) || m_Keyboard.AutorepeatIsEnabled()) //Check for repeat presses
@@ -112,6 +135,45 @@ LRESULT BBWindow::BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a
     case WM_CHAR:
         m_Keyboard.OnChar(static_cast<unsigned char>(a_WParam));
         break;
+
+    //Mouse
+    case WM_MOUSEMOVE:
+        const POINTS pt = MAKEPOINTS(a_LParam);
+        if (pt.x >= 0 && pt.x < m_Width && pt.y > 0 && pt.y < m_Height) {
+            m_Mouse.OnMouseMove(pt.x, pt.y);
+            if (!m_Mouse.IsInWindow()) {
+                SetCapture(m_hWnd);
+                m_Mouse.OnMouseEnter();
+            }
+        } else {
+            if (a_WParam & (MK_LBUTTON | MK_RBUTTON)) {
+                m_Mouse.OnMouseMove(pt.x, pt.y);
+            } else {
+                ReleaseCapture();
+                m_Mouse.OnMouseLeave();
+            }
+        }
+        break;
+    case WM_LBUTTONDOWN:
+        m_Mouse.OnLeftPressed(0, 0);
+        break;
+    case WM_LBUTTONUP:
+        m_Mouse.OnLeftReleased(0, 0);
+        break;
+    case WM_RBUTTONDOWN:
+        m_Mouse.OnRightPressed(0,0);
+        break;
+    case WM_RBUTTONUP:
+        m_Mouse.OnRightReleased(0, 0);
+        break;
+    case WM_MOUSEWHEEL:
+        {
+            const int delta = GET_WHEEL_DELTA_WPARAM(a_WParam);
+            m_Mouse.OnWheelDelta(0, 0, delta);
+        }
+        break;
+
+    //Break focus
     case WM_KILLFOCUS:
         m_Keyboard.ClearState();
         break;

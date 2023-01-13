@@ -14,4 +14,6 @@ add_library (Renderer STATIC
  "BBException/BBException.cpp"
  "BBException/BBException.h" 
  "Input/Keyboard.h"
- "Input/Keyboard.cpp")
+ "Input/Keyboard.cpp" 
+ "Input/Mouse.h"
+ "Input/Mouse.cpp")

@@ -2,6 +2,9 @@
 #include "../BBWin.h"
 #include "../BBException/BBException.h"
 #include "../Input/Keyboard.h"
+#include "../Input/Mouse.h"
+
+#include <optional>
 
 class BBWindow {
 public:
@@ -39,6 +42,8 @@ public:
 	~BBWindow();
 	BBWindow(const BBWindow&) = delete;
 	BBWindow& operator=(const BBWindow&) = delete;
+	void SetTitle(const std::string a_Title);
+	static std::optional<int> ProcessMessages();
 
 private:
 	static LRESULT CALLBACK BBHandleMsgSetup(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept;
@@ -47,6 +52,7 @@ private:
 
 public:
 	Keyboard m_Keyboard;
+	Mouse m_Mouse;
 
 private:
 	int m_Width;
@@ -55,4 +61,4 @@ private:
 };
 
 #define BBWD_EXCEPT(hr) BBWindow::WindowException(__LINE__, __FILE__, hr)
-#define BBWD_EXCEPT_LAST() BBWindow::WindowException(__LINE__, __FILE__, GetLastError())
+#define BBWND_EXCEPT_LAST() BBWindow::WindowException(__LINE__, __FILE__, GetLastError())
