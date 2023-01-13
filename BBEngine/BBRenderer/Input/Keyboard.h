@@ -3,7 +3,7 @@
 #include <bitset>
 
 class Keyboard {
-	friend class Window;
+	friend class BBWindow;
 
 public:
 	class Event {
@@ -21,15 +21,15 @@ public:
 		Event(Type a_Type, unsigned char a_Code) : m_Type(a_Type), m_Code(a_Code) {}
 		
 		bool IsPressed() const noexcept {
-			return type == Type::PRESS;
+			return m_Type == Type::PRESS;
 		}
 
 		bool IsReleased() {
-			return type == Type::RELEASE;
+			return m_Type == Type::RELEASE;
 		}
 
 		bool IsValid() {
-			return type != Type::INVALID;
+			return m_Type != Type::INVALID;
 		}
 
 		unsigned char GetCode() const noexcept {

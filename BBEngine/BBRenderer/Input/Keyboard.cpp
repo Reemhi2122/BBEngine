@@ -5,7 +5,7 @@ bool Keyboard::KeyIsPressed(unsigned char a_Keycode) const noexcept
 	return m_KeyStates[a_Keycode];
 }
 
-Event Keyboard::ReadKey() noexcept
+Keyboard::Event Keyboard::ReadKey() noexcept
 {
 	if (m_KeyBuffer.size() > 0u) {
 		Keyboard::Event e = m_KeyBuffer.front();
@@ -44,7 +44,7 @@ bool Keyboard::CharIsEmpty() const noexcept
 
 void Keyboard::FlushChar() noexcept
 {
-	m_KeyBuffer = std::queue<char>();
+	m_CharBuffer = std::queue<char>();
 }
 
 void Keyboard::Flush() noexcept
@@ -71,14 +71,14 @@ bool Keyboard::AutorepeatIsEnabled() const noexcept
 
 void Keyboard::OnKeyPressed(unsigned char a_Keycode) noexcept
 {
-	keystates[a_Keycode] = true;
+	m_KeyStates[a_Keycode] = true;
 	m_KeyBuffer.push(Keyboard::Event(Keyboard::Event::Type::PRESS, a_Keycode));
 	TrimBuffer(m_KeyBuffer);
 }
 
 void Keyboard::OnKeyReleased(unsigned char a_Keycode) noexcept
 {
-	keystates[a_Keycode] = false;
+	m_KeyStates[a_Keycode] = false;
 	m_KeyBuffer.push(Keyboard::Event(Keyboard::Event::Type::RELEASE, a_Keycode));
 	TrimBuffer(m_KeyBuffer);
 }

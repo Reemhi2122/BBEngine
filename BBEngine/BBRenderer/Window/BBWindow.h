@@ -1,6 +1,7 @@
 #pragma once
 #include "../BBWin.h"
 #include "../BBException/BBException.h"
+#include "../Input/Keyboard.h"
 
 class BBWindow {
 public:
@@ -44,6 +45,10 @@ private:
 	static LRESULT CALLBACK BBHandleMsgThunk(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept;
 	LRESULT BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept;
 
+public:
+	Keyboard m_Keyboard;
+
+private:
 	int m_Width;
 	int m_Height;
 	HWND m_hWnd;

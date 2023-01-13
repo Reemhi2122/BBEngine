@@ -10,6 +10,10 @@ int BBWinRenderer::RenderInit()
         while ((gResult = GetMessage(&msg, NULL, 0, 0)) > 0) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+
+            if (wnd.m_Keyboard.KeyIsPressed(VK_SPACE)) {
+                MessageBox(nullptr, "Space bar pressed!", "Space bar was pressed", 0);
+            }
         }
 
         if (gResult == -1) {

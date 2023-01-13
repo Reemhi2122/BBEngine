@@ -35,7 +35,7 @@ HINSTANCE BBWindow::WindowClass::GetInstance() noexcept {
     return wndClass.hInst;
 }
 
-BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name) noexcept{
+BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name){
     RECT wr;
     wr.left = 100;
     wr.right = a_Width + wr.left;
@@ -101,11 +101,19 @@ LRESULT BBWindow::BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a
     }
     break;
     case WM_KEYDOWN:
-        switch (a_WParam)
-        {
-        case 'F':
-            SetWindowText(a_hWnd, "TestFKey");
-        }
+    case WM_SYSKEYDOWN:
+        if(!(a_LParam & 0x40000000) || m_Keyboard.AutorepeatIsEnabled()) //Check for repeat presses
+            m_Keyboard.OnKeyPressed(static_cast<unsigned char>(a_WParam));
+        break;
+    case WM_KEYUP:
+    case WM_SYSKEYUP:
+        m_Keyboard.OnKeyReleased(static_cast<unsigned char>(a_WParam));
+        break;    
+    case WM_CHAR:
+        m_Keyboard.OnChar(static_cast<unsigned char>(a_WParam));
+        break;
+    case WM_KILLFOCUS:
+        m_Keyboard.ClearState();
         break;
     }
 
