@@ -16,4 +16,6 @@ add_library (Renderer STATIC
  "Input/Keyboard.h"
  "Input/Keyboard.cpp" 
  "Input/Mouse.h"
- "Input/Mouse.cpp")
+ "Input/Mouse.cpp" 
+ "Graphics/Graphics.h"
+ "Graphics/Graphics.cpp")

@@ -3,7 +3,9 @@
 #include "../BBException/BBException.h"
 #include "../Input/Keyboard.h"
 #include "../Input/Mouse.h"
+#include "../Graphics/Graphics.h"
 
+#include <memory>
 #include <optional>
 
 class BBWindow {
@@ -44,6 +46,7 @@ public:
 	BBWindow& operator=(const BBWindow&) = delete;
 	void SetTitle(const std::string a_Title);
 	static std::optional<int> ProcessMessages();
+	Graphics& GetGraphics();
 
 private:
 	static LRESULT CALLBACK BBHandleMsgSetup(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept;
@@ -58,6 +61,8 @@ private:
 	int m_Width;
 	int m_Height;
 	HWND m_hWnd;
+
+	std::unique_ptr<Graphics> m_Graphics;
 };
 
 #define BBWD_EXCEPT(hr) BBWindow::WindowException(__LINE__, __FILE__, hr)

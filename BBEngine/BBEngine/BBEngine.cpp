@@ -16,10 +16,9 @@ int BBEngine::StartBBEngine()
 
 void BBEngine::Update()
 {
-    const float t = m_Timer.Peek();
-    std::ostringstream oss;
-    oss << "Time elapsed: " << t;
-    m_Window.SetTitle(oss.str());
+    const float c = std::sin(m_Timer.Peek()) / 2.0f + 0.5f;
+    m_Window.GetGraphics().ClearBuffer(c,c, 1.0f);
+    m_Window.GetGraphics().EndFrame();
 }
 
 //while (!m_Window.m_Mouse.IsEmpty()) {

@@ -51,7 +51,7 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name)
         WindowClass::GetName(), a_Name,
         WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU,
         CW_USEDEFAULT, CW_USEDEFAULT, wr.right - wr.left, wr.bottom - wr.top,
-        NULL, NULL, WindowClass::GetInstance(), this
+        nullptr, nullptr, WindowClass::GetInstance(), this
     );
 
     if (m_hWnd == nullptr) {
@@ -59,6 +59,8 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name)
     }
 
     ShowWindow(m_hWnd, SW_SHOWDEFAULT);
+
+    m_Graphics = std::make_unique<Graphics>(m_hWnd);
 }
 
 BBWindow::~BBWindow() {
@@ -83,6 +85,10 @@ std::optional<int> BBWindow::ProcessMessages() {
     }
 
     return {};
+}
+
+Graphics& BBWindow::GetGraphics() {
+    return *m_Graphics;
 }
 
 LRESULT CALLBACK BBWindow::BBHandleMsgSetup(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept
