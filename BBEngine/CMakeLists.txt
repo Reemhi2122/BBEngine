@@ -12,3 +12,4 @@ project ("BBEngine")
 # Include sub-projects.
 add_subdirectory ("BBRenderer")
 add_subdirectory ("BBEngine")
+add_subdirectory ("BBMath")

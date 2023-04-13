@@ -6,16 +6,12 @@ cmake_minimum_required (VERSION 3.8)
 #add_executable (BBRenderer WIN32 "BBRenderer.cpp" "BBRenderer.h")
 
 add_library (Renderer STATIC 
-"BBRenderer.h"
 "BBRenderer.cpp"
- "BBWin.h" 
- "Window/BBWindow.h"
  "Window/BBWindow.cpp" 
  "BBException/BBException.cpp"
- "BBException/BBException.h" 
- "Input/Keyboard.h"
  "Input/Keyboard.cpp" 
- "Input/Mouse.h"
  "Input/Mouse.cpp" 
- "Graphics/Graphics.h"
  "Graphics/Graphics.cpp")
+
+target_include_directories(Renderer PUBLIC
+"Include")

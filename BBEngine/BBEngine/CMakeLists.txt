@@ -13,4 +13,6 @@ add_executable (BBEngine
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 
-Renderer)
+Renderer
+BBMath
+)

@@ -2,7 +2,9 @@
 #include "BBEngine.h"
 
 BBEngine::BBEngine()
-	: m_Window(800, 300, "BBWindow test") {}
+	: m_Window(720, 380, "BBWindow test") 
+{
+}
 
 int BBEngine::StartBBEngine()
 {
