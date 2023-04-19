@@ -88,6 +88,8 @@ std::optional<int> BBWindow::ProcessMessages() {
 }
 
 Graphics& BBWindow::GetGraphics() {
+    if (!m_Graphics)
+        throw CHWND_NOGFX_EXCEPT();
     return *m_Graphics;
 }
 
@@ -188,12 +190,29 @@ LRESULT BBWindow::BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a
     return DefWindowProc(a_hWnd, a_Msg, a_WParam, a_LParam);
 }
 
-BBWindow::WindowException::WindowException(int a_Line, const char* a_File, HRESULT a_HR) noexcept 
-    : BBException(a_Line, a_File),
-      m_HR(a_HR)
+std::string BBWindow::Exception::TranslateErrorCode(HRESULT a_Hr) noexcept
+{
+    char* pMsgBuf = nullptr;
+    DWORD nMsgLen = FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+        nullptr, a_Hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr);
+
+    if (nMsgLen == 0)
+        return "Unidentified error code";
+
+    std::string errorString = pMsgBuf;
+    LocalFree(pMsgBuf);
+    return errorString;
+}
+
+BBWindow::HrException::HrException(int a_Line, const char* a_File, HRESULT a_HR) noexcept
+    :   Exception(a_Line, a_File),
+        m_Hr(a_HR)
 {}
 
-const char* BBWindow::WindowException::what() const noexcept{
+const char* BBWindow::HrException::what() const noexcept{
     std::ostringstream oss;
     oss << GetType() << std::endl
         << "[Error Code]" << GetErrorCode() << std::endl
@@ -203,30 +222,19 @@ const char* BBWindow::WindowException::what() const noexcept{
     return m_WhatBuffer.c_str();
 }
 
-const char* BBWindow::WindowException::GetType() const noexcept {
-    return "BBWindow Exception";
+const char* BBWindow::HrException::GetType() const noexcept {
+    return "[BBWindow Exception]";
 }
 
-std::string BBWindow::WindowException::TranslateErrorCode(HRESULT a_HR) noexcept {
-    char* pMsgBuf = nullptr;
-    DWORD nMsgLen = FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr, a_HR, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr);
-
-    if (nMsgLen == 0)
-        return "Unidentified error code";
-    
-    std::string errorString = pMsgBuf;
-    LocalFree(pMsgBuf);
-    return errorString;
+HRESULT BBWindow::HrException::GetErrorCode() const noexcept {
+    return m_Hr;
 }
 
-HRESULT BBWindow::WindowException::GetErrorCode() const noexcept {
-    return m_HR;
+std::string BBWindow::HrException::GetErrorString() const noexcept {
+    return TranslateErrorCode(m_Hr);
 }
 
-std::string BBWindow::WindowException::GetErrorString() const noexcept {
-    return TranslateErrorCode(m_HR);
+const char* BBWindow::NoGfxException::GetType() const noexcept
+{
+    return "[BB Exception [No Graphics]]";
 }

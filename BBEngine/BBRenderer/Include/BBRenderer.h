@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "window/BBWindow.h"
+#include "BBWindow.h"
 
 class BBWinRenderer {
 public:

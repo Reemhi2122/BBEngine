@@ -1,26 +1,37 @@
 #pragma once
-#include "../BBWin.h"
-#include "../BBException/BBException.h"
-#include "../Input/Keyboard.h"
-#include "../Input/Mouse.h"
-#include "../Graphics/Graphics.h"
+#include "BBWin.h"
+#include "BBException.h"
+#include "Keyboard.h"
+#include "Mouse.h"
+#include "Graphics.h"
 
 #include <memory>
 #include <optional>
 
 class BBWindow {
 public:
-	class WindowException : public BBException {
+	class Exception : public BBException {
 	public:
-		WindowException(int a_Line, const char* a_File, HRESULT a_HR) noexcept;
+		using BBException::BBException;
+		static std::string TranslateErrorCode(HRESULT a_Hr) noexcept;
+	};
+
+	class HrException : public Exception {
+	public:
+		HrException(int a_Line, const char* a_File, HRESULT a_HR) noexcept;
 		const char* what() const noexcept override;
 		const char* GetType() const noexcept override;
-		static std::string TranslateErrorCode(HRESULT a_HR) noexcept;
 		HRESULT GetErrorCode() const noexcept;
 		std::string GetErrorString() const noexcept;
 
 	private:
-		HRESULT m_HR;
+		HRESULT m_Hr;
+	};
+
+	class NoGfxException : public Exception {
+	public:
+		using Exception::Exception;
+		const char* GetType() const noexcept override;
 	};
 
 private:
@@ -65,5 +76,6 @@ private:
 	std::unique_ptr<Graphics> m_Graphics;
 };
 
-#define BBWD_EXCEPT(hr) BBWindow::WindowException(__LINE__, __FILE__, hr)
-#define BBWND_EXCEPT_LAST() BBWindow::WindowException(__LINE__, __FILE__, GetLastError())
+#define BBWD_EXCEPT(hr) BBWindow::HrException(__LINE__, __FILE__, hr)
+#define BBWND_EXCEPT_LAST() BBWindow::HrException(__LINE__, __FILE__, GetLastError())
+#define CHWND_NOGFX_EXCEPT() BBWindow::NoGfxException( __LINE__,__FILE__ )

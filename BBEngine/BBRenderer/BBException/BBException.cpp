@@ -32,11 +32,11 @@ const std::string& BBException::GetFile() const noexcept
 	return m_File;
 }
 
-const std::string& BBException::GetOriginString() const noexcept
+const std::string BBException::GetOriginString() const noexcept
 {
 	std::ostringstream oss;
 	oss << "[File] " << m_File << std::endl
-		<< "[Line]" << m_Line << std::endl;
+		<< "[Line]" << m_Line;
 
 	return oss.str();
 }

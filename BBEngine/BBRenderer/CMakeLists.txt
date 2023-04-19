@@ -11,7 +11,9 @@ add_library (Renderer STATIC
  "BBException/BBException.cpp"
  "Input/Keyboard.cpp" 
  "Input/Mouse.cpp" 
- "Graphics/Graphics.cpp")
+ "Graphics/Graphics.cpp"
+ "DXERR/dxerr.cpp"
+)
 
 target_include_directories(Renderer PUBLIC
 "Include")

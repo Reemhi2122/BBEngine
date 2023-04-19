@@ -11,7 +11,7 @@ public:
 	virtual const char* GetType() const noexcept;
 	int GetLine() const noexcept;
 	const std::string& GetFile() const noexcept;
-	const std::string& GetOriginString() const noexcept;
+	const std::string GetOriginString() const noexcept;
 
 private:
 	int m_Line;

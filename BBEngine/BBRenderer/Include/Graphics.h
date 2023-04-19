@@ -1,24 +1,47 @@
 #pragma once
-#include "../BBWin.h"
+#include "BBWin.h"
+#include "BBException.h"
 #include <d3d11.h>
+#include <dxerr.h>
+#include <wrl.h>
 
 class Graphics {
 public:
+	class Exception : public BBException {
+		using BBException::BBException;
+	};
+
+	class HrException : public Exception {
+	public:
+		HrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept;
+		const char* what() const noexcept override;
+		const char* GetType() const noexcept override;
+		HRESULT GetErrorCode() const noexcept;
+		std::string GetErrorString() const noexcept;
+		std::string GetErrorDescription() const noexcept;
+
+	private:
+		HRESULT m_Hr;
+	};
+
+	class DeviceRemovedException : public HrException {
+		using HrException::HrException;
+
+	public:
+		const char* GetType() const noexcept override;
+	};
+
 	Graphics(HWND a_HWnd);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
-	~Graphics();
+	~Graphics() = default;
 
 	void EndFrame();
-	void ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept 
-	{
-		const float color[] = { a_Red, a_Green, a_Blue, 1.0f };
-		m_Context->ClearRenderTargetView(m_Target, color);
-	}
+	void ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept;
 
 private:
-	ID3D11Device* m_Device = nullptr;
-	IDXGISwapChain* m_SwapChain = nullptr;
-	ID3D11DeviceContext* m_Context = nullptr;
-	ID3D11RenderTargetView* m_Target = nullptr;
+	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
+	Microsoft::WRL::ComPtr <IDXGISwapChain>			m_SwapChain;
+	Microsoft::WRL::ComPtr <ID3D11DeviceContext>	m_Context;
+	Microsoft::WRL::ComPtr <ID3D11RenderTargetView> m_Target;
 };
