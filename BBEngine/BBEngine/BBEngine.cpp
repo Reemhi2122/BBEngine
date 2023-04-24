@@ -20,6 +20,7 @@ void BBEngine::Update()
 {
     const float c = std::sin(m_Timer.Peek()) / 2.0f + 0.5f;
     m_Window.GetGraphics().ClearBuffer(c,c, 1.0f);
+    m_Window.GetGraphics().DrawTestTriangle();
     m_Window.GetGraphics().EndFrame();
 }
 

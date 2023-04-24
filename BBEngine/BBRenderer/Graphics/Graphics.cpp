@@ -1,7 +1,9 @@
 #include "Graphics.h"
 #include <sstream>
+#include <d3dcompiler.h>
 
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
 
 #define GFX_THROW_FAILED(hrcall) do{ if(FAILED(hr = (hrcall))) throw Graphics::HrException(__LINE__, __FILE__, hr); } while(0)
 #define GFX_DEVICE_REMOVED_EXCEPT(hr) do{ throw Graphics::DeviceRemovedException(__LINE__, __FILE__, (hr)); } while(0)
@@ -47,7 +49,6 @@ Graphics::Graphics(HWND a_HWnd)
 	Microsoft::WRL::ComPtr<ID3D11Resource> backBuffer;
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
-	backBuffer->Release();
 }
 
 void Graphics::EndFrame()
@@ -67,6 +68,45 @@ void Graphics::ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept
 {
 	const float color[] = { a_Red, a_Green, a_Blue, 1.0f };
 	m_Context->ClearRenderTargetView(m_Target.Get(), color);
+}
+
+void Graphics::DrawTestTriangle() {
+
+	HRESULT hr;
+
+	struct Vertex {
+		int x, y;
+	};
+
+	const Vertex vertices[] = {
+		{ 0.0f, 0.5f },
+		{ 0.5f, -0.5f },
+		{ -0.5f, -0.5f }
+	};
+
+	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
+	D3D11_BUFFER_DESC desc = {};
+	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.CPUAccessFlags = 0;
+	desc.MiscFlags = 0;
+	desc.ByteWidth = sizeof(vertices);
+	desc.StructureByteStride = sizeof(Vertex);
+
+	D3D11_SUBRESOURCE_DATA source = {};
+	source.pSysMem = vertices;
+
+	GFX_THROW_FAILED(m_Device->CreateBuffer(&desc, &source, &vertex_buffer));
+
+	const UINT stride = sizeof(Vertex);
+	const UINT offset = 0;
+	m_Context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
+
+	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
+	Microsoft::WRL::ComPtr<ID3DBlob> vertex_blob;
+	D3DReadFileToBlob(L"VertexShader.cso", &vertex_blob);
+
+	m_Context->Draw(3, 0);
 }
 
 Graphics::HrException::HrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept

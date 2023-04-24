@@ -13,6 +13,7 @@ add_library (Renderer STATIC
  "Input/Mouse.cpp" 
  "Graphics/Graphics.cpp"
  "DXERR/dxerr.cpp"
+ "Shader/VertexShader.hlsl"
 )
 
 target_include_directories(Renderer PUBLIC
