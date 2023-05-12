@@ -16,3 +16,13 @@ target_link_libraries(BBEngine
 Renderer
 BBMath
 )
+
+#copy shaders when a change happened.
+add_custom_target(game_copy_shaders ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_SOURCE_DIR}/BBRenderer/Shader"
+    ${CMAKE_CURRENT_BINARY_DIR}/assets
+    COMMENT "Copying DX12 asset folder to output d1 folder")
+
+    
+add_dependencies(BBEngine game_copy_shaders)

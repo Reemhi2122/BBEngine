@@ -102,11 +102,27 @@ void Graphics::DrawTestTriangle() {
 	const UINT offset = 0;
 	m_Context->IASetVertexBuffers(0, 1, &vertex_buffer, &stride, &offset);
 
+	//Create vertex shader
+	//Not sure if loading the vertex shader works like this.
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
-	Microsoft::WRL::ComPtr<ID3DBlob> vertex_blob;
-	D3DReadFileToBlob(L"VertexShader.cso", &vertex_blob);
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
+	D3DReadFileToBlob(L"Assets/VertexShader.hlsl", &blob);
+	m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertex_shader);
 
-	m_Context->Draw(3, 0);
+	//Bind the vertex shader
+	m_Context->VSSetShader(vertex_shader.Get(), nullptr, 0);
+
+	//Create pixel shader
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
+	D3DReadFileToBlob(L"Assets/PixelShader.hlsl", &blob);
+	m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixel_shader);
+
+	//Bind Pixel shader
+	m_Context->PSSetShader(pixel_shader.Get(), nullptr, 0);
+
+
+	//Draw
+	m_Context->Draw((UINT)std::size(vertices), 0);
 }
 
 Graphics::HrException::HrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept
