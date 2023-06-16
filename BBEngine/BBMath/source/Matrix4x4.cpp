@@ -40,14 +40,15 @@ namespace BBMath {
 	Matrix4x4 Matrix4x4::operator*(const Matrix4x4& a_RHS)
 	{
 		Matrix4x4 res;
+		int matrixSize = 4;
 
-		for (size_t i = 0; i < 4; i++)
+		for (size_t i = 0; i < matrixSize; i++)
 		{
-			for (size_t y = 0; y < 4; y++)
+			for (size_t y = 0; y < matrixSize; y++)
 			{
 				float value = 0;
-				for (size_t x = 0; x < 4; x++)
-					value += m[(i * 4) + x] * a_RHS.m[(x * 4) + y];
+				for (size_t x = 0; x < matrixSize; x++)
+					value += m[(i * matrixSize) + x] * a_RHS.m[(x * matrixSize) + y];
 
 				res.mt[i][y] = value;
 			}

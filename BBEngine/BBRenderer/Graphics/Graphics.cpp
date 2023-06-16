@@ -77,7 +77,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 
 	struct Vertex {
 		struct {
-			float x, y;
+			float x, y, z;
 		} pos;
 
 		struct {
@@ -86,12 +86,14 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	};
 
 	const Vertex vertices[] = {
-		{ 0.0f, 0.5f, 255, 0, 0, 0 },
-		{ 0.5f, -0.5f, 0, 255, 0, 0 },
-		{ -0.5f, -0.5f, 0, 0, 255, 0 },
-		{ -0.3f, 0.3f, 0, 0, 255, 0 },
-		{ 0.3f, 0.3f, 0, 0, 255, 0 },
-		{ 0.0f, -0.8f, 0, 0, 255, 0 }
+		{ -1.0f, -1.0f, -1.0f, 255, 0, 0, 0 },
+		{ 1.0f, -1.0f, -1.0f, 0, 255, 0, 0 },
+		{ -1.0f, 1.0f, -1.0f, 0, 0, 255, 0 },
+		{ 1.0f, 1.0f, -1.0f, 255, 255, 0, 0 },
+		{ -1.0f, -1.0f, 1.0f, 255, 0, 255, 0 },
+		{ 1.0f, -1.0f, 1.0f, 0, 255, 255, 0 },
+		{ -1.0f, 1.0f, 1.0f, 0, 0, 0, 0 },
+		{ 1.0f, 1.0f, 1.0f, 255, 255, 255, 0 }
 	};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
@@ -112,10 +114,12 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 
 	//Create index buffer
 	const unsigned short indices[] = {
-		0,1,2,
-		0,2,3,
-		0,4,1,
-		2,1,5,
+		0,2,1, 2,3,1,
+		1,3,5, 3,7,5,
+		2,6,3, 3,6,7,
+		4,5,7, 4,7,6,
+		0,4,2, 2,4,6,
+		0,1,4, 1,5,4
 	};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
@@ -141,8 +145,9 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 		{
 			DirectX::XMMatrixTranspose(
 				DirectX::XMMatrixRotationZ(a_Angle) *
-				DirectX::XMMatrixScaling(3.0f / 4.0f, 1.0f, 1.0f) *
-				DirectX::XMMatrixTranslation(x, y, 0.0f)
+				DirectX::XMMatrixRotationY(a_Angle) *
+				DirectX::XMMatrixTranslation(x, y, 5.0f) *
+				DirectX::XMMatrixPerspectiveLH( 1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
 			)
 		}
 	};
@@ -167,7 +172,6 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	//Create pixel shader
 	Microsoft::WRL::ComPtr<ID3D11PixelShader> pixel_shader;
 	D3DCompileFromFile(L"Assets/PixelShader.hlsl", nullptr, nullptr, "main", "ps_5_0", 0, 0, &blob, nullptr);
-	//D3DReadFileToBlob(L"Assets/PixelShader.hlsl", &blob);
 	m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixel_shader);
 
 	//Bind Pixel shader
@@ -176,7 +180,6 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	//Create vertex shader
 	Microsoft::WRL::ComPtr<ID3D11VertexShader> vertex_shader;
 	D3DCompileFromFile(L"Assets/VertexShader.hlsl", nullptr, nullptr, "main", "vs_5_0", 0, 0, &blob, nullptr);
-	//D3DReadFileToBlob(L"Assets/VertexShader.hlsl", &blob);
 	m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertex_shader);
 
 	//Bind the vertex shader
@@ -185,8 +188,8 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	//Create input layout
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> input_layout;
 	const D3D11_INPUT_ELEMENT_DESC ied[] = {
-		{"Position",0,DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		{"Color",0,DXGI_FORMAT_R8G8B8A8_UNORM, 0, 8, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		{"Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		{"Color",0,DXGI_FORMAT_R8G8B8A8_UNORM, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0}
 	};
 
 	m_Device->CreateInputLayout(
