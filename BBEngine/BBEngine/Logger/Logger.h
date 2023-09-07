@@ -34,13 +34,14 @@ namespace BBlogger
 			"Assert"
 		};
 
-		void SetupLogger(const std::string& loggerName, const std::string& loggerFileLocation = "", const LogFlag& loggerMinimumFlag = LogFlag::LogInfo);
+		void SetupLogger(const std::string& loggerName, const WarningTypeFlags& loggerMinimumFlag = LogFlag::LogInfo, const std::string& loggerFileLocation = "");
 		ChannelHandle RegisterChannel(const char* a_Name);
 
 		void Log(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage);
 		void LogF(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage, ...);
 
 	private:
+		bool ValidFilter(const ChannelHandle& a_Handle, const LogFlag& a_Flag);
 		std::string FormatLogMessage(const LogFlag& a_LogFlag, const ChannelHandle& a_ChannelHandle, const std::string& a_LogMessage);
 		void PrintToFile(const std::string& message);
 
@@ -49,17 +50,17 @@ namespace BBlogger
 			std::string name;
 			FILE* file;
 			uint32_t flag;
-			LogFlag m_MinimalFlag;
+			WarningTypeFlags flagFilter;
 		};
 
 		static Logger* instance;
 
 		uint32_t m_NextFreeChannel = 0;
 		Channel m_Channels[MAXCHANNELAMOUNT];
+		WarningTypeFlags m_LogFilter;
 
 		std::string m_LoggerName;
 		std::string m_LoggerFileLocation;
 		std::string m_LoggerFilePath;
-		LogFlag m_MinimalFlag;
 	};
 }

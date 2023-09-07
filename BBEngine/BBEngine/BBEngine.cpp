@@ -11,15 +11,15 @@ BBEngine::BBEngine()
 int BBEngine::StartBBEngine()
 {
     BBlogger::Logger* testLogger = BBlogger::Logger::GetInstance();
-    testLogger->SetupLogger("BBLogger");
+    testLogger->SetupLogger("BBLogger", BBlogger::LogFlag::LogInfo | BBlogger::LogFlag::LogWarningLow);
 
     BBlogger::ChannelHandle AudioHandle = testLogger->RegisterChannel("Audio");
 
-    testLogger->Log(0u, BBlogger::LogFlag::LogInfo,             "Testing the log funtion - info");
-    testLogger->Log(0u, BBlogger::LogFlag::LogWarningLow,       "Testing the log funtion - warning");
-    testLogger->Log(0u, BBlogger::LogFlag::LogWarningMedium,    "Testing the log funtion - error");
-    testLogger->Log(0u, BBlogger::LogFlag::LogWarningHigh,      "Testing the log funtion - error");
-    testLogger->Log(0u, BBlogger::LogFlag::LogAssert,           "Testing the log funtion - error");
+    testLogger->Log(0u, BBlogger::LogFlag::LogInfo,             "Testing the log funtion - LogInfo");
+    testLogger->Log(0u, BBlogger::LogFlag::LogWarningLow,       "Testing the log funtion - LogWarningLow");
+    testLogger->Log(0u, BBlogger::LogFlag::LogWarningMedium,    "Testing the log funtion - LogWarningMedium");
+    testLogger->Log(0u, BBlogger::LogFlag::LogWarningHigh,      "Testing the log funtion - LogWarningHigh");
+    testLogger->Log(0u, BBlogger::LogFlag::LogAssert,           "Testing the log funtion - LogAssert");
 
     testLogger->LogF(1u, BBlogger::LogFlag::LogAssert, "Testing the logf funtion with int: %d, float: %f, and char: %c - Error", 23, 1.34f, 'd');
 
