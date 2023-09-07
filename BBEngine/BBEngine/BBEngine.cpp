@@ -13,13 +13,15 @@ int BBEngine::StartBBEngine()
     BBlogger::Logger* testLogger = BBlogger::Logger::GetInstance();
     testLogger->SetupLogger("BBLogger");
 
-    testLogger->Log(BBlogger::LogFlag::LogInfo,             "Testing the log funtion - info");
-    testLogger->Log(BBlogger::LogFlag::LogWarningLow,       "Testing the log funtion - warning");
-    testLogger->Log(BBlogger::LogFlag::LogWarningMedium,    "Testing the log funtion - error");
-    testLogger->Log(BBlogger::LogFlag::LogWarningHigh,      "Testing the log funtion - error");
-    testLogger->Log(BBlogger::LogFlag::LogAssert,           "Testing the log funtion - error");
+    BBlogger::ChannelHandle AudioHandle = testLogger->RegisterChannel("Audio");
 
-    testLogger->LogF(BBlogger::LogFlag::LogAssert,          "Testing the logf funtion with int: %d, float: %f, and char: %c - Error", 23, 1.34f, 'd');
+    testLogger->Log(0u, BBlogger::LogFlag::LogInfo,             "Testing the log funtion - info");
+    testLogger->Log(0u, BBlogger::LogFlag::LogWarningLow,       "Testing the log funtion - warning");
+    testLogger->Log(0u, BBlogger::LogFlag::LogWarningMedium,    "Testing the log funtion - error");
+    testLogger->Log(0u, BBlogger::LogFlag::LogWarningHigh,      "Testing the log funtion - error");
+    testLogger->Log(0u, BBlogger::LogFlag::LogAssert,           "Testing the log funtion - error");
+
+    testLogger->LogF(1u, BBlogger::LogFlag::LogAssert, "Testing the logf funtion with int: %d, float: %f, and char: %c - Error", 23, 1.34f, 'd');
 
     while (true) {
         if (const auto ecode = BBWindow::ProcessMessages())

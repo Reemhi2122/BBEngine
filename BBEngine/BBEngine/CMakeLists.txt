@@ -11,7 +11,8 @@ add_executable (BBEngine
 "Timer/BBTimer.h"
 "Timer/BBTimer.cpp"
 "Logger/Logger.h"
-"Logger/logger.cpp")
+"Logger/logger.cpp" 
+"Helper/Utility.h")
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 

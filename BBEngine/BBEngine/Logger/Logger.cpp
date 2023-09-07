@@ -1,6 +1,8 @@
 #include "Logger.h"
 #include <fstream>
 #include <stdarg.h>
+#include <cmath>
+#include "../Helper/Utility.h"
 
 namespace BBlogger
 {
@@ -18,6 +20,16 @@ namespace BBlogger
 		if (this == &rhs)
 			return *this;
 
+		m_LoggerName = rhs.m_LoggerName;
+		m_LoggerFileLocation = rhs.m_LoggerFileLocation;
+		m_LoggerFilePath = rhs.m_LoggerFilePath;
+		m_MinimalFlag = rhs.m_MinimalFlag;
+		m_NextFreeChannel = rhs.m_NextFreeChannel;
+		
+		for (size_t i = 0; i < MAXCHANNELAMOUNT; i++) {
+			m_Channels[i] = rhs.m_Channels[i];
+		}
+
 		return *this;
 	}
 	
@@ -31,32 +43,32 @@ namespace BBlogger
 		return instance;
 	}
 
-	void Logger::Log(const LogFlag& flag, const std::string& logMessage)
+	void Logger::Log(const ChannelHandle a_Handle, const LogFlag& a_Flag, const std::string& a_LogMessage)
 	{
-		if(flag < m_MinimalFlag)
+		if(a_Flag < m_MinimalFlag)
 		{
 			return;
 		}
 
-		std::string output = LogTagToText(flag);
-		output.append(logMessage);
-		output.append("\n");
-
-		printf(output.c_str());
-		PrintToFile("", output);
-
+		std::string message = FormatLogMessage(a_Flag, a_Handle, a_LogMessage);
+		printf(message.c_str());
+		PrintToFile(message);
 	}
 
-	void Logger::LogF(const LogFlag& flag, const std::string& logMessage, ...)
+	void Logger::LogF(const ChannelHandle a_Handle, const LogFlag& a_Flag, const std::string& a_LogMessage, ...)
 	{
 		va_list va_format_list;
-		va_start(va_format_list, &logMessage);
+		va_start(va_format_list, &a_LogMessage);
 
-		std::string output = LogTagToText(flag);
-		output.append(logMessage);
-		output.append("\n");
+		std::string message = FormatLogMessage(a_Flag, a_Handle, a_LogMessage);
+		vprintf(message.c_str(), va_format_list);
+		PrintToFile(BBUtility::string_format(message.c_str(), va_format_list));
+	}
 
-		vprintf(output.c_str(), va_format_list);
+	std::string Logger::FormatLogMessage(const LogFlag& a_LogFlag, const ChannelHandle& a_ChannelHandle, const std::string& a_LogMessage)
+	{
+		int logFlagIndex = std::floor((std::sqrt((float)a_LogFlag)));
+		return BBUtility::string_format("[%s] - [%s]: %s \n", m_Channels[a_ChannelHandle].name.c_str(), LogFlagNames[logFlagIndex], a_LogMessage.c_str());
 	}
 
 	void Logger::SetupLogger(const std::string& loggerName, const std::string& loggerFileLocation, const LogFlag& loggerMinimumFlag) {
@@ -82,37 +94,11 @@ namespace BBlogger
 		return curChannelHandle;
 	}
 
-	std::string Logger::LogTagToText(const LogFlag& flag)
-	{
-		std::string output;
-		switch (flag)
-		{
-		case LogFlag::LogInfo:
-			output = "[Info] ";
-			break;
-		case LogFlag::LogWarningLow:
-			output = "[Warning Low] ";
-			break;
-		case LogFlag::LogWarningMedium:
-			output = "[Warning Medium] ";
-			break;
-		case LogFlag::LogWarningHigh:
-			output = "[Warning High] ";
-			break;
-		case LogFlag::LogAssert:
-			output = "[Warning High] ";
-			break;
-		default:
-			break;
-		}
-		return output;
-	}
-
-	void Logger::PrintToFile(const std::string& fileLocation, const std::string& message)
+	void Logger::PrintToFile(const std::string& message)
 	{
 		std::ofstream file;
 
-		file.open(m_LoggerFilePath);
+		file.open(m_LoggerFilePath, std::ofstream::app);
 		file << message;
 		file.close();
 	}
