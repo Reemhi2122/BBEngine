@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <thread>
 
 namespace BBlogger
 {
@@ -22,10 +23,10 @@ namespace BBlogger
 		Logger();
 		Logger(const Logger& rhs) = default;
 		Logger& operator=(const Logger& rhs);
-		~Logger() = default;
+		~Logger();
 		static Logger* GetInstance();
 
-		char LogFlagNames[5][32]
+		char LogFlagNames[5][16]
 		{
 			"Info",
 			"Warning Low",
@@ -37,13 +38,14 @@ namespace BBlogger
 		void SetupLogger(const std::string& loggerName, const WarningTypeFlags& loggerMinimumFlag = LogFlag::LogInfo, const std::string& loggerFileLocation = "");
 		ChannelHandle RegisterChannel(const char* a_Name);
 
+		void PrintToFile(const std::string& a_Message, const std::string& a_Path);
+
 		void Log(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage);
 		void LogF(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage, ...);
 
 	private:
 		bool ValidFilter(const ChannelHandle& a_Handle, const LogFlag& a_Flag);
 		std::string FormatLogMessage(const LogFlag& a_LogFlag, const ChannelHandle& a_ChannelHandle, const std::string& a_LogMessage);
-		void PrintToFile(const std::string& message);
 
 		struct Channel
 		{
@@ -62,5 +64,7 @@ namespace BBlogger
 		std::string m_LoggerName;
 		std::string m_LoggerFileLocation;
 		std::string m_LoggerFilePath;
+
+		std::thread m_LoggerThread;
 	};
 }

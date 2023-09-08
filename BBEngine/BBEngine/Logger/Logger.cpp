@@ -4,6 +4,7 @@
 #include <cmath>
 #include "../Helper/Utility.h"
 
+
 namespace BBlogger
 {
 	Logger::Logger()
@@ -32,40 +33,52 @@ namespace BBlogger
 
 		return *this;
 	}
+
+	Logger::~Logger()
+	{
+		m_LoggerThread.join();
+	}
 	
 	Logger* Logger::GetInstance() 
 	{
-		if (instance == nullptr)
-		{
-			instance = new Logger();
-		}
-
+		if (instance == nullptr) 
+			instance = new Logger(); 
+		
 		return instance;
+	}
+
+	void Logger::PrintToFile(const std::string& a_Message, const std::string& a_Path)
+	{
+		std::ofstream file;
+
+		file.open(a_Path, std::ofstream::app);
+		file << a_Message;
+		file.close();
 	}
 
 	void Logger::Log(const ChannelHandle a_Handle, const LogFlag& a_Flag, const std::string& a_LogMessage)
 	{
-		if (!ValidFilter(a_Handle, a_Flag)) {
+		if (!ValidFilter(a_Handle, a_Flag))
 			return;
-		}
 
 		std::string message = FormatLogMessage(a_Flag, a_Handle, a_LogMessage);
+		
+		m_LoggerThread = std::thread(&Logger::PrintToFile, this, message, m_LoggerFilePath);
 		printf(message.c_str());
-		PrintToFile(message);
 	}
 
 	void Logger::LogF(const ChannelHandle a_Handle, const LogFlag& a_Flag, const std::string& a_LogMessage, ...)
 	{
-		if (!ValidFilter(a_Handle, a_Flag)) {
+		if (!ValidFilter(a_Handle, a_Flag))
 			return;
-		}
 
 		va_list va_format_list;
 		va_start(va_format_list, &a_LogMessage);
 
 		std::string message = FormatLogMessage(a_Flag, a_Handle, a_LogMessage);
+
+		m_LoggerThread = std::thread(&Logger::PrintToFile, this, message, m_LoggerFilePath);
 		vprintf(message.c_str(), va_format_list);
-		PrintToFile(BBUtility::string_format(message.c_str(), va_format_list));
 	}
 
 	bool Logger::ValidFilter(const ChannelHandle& a_Handle, const LogFlag& a_Flag)
@@ -106,14 +119,6 @@ namespace BBlogger
 		return curChannelHandle;
 	}
 
-	void Logger::PrintToFile(const std::string& message)
-	{
-		std::ofstream file;
-
-		file.open(m_LoggerFilePath, std::ofstream::app);
-		file << message;
-		file.close();
-	}
 }
 
 BBlogger::Logger* BBlogger::Logger::instance = nullptr;
