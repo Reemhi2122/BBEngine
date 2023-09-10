@@ -28,10 +28,10 @@ namespace BBMath {
 			float mt[4][4];
 
 			struct {
-				float r[4];
-				float g[4];
-				float b[4];
-				float a[4];
+				float x[4];
+				float y[4];
+				float z[4];
+				float w[4];
 			};
 		};
 	};

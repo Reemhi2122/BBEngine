@@ -1,5 +1,7 @@
 #include "Matrix4x4.h"
 
+#include <immintrin.h>
+
 namespace BBMath {
 
 	Matrix4x4::Matrix4x4() noexcept {
@@ -37,21 +39,52 @@ namespace BBMath {
 		return true;
 	}
 
+	//Matrix4x4 Matrix4x4::operator*(const Matrix4x4& a_RHS)
+	//{
+	//	Matrix4x4 res;
+	//	int matrixSize = 4;
+
+	//	for (size_t i = 0; i < matrixSize; i++)
+	//	{
+	//		for (size_t y = 0; y < matrixSize; y++)
+	//		{
+	//			float value = 0;
+	//			for (size_t x = 0; x < matrixSize; x++)
+	//				value += m[(i * matrixSize) + x] * a_RHS.m[(x * matrixSize) + y];
+
+	//			res.mt[i][y] = value;
+	//		}
+	//	}
+
+	//	return res;
+	//}
+
 	Matrix4x4 Matrix4x4::operator*(const Matrix4x4& a_RHS)
 	{
 		Matrix4x4 res;
 		int matrixSize = 4;
 
-		for (size_t i = 0; i < matrixSize; i++)
-		{
-			for (size_t y = 0; y < matrixSize; y++)
-			{
-				float value = 0;
-				for (size_t x = 0; x < matrixSize; x++)
-					value += m[(i * matrixSize) + x] * a_RHS.m[(x * matrixSize) + y];
+		const __m128 rhsRX = _mm_load_ps((float*)&a_RHS.x);
+		const __m128 rhsRY = _mm_load_ps((float*)&a_RHS.y);
+		const __m128 rhsRZ = _mm_load_ps((float*)&a_RHS.z);
+		const __m128 rhsRW = _mm_load_ps((float*)&a_RHS.w);
 
-				res.mt[i][y] = value;
-			}
+		float* leftRowPointer = (float*)&this->x;
+		float* resultRowPointer = res.x;
+
+		for (int i = 0; i < matrixSize; i++, leftRowPointer += 4, resultRowPointer += 4) {
+			__m128 lhsRX = _mm_set1_ps(leftRowPointer[0]);
+			__m128 lhsRY = _mm_set1_ps(leftRowPointer[1]);
+			__m128 lhsRZ = _mm_set1_ps(leftRowPointer[2]);
+			__m128 lhsRW = _mm_set1_ps(leftRowPointer[3]);
+
+			__m128 X = _mm_mul_ps(lhsRX, rhsRX);
+			__m128 Y = _mm_mul_ps(lhsRY, rhsRY);
+			__m128 Z = _mm_mul_ps(lhsRZ, rhsRZ);
+			__m128 W = _mm_mul_ps(lhsRW, rhsRW);
+
+			__m128 R = _mm_add_ps(X, _mm_add_ps(Y, _mm_add_ps(Z, W)));
+			_mm_store_ps(resultRowPointer, R);
 		}
 
 		return res;
