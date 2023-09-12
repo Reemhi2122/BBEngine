@@ -14,7 +14,7 @@ add_executable (BBEngine
 "Logger/logger.cpp" 
 "Utility/HelperFunctions.h" 
 "Thread/Thread.cpp" 
-"Thread/Thread.h")
+"Thread/Thread.h" "Allocators/ArenaAlloc.h" "Allocators/ArenaAlloc.cpp" "Allocators/Allocator.cpp" "Allocators/Allocator.h")
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 

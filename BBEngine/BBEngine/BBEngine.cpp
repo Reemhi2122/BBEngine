@@ -45,19 +45,6 @@ void BBEngine::TestCode()
 
     BBMath::Matrix4x4 matrix3 = matrix * matrix2;
 
-    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-    for (int x = 0; x < 1024; x++) {
-        for (int y = 0; y < 1024; y++) {
-            bool test = matrix == matrix2;
-        }
-    }
-
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
-
     BB_LogF(0u, BBUtility::LogFlag::LogInfo,
         "%f - %f - %f - %f \n%f - %f - %f - %f \n%f - %f - %f - %f \n%f - %f - %f - %f",
         matrix3.m[0], matrix3.m[1], matrix3.m[2], matrix3.m[3],
