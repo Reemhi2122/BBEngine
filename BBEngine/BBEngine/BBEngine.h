@@ -8,6 +8,7 @@ class BBEngine {
 public:
 	BBEngine();
 	int StartBBEngine();
+	void TestCode();
 
 private:
 	void Update();

@@ -1,9 +1,34 @@
 #pragma once
 #include <string>
 #include <thread>
+#include <cassert>
 
-namespace BBlogger
-{
+#define BB_Log_Init(name, filter, path)\
+do {\
+	BBUtility::Logger::GetInstance()->SetupLogger(name, filter, path);\
+} while (0)
+
+#define BB_RegisterChannel(name, handle)\
+do{\
+	BBUtility::Logger::GetInstance()->RegisterChannel(name, handle);\
+} while (0)
+
+#define BB_Log(handle, severity, message)\
+do{\
+	BBUtility::Logger::GetInstance()->Log(handle, severity, message, __FILE__, __LINE__);\
+	if (severity == BBUtility::LogAssert)\
+		assert(0 && "Logger assert, check log file for information");\
+} while (0)
+
+#define BB_LogF(handle, severity, message, ...)\
+do{\
+	BBUtility::Logger::GetInstance()->LogF(handle, severity, message, __FILE__, __LINE__, ##__VA_ARGS__);\
+	if (severity == BBUtility::LogAssert)\
+		assert(0 && "Logger assert, check log file for information");\
+} while (0)
+
+namespace BBUtility {
+
 	using ChannelHandle = uint32_t;
 
 	using WarningTypeFlags = uint8_t;
@@ -17,7 +42,7 @@ namespace BBlogger
 
 	constexpr int MAXCHANNELAMOUNT = 32;
 
-	class Logger 
+	class Logger
 	{
 	public:
 		Logger();
@@ -36,16 +61,16 @@ namespace BBlogger
 		};
 
 		void SetupLogger(const std::string& loggerName, const WarningTypeFlags& loggerMinimumFlag = LogFlag::LogInfo, const std::string& loggerFileLocation = "");
-		ChannelHandle RegisterChannel(const char* a_Name);
+		void RegisterChannel(const char* a_Name, ChannelHandle& a_Handle);
 
 		void PrintToFile(const std::string& a_Message, const std::string& a_Path);
 
-		void Log(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage);
-		void LogF(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage, ...);
+		void Log(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage, const char* a_File = "", const int& a_Line = 0);
+		void LogF(const ChannelHandle a_Handle, const LogFlag& flag, const std::string& logMessage, const char* a_File = "", const int& a_Line = 0, ...);
 
 	private:
 		bool ValidFilter(const ChannelHandle& a_Handle, const LogFlag& a_Flag);
-		std::string FormatLogMessage(const LogFlag& a_LogFlag, const ChannelHandle& a_ChannelHandle, const std::string& a_LogMessage);
+		std::string FormatLogMessage(const LogFlag& a_LogFlag, const ChannelHandle& a_ChannelHandle, const std::string& a_LogMessage, const char* a_File, const int& a_Line);
 
 		struct Channel
 		{

@@ -1,6 +1,6 @@
 #include "Matrix4x4.h"
-
 #include <immintrin.h>
+
 
 namespace BBMath {
 
@@ -31,43 +31,33 @@ namespace BBMath {
 	}
 
 	bool Matrix4x4::operator==(const Matrix4x4& a_RHS) noexcept {
-		for (size_t i = 0; i < MATRIX4X4SIZE; i++) {
-			if (this->m[i] != a_RHS.m[i]) {
-				return false;
-			}
-		}
-		return true;
+		const __m128 rhsRX = _mm_load_ps(a_RHS.x);
+		const __m128 rhsRY = _mm_load_ps(a_RHS.y);
+		const __m128 rhsRZ = _mm_load_ps(a_RHS.z);
+		const __m128 rhsRW = _mm_load_ps(a_RHS.w);
+
+		const __m128 lhsRX = _mm_load_ps(this->x);
+		const __m128 lhsRY = _mm_load_ps(this->y);
+		const __m128 lhsRZ = _mm_load_ps(this->z);
+		const __m128 lhsRW = _mm_load_ps(this->w);
+
+		__m128 rx = _mm_cmp_ps(rhsRX, lhsRX, _CMP_EQ_OS);
+		__m128 ry = _mm_cmp_ps(rhsRY, lhsRY, _CMP_EQ_OS);
+		__m128 rz = _mm_cmp_ps(rhsRZ, lhsRZ, _CMP_EQ_OS);
+		__m128 rw = _mm_cmp_ps(rhsRW, lhsRW, _CMP_EQ_OS);
+		
+		return _mm_movemask_ps(rx) && _mm_movemask_ps(ry) && _mm_movemask_ps(rz) && _mm_movemask_ps(rw);
 	}
-
-	//Matrix4x4 Matrix4x4::operator*(const Matrix4x4& a_RHS)
-	//{
-	//	Matrix4x4 res;
-	//	int matrixSize = 4;
-
-	//	for (size_t i = 0; i < matrixSize; i++)
-	//	{
-	//		for (size_t y = 0; y < matrixSize; y++)
-	//		{
-	//			float value = 0;
-	//			for (size_t x = 0; x < matrixSize; x++)
-	//				value += m[(i * matrixSize) + x] * a_RHS.m[(x * matrixSize) + y];
-
-	//			res.mt[i][y] = value;
-	//		}
-	//	}
-
-	//	return res;
-	//}
 
 	Matrix4x4 Matrix4x4::operator*(const Matrix4x4& a_RHS)
 	{
 		Matrix4x4 res;
 		int matrixSize = 4;
 
-		const __m128 rhsRX = _mm_load_ps((float*)&a_RHS.x);
-		const __m128 rhsRY = _mm_load_ps((float*)&a_RHS.y);
-		const __m128 rhsRZ = _mm_load_ps((float*)&a_RHS.z);
-		const __m128 rhsRW = _mm_load_ps((float*)&a_RHS.w);
+		const __m128 rhsRX = _mm_load_ps(a_RHS.x);
+		const __m128 rhsRY = _mm_load_ps(a_RHS.y);
+		const __m128 rhsRZ = _mm_load_ps(a_RHS.z);
+		const __m128 rhsRW = _mm_load_ps(a_RHS.w);
 
 		float* leftRowPointer = (float*)&this->x;
 		float* resultRowPointer = res.x;

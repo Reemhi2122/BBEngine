@@ -12,7 +12,7 @@ add_executable (BBEngine
 "Timer/BBTimer.cpp"
 "Logger/Logger.h"
 "Logger/logger.cpp" 
-"Helper/Utility.h" 
+"Utility/HelperFunctions.h" 
 "Thread/Thread.cpp" 
 "Thread/Thread.h")
 
