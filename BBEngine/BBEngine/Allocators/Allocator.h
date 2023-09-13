@@ -1,6 +1,7 @@
 #pragma once
+#include <cstdint>
 
-namespace BBEngine {
+namespace BBE {
 	namespace Allocators{
 		
 		class Allocator {
@@ -9,15 +10,18 @@ namespace BBEngine {
 			Allocator() = default;
 			~Allocator() = default;
 
-			virtual void init() = 0;
-
-			virtual void alloc() = 0;
-			virtual void realloc() = 0;
-			virtual void free() = 0;
-
-		private:
-			
-
+		protected:
+			uintptr_t CalculateAlignOffset(uintptr_t a_Ptr, uint32_t a_Align);
 		};
+	}
+
+	inline static void* Add(const void* a_Ptr, const size_t a_Add)
+	{
+		return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(a_Ptr) + a_Add);
+	}
+
+	inline static void* Subtract(const void* a_Ptr, const size_t a_Subtract)
+	{
+		return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(a_Ptr) - a_Subtract);
 	}
 }
