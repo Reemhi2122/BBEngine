@@ -1,4 +1,6 @@
 #include "Graphics.h"
+#include "Utils/GraphicsThrowMacros.h"
+
 #include <sstream>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
@@ -6,8 +8,6 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
-#define GFX_THROW_FAILED(hrcall) do{ if(FAILED(hr = (hrcall))) throw Graphics::HrException(__LINE__, __FILE__, hr); } while(0)
-#define GFX_DEVICE_REMOVED_EXCEPT(hr) do{ throw Graphics::DeviceRemovedException(__LINE__, __FILE__, (hr)); } while(0)
 
 Graphics::Graphics(HWND a_HWnd)
 {
