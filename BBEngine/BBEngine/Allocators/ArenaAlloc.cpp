@@ -6,7 +6,7 @@
 namespace BBE {
 	namespace Allocators {
 
-		void ArenaAllocator::Init(const uint32_t& a_Size) noexcept
+		void ArenaAllocator::Init(const size_t& a_Size) noexcept
 		{
 			m_Arena.allocBuf = malloc(a_Size);
 			m_Arena.bufLeng = a_Size;
@@ -16,7 +16,7 @@ namespace BBE {
 
 		void* ArenaAllocator::Alloc(const uint32_t& a_Size, const uint32_t& a_Align)
 		{
-			assert(((a_Align & (a_Align - 1)) == 0));
+			assert(IsPowerOfTwo(a_Align));
 
 			uintptr_t curPointer = (uintptr_t)m_Arena.allocBuf + (uintptr_t)m_Arena.currOffset;
 			uintptr_t offset = CalculateAlignOffset(curPointer, a_Align);
@@ -34,8 +34,9 @@ namespace BBE {
 			return NULL;
 		}
 
-		void ArenaAllocator::Realloc()
+		void ArenaAllocator::Realloc(const size_t& a_Size, const size_t& a_Align)
 		{
+			IsPowerOfTwo(a_Align);
 		}
 
 		void ArenaAllocator::Free(void* ptr) noexcept
@@ -43,7 +44,7 @@ namespace BBE {
 			// You can't free anything seperate
 		}
 
-		void ArenaAllocator::FreeAll() noexcept
+		void ArenaAllocator::Clear() noexcept
 		{
 			m_Arena.currOffset = 0u;
 			m_Arena.prevOffset = 0u;

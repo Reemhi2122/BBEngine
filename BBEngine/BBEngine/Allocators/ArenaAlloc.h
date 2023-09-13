@@ -1,8 +1,5 @@
 #pragma once
 #include "Allocator.h"
-#include <cstdint>
-
-#define DEFAULT_ALIGNMENT (2*sizeof(void *))
 
 namespace BBE {
 	namespace Allocators {
@@ -20,12 +17,11 @@ namespace BBE {
 			ArenaAllocator() = default;
 			~ArenaAllocator() = default;
 
-			void Init(const uint32_t& a_Size) noexcept;
-
-			void* Alloc(const uint32_t& a_Size, const uint32_t& a_Align = DEFAULT_ALIGNMENT);
-			void Realloc() ;
-			void Free(void* ptr) noexcept;
-			void FreeAll() noexcept;
+			void Init(const size_t& a_Size) noexcept override;
+			void* Alloc(const uint32_t& a_Size, const uint32_t& a_Align = DEFAULT_ALIGNMENT) override;
+			void Realloc(const size_t& a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) override;
+			void Free(void* ptr) noexcept override;
+			void Clear() noexcept override;
 
 		private:
 			Arena m_Arena;

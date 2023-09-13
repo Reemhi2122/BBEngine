@@ -3,6 +3,8 @@
 #include <thread>
 #include <cassert>
 
+#define DEFAULT_LOG_CHANNEL 0
+
 #define BB_Log_Init(name, filter, path)\
 do {\
 	BBUtility::Logger::GetInstance()->SetupLogger(name, filter, path);\

@@ -3,11 +3,13 @@
 #include "Matrix4x4.h"
 #include "Logger/Logger.h"
 
+#include "BBMemory.h"
 #include "Allocators/ArenaAlloc.h"
 
 #include <chrono>
 #include <iostream>
 #include <cstdint>
+
 
 BBEngine::BBEngine()
 	: m_Window(800, 600, "BBWindow test") 
@@ -17,12 +19,6 @@ BBEngine::BBEngine()
 int BBEngine::StartBBEngine()
 {
     BB_Log_Init("BBLogger", BBUtility::LogFlag::LogInfo, "./Test");
-
-    BBE::Allocators::ArenaAllocator alloc;
-    alloc.Init(1024 * sizeof(int));
-
-    int* test = reinterpret_cast<int*>(alloc.Alloc(1024 * sizeof(int)));
-    
 
     TestCode();
 
@@ -36,6 +32,13 @@ int BBEngine::StartBBEngine()
 
 void BBEngine::TestCode()
 {
+    BBE::Allocators::ArenaAllocator alloc;
+    alloc.Init(1024 * sizeof(int));
+
+    int* test = BBNew(alloc, int)(200);
+
+    BB_LogF(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, "Test value: %d", *test);
+
     BBMath::Matrix4x4 matrix
     {
         1.0f, 2.0f, 3.0f, 4.0f,
