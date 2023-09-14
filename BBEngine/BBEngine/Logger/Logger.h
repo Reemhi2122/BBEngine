@@ -19,14 +19,22 @@ do{\
 do{\
 	BBUtility::Logger::GetInstance()->Log(handle, severity, message, __FILE__, __LINE__);\
 	if (severity == BBUtility::LogAssert)\
-		assert(0 && "Logger assert, check log file for information");\
+		assert(0 && message);\
 } while (0)
 
 #define BB_LogF(handle, severity, message, ...)\
 do{\
 	BBUtility::Logger::GetInstance()->LogF(handle, severity, message, __FILE__, __LINE__, ##__VA_ARGS__);\
 	if (severity == BBUtility::LogAssert)\
-		assert(0 && "Logger assert, check log file for information");\
+		assert(0 && message);\
+} while (0)
+
+#define BB_Assert(condition, message, ...)\
+do{\
+	if(!condition){\
+		BBUtility::Logger::GetInstance()->LogF(0, BBUtility::LogAssert, message, __FILE__, __LINE__, ##__VA_ARGS__);\
+		assert(0 && message);\
+	}\
 } while (0)
 
 namespace BBUtility {

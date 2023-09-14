@@ -2,6 +2,7 @@
 #include <malloc.h>
 #include <cassert>
 #include <string.h>
+#include "../Logger/Logger.h"
 
 namespace BBE {
 	namespace Allocators {
@@ -16,7 +17,7 @@ namespace BBE {
 
 		void* ArenaAllocator::Alloc(const uint32_t& a_Size, const uint32_t& a_Align)
 		{
-			assert(IsPowerOfTwo(a_Align));
+			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 
 			uintptr_t curPointer = (uintptr_t)m_Arena.allocBuf + (uintptr_t)m_Arena.currOffset;
 			uintptr_t offset = CalculateAlignOffset(curPointer, a_Align);
@@ -36,12 +37,12 @@ namespace BBE {
 
 		void ArenaAllocator::Realloc(const size_t& a_Size, const size_t& a_Align)
 		{
-			IsPowerOfTwo(a_Align);
+			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 		}
 
 		void ArenaAllocator::Free(void* ptr) noexcept
 		{
-			// You can't free anything seperate
+			// There is no free function on a linear allocator
 		}
 
 		void ArenaAllocator::Clear() noexcept

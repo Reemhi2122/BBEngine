@@ -37,6 +37,8 @@ void BBEngine::TestCode()
 
     int* test = BBNew(alloc, int)(200);
 
+    alloc.Realloc(2048);
+
     BB_LogF(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, "Test value: %d", *test);
 
     BBMath::Matrix4x4 matrix
