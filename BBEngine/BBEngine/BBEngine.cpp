@@ -5,6 +5,7 @@
 
 #include "BBMemory.h"
 #include "Allocators/ArenaAlloc.h"
+#include "Allocators/StackAllocator.h"
 
 #include <chrono>
 #include <iostream>
@@ -32,8 +33,11 @@ int BBEngine::StartBBEngine()
 
 void BBEngine::TestCode()
 {
-    BBE::Allocators::ArenaAllocator alloc;
+    BBE::Allocators::StackAllocator alloc;
     alloc.Init(1024 * sizeof(int));
+
+
+
 
     BBMath::Matrix4x4 matrix
     {

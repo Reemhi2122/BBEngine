@@ -1,7 +1,6 @@
 #include "ArenaAlloc.h"
 #include <malloc.h>
 #include <cassert>
-#include <string.h>
 #include "../Logger/Logger.h"
 
 namespace BBE {
@@ -27,7 +26,7 @@ namespace BBE {
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 
 			uintptr_t curPointer = (uintptr_t)m_Arena.buf + (uintptr_t)m_Arena.currOffset;
-			uintptr_t offset = CalculateAlignOffset(curPointer, a_Align);
+			uintptr_t offset = curPointer + CalculateAlignOffset(curPointer, a_Align);
 			offset -= (uintptr_t)m_Arena.buf;
 
 			if (offset + a_Size <= m_Arena.bufLeng) {
