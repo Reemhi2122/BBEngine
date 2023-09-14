@@ -35,9 +35,38 @@ namespace BBE {
 			return NULL;
 		}
 
-		void ArenaAllocator::Realloc(const size_t& a_Size, const size_t& a_Align)
+		//Reallocation for linear allocators are cringe
+		void* ArenaAllocator::Realloc(void* a_OldData, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
 		{
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
+
+			uintptr_t& CurBuf = reinterpret_cast<uintptr_t&>(m_Arena.allocBuf);
+			uintptr_t& OldData = reinterpret_cast<uintptr_t&>(a_OldData);
+
+			if (a_OldSize == 0 || a_OldData == NULL) {
+				return Alloc(a_NewSize, a_Align);
+			}
+
+			if (OldData >= CurBuf && OldData < (CurBuf + m_Arena.bufLeng)) {
+				if (CurBuf + m_Arena.prevOffset == OldData) {
+					
+					if (a_NewSize > a_OldSize) {
+						memset(Add(CurBuf, m_Arena.prevOffset + a_OldSize), 0, a_NewSize - a_OldSize);
+					}
+
+					m_Arena.currOffset = m_Arena.prevOffset + a_NewSize;
+					return a_OldData;
+				}
+			}
+			else {
+				void* newMemory = Alloc(a_NewSize);
+				size_t copySize = a_NewSize > a_OldSize ? a_OldSize : a_NewSize;
+				memmove(newMemory, a_OldData, copySize);
+				return newMemory;
+			}
+
+			BB_Assert(0, "Memory is out of bounds of the buffer of the allocator");
+			return NULL;
 		}
 
 		void ArenaAllocator::Free(void* ptr) noexcept

@@ -35,11 +35,10 @@ void BBEngine::TestCode()
     BBE::Allocators::ArenaAllocator alloc;
     alloc.Init(1024 * sizeof(int));
 
-    int* test = BBNew(alloc, int)(200);
-
-    alloc.Realloc(2048);
 
     BB_LogF(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, "Test value: %d", *test);
+    BB_LogF(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, "Test value: %d", *test2);
+    BB_LogF(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, "Test value: %d", *test3);
 
     BBMath::Matrix4x4 matrix
     {
