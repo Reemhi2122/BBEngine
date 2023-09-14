@@ -6,25 +6,32 @@
 
 namespace BBE {
 	namespace Allocators {
+		ArenaAllocator::ArenaAllocator()
+		{
+			m_Arena.buf = nullptr;
+			m_Arena.bufLeng = 0u;
+			m_Arena.currOffset = 0u;
+			m_Arena.prevOffset = 0u;
+		}
 
 		void ArenaAllocator::Init(const size_t& a_Size) noexcept
 		{
-			m_Arena.allocBuf = malloc(a_Size);
+			m_Arena.buf = malloc(a_Size);
 			m_Arena.bufLeng = a_Size;
 			m_Arena.currOffset = 0u;
 			m_Arena.prevOffset = 0u;
 		}
 
-		void* ArenaAllocator::Alloc(const uint32_t& a_Size, const uint32_t& a_Align)
+		void* ArenaAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
 		{
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 
-			uintptr_t curPointer = (uintptr_t)m_Arena.allocBuf + (uintptr_t)m_Arena.currOffset;
+			uintptr_t curPointer = (uintptr_t)m_Arena.buf + (uintptr_t)m_Arena.currOffset;
 			uintptr_t offset = CalculateAlignOffset(curPointer, a_Align);
-			offset -= (uintptr_t)m_Arena.allocBuf;
+			offset -= (uintptr_t)m_Arena.buf;
 
 			if (offset + a_Size <= m_Arena.bufLeng) {
-				void* ptr = Add(m_Arena.allocBuf, offset);
+				void* ptr = Add(m_Arena.buf, offset);
 				m_Arena.prevOffset = offset;
 				m_Arena.currOffset = offset + a_Size;
 
@@ -32,6 +39,7 @@ namespace BBE {
 				return ptr;
 			}
 
+			BB_Assert(0, "Allocator is out of memory!");
 			return NULL;
 		}
 
@@ -40,7 +48,7 @@ namespace BBE {
 		{
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 
-			uintptr_t& CurBuf = reinterpret_cast<uintptr_t&>(m_Arena.allocBuf);
+			uintptr_t& CurBuf = reinterpret_cast<uintptr_t&>(m_Arena.buf);
 			uintptr_t& OldData = reinterpret_cast<uintptr_t&>(a_OldData);
 
 			if (a_OldSize == 0 || a_OldData == NULL) {

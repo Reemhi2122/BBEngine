@@ -1,7 +1,7 @@
 #pragma once
 #include "Allocators/Allocator.h"
 
-#define BBAlloc(a_Allocator, a_Size) BBE::BBAllocFunc(a_Allocator, a_Size)
+#define BBAlloc(a_Allocator, a_Size, a_Type) BBE::BBAllocFunc(a_Allocator, a_Size)
 #define BBNew(a_Allocator, a_Type) new (BBE::BBAllocFunc(a_Allocator, sizeof(a_Type))) a_Type
 #define BBNewArr(a_Allocator, a_Num, a_Type) BBE::BBAllocFunc(a_Allocator, sizeof(a_Type) * a_Num)
 
