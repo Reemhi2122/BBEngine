@@ -56,6 +56,13 @@ void BBEngine::TestCode()
     alloc.Free(z);
 
 
+    z = reinterpret_cast<int*>(alloc.Alloc(4));
+
+    *z = 10;
+
+
+    printf("x: %d - z: %d", *x, *z);
+
     BBMath::Matrix4x4 matrix
     {
         1.0f, 2.0f, 3.0f, 4.0f,

@@ -61,13 +61,13 @@ void* BBE::Allocators::StackAllocator::Realloc(void* a_Ptr, const size_t& a_OldS
 	if (a_OldSize == a_NewSize) 
 		return a_Ptr;
 
-	//if (m_Stack.curOffset != currAddr + a_OldSize) {
-	//	size_t nextPadding = CalculateAlignOffset(currAddr + a_OldSize, a_Align, sizeof(StackHeader));
-	//	StackHeader* curHeader = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackHeader));
-	//	StackHeader* nextHeader = reinterpret_cast<StackHeader*>(currAddr + a_OldSize + nextPadding - sizeof(StackHeader));
-	//	nextHeader->prevOffset -= curHeader->prevOffset;
-	//	nextHeader->padding += nextPadding;
-	//}
+	if (m_Stack.curOffset != currAddr + a_OldSize) {
+		size_t nextPadding = CalculateAlignOffset(currAddr + a_OldSize, a_Align, sizeof(StackHeader));
+		StackHeader* curHeader = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackHeader));
+		StackHeader* nextHeader = reinterpret_cast<StackHeader*>(currAddr + a_OldSize + nextPadding - sizeof(StackHeader));
+		nextHeader->prevOffset = curHeader->prevOffset;
+		nextHeader->padding += curHeader->padding + a_OldSize;
+	}
 
 	void* newPtr = StackAllocator::Alloc(a_NewSize, a_Align);
 	memmove(newPtr, a_Ptr, minSize);
@@ -87,11 +87,11 @@ void BBE::Allocators::StackAllocator::Free(void* a_Ptr)
 	if (currAddr >= start + m_Stack.curOffset)
 		return;
 
-	StackHeader* header = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackAllocator));
+	StackHeader* header = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackHeader));
 	
 	uintptr_t prevOffset = currAddr - header->padding - start;
 
-	BB_Assert((prevOffset != header->prevOffset), "Out of order stack allocation!");
+	BB_Assert((prevOffset == header->prevOffset), "Out of order stack allocation!");
 
 	m_Stack.curOffset = m_Stack.prevOffset;
 	m_Stack.prevOffset = header->prevOffset;
