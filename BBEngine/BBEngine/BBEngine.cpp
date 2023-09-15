@@ -47,9 +47,14 @@ void BBEngine::TestCode()
     *z = 16;
     *w = 24;
 
-    uint64_t* test = reinterpret_cast<uint64_t*>(alloc.Realloc(y, 4, 8));
+    int* test = reinterpret_cast<int*>(alloc.Realloc(y, 4, 8));
 
     printf("x: %d - y: %d - z: %d - w: %d", *x, *test, *z, *w);
+
+    alloc.Free(test);
+    alloc.Free(w);
+    alloc.Free(z);
+
 
     BBMath::Matrix4x4 matrix
     {
