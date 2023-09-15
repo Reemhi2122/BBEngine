@@ -10,11 +10,17 @@ namespace BBE {
 		struct Stack {
 			void* buf;
 			size_t bufSize;
-			size_t offset;
+			size_t curOffset;
+			size_t prevOffset;
+		};
+
+		struct StackHeader_Old {
+			uint8_t padding;
 		};
 
 		struct StackHeader {
-			uint8_t padding;
+			size_t padding;
+			size_t prevOffset;
 		};
 
 		class StackAllocator : public Allocator {

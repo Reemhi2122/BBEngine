@@ -36,9 +36,20 @@ void BBEngine::TestCode()
     BBE::Allocators::StackAllocator alloc;
     alloc.Init(1024 * sizeof(int));
 
-    alloc.Alloc(12);
-    alloc.Alloc(4);
+    int* x = reinterpret_cast<int*>(alloc.Alloc(4));
+    int* y = reinterpret_cast<int*>(alloc.Alloc(4));
+    int* z = reinterpret_cast<int*>(alloc.Alloc(4));
+    int* w = reinterpret_cast<int*>(alloc.Alloc(4));
+   
 
+    *x = 4;
+    *y = 8;
+    *z = 16;
+    *w = 24;
+
+    uint64_t* test = reinterpret_cast<uint64_t*>(alloc.Realloc(y, 4, 8));
+
+    printf("x: %d - y: %d - z: %d - w: %d", *x, *test, *z, *w);
 
     BBMath::Matrix4x4 matrix
     {
