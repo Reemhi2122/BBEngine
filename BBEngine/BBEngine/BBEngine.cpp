@@ -36,7 +36,8 @@ void BBEngine::TestCode()
     BBE::Allocators::StackAllocator alloc;
     alloc.Init(1024 * sizeof(int));
 
-
+    alloc.Alloc(12);
+    alloc.Alloc(4);
 
 
     BBMath::Matrix4x4 matrix

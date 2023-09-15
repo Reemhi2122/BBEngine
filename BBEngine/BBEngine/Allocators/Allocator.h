@@ -19,7 +19,7 @@ namespace BBE {
 			virtual void Clear() = 0;
 
 		protected:
-			size_t CalculateAlignOffset(uintptr_t a_Ptr, uint32_t a_Align, const size_t& a_HeaderSize = 0);
+			size_t CalculateAlignOffset(const uintptr_t& a_Ptr, const uint32_t& a_Align, const size_t& a_HeaderSize = 0);
 		};
 	}
 
