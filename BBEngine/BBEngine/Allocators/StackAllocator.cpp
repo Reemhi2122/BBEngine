@@ -16,7 +16,7 @@ void BBE::Allocators::StackAllocator::Init(const size_t& a_Size) noexcept
 
 void* BBE::Allocators::StackAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
 {
-	BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
+	BB_Assert(IsPowerOfTwo(a_Align), "Stack allocator align is not a power of two");
 	BB_Assert(a_Align > 128, "Stack allocator alignment can't be more than 128");
 
 	uintptr_t currAddr = (uintptr_t)m_Stack.buf + (uintptr_t)m_Stack.offset;
@@ -40,8 +40,26 @@ void* BBE::Allocators::StackAllocator::Realloc(void* a_OldData, const size_t& a_
 
 void BBE::Allocators::StackAllocator::Free(void* ptr)
 {
+	if (ptr == NULL)
+		return;
+
+	uintptr_t start = reinterpret_cast<uintptr_t>(m_Stack.buf);
+	uintptr_t currAddr = (uintptr_t)ptr;
+
+	BB_Assert((currAddr < start && currAddr > m_Stack.bufSize), "Stack allocator out of bounds!");
+
+	if (currAddr > start + m_Stack.offset) {
+		//Something like double freeing? Haven't looked into this yet.
+		return;
+	}
+
+	StackHeader* header = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackAllocator));
+
+	m_Stack.offset = currAddr - header->padding - start;
+
 }
 
 void BBE::Allocators::StackAllocator::Clear()
 {
+	m_Stack.offset = 0;
 }
