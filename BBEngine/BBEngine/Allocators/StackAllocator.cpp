@@ -35,16 +35,39 @@ void* BBE::Allocators::StackAllocator::Alloc(const size_t& a_Size, const size_t&
 
 void* BBE::Allocators::StackAllocator::Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
 {
+	if (a_Ptr == NULL)
+		return Alloc(a_NewSize, a_Align);
 
+	if (a_NewSize == 0) {
+		Free(a_Ptr);
+		return NULL;
+	}
+
+	size_t minSize = a_OldSize < a_NewSize ? a_OldSize : a_NewSize;
+
+	uintptr_t start = reinterpret_cast<uintptr_t>(m_Stack.buf);
+	uintptr_t currAddr = (uintptr_t)a_Ptr;
+
+	BB_Assert((currAddr < start && currAddr > m_Stack.bufSize), "Stack allocator out of bounds!");
+
+	if (currAddr >= start + m_Stack.offset)
+		return NULL;
+
+	if (a_OldSize == a_NewSize) 
+		return a_Ptr;
+
+	void* newPtr = Alloc(a_NewSize, a_Align);
+	memcpy(newPtr, a_Ptr, minSize);
+	return newPtr;
 }
 
-void BBE::Allocators::StackAllocator::Free(void* ptr)
+void BBE::Allocators::StackAllocator::Free(void* a_Ptr)
 {
-	if (ptr == NULL)
+	if (a_Ptr == NULL)
 		return;
 
 	uintptr_t start = reinterpret_cast<uintptr_t>(m_Stack.buf);
-	uintptr_t currAddr = (uintptr_t)ptr;
+	uintptr_t currAddr = (uintptr_t)a_Ptr;
 
 	BB_Assert((currAddr < start && currAddr > m_Stack.bufSize), "Stack allocator out of bounds!");
 

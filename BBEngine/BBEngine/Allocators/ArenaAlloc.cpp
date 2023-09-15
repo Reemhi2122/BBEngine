@@ -76,7 +76,7 @@ namespace BBE {
 			return NULL;
 		}
 
-		void ArenaAllocator::Free(void* ptr) noexcept
+		void ArenaAllocator::Free(void* a_Ptr) noexcept
 		{
 			// There is no free function on a linear allocator
 		}
