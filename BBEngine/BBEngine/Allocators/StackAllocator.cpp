@@ -33,9 +33,9 @@ void* BBE::Allocators::StackAllocator::Alloc(const size_t& a_Size, const size_t&
 	return memset(reinterpret_cast<void*>(nextAddr), 0, a_Size);
 }
 
-void* BBE::Allocators::StackAllocator::Realloc(void* a_OldData, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
+void* BBE::Allocators::StackAllocator::Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
 {
-	return nullptr;
+
 }
 
 void BBE::Allocators::StackAllocator::Free(void* ptr)
@@ -48,15 +48,11 @@ void BBE::Allocators::StackAllocator::Free(void* ptr)
 
 	BB_Assert((currAddr < start && currAddr > m_Stack.bufSize), "Stack allocator out of bounds!");
 
-	if (currAddr > start + m_Stack.offset) {
-		//Something like double freeing? Haven't looked into this yet.
+	if (currAddr >= start + m_Stack.offset)
 		return;
-	}
 
 	StackHeader* header = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackAllocator));
-
 	m_Stack.offset = currAddr - header->padding - start;
-
 }
 
 void BBE::Allocators::StackAllocator::Clear()

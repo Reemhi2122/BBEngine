@@ -14,7 +14,7 @@ namespace BBE {
 
 			virtual void Init(const size_t& a_Size) noexcept = 0;
 			virtual void* Alloc(const size_t& a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
-			virtual void* Realloc(void* a_OldData, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
+			virtual void* Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
 			virtual void Free(void* ptr) = 0;
 			virtual void Clear() = 0;
 

@@ -43,32 +43,32 @@ namespace BBE {
 		}
 
 		//Reallocation for linear allocators are cringe
-		void* ArenaAllocator::Realloc(void* a_OldData, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
+		void* ArenaAllocator::Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
 		{
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 
-			uintptr_t& CurBuf = reinterpret_cast<uintptr_t&>(m_Arena.buf);
-			uintptr_t& OldData = reinterpret_cast<uintptr_t&>(a_OldData);
+			uintptr_t& curBuf = reinterpret_cast<uintptr_t&>(m_Arena.buf);
+			uintptr_t& oldData = reinterpret_cast<uintptr_t&>(a_Ptr);
 
-			if (a_OldSize == 0 || a_OldData == NULL) {
+			if (a_OldSize == 0 || oldData == NULL) {
 				return Alloc(a_NewSize, a_Align);
 			}
 
-			if (OldData >= CurBuf && OldData < (CurBuf + m_Arena.bufLeng)) {
-				if (CurBuf + m_Arena.prevOffset == OldData) {
+			if (oldData >= curBuf && oldData < (curBuf + m_Arena.bufLeng)) {
+				if (curBuf + m_Arena.prevOffset == oldData) {
 					
 					if (a_NewSize > a_OldSize) {
-						memset(Add(CurBuf, m_Arena.prevOffset + a_OldSize), 0, a_NewSize - a_OldSize);
+						memset(Add(curBuf, m_Arena.prevOffset + a_OldSize), 0, a_NewSize - a_OldSize);
 					}
 
 					m_Arena.currOffset = m_Arena.prevOffset + a_NewSize;
-					return a_OldData;
+					return a_Ptr;
 				}
 			}
 			else {
 				void* newMemory = Alloc(a_NewSize);
 				size_t copySize = a_NewSize > a_OldSize ? a_OldSize : a_NewSize;
-				memmove(newMemory, a_OldData, copySize);
+				memmove(newMemory, a_Ptr, copySize);
 				return newMemory;
 			}
 
