@@ -12,14 +12,14 @@ namespace BBE {
 			Allocator() = default;
 			~Allocator() = default;
 
-			virtual void Init(const size_t& size) noexcept = 0;
-			virtual void* Alloc(const uint32_t& a_Size, const uint32_t& a_Align = DEFAULT_ALIGNMENT) = 0;
-			virtual void Realloc(const size_t& a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
-			virtual void Free(void* ptr) = 0;
+			virtual void Init(const size_t& a_Size) noexcept = 0;
+			virtual void* Alloc(const size_t& a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
+			virtual void* Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
+			virtual void Free(void* a_Ptr) = 0;
 			virtual void Clear() = 0;
 
 		protected:
-			uintptr_t CalculateAlignOffset(uintptr_t a_Ptr, uint32_t a_Align);
+			size_t CalculateAlignOffset(const uintptr_t& a_Ptr, const uint32_t& a_Align, const size_t& a_HeaderSize = 0);
 		};
 	}
 
@@ -30,6 +30,11 @@ namespace BBE {
 	inline static void* Add(const void* a_Ptr, const size_t a_Add)
 	{
 		return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(a_Ptr) + a_Add);
+	}
+
+	inline static void* Add(uintptr_t& a_Ptr, const size_t a_Add)
+	{
+		return reinterpret_cast<void*>(a_Ptr + a_Add);
 	}
 
 	inline static void* Subtract(const void* a_Ptr, const size_t a_Subtract)
