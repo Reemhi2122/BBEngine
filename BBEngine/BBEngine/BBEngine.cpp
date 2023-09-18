@@ -47,19 +47,23 @@ void BBEngine::TestCode()
     *z = 16;
     *w = 24;
 
-    int* test = reinterpret_cast<int*>(alloc.Realloc(y, 4, 8));
-
-    printf("x: %d - y: %d - z: %d - w: %d", *x, *test, *z, *w);
-
-    alloc.Free(test);
     alloc.Free(w);
     alloc.Free(z);
 
+    int* a = reinterpret_cast<int*>(alloc.Alloc(4));
+    *a = 103;
+
+    int* test = reinterpret_cast<int*>(alloc.Realloc(y, 4, 8));
+
+    printf("x: %d - test: %d - a: %d", *x, *test, *a);
+
+    alloc.Free(test);
+    alloc.Free(z);
+    alloc.Free(y);
+    alloc.Free(x);
 
     z = reinterpret_cast<int*>(alloc.Alloc(4));
-
     *z = 10;
-
 
     printf("x: %d - z: %d", *x, *z);
 

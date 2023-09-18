@@ -11,15 +11,10 @@ namespace BBE {
 			void* buf;
 			size_t bufSize;
 			size_t curOffset;
-			size_t prevOffset;
-		};
-
-		struct StackHeader_Old {
-			uint8_t padding;
 		};
 
 		struct StackHeader {
-			size_t padding;
+			size_t size;
 			size_t prevOffset;
 		};
 
@@ -37,7 +32,6 @@ namespace BBE {
 
 		private:
 			Stack m_Stack;
-
 		};
 
 	}

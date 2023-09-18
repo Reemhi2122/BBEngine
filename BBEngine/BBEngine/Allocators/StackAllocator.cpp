@@ -5,7 +5,6 @@ BBE::Allocators::StackAllocator::StackAllocator()
 	m_Stack.buf = nullptr;
 	m_Stack.bufSize = 0u;
 	m_Stack.curOffset = 0u;
-	m_Stack.prevOffset = 0u;
 }
 
 void BBE::Allocators::StackAllocator::Init(const size_t& a_Size) noexcept
@@ -13,7 +12,6 @@ void BBE::Allocators::StackAllocator::Init(const size_t& a_Size) noexcept
 	m_Stack.buf = malloc(a_Size);
 	m_Stack.bufSize = a_Size;
 	m_Stack.curOffset = 0u;
-	m_Stack.prevOffset = 0u;
 }
 
 void* BBE::Allocators::StackAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
@@ -26,12 +24,10 @@ void* BBE::Allocators::StackAllocator::Alloc(const size_t& a_Size, const size_t&
 	
 	BB_Assert((m_Stack.curOffset + padding + a_Size < m_Stack.bufSize), "Stack allocator is out of memory");
 
-	m_Stack.prevOffset = m_Stack.curOffset;
-
 	uintptr_t nextAddr = currAddr + padding;
 	StackHeader* header = reinterpret_cast<StackHeader*>(nextAddr - sizeof(StackHeader));
-	header->padding = static_cast<size_t>(padding);
-	header->prevOffset = m_Stack.prevOffset;
+	header->size = a_Size;
+	header->prevOffset = m_Stack.curOffset;
 
 	m_Stack.curOffset += padding + a_Size;
 
@@ -66,7 +62,6 @@ void* BBE::Allocators::StackAllocator::Realloc(void* a_Ptr, const size_t& a_OldS
 		StackHeader* curHeader = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackHeader));
 		StackHeader* nextHeader = reinterpret_cast<StackHeader*>(currAddr + a_OldSize + nextPadding - sizeof(StackHeader));
 		nextHeader->prevOffset = curHeader->prevOffset;
-		nextHeader->padding += curHeader->padding + a_OldSize;
 	}
 
 	void* newPtr = StackAllocator::Alloc(a_NewSize, a_Align);
@@ -74,6 +69,7 @@ void* BBE::Allocators::StackAllocator::Realloc(void* a_Ptr, const size_t& a_OldS
 	return newPtr;
 }
 
+//Need a solution for freeing twice
 void BBE::Allocators::StackAllocator::Free(void* a_Ptr)
 {
 	if (a_Ptr == NULL)
@@ -88,17 +84,15 @@ void BBE::Allocators::StackAllocator::Free(void* a_Ptr)
 		return;
 
 	StackHeader* header = reinterpret_cast<StackHeader*>(currAddr - sizeof(StackHeader));
+	uintptr_t curOffset = currAddr - start;
 	
-	uintptr_t prevOffset = currAddr - header->padding - start;
+	BB_Assert((m_Stack.curOffset == curOffset + header->size), "Out of order stack allocation free!");
 
-	BB_Assert((prevOffset == header->prevOffset), "Out of order stack allocation!");
-
-	m_Stack.curOffset = m_Stack.prevOffset;
-	m_Stack.prevOffset = header->prevOffset;
+	m_Stack.curOffset = header->prevOffset;
 
 }
 
 void BBE::Allocators::StackAllocator::Clear()
 {
-	m_Stack.curOffset = 0;
+	m_Stack.curOffset = 0u;
 }
