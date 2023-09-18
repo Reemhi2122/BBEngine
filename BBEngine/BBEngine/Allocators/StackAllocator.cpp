@@ -1,4 +1,7 @@
 #include "StackAllocator.h"
+#include <malloc.h>
+#include <cassert>
+#include "../Logger/Logger.h"
 
 BBE::Allocators::StackAllocator::StackAllocator()
 {
@@ -7,7 +10,7 @@ BBE::Allocators::StackAllocator::StackAllocator()
 	m_Stack.curOffset = 0u;
 }
 
-void BBE::Allocators::StackAllocator::Init(const size_t& a_Size) noexcept
+void BBE::Allocators::StackAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
 {
 	m_Stack.buf = malloc(a_Size);
 	m_Stack.bufSize = a_Size;

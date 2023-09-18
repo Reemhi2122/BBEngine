@@ -33,5 +33,17 @@ namespace BBE {
 
 			return padding;
 		}
+
+		uintptr_t Allocator::AlignForward(uintptr_t ptr, uintptr_t align) {
+			uintptr_t a, p, modulo;
+
+			a = align;
+			p = ptr;
+			modulo = p & (a - 1);
+			if (modulo != 0) {
+				p += a - modulo;
+			}
+			return p;
+		}
 	}
 }

@@ -17,13 +17,14 @@ add_executable (BBEngine
 "Thread/Thread.h" 
 "Allocators/StackAllocator.cpp" 
 "Allocators/StackAllocator.h"
-"Allocators/ArenaAlloc.h" 
-"Allocators/ArenaAlloc.cpp" 
+"Allocators/ArenaAllocator.h" 
+"Allocators/ArenaAllocator.cpp" 
+"Allocators/PoolAllocator.h"
+"Allocators/PoolAllocator.cpp"
 "Allocators/Allocator.cpp" 
 "Allocators/Allocator.h" 
 "BBCommon.h" 
-"BBMemory.h" 
-)
+"BBMemory.h")
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 

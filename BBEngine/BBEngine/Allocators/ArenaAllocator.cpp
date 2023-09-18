@@ -1,4 +1,4 @@
-#include "ArenaAlloc.h"
+#include "ArenaAllocator.h"
 #include <malloc.h>
 #include <cassert>
 #include "../Logger/Logger.h"
@@ -13,7 +13,7 @@ namespace BBE {
 			m_Arena.prevOffset = 0u;
 		}
 
-		void ArenaAllocator::Init(const size_t& a_Size) noexcept
+		void ArenaAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
 		{
 			m_Arena.buf = malloc(a_Size);
 			m_Arena.bufLeng = a_Size;

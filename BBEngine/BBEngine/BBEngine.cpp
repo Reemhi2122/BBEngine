@@ -4,8 +4,9 @@
 #include "Logger/Logger.h"
 
 #include "BBMemory.h"
-#include "Allocators/ArenaAlloc.h"
+#include "Allocators/ArenaAllocator.h"
 #include "Allocators/StackAllocator.h"
+#include "Allocators/PoolAllocator.h"
 
 #include <chrono>
 #include <iostream>
@@ -33,74 +34,19 @@ int BBEngine::StartBBEngine()
 
 void BBEngine::TestCode()
 {
-    BBE::Allocators::StackAllocator alloc;
-    alloc.Init(1024 * sizeof(int));
+    BBE::Allocators::PoolAllocator alloc;
+    alloc.Init(1024 * sizeof(int), 16);
 
     int* x = reinterpret_cast<int*>(alloc.Alloc(4));
     int* y = reinterpret_cast<int*>(alloc.Alloc(4));
     int* z = reinterpret_cast<int*>(alloc.Alloc(4));
-    int* w = reinterpret_cast<int*>(alloc.Alloc(4));
-   
 
-    *x = 4;
-    *y = 8;
-    *z = 16;
-    *w = 24;
+    *x = 10;
+    *y = 20;
+    *z = 30;
 
-    alloc.Free(w);
-    alloc.Free(z);
-
-    int* a = reinterpret_cast<int*>(alloc.Alloc(4));
-    *a = 103;
-
-    int* test = reinterpret_cast<int*>(alloc.Realloc(y, 4, 8));
-
-    printf("x: %d - test: %d - a: %d", *x, *test, *a);
-
-    alloc.Free(test);
-    alloc.Free(z);
-    alloc.Free(y);
-    alloc.Free(x);
-
-    z = reinterpret_cast<int*>(alloc.Alloc(4));
-    *z = 10;
-
-    printf("x: %d - z: %d", *x, *z);
-
-    BBMath::Matrix4x4 matrix
-    {
-        1.0f, 2.0f, 3.0f, 4.0f,
-        5.0f, 6.0f, 7.0f, 8.0f,
-        9.0f, 10.0f, 11.0f, 12.0f,
-        13.0f, 14.0f, 15.0f, 16.0f
-    };
-
-    BBMath::Matrix4x4 matrix2
-    {
-        1.0f, 2.0f, 3.0f, 4.0f,
-        5.0f, 6.0f, 7.0f, 8.0f,
-        9.0f, 10.0f, 11.0f, 12.0f,
-        13.0f, 14.0f, 15.0f, 16.0f
-    };
-
-    BBMath::Matrix4x4 matrix3 = matrix * matrix2;
-
-    BB_LogF(0u, BBUtility::LogFlag::LogInfo,
-        "%f - %f - %f - %f \n%f - %f - %f - %f \n%f - %f - %f - %f \n%f - %f - %f - %f",
-        matrix3.m[0], matrix3.m[1], matrix3.m[2], matrix3.m[3],
-        matrix3.m[4], matrix3.m[5], matrix3.m[6], matrix3.m[7],
-        matrix3.m[8], matrix3.m[9], matrix3.m[10], matrix3.m[11],
-        matrix3.m[12], matrix3.m[13], matrix3.m[14], matrix3.m[15]);
-
-    BB_Log(0u, BBUtility::LogFlag::LogInfo, "test");
-
-    BB_LogF(0u, BBUtility::LogFlag::LogInfo,
-        "%f - %f - %f - %f \n%f - %f - %f - %f \n%f - %f - %f - %f \n%f - %f - %f - %f",
-        matrix3.m[0], matrix3.m[1], matrix3.m[2], matrix3.m[3],
-        matrix3.m[4], matrix3.m[5], matrix3.m[6], matrix3.m[7],
-        matrix3.m[8], matrix3.m[9], matrix3.m[10], matrix3.m[11],
-        matrix3.m[12], matrix3.m[13], matrix3.m[14], matrix3.m[15]);
-
+ 
+    BB_LogF(0, BBUtility::LogFlag::LogInfo, "Values of x: %d - y: %d - z: %d", *x, *y, *z);
 }
 
 void BBEngine::Update()
