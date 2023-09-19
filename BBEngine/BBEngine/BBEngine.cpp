@@ -36,17 +36,6 @@ void BBEngine::TestCode()
 {
     BBE::Allocators::PoolAllocator alloc;
     alloc.Init(1024 * sizeof(int), 16);
-
-    int* x = reinterpret_cast<int*>(alloc.Alloc(4));
-    int* y = reinterpret_cast<int*>(alloc.Alloc(4));
-    int* z = reinterpret_cast<int*>(alloc.Alloc(4));
-
-    *x = 10;
-    *y = 20;
-    *z = 30;
-
- 
-    BB_LogF(0, BBUtility::LogFlag::LogInfo, "Values of x: %d - y: %d - z: %d", *x, *y, *z);
 }
 
 void BBEngine::Update()

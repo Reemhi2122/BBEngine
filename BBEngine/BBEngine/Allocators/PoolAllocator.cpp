@@ -16,7 +16,8 @@ namespace BBE {
 
 		PoolAllocator::~PoolAllocator()
 		{
-
+			m_Pool.buf = NULL;
+			m_Pool.head = NULL;
 		}
 
 		void PoolAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
@@ -67,7 +68,7 @@ namespace BBE {
 				return;
 			}
 
-			BB_Assert(!(m_Pool.buf <= a_Ptr && a_Ptr < end), "Memory is out of bounds of pool allocator");
+			BB_Assert((a_Ptr >= m_Pool.buf && a_Ptr < end), "Memory is out of bounds of pool allocator");
 
 			memset(a_Ptr, 0, m_Pool.chunkSize);
 
@@ -81,7 +82,7 @@ namespace BBE {
 			size_t chunkCount = m_Pool.bufLength / m_Pool.chunkSize;
 			
 			for (size_t i = 0; i < chunkCount; i++) {
-				void* ptr = Add(m_Pool.buf, (i + m_Pool.chunkSize));
+				void* ptr = Add(m_Pool.buf, (i * m_Pool.chunkSize));
 				PoolNode* node = reinterpret_cast<PoolNode*>(ptr);
 				node->next = m_Pool.head;
 				m_Pool.head = node;
