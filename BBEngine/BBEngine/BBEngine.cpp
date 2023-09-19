@@ -7,6 +7,7 @@
 #include "Allocators/ArenaAllocator.h"
 #include "Allocators/StackAllocator.h"
 #include "Allocators/PoolAllocator.h"
+#include "Allocators/FreeListAllocator.h"
 
 #include <chrono>
 #include <iostream>
@@ -34,8 +35,21 @@ int BBEngine::StartBBEngine()
 
 void BBEngine::TestCode()
 {
-    BBE::Allocators::PoolAllocator alloc;
+    BBE::Allocators::FreeListAllocator alloc;
     alloc.Init(1024 * sizeof(int), 16);
+
+
+    int* x = reinterpret_cast<int*>(alloc.Alloc(24));
+    int* y = reinterpret_cast<int*>(alloc.Alloc(24));
+    int* z = reinterpret_cast<int*>(alloc.Alloc(24));
+
+    *x = 4;
+    *y = 8;
+    *z = 16;
+
+    BB_LogF(0, BBUtility::LogInfo, "values x: %d - y: %d - z: %d", *x, *y, *z);
+
+    
 }
 
 void BBEngine::Update()

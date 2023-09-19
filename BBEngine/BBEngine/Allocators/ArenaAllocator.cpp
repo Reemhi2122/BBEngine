@@ -1,6 +1,5 @@
 #include "ArenaAllocator.h"
 #include <malloc.h>
-#include <cassert>
 #include "../Logger/Logger.h"
 
 namespace BBE {

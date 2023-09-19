@@ -41,6 +41,12 @@ namespace BBE {
 			void Clear() override;
 
 		private:
+			FreeListNode* FindFirstNode(const size_t& a_Size, const size_t& a_Align, size_t& a_Padding, FreeListNode*& a_PrevNode);
+			FreeListNode* FindBestNode(const size_t& a_Size, const size_t& a_Alignment, size_t& a_Padding, FreeListNode*& a_PrevNode);
+
+			void InsertNode(FreeListNode*& a_Head, FreeListNode* a_PrevNode, FreeListNode* a_NewNode);
+			void RemoveNode(FreeListNode*& a_Head, FreeListNode* a_PrevNode, FreeListNode* a_DelNode);
+
 			FreeList m_FreeList;
 
 		};

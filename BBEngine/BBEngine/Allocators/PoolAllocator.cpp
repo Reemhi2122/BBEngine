@@ -1,6 +1,5 @@
 #include "PoolAllocator.h"
 #include <malloc.h>
-#include <cassert>
 #include "../Logger/Logger.h"
 
 namespace BBE {
