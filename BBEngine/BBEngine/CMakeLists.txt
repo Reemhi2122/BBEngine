@@ -21,6 +21,8 @@ add_executable (BBEngine
 "Allocators/ArenaAllocator.cpp" 
 "Allocators/PoolAllocator.h"
 "Allocators/PoolAllocator.cpp"
+"Allocators/FreeListAllocator.cpp"
+"Allocators/FreeListAllocator.h"
 "Allocators/Allocator.cpp" 
 "Allocators/Allocator.h" 
 "BBCommon.h" 
