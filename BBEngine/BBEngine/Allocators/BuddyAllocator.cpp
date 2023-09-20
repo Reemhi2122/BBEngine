@@ -7,19 +7,30 @@ namespace BBE {
 
 		BuddyAllocator::BuddyAllocator()
 		{
-
+			m_BuddyAlloc->head = NULL;
+			m_BuddyAlloc->tail = NULL;
+			m_BuddyAlloc->allignment = 0;
 		}
 
 		BuddyAllocator::~BuddyAllocator()
 		{
-
+			m_BuddyAlloc->head = NULL;
+			m_BuddyAlloc->tail = NULL;
 		}
 
 		void BuddyAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 		{
-			BB_Assert(IsPowerOfTwo(a_Size), "Size is not in a power of two");
+			BB_Assert(IsPowerOfTwo(a_Size), "Buddy allocator size is not in a power of two");
+			BB_Assert(IsPowerOfTwo(a_Allignment), "Alignment is not a power of two");
 
+			BB_Assert(a_Size < sizeof(Buddy), "Buddy allocator size to small for header");
 
+			m_BuddyAlloc->allignment = a_Allignment;
+			m_BuddyAlloc->head = reinterpret_cast<Buddy*>(malloc(a_Size));
+			m_BuddyAlloc->head->blockSize = a_Size;
+			m_BuddyAlloc->head->isFree = true;
+			
+			m_BuddyAlloc->tail = GetBuddy(m_BuddyAlloc->head);
 		}
 
 		void* BuddyAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
