@@ -19,7 +19,7 @@ namespace BBE {
 			m_Pool.head = NULL;
 		}
 
-		void PoolAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
+		void PoolAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 		{
 			m_Pool.buf = malloc(a_Size);
 

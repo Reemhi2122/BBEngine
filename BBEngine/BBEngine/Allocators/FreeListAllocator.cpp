@@ -20,7 +20,7 @@ namespace BBE {
 			m_FreeList.head = NULL;
 		}
 
-		void FreeListAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
+		void FreeListAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 		{
 			m_FreeList.buffer = malloc(a_Size);
 			m_FreeList.size = a_Size;

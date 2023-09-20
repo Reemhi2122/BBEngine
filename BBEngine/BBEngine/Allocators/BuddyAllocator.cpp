@@ -15,8 +15,10 @@ namespace BBE {
 
 		}
 
-		void BuddyAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
+		void BuddyAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 		{
+			BB_Assert(IsPowerOfTwo(a_Size), "Size is not in a power of two");
+
 
 		}
 

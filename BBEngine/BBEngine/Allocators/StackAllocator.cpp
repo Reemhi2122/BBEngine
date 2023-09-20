@@ -9,7 +9,7 @@ BBE::Allocators::StackAllocator::StackAllocator()
 	m_Stack.curOffset = 0u;
 }
 
-void BBE::Allocators::StackAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
+void BBE::Allocators::StackAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 {
 	m_Stack.buf = malloc(a_Size);
 	m_Stack.bufSize = a_Size;

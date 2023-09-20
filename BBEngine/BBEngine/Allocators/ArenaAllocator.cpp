@@ -12,7 +12,7 @@ namespace BBE {
 			m_Arena.prevOffset = 0u;
 		}
 
-		void ArenaAllocator::Init(const size_t& a_Size, const size_t& a_ChunkSize)
+		void ArenaAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 		{
 			m_Arena.buf = malloc(a_Size);
 			m_Arena.bufLeng = a_Size;
