@@ -29,7 +29,7 @@ namespace BBE {
 			offset -= (uintptr_t)m_Arena.buf;
 
 			if (offset + a_Size <= m_Arena.bufLeng) {
-				void* ptr = Add(m_Arena.buf, offset);
+				void* ptr = Pointer::Add(m_Arena.buf, offset);
 				m_Arena.prevOffset = offset;
 				m_Arena.currOffset = offset + a_Size;
 
@@ -57,7 +57,7 @@ namespace BBE {
 				if (curBuf + m_Arena.prevOffset == oldData) {
 					
 					if (a_NewSize > a_OldSize) {
-						memset(Add(curBuf, m_Arena.prevOffset + a_OldSize), 0, a_NewSize - a_OldSize);
+						memset(Pointer::Add(curBuf, m_Arena.prevOffset + a_OldSize), 0, a_NewSize - a_OldSize);
 					}
 
 					m_Arena.currOffset = m_Arena.prevOffset + a_NewSize;

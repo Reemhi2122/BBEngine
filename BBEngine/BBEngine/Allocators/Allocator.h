@@ -28,18 +28,20 @@ namespace BBE {
 		return (x & (x - 1)) == 0;
 	}
 
-	inline static void* Add(const void* a_Ptr, const size_t a_Add)
-	{
-		return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(a_Ptr) + a_Add);
-	}
+	namespace Pointer {
+		inline static void* Add(const void* a_Ptr, const size_t a_Add)
+		{
+			return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(a_Ptr) + a_Add);
+		}
 
-	inline static void* Add(uintptr_t& a_Ptr, const size_t a_Add)
-	{
-		return reinterpret_cast<void*>(a_Ptr + a_Add);
-	}
+		inline static void* Add(uintptr_t& a_Ptr, const size_t a_Add)
+		{
+			return reinterpret_cast<void*>(a_Ptr + a_Add);
+		}
 
-	inline static void* Subtract(const void* a_Ptr, const size_t a_Subtract)
-	{
-		return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(a_Ptr) - a_Subtract);
+		inline static void* Subtract(const void* a_Ptr, const size_t a_Subtract)
+		{
+			return reinterpret_cast<void*>(reinterpret_cast<uintptr_t>(a_Ptr) - a_Subtract);
+		}
 	}
 }

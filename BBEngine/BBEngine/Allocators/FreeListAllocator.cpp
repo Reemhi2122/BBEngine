@@ -64,17 +64,53 @@ namespace BBE {
 			
 			m_FreeList.used = requiredSpace;
 
-			return Add(reinterpret_cast<void*>(header), sizeof(FreeListHeader));
+			return Pointer::Add(reinterpret_cast<void*>(header), sizeof(FreeListHeader));
 		}
 
 		void* FreeListAllocator::Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
 		{
-			return nullptr;
+			return NULL;
 		}
 
 		void FreeListAllocator::Free(void* a_Ptr)
 		{
+			if (a_Ptr == NULL)
+				return;
+		
+			FreeListHeader* header = reinterpret_cast<FreeListHeader*>(Pointer::Add(a_Ptr, sizeof(FreeListHeader)));
+			FreeListNode* newNode = reinterpret_cast<FreeListNode*>(header);
+			FreeListNode* node = m_FreeList.head;
+			FreeListNode* prevNode = NULL;
 
+			newNode->blockSize = header->blockSize + header->padding;
+			newNode->next = NULL;
+
+			while (node != NULL)
+			{
+				if (reinterpret_cast<uintptr_t>(a_Ptr) < reinterpret_cast<uintptr_t>(node)) {
+					InsertNode(m_FreeList.head, prevNode, newNode);
+					break;
+				}
+				prevNode = node;
+				node = node->next;
+			}
+
+			m_FreeList.used -= newNode->blockSize;
+
+			FreeCoalescence(prevNode, newNode);
+		}
+
+		void FreeListAllocator::FreeCoalescence(FreeListNode* a_PrevNode, FreeListNode* a_FreeNode)
+		{
+			if (a_FreeNode->next != NULL && a_FreeNode + a_FreeNode->blockSize == a_FreeNode->next) {
+				a_FreeNode->blockSize += a_FreeNode->next->blockSize;
+				RemoveNode(m_FreeList.head, a_FreeNode, a_FreeNode->next);
+			}
+
+			if (a_PrevNode->next != NULL && a_PrevNode + a_PrevNode->blockSize == a_FreeNode) {
+				a_PrevNode->blockSize += a_FreeNode->blockSize;
+				RemoveNode(m_FreeList.head, a_PrevNode, a_PrevNode->next);
+			}
 		}
 
 		void FreeListAllocator::Clear()

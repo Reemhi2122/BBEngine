@@ -61,7 +61,7 @@ namespace BBE {
 		void PoolAllocator::Free(void* a_Ptr)
 		{
 			PoolNode* node;
-			void* end = Add(m_Pool.buf, m_Pool.bufLength);
+			void* end = Pointer::Add(m_Pool.buf, m_Pool.bufLength);
 
 			if (a_Ptr == NULL) {
 				return;
@@ -81,7 +81,7 @@ namespace BBE {
 			size_t chunkCount = m_Pool.bufLength / m_Pool.chunkSize;
 			
 			for (size_t i = 0; i < chunkCount; i++) {
-				void* ptr = Add(m_Pool.buf, (i * m_Pool.chunkSize));
+				void* ptr = Pointer::Add(m_Pool.buf, (i * m_Pool.chunkSize));
 				PoolNode* node = reinterpret_cast<PoolNode*>(ptr);
 				node->next = m_Pool.head;
 				m_Pool.head = node;
