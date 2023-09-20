@@ -4,6 +4,11 @@
 namespace BBE {
 	namespace Allocators {
 
+		struct Buddy {
+			bool isFree;
+			size_t blockSize;
+		};
+
 		class BuddyAllocator : public Allocator
 		{
 		public:
@@ -17,6 +22,9 @@ namespace BBE {
 			void Clear() override;
 
 		private:
+			Buddy* GetBuddy(const Buddy* a_Buddy);
+			Buddy* SplitBuddy(Buddy* a_buddy, const size_t a_Size);
+			Buddy* FindBestBuddy(Buddy* a_Head, Buddy* a_Tail, const size_t& a_Size);
 
 		};
 	
