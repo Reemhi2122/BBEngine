@@ -7,15 +7,15 @@ namespace BBE {
 
 		BuddyAllocator::BuddyAllocator()
 		{
-			m_BuddyAlloc->head = NULL;
-			m_BuddyAlloc->tail = NULL;
-			m_BuddyAlloc->allignment = 0;
+			m_BuddyAlloc.head = NULL;
+			m_BuddyAlloc.tail = NULL;
+			m_BuddyAlloc.allignment = 0;
 		}
 
 		BuddyAllocator::~BuddyAllocator()
 		{
-			m_BuddyAlloc->head = NULL;
-			m_BuddyAlloc->tail = NULL;
+			m_BuddyAlloc.head = NULL;
+			m_BuddyAlloc.tail = NULL;
 		}
 
 		void BuddyAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
@@ -23,19 +23,27 @@ namespace BBE {
 			BB_Assert(IsPowerOfTwo(a_Size), "Buddy allocator size is not in a power of two");
 			BB_Assert(IsPowerOfTwo(a_Allignment), "Alignment is not a power of two");
 
-			BB_Assert(a_Size < sizeof(Buddy), "Buddy allocator size to small for header");
+			size_t testsize = sizeof(Buddy);
 
-			m_BuddyAlloc->allignment = a_Allignment;
-			m_BuddyAlloc->head = reinterpret_cast<Buddy*>(malloc(a_Size));
-			m_BuddyAlloc->head->blockSize = a_Size;
-			m_BuddyAlloc->head->isFree = true;
+			BB_Assert((sizeof(Buddy) < a_Size), "Buddy allocator size to small for header");
+
+			m_BuddyAlloc.allignment = a_Allignment;
+			m_BuddyAlloc.head = reinterpret_cast<Buddy*>(malloc(a_Size));
+			m_BuddyAlloc.head->blockSize = a_Size;
+			m_BuddyAlloc.head->isFree = true;
 			
-			m_BuddyAlloc->tail = GetBuddy(m_BuddyAlloc->head);
+			m_BuddyAlloc.tail = GetBuddy(m_BuddyAlloc.head);
 		}
 
 		void* BuddyAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
 		{
-			return nullptr;
+			if (a_Size == 0) {
+				return NULL;
+			}
+
+			Buddy* found = FindBestBuddy(m_BuddyAlloc.head, m_BuddyAlloc.tail, a_Size);
+
+			return NULL;
 		}
 
 		void* BuddyAllocator::Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
@@ -118,6 +126,20 @@ namespace BBE {
 			}
 
 			return NULL;
+		}
+
+		size_t BuddyAllocator::GetBuddySizeRequired(size_t a_Size)
+		{
+			size_t actualSize = m_BuddyAlloc.allignment;
+			
+			a_Size += sizeof(Buddy);
+			a_Size = AlignForward(a_Size, m_BuddyAlloc.allignment);
+
+			while (a_Size > actualSize) {
+				actualSize <<= 1;
+			}
+
+			return actualSize;
 		}
 	}
 }

@@ -32,7 +32,9 @@ namespace BBE {
 			Buddy* SplitBuddy(Buddy* a_buddy, const size_t a_Size);
 			Buddy* FindBestBuddy(Buddy* a_Head, Buddy* a_Tail, const size_t& a_Size);
 
-			BuddyStruct* m_BuddyAlloc;
+			size_t GetBuddySizeRequired(size_t a_Size);
+
+			BuddyStruct m_BuddyAlloc;
 		};
 	
 	}
