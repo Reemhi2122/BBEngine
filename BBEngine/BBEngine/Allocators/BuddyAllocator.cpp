@@ -88,7 +88,7 @@ namespace BBE {
 		{
 			if (a_buddy == NULL || a_Size == 0)
 				return NULL;
-				
+
 			while (a_buddy->blockSize > a_Size)
 			{
 				size_t sz = a_buddy->blockSize >> 1;
@@ -111,13 +111,12 @@ namespace BBE {
 			if (buddy == a_Tail && block->isFree)
 				return SplitBuddy(block, a_Size);
 
-			//Get best fit buddy for block
 			while (block < a_Tail && buddy < a_Tail) {
 				
 				if (block->isFree && buddy->isFree && block->blockSize == buddy->blockSize) {
 					block->blockSize <<= 1;
 					
-					if (a_Size <= block->blockSize && (bestBlock == NULL || block->blockSize < bestBlock))
+					if (a_Size <= block->blockSize && (bestBlock == NULL || block->blockSize < bestBlock->blockSize))
 						bestBlock = block;
 
 					block = GetBuddy(buddy);
@@ -139,7 +138,6 @@ namespace BBE {
 					bestBlock = buddy;
 				}
 
-				//Not fully understand this yet..
 				if (block->blockSize <= buddy->blockSize) {
 					block = GetBuddy(buddy);
 					if (block < a_Tail) {
@@ -175,11 +173,12 @@ namespace BBE {
 
 		void BuddyAllocator::BuddyCoalescence(Buddy* a_Head, Buddy* a_Tail)
 		{
+			bool noCoalescence = true;
+			
 			for (;;) {
 				Buddy* node = a_Head;
 				Buddy* buddy = GetBuddy(node);
 
-				bool noCoalescence = true;
 				while (node < a_Tail && buddy < a_Tail)
 				{
 					if (node->isFree && buddy->isFree && node->blockSize == buddy->blockSize) {
