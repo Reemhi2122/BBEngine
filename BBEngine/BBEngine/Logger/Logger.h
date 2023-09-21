@@ -4,6 +4,7 @@
 #include <cassert>
 
 #define DEFAULT_LOG_CHANNEL 0
+#define LOG_ALL 127
 
 #define BB_Log_Init(name, filter, path)\
 do {\

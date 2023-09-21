@@ -102,6 +102,7 @@ namespace BBE {
 				return a_buddy;
 			}
 		}
+
 		Buddy* BuddyAllocator::FindBestBuddy(Buddy* a_Head, Buddy* a_Tail, const size_t& a_Size)
 		{
 			Buddy* bestBlock = NULL;

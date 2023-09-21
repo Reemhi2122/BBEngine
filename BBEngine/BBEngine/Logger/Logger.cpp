@@ -63,6 +63,7 @@ namespace BBUtility
 
 		m_LoggerThread = std::thread(&Logger::PrintToFile, this, message, m_LoggerFilePath);
 		printf(message.c_str());
+		m_LoggerThread.join();
 	}
 
 	void Logger::LogF(const ChannelHandle a_Handle, const LogFlag& a_Flag, const std::string& a_LogMessage, const char* a_File, const int& a_Line, ...)
@@ -114,6 +115,7 @@ namespace BBUtility
 
 		Channel curChannel = Channel();
 		curChannel.name = a_Name;
+		curChannel.flagFilter = LOG_ALL;
 		m_Channels[curChannelHandle] = curChannel;
 
 		m_NextFreeChannel++;

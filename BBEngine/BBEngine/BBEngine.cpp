@@ -22,7 +22,7 @@ BBEngine::BBEngine()
 
 int BBEngine::StartBBEngine()
 {
-    BB_Log_Init("BBLogger", BBUtility::LogFlag::LogInfo, "./Test");
+    BB_Log_Init("BBLogger", LOG_ALL, "./Test");
 
     TestCode();
 
@@ -49,7 +49,15 @@ void BBEngine::TestCode()
     *z = 16;
     *w = 32;
 
+    BBUtility::ChannelHandle chHandle;
+    
+    BB_RegisterChannel("ShowcaseChannel", chHandle);
+
     BB_LogF(0, BBUtility::LogInfo, "values x: %d - y: %d - z: %d - w: %d", *x, *y, *z, *w);
+    BB_Log(0, BBUtility::LogInfo, "Test log info");
+    BB_Log(chHandle, BBUtility::LogWarningLow, "Test log info");
+    BB_Log(chHandle, BBUtility::LogWarningMedium, "Test log info");
+    BB_Log(chHandle, BBUtility::LogWarningHigh, "Test log info");
 }
 
 void BBEngine::Update()
