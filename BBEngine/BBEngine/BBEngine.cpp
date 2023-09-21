@@ -37,17 +37,19 @@ int BBEngine::StartBBEngine()
 void BBEngine::TestCode()
 {
     BBE::Allocators::BuddyAllocator alloc;
-    alloc.Init(1024);
+    alloc.Init(128);
 
     int* x = reinterpret_cast<int*>(alloc.Alloc(32));
     int* y = reinterpret_cast<int*>(alloc.Alloc(32));
     int* z = reinterpret_cast<int*>(alloc.Alloc(32));
+    int* w = reinterpret_cast<int*>(alloc.Alloc(32));
 
     *x = 4;
     *y = 8;
     *z = 16;
+    *w = 32;
 
-    BB_LogF(0, BBUtility::LogInfo, "values x: %d - y: %d - z: %d", *x, *y, *z);
+    BB_LogF(0, BBUtility::LogInfo, "values x: %d - y: %d - z: %d - w: %d", *x, *y, *z, *w);
 }
 
 void BBEngine::Update()

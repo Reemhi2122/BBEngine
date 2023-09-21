@@ -33,6 +33,7 @@ namespace BBE {
 			Buddy* FindBestBuddy(Buddy* a_Head, Buddy* a_Tail, const size_t& a_Size);
 
 			size_t GetBuddySizeRequired(size_t a_Size);
+			void BuddyCoalescence(Buddy* a_Head, Buddy* a_Tail);
 
 			BuddyStruct m_BuddyAlloc;
 		};

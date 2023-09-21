@@ -29,6 +29,9 @@ namespace BBE {
 
 			m_BuddyAlloc.allignment = a_Allignment;
 			m_BuddyAlloc.head = reinterpret_cast<Buddy*>(malloc(a_Size));
+
+			BB_Assert(m_BuddyAlloc.head != NULL, "Allocation in Buddy Allocator went wrong!");
+
 			m_BuddyAlloc.head->blockSize = a_Size;
 			m_BuddyAlloc.head->isFree = true;
 			
@@ -43,6 +46,16 @@ namespace BBE {
 
 			Buddy* found = FindBestBuddy(m_BuddyAlloc.head, m_BuddyAlloc.tail, a_Size);
 
+			if (found == NULL) {
+				BuddyCoalescence(m_BuddyAlloc.head, m_BuddyAlloc.tail);
+				found = FindBestBuddy(m_BuddyAlloc.head, m_BuddyAlloc.tail, a_Size);
+			}
+
+			if (found != NULL) {
+				found->isFree = false;
+				return Pointer::Add(reinterpret_cast<void*>(found), m_BuddyAlloc.allignment);
+			}
+
 			return NULL;
 		}
 
@@ -53,6 +66,13 @@ namespace BBE {
 
 		void BuddyAllocator::Free(void* a_Ptr)
 		{
+			if (a_Ptr == NULL)
+				return;
+
+			BB_Assert((a_Ptr >= m_BuddyAlloc.head || a_Ptr > m_BuddyAlloc.tail), "Buddy Allocator freeing not in scope of alloator");
+		
+			Buddy* freeBud = reinterpret_cast<Buddy*>(Pointer::Subtract(a_Ptr, m_BuddyAlloc.allignment));
+			freeBud->isFree = true;
 		}
 
 		void BuddyAllocator::Clear()
@@ -94,16 +114,27 @@ namespace BBE {
 			//Get best fit buddy for block
 			while (block < a_Tail && buddy < a_Tail) {
 				
-				//Didn't do the optimization here yet
+				if (block->isFree && buddy->isFree && block->blockSize == buddy->blockSize) {
+					block->blockSize <<= 1;
+					
+					if (a_Size <= block->blockSize && (bestBlock == NULL || block->blockSize < bestBlock))
+						bestBlock = block;
+
+					block = GetBuddy(buddy);
+					if (block < a_Tail)
+						buddy = GetBuddy(block);
+
+					continue;
+				}
 
 				if (block->isFree && 
-					a_Size < block->blockSize &&
+					a_Size <= block->blockSize &&
 					(bestBlock == NULL || bestBlock->blockSize > block->blockSize)) {
 					bestBlock = block;
 				}
 
 				if (buddy->isFree &&
-					a_Size < buddy->blockSize &&
+					a_Size <= buddy->blockSize &&
 					(bestBlock == NULL || bestBlock->blockSize > buddy->blockSize)) {
 					bestBlock = buddy;
 				}
@@ -140,6 +171,41 @@ namespace BBE {
 			}
 
 			return actualSize;
+		}
+
+		void BuddyAllocator::BuddyCoalescence(Buddy* a_Head, Buddy* a_Tail)
+		{
+			for (;;) {
+				Buddy* node = a_Head;
+				Buddy* buddy = GetBuddy(node);
+
+				bool noCoalescence = true;
+				while (node < a_Tail && buddy < a_Tail)
+				{
+					if (node->isFree && buddy->isFree && node->blockSize == buddy->blockSize) {
+						node->blockSize <<= 1;
+						node = GetBuddy(node);
+
+						if (node < a_Tail) {
+							buddy = GetBuddy(node);
+							noCoalescence = false;
+						}
+					}
+					else if (node->blockSize < buddy->blockSize) {
+						node = buddy;
+						buddy = GetBuddy(node);
+					}
+					else {
+						node = GetBuddy(buddy);
+						if (node < a_Tail) {
+							buddy = GetBuddy(node);
+						}
+					}
+				}
+
+				if (noCoalescence)
+					return;
+			}
 		}
 	}
 }
