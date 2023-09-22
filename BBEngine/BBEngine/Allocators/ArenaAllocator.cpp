@@ -27,13 +27,17 @@ namespace BBE {
 			
 		}
 
-		void* ArenaAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
+		void* ArenaAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
 		{
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 
 			uintptr_t curPointer = (uintptr_t)m_Arena.buf + (uintptr_t)m_Arena.currOffset;
 			uintptr_t offset = curPointer + CalculateAlignOffset(curPointer, a_Align);
 			offset -= (uintptr_t)m_Arena.buf;
+
+			if (offset + a_Size <= m_Arena.bufLeng) {
+				ResizeVirtual(m_Arena.buf, a_Size);
+			}
 
 			if (offset + a_Size <= m_Arena.bufLeng) {
 				void* ptr = Pointer::Add(m_Arena.buf, offset);
@@ -43,9 +47,10 @@ namespace BBE {
 				memset(ptr, 0, a_Size);
 				return ptr;
 			}
+			
 
-			BB_Assert(0, "Allocator is out of memory!");
-			return NULL;
+			//BB_Assert(0, "Allocator is out of memory!");
+			//return NULL;
 		}
 
 		//Reallocation for linear allocators are cringe

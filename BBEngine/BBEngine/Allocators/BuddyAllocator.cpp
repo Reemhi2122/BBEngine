@@ -38,7 +38,7 @@ namespace BBE {
 			m_BuddyAlloc.tail = GetBuddy(m_BuddyAlloc.head);
 		}
 
-		void* BuddyAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
+		void* BuddyAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
 		{
 			if (a_Size == 0) {
 				return NULL;

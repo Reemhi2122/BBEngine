@@ -28,7 +28,7 @@ namespace BBE {
 			Clear();
 		}
 
-		void* FreeListAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
+		void* FreeListAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
 		{
 			size_t padding;
 			FreeListNode* prevNode;

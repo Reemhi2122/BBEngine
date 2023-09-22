@@ -13,7 +13,7 @@ namespace BBE {
 			~Allocator() = default;
 
 			virtual void Init(const size_t& a_Size, const size_t a_Allignment = DEFAULT_ALIGNMENT, const size_t& a_ChunkSize = 0) = 0;
-			virtual void* Alloc(const size_t& a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
+			virtual void* Alloc(size_t& a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
 			virtual void* Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align = DEFAULT_ALIGNMENT) = 0;
 			virtual void Free(void* a_Ptr) = 0;
 			virtual void Clear() = 0;
@@ -23,7 +23,7 @@ namespace BBE {
 			uintptr_t AlignForward(uintptr_t ptr, uintptr_t align);
 	
 			void* AllocVirtual(size_t& a_Size);
-			void* ResizeVirtual();
+			void ResizeVirtual(void* a_Ptr, size_t& a_Size);
 			void FreeVirtual(void* a_Ptr);
 		};
 	}

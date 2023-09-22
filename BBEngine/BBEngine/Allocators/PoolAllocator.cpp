@@ -39,7 +39,7 @@ namespace BBE {
 			Clear();
 		}
 
-		void* PoolAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
+		void* PoolAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
 		{
 			PoolNode* node = m_Pool.head;
 			

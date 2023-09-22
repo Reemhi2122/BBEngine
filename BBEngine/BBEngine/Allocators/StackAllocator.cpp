@@ -16,7 +16,7 @@ void BBE::Allocators::StackAllocator::Init(const size_t& a_Size, const size_t a_
 	m_Stack.curOffset = 0u;
 }
 
-void* BBE::Allocators::StackAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
+void* BBE::Allocators::StackAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
 {
 	BB_Assert(IsPowerOfTwo(a_Align), "Stack allocator align is not a power of two");
 	BB_Assert(a_Align > 128, "Stack allocator alignment can't be more than 128");
