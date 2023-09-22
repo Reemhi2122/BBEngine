@@ -23,6 +23,8 @@ namespace BBE {
 			uintptr_t AlignForward(uintptr_t ptr, uintptr_t align);
 	
 			void* AllocVirtual(size_t& a_Size);
+			void* ResizeVirtual();
+			void FreeVirtual(void* a_Ptr);
 		};
 	}
 

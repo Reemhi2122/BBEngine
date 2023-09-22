@@ -1,5 +1,5 @@
 #include "FreeListAllocator.h"
-#include <memoryapi.h>
+#include <malloc.h>
 #include "../Logger/Logger.h"
 
 namespace BBE {

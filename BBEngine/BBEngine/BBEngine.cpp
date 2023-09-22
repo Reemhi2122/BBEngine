@@ -36,28 +36,23 @@ int BBEngine::StartBBEngine()
 
 void BBEngine::TestCode()
 {
-    BBE::Allocators::BuddyAllocator alloc;
+    BBE::Allocators::ArenaAllocator alloc;
     alloc.Init(128);
 
-    int* x = reinterpret_cast<int*>(alloc.Alloc(32));
-    int* y = reinterpret_cast<int*>(alloc.Alloc(32));
-    int* z = reinterpret_cast<int*>(alloc.Alloc(32));
-    int* w = reinterpret_cast<int*>(alloc.Alloc(32));
+    int* x = reinterpret_cast<int*>(alloc.Alloc(1028));
+    int* y = reinterpret_cast<int*>(alloc.Alloc(1028));
+    int* z = reinterpret_cast<int*>(alloc.Alloc(1028));
+    int* w = reinterpret_cast<int*>(alloc.Alloc(1028));
+    int* a = reinterpret_cast<int*>(alloc.Alloc(1028));
 
     *x = 4;
     *y = 8;
     *z = 16;
     *w = 32;
+    *a = 64;
 
-    BBUtility::ChannelHandle chHandle;
-    
-    BB_RegisterChannel("ShowcaseChannel", chHandle);
 
-    BB_LogF(0, BBUtility::LogInfo, "values x: %d - y: %d - z: %d - w: %d", *x, *y, *z, *w);
-    BB_Log(0, BBUtility::LogInfo, "Test log info");
-    BB_Log(chHandle, BBUtility::LogWarningLow, "Test log info");
-    BB_Log(chHandle, BBUtility::LogWarningMedium, "Test log info");
-    BB_Log(chHandle, BBUtility::LogWarningHigh, "Test log info");
+    BB_LogF(0, BBUtility::LogInfo, "values x: %d - y: %d - z: %d - w: %d - a: %d", *x, *y, *z, *w, *a);
 }
 
 void BBEngine::Update()

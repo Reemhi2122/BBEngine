@@ -1,4 +1,6 @@
 #include "Allocator.h"
+
+#include <Windows.h>
 #include <memoryapi.h>
 
 namespace BBE {
@@ -50,11 +52,17 @@ namespace BBE {
 		void* Allocator::AllocVirtual(size_t& a_Size)
 		{
 			constexpr int pageSize = 4096;
+			constexpr int virtualExpansion = 64;
 
 			a_Size += pageSize - (a_Size % pageSize);
-			void* ptr = VirtualAlloc(NULL, a_Size * 10, MEM_RESERVE, PAGE_NOACCESS);
+			void* ptr = VirtualAlloc(NULL, a_Size * virtualExpansion, MEM_RESERVE, PAGE_NOACCESS);
 
 			return VirtualAlloc(ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
+		}
+
+		void Allocator::FreeVirtual(void* a_Ptr)
+		{
+			VirtualFree(a_Ptr, 0, MEM_RELEASE);
 		}
 	}
 }

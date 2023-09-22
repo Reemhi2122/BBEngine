@@ -15,7 +15,7 @@ namespace BBE {
 			
 		public:
 			ArenaAllocator();
-			~ArenaAllocator() = default;
+			~ArenaAllocator();
 			
 			ArenaAllocator& operator=(const ArenaAllocator& rhs) = delete;
 

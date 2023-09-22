@@ -1,5 +1,4 @@
 #include "ArenaAllocator.h"
-#include <memoryapi.h>
 #include "../Logger/Logger.h"
 
 namespace BBE {
@@ -10,6 +9,11 @@ namespace BBE {
 			m_Arena.bufLeng = 0u;
 			m_Arena.currOffset = 0u;
 			m_Arena.prevOffset = 0u;
+		}
+
+		ArenaAllocator::~ArenaAllocator()
+		{
+			FreeVirtual(m_Arena.buf);
 		}
 
 		void ArenaAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
