@@ -9,7 +9,7 @@ BBE::Allocators::StackAllocator::StackAllocator()
 	m_Stack.curOffset = 0u;
 }
 
-void BBE::Allocators::StackAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
+void BBE::Allocators::StackAllocator::Init(size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 {
 	m_Stack.buf = malloc(a_Size);
 	m_Stack.bufSize = a_Size;
@@ -36,7 +36,7 @@ void* BBE::Allocators::StackAllocator::Alloc(size_t& a_Size, const size_t& a_Ali
 	return memset(reinterpret_cast<void*>(nextAddr), 0, a_Size);
 }
 
-void* BBE::Allocators::StackAllocator::Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
+void* BBE::Allocators::StackAllocator::Realloc(void* a_Ptr, size_t& a_OldSize, size_t& a_NewSize, const size_t& a_Align)
 {
 	if (a_Ptr == NULL)
 		return Alloc(a_NewSize, a_Align);

@@ -20,7 +20,7 @@ namespace BBE {
 			m_FreeList.head = NULL;
 		}
 
-		void FreeListAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
+		void FreeListAllocator::Init(size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 		{
 			m_FreeList.buffer = malloc(a_Size);
 			m_FreeList.size = a_Size;
@@ -67,7 +67,7 @@ namespace BBE {
 			return Pointer::Add(reinterpret_cast<void*>(header), sizeof(FreeListHeader));
 		}
 
-		void* FreeListAllocator::Realloc(void* a_Ptr, const size_t& a_OldSize, const size_t& a_NewSize, const size_t& a_Align)
+		void* FreeListAllocator::Realloc(void* a_Ptr, size_t& a_OldSize, size_t& a_NewSize, const size_t& a_Align)
 		{
 			return NULL;
 		}
