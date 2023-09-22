@@ -1,4 +1,5 @@
 #include "Allocator.h"
+#include <memoryapi.h>
 
 namespace BBE {
 	namespace Allocators {
@@ -44,6 +45,16 @@ namespace BBE {
 				p += a - modulo;
 			}
 			return p;
+		}
+
+		void* Allocator::AllocVirtual(size_t& a_Size)
+		{
+			constexpr int pageSize = 4096;
+
+			a_Size += pageSize - (a_Size % pageSize);
+			void* ptr = VirtualAlloc(NULL, a_Size * 10, MEM_RESERVE, PAGE_NOACCESS);
+
+			return VirtualAlloc(ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
 		}
 	}
 }

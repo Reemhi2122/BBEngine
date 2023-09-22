@@ -1,5 +1,5 @@
 #include "StackAllocator.h"
-#include <malloc.h>
+#include <memoryapi.h>
 #include "../Logger/Logger.h"
 
 BBE::Allocators::StackAllocator::StackAllocator()

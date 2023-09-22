@@ -1,5 +1,5 @@
 #include "ArenaAllocator.h"
-#include <malloc.h>
+#include <memoryapi.h>
 #include "../Logger/Logger.h"
 
 namespace BBE {
@@ -14,10 +14,13 @@ namespace BBE {
 
 		void ArenaAllocator::Init(const size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
 		{
-			m_Arena.buf = malloc(a_Size);
-			m_Arena.bufLeng = a_Size;
+			size_t size = a_Size;
+
+			m_Arena.buf = AllocVirtual(size);
+			m_Arena.bufLeng = size;
 			m_Arena.currOffset = 0u;
 			m_Arena.prevOffset = 0u;
+			
 		}
 
 		void* ArenaAllocator::Alloc(const size_t& a_Size, const size_t& a_Align)
