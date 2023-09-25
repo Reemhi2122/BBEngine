@@ -37,25 +37,25 @@ namespace BBE {
 			BB_Assert(a_Size > sizeof(FreeListNode), "Size is less than required for node");
 			BB_Assert(a_Align > 8, "Align is too small");
 	
-			if (m_FreeList.policy == PlacementPolicy::FindFirst) {
-				curNode = FindFirstNode(a_Size, a_Align, padding, prevNode);
-			}
-			else {
-				curNode = FindBestNode(a_Size, a_Align, padding, prevNode);
-			}
+			curNode = FindNode(a_Size, a_Align, padding, prevNode);
 
 			if (curNode == NULL) {
+				size_t oldSize = m_FreeList.size;
 				ARESULT res = ResizeVirtual(m_FreeList.buf, m_FreeList.size);
 
-				//Add a new node
-				//Coalanse 
+				if (res) {
+					if (Pointer::Add(prevNode, prevNode->blockSize) == Pointer::Add(m_FreeList.buf, oldSize)) {
+						prevNode->blockSize += m_FreeList.size - oldSize;
+					}
+					else {
+						FreeListNode* newNode = reinterpret_cast<FreeListNode*>(Pointer::Add(m_FreeList.buf, oldSize));
+						newNode->blockSize = m_FreeList.size - oldSize;
+						InsertNode(m_FreeList.head, prevNode, newNode);
+					}
 
-				if (m_FreeList.policy == PlacementPolicy::FindFirst) {
-					curNode = FindFirstNode(a_Size, a_Align, padding, prevNode);
+					curNode = FindNode(a_Size, a_Align, padding, prevNode);
 				}
-				else {
-					curNode = FindBestNode(a_Size, a_Align, padding, prevNode);
-				}
+
 				BB_Assert(curNode != NULL, "Freelist is out of memory!");
 			}
 
@@ -133,6 +133,16 @@ namespace BBE {
 			firstNode->blockSize = m_FreeList.size;
 			firstNode->next = NULL;
 			m_FreeList.head = firstNode;
+		}
+
+		FreeListNode* FreeListAllocator::FindNode(const size_t& a_Size, const size_t& a_Align, size_t& a_Padding, FreeListNode*& a_PrevNode)
+		{
+			if (m_FreeList.policy == PlacementPolicy::FindFirst) {
+				return FindFirstNode(a_Size, a_Align, a_Padding, a_PrevNode);
+			}
+			else {
+				return FindBestNode(a_Size, a_Align, a_Padding, a_PrevNode);
+			}
 		}
 
 		FreeListNode* FreeListAllocator::FindFirstNode(const size_t& a_Size, const size_t& a_Align, size_t& a_Padding, FreeListNode*& a_PrevNode)
