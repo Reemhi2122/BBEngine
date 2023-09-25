@@ -49,13 +49,14 @@ namespace BBE {
 			return p;
 		}
 
-		void* Allocator::AllocVirtual(size_t& a_Size)
+		void* Allocator::AllocVirtual(size_t a_Size)
 		{
 			constexpr int pageSize = 4096;
-			constexpr int virtualExpansion = 64;
+			constexpr int virtualExpansion = 4;
 
-			a_Size += pageSize - (a_Size % pageSize);
-			void* ptr = VirtualAlloc(NULL, a_Size * virtualExpansion, MEM_RESERVE, PAGE_NOACCESS);
+			m_VirtualSize = a_Size;
+			m_VirtualSize += pageSize - (a_Size % pageSize);
+			void* ptr = VirtualAlloc(NULL, m_VirtualSize * virtualExpansion, MEM_RESERVE, PAGE_NOACCESS);
 
 			return VirtualAlloc(ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
 		}
@@ -63,12 +64,17 @@ namespace BBE {
 		void Allocator::ResizeVirtual(void* a_Ptr, size_t& a_Size)
 		{
 			constexpr int resizeMultiply = 2;
+			
+			if (a_Size * resizeMultiply > m_VirtualSize)
+				return;
+
 			a_Size *= resizeMultiply;
 			VirtualAlloc(a_Ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
 		}
 
 		void Allocator::FreeVirtual(void* a_Ptr)
 		{
+			m_VirtualSize = 0;
 			VirtualFree(a_Ptr, 0, MEM_RELEASE);
 		}
 	}

@@ -34,7 +34,7 @@ namespace BBE {
 			uintptr_t offset = curPointer + CalculateAlignOffset(curPointer, a_Align);
 			offset -= (uintptr_t)m_Arena.buf;
 
-			if (offset + a_Size <= m_Arena.bufLeng) {
+			if (offset + a_Size > m_Arena.bufLeng) {
 				ResizeVirtual(m_Arena.buf, m_Arena.bufLeng);
 			}
 
@@ -46,10 +46,9 @@ namespace BBE {
 				memset(ptr, 0, a_Size);
 				return ptr;
 			}
-			
 
-			//BB_Assert(0, "Allocator is out of memory!");
-			//return NULL;
+			BB_Assert(0, "Allocator is out of memory!");
+			return NULL;
 		}
 
 		//Reallocation for linear allocators are cringe

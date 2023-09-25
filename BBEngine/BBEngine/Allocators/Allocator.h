@@ -22,9 +22,11 @@ namespace BBE {
 			size_t CalculateAlignOffset(const uintptr_t& a_Ptr, const uint32_t& a_Align, const size_t& a_HeaderSize = 0);
 			uintptr_t AlignForward(uintptr_t ptr, uintptr_t align);
 	
-			void* AllocVirtual(size_t& a_Size);
+			void* AllocVirtual(size_t a_Size);
 			void ResizeVirtual(void* a_Ptr, size_t& a_Size);
 			void FreeVirtual(void* a_Ptr);
+
+			size_t m_VirtualSize;
 		};
 	}
 
