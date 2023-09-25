@@ -7,7 +7,7 @@ namespace BBE {
 
 		FreeListAllocator::FreeListAllocator()
 		{
-			m_FreeList.buffer = NULL;
+			m_FreeList.buf = NULL;
 			m_FreeList.head = NULL;
 			m_FreeList.policy = PlacementPolicy::FindFirst;
 			m_FreeList.size = 0u;
@@ -16,15 +16,15 @@ namespace BBE {
 
 		FreeListAllocator::~FreeListAllocator()
 		{
-			m_FreeList.buffer = NULL;
+			m_FreeList.buf = NULL;
 			m_FreeList.head = NULL;
+			FreeVirtual(m_FreeList.buf);
 		}
 
 		void FreeListAllocator::Init(size_t a_Size, const size_t& a_Allignment, const size_t& a_ChunkSize)
 		{
-			m_FreeList.buffer = malloc(a_Size);
+			m_FreeList.buf = AllocVirtual(a_Size);
 			m_FreeList.size = a_Size;
-
 			Clear();
 		}
 
@@ -44,7 +44,20 @@ namespace BBE {
 				curNode = FindBestNode(a_Size, a_Align, padding, prevNode);
 			}
 
-			BB_Assert(curNode != NULL, "Freelist is out of memory!");
+			if (curNode == NULL) {
+				ARESULT res = ResizeVirtual(m_FreeList.buf, m_FreeList.size);
+
+				//Add a new node
+				//Coalanse 
+
+				if (m_FreeList.policy == PlacementPolicy::FindFirst) {
+					curNode = FindFirstNode(a_Size, a_Align, padding, prevNode);
+				}
+				else {
+					curNode = FindBestNode(a_Size, a_Align, padding, prevNode);
+				}
+				BB_Assert(curNode != NULL, "Freelist is out of memory!");
+			}
 
 			size_t headerPadding = padding - sizeof(FreeListHeader);
 			size_t requiredSpace = padding + a_Size;
@@ -116,7 +129,7 @@ namespace BBE {
 		void FreeListAllocator::Clear()
 		{
 			m_FreeList.used = 0;
-			FreeListNode* firstNode = reinterpret_cast<FreeListNode*>(m_FreeList.buffer);
+			FreeListNode* firstNode = reinterpret_cast<FreeListNode*>(m_FreeList.buf);
 			firstNode->blockSize = m_FreeList.size;
 			firstNode->next = NULL;
 			m_FreeList.head = firstNode;

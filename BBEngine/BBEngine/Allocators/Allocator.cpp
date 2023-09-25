@@ -61,15 +61,16 @@ namespace BBE {
 			return VirtualAlloc(ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
 		}
 
-		void Allocator::ResizeVirtual(void* a_Ptr, size_t& a_Size)
+		ARESULT Allocator::ResizeVirtual(void* a_Ptr, size_t& a_Size)
 		{
 			constexpr int resizeMultiply = 2;
 			
 			if (a_Size * resizeMultiply > m_VirtualSize)
-				return;
+				return false;
 
 			a_Size *= resizeMultiply;
 			VirtualAlloc(a_Ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
+			return true;
 		}
 
 		void Allocator::FreeVirtual(void* a_Ptr)

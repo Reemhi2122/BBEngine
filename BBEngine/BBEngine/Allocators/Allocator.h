@@ -6,6 +6,8 @@
 namespace BBE {
 	namespace Allocators{
 		
+		typedef int ARESULT;
+
 		class Allocator {
 
 		public:
@@ -23,15 +25,15 @@ namespace BBE {
 			uintptr_t AlignForward(uintptr_t ptr, uintptr_t align);
 	
 			void* AllocVirtual(size_t a_Size);
-			void ResizeVirtual(void* a_Ptr, size_t& a_Size);
+			ARESULT ResizeVirtual(void* a_Ptr, size_t& a_Size);
 			void FreeVirtual(void* a_Ptr);
 
 			size_t m_VirtualSize;
 		};
-	}
 
-	inline bool IsPowerOfTwo(const size_t& x) {
-		return (x & (x - 1)) == 0;
+		inline bool IsPowerOfTwo(const size_t& x) {
+			return (x & (x - 1)) == 0;
+		}
 	}
 
 	namespace Pointer {

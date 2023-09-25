@@ -20,7 +20,7 @@ namespace BBE {
 		};
 
 		struct FreeList {
-			void* buffer;
+			void* buf;
 			size_t size;
 			size_t used;
 
@@ -50,7 +50,6 @@ namespace BBE {
 			void FreeCoalescence(FreeListNode* a_PrevNode, FreeListNode* a_FreeNode);
 
 			FreeList m_FreeList;
-
 		};
 
 	}

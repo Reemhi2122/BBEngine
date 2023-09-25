@@ -31,8 +31,8 @@ void* BBE::Allocators::StackAllocator::Alloc(size_t a_Size, const size_t& a_Alig
 
 	size_t allocSize = m_Stack.curOffset + padding + a_Size;
 	if (allocSize > m_Stack.bufSize) {
-		ResizeVirtual(m_Stack.buf, m_Stack.bufSize);
-		BB_Assert((allocSize < m_Stack.bufSize), "Stack allocator is out of memory");
+		ARESULT res = ResizeVirtual(m_Stack.buf, m_Stack.bufSize);
+		BB_Assert(res, "Stack allocator is out of memory");
 	}
 
 	uintptr_t nextAddr = currAddr + padding;
