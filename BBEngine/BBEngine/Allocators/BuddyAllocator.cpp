@@ -18,7 +18,7 @@ namespace BBE {
 			m_BuddyAlloc.tail = NULL;
 		}
 
-		void BuddyAllocator::Init(size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
+		void BuddyAllocator::Init(size_t a_Size, const size_t& a_Allignment, const size_t& a_ChunkSize)
 		{
 			BB_Assert(IsPowerOfTwo(a_Size), "Buddy allocator size is not in a power of two");
 			BB_Assert(IsPowerOfTwo(a_Allignment), "Alignment is not a power of two");
@@ -38,7 +38,7 @@ namespace BBE {
 			m_BuddyAlloc.tail = GetBuddy(m_BuddyAlloc.head);
 		}
 
-		void* BuddyAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
+		void* BuddyAllocator::Alloc(size_t a_Size, const size_t& a_Align)
 		{
 			if (a_Size == 0) {
 				return NULL;
@@ -59,7 +59,7 @@ namespace BBE {
 			return NULL;
 		}
 
-		void* BuddyAllocator::Realloc(void* a_Ptr, size_t& a_OldSize, size_t& a_NewSize, const size_t& a_Align)
+		void* BuddyAllocator::Realloc(void* a_Ptr, size_t a_OldSize, size_t a_NewSize, const size_t& a_Align)
 		{
 			return nullptr;
 		}

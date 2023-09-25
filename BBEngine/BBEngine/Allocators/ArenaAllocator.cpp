@@ -16,7 +16,7 @@ namespace BBE {
 			FreeVirtual(m_Arena.buf);
 		}
 
-		void ArenaAllocator::Init(size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
+		void ArenaAllocator::Init(size_t a_Size, const size_t& a_Allignment, const size_t& a_ChunkSize)
 		{
 			size_t size = a_Size;
 
@@ -24,10 +24,9 @@ namespace BBE {
 			m_Arena.bufLeng = size;
 			m_Arena.currOffset = 0u;
 			m_Arena.prevOffset = 0u;
-			
 		}
 
-		void* ArenaAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
+		void* ArenaAllocator::Alloc(size_t a_Size, const size_t& a_Align)
 		{
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 
@@ -36,7 +35,7 @@ namespace BBE {
 			offset -= (uintptr_t)m_Arena.buf;
 
 			if (offset + a_Size <= m_Arena.bufLeng) {
-				ResizeVirtual(m_Arena.buf, a_Size);
+				ResizeVirtual(m_Arena.buf, m_Arena.bufLeng);
 			}
 
 			if (offset + a_Size <= m_Arena.bufLeng) {
@@ -54,7 +53,7 @@ namespace BBE {
 		}
 
 		//Reallocation for linear allocators are cringe
-		void* ArenaAllocator::Realloc(void* a_Ptr, size_t& a_OldSize, size_t& a_NewSize, const size_t& a_Align)
+		void* ArenaAllocator::Realloc(void* a_Ptr, size_t a_OldSize, size_t a_NewSize, const size_t& a_Align)
 		{
 			BB_Assert(IsPowerOfTwo(a_Align), "Align is not a power of two");
 

@@ -23,9 +23,9 @@ namespace BBE {
 			
 			PoolAllocator& operator=(const PoolAllocator& rhs) = delete;
 
-			void Init(size_t& a_Size, const size_t a_Allignment = DEFAULT_ALIGNMENT, const size_t& a_ChunkSize = 0) override;
-			void* Alloc(size_t& a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) override;
-			void* Realloc(void* a_Ptr, size_t& a_OldSize, size_t& a_NewSize, const size_t& a_Align = DEFAULT_ALIGNMENT) override; //There is no realloc because size is constant
+			void Init(size_t a_Size, const size_t& a_Allignment = DEFAULT_ALIGNMENT, const size_t& a_ChunkSize = 0) override;
+			void* Alloc(size_t a_Size, const size_t& a_Align = DEFAULT_ALIGNMENT) override;
+			void* Realloc(void* a_Ptr, size_t a_OldSize, size_t a_NewSize, const size_t& a_Align = DEFAULT_ALIGNMENT) override; //There is no realloc because size is constant
 			void Free(void* a_Ptr) override;
 			void Clear() override;
 

@@ -19,7 +19,7 @@ namespace BBE {
 			m_Pool.head = NULL;
 		}
 
-		void PoolAllocator::Init(size_t& a_Size, const size_t a_Allignment, const size_t& a_ChunkSize)
+		void PoolAllocator::Init(size_t a_Size, const size_t& a_Allignment, const size_t& a_ChunkSize)
 		{
 			m_Pool.buf = malloc(a_Size);
 
@@ -39,7 +39,7 @@ namespace BBE {
 			Clear();
 		}
 
-		void* PoolAllocator::Alloc(size_t& a_Size, const size_t& a_Align)
+		void* PoolAllocator::Alloc(size_t a_Size, const size_t& a_Align)
 		{
 			PoolNode* node = m_Pool.head;
 			
@@ -53,7 +53,7 @@ namespace BBE {
 			return memset(node, 0, m_Pool.chunkSize);
 		}
 
-		void* PoolAllocator::Realloc(void* a_Ptr, size_t& a_OldSize, size_t& a_NewSize, const size_t& a_Align)
+		void* PoolAllocator::Realloc(void* a_Ptr, size_t a_OldSize, size_t a_NewSize, const size_t& a_Align)
 		{
 			return NULL;
 		}
