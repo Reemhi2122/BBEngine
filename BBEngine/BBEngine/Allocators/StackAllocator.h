@@ -19,7 +19,7 @@ namespace BBE {
 			
 		public:
 			StackAllocator();
-			~StackAllocator() = default;
+			~StackAllocator();
 
 			StackAllocator& operator=(const StackAllocator& rhs) = delete;
 

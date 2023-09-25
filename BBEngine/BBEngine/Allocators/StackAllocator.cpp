@@ -9,9 +9,14 @@ BBE::Allocators::StackAllocator::StackAllocator()
 	m_Stack.curOffset = 0u;
 }
 
+BBE::Allocators::StackAllocator::~StackAllocator()
+{
+	FreeVirtual(m_Stack.buf);
+}
+
 void BBE::Allocators::StackAllocator::Init(size_t a_Size, const size_t& a_Allignment, const size_t& a_ChunkSize)
 {
-	m_Stack.buf = malloc(a_Size);
+	m_Stack.buf = AllocVirtual(a_Size);
 	m_Stack.bufSize = a_Size;
 	m_Stack.curOffset = 0u;
 }
@@ -23,8 +28,12 @@ void* BBE::Allocators::StackAllocator::Alloc(size_t a_Size, const size_t& a_Alig
 
 	uintptr_t currAddr = (uintptr_t)m_Stack.buf + (uintptr_t)m_Stack.curOffset;
 	size_t padding = CalculateAlignOffset(currAddr, a_Align, sizeof(StackHeader));
-	
-	BB_Assert((m_Stack.curOffset + padding + a_Size < m_Stack.bufSize), "Stack allocator is out of memory");
+
+	size_t allocSize = m_Stack.curOffset + padding + a_Size;
+	if (allocSize > m_Stack.bufSize) {
+		ResizeVirtual(m_Stack.buf, m_Stack.bufSize);
+		BB_Assert((allocSize < m_Stack.bufSize), "Stack allocator is out of memory");
+	}
 
 	uintptr_t nextAddr = currAddr + padding;
 	StackHeader* header = reinterpret_cast<StackHeader*>(nextAddr - sizeof(StackHeader));

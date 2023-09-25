@@ -36,14 +36,14 @@ int BBEngine::StartBBEngine()
 
 void BBEngine::TestCode()
 {
-    BBE::Allocators::ArenaAllocator alloc;
+    BBE::Allocators::StackAllocator alloc;
     alloc.Init(1024);
 
-    int* x = reinterpret_cast<int*>(alloc.Alloc(1024));
-    int* y = reinterpret_cast<int*>(alloc.Alloc(1024));
-    int* z = reinterpret_cast<int*>(alloc.Alloc(1024));
-    int* w = reinterpret_cast<int*>(alloc.Alloc(1024));
-    int* a = reinterpret_cast<int*>(alloc.Alloc(1024));
+    int* x = reinterpret_cast<int*>(alloc.Alloc(528));
+    int* y = reinterpret_cast<int*>(alloc.Alloc(528));
+    int* z = reinterpret_cast<int*>(alloc.Alloc(528));
+    int* w = reinterpret_cast<int*>(alloc.Alloc(528));
+    int* a = reinterpret_cast<int*>(alloc.Alloc(528));
 
     *x = 4;
     *y = 8;
