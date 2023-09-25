@@ -34,25 +34,24 @@ int BBEngine::StartBBEngine()
     }
 }
 
+class testClass
+{
+public:
+    testClass() { m_testvalue = 30; }
+    ~testClass() = default;
+
+public:
+    int m_testvalue = 255;
+};
+
 void BBEngine::TestCode()
 {
-    BBE::Allocators::FreeListAllocator alloc;
+    BBE::Allocators::ArenaAllocator alloc;
     alloc.Init(1024);
 
-    int* x = reinterpret_cast<int*>(alloc.Alloc(512));
-    int* y = reinterpret_cast<int*>(alloc.Alloc(512));
-    int* z = reinterpret_cast<int*>(alloc.Alloc(512));
-    int* w = reinterpret_cast<int*>(alloc.Alloc(512));
-    int* a = reinterpret_cast<int*>(alloc.Alloc(512));
+    testClass* testclass = BBNew(alloc, testClass);
 
-    *x = 4;
-    *y = 8;
-    *z = 16;
-    *w = 32;
-    *a = 64;
-
-
-    BB_LogF(0, BBUtility::LogInfo, "values x: %d - y: %d - z: %d - w: %d - a: %d", *x, *y, *z, *w, *a);
+    testClass* testclassTwo = BBNewArr(alloc, 10, testClass);
 }
 
 void BBEngine::Update()
