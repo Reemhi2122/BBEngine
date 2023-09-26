@@ -46,16 +46,12 @@ public:
 
 void BBEngine::TestCode()
 {
+    constexpr int testSize = 4 * 1024 * 1024;
+
     BBE::Allocators::ArenaAllocator alloc;
-    alloc.Init((64 * 1024 * 1024));
+    alloc.Init(testSize);
 
     testClass* testclass = BBNewArr(alloc, 10, testClass);
-
-    testclass[0].m_testvalue = 0;
-    testclass[1].m_testvalue = 10;
-    testclass[2].m_testvalue = 20;
-    testclass[3].m_testvalue = 30;
-    testclass[4].m_testvalue = 40;
 
     BB_LogF(0, BBUtility::LogInfo, "value is: %d", testclass[2].m_testvalue);
 }

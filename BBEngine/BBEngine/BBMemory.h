@@ -7,6 +7,7 @@
 #define BBNewArr(a_Allocator, a_Num, a_Type) BBE::BBAllocArrayFunc<a_Type>(a_Allocator, sizeof(a_Type), a_Num)
 
 #define BBFree(a_Allocator, a_Pointer) BBE::BBFreeFunc(a_Allocator, a_Pointer);
+#define BBFreeArr(a_Allocator, a_Pointer);
 
 namespace BBE {
 
@@ -51,6 +52,23 @@ namespace BBE {
 
 	inline void BBFreeFunc(Allocators::Allocator& a_Allocator, void* a_Ptr) {
 		a_Allocator.Free(a_Ptr);
+	}
+
+	template<typename T>
+	inline void BBFreeArrFunc(Allocators::Allocator& a_Allocator, void* a_Ptr) {
+		if constexpr (std::is_trivially_constructible<T>() && std::is_trivially_destructible<T>()) {
+			a_Allocator.Free(a_Ptr);
+		}
+		else {
+			size_t headerSize = sizeof(BBArrayAllocHeader);
+			BBArrayAllocHeader* header = reinterpret_cast<BBArrayAllocHeader*>(Pointer::Subtract(a_Ptr, headerSize));
+
+			for (size_t i = 0; i < header->arraySize; i++) {
+				a_Ptr[i].~T();
+			}
+
+			a_Allocator.Free(Pointer::Subtract(a_Ptr, headerSize));
+		}
 	}
 
 }
