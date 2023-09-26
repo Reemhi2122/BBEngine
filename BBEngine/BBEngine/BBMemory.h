@@ -9,6 +9,8 @@
 #define BBFree(a_Allocator, a_Pointer) BBE::BBFreeFunc(a_Allocator, a_Pointer);
 #define BBFreeArr(a_Allocator, a_Pointer);
 
+#define BBStackScope(a_Allocator) for (int i = a_Allocator.SetPoint(); i; a_Allocator.ReturnToPoint(), i = 0)
+
 namespace BBE {
 
 	struct BBArrayAllocHeader

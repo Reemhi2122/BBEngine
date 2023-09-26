@@ -7,6 +7,7 @@ BBE::Allocators::StackAllocator::StackAllocator()
 	m_Stack.buf = nullptr;
 	m_Stack.bufSize = 0u;
 	m_Stack.curOffset = 0u;
+	m_Stack.setpoint = 0u;
 }
 
 BBE::Allocators::StackAllocator::~StackAllocator()
@@ -106,4 +107,16 @@ void BBE::Allocators::StackAllocator::Free(void* a_Ptr)
 void BBE::Allocators::StackAllocator::Clear()
 {
 	m_Stack.curOffset = 0u;
+}
+
+int BBE::Allocators::StackAllocator::SetPoint()
+{
+	m_Stack.setpoint = m_Stack.curOffset;
+	return 1;
+}
+
+void BBE::Allocators::StackAllocator::ReturnToPoint()
+{
+	memset(Pointer::Add(m_Stack.buf, m_Stack.setpoint), 0, m_Stack.curOffset - m_Stack.setpoint);
+	m_Stack.curOffset = m_Stack.setpoint;
 }

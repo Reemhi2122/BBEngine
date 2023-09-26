@@ -8,6 +8,7 @@ namespace BBE {
 			void* buf;
 			size_t bufSize;
 			size_t curOffset;
+			size_t setpoint;
 		};
 
 		struct StackHeader {
@@ -28,6 +29,9 @@ namespace BBE {
 			void* Realloc(void* a_Ptr, size_t a_OldSize, size_t a_NewSize, const size_t& a_Align = DEFAULT_ALIGNMENT) override;
 			void Free(void* a_Ptr) override;
 			void Clear();
+
+			int SetPoint();
+			void ReturnToPoint();
 
 		private:
 			Stack m_Stack;

@@ -37,7 +37,8 @@ int BBEngine::StartBBEngine()
 class testClass
 {
 public:
-    testClass() { m_testvalue = 30; }
+    testClass() { m_testvalue = 0; }
+    testClass(int a_Int) { m_testvalue = a_Int; }
     ~testClass() = default;
 
 public:
@@ -46,14 +47,9 @@ public:
 
 void BBEngine::TestCode()
 {
-    constexpr int testSize = 4 * 1024 * 1024;
 
-    BBE::Allocators::ArenaAllocator alloc;
-    alloc.Init(testSize);
 
-    testClass* testclass = BBNewArr(alloc, 10, testClass);
 
-    BB_LogF(0, BBUtility::LogInfo, "value is: %d", testclass[2].m_testvalue);
 }
 
 void BBEngine::Update()
