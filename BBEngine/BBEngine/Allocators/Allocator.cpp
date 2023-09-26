@@ -54,9 +54,8 @@ namespace BBE {
 			constexpr int pageSize = 4096;
 			constexpr int virtualExpansion = 4;
 
-			m_VirtualSize = a_Size;
-			m_VirtualSize += pageSize - (a_Size % pageSize);
-			void* ptr = VirtualAlloc(NULL, m_VirtualSize * virtualExpansion, MEM_RESERVE, PAGE_NOACCESS);
+			m_VirtualSize = (pageSize - (a_Size % pageSize)) * virtualExpansion;
+			void* ptr = VirtualAlloc(NULL, m_VirtualSize, MEM_RESERVE, PAGE_NOACCESS);
 
 			return VirtualAlloc(ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
 		}

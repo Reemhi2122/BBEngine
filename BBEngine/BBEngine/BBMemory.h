@@ -2,9 +2,6 @@
 #include "Allocators/Allocator.h"
 #include <type_traits>
 
-template <typename T>
-struct MacroType { typedef T type; }; //I hate C++.
-
 #define BBAlloc(a_Allocator, a_Size, a_Type) BBE::BBAllocFunc(a_Allocator, a_Size)
 #define BBNew(a_Allocator, a_Type) new (BBE::BBAllocFunc(a_Allocator, sizeof(a_Type))) a_Type
 #define BBNewArr(a_Allocator, a_Num, a_Type) BBE::BBAllocArrayFunc<a_Type>(a_Allocator, sizeof(a_Type), a_Num)
@@ -30,8 +27,14 @@ namespace BBE {
 		}
 		else {
 			size_t headerSize = sizeof(BBArrayAllocHeader);
+			size_t allocationSize = a_Size * a_Count;
 			
-			T* ptr = reinterpret_cast<T*>(a_Allocator.Alloc(a_Size + headerSize));
+			T* ptr = reinterpret_cast<T*>(a_Allocator.Alloc(allocationSize + headerSize));
+
+			BBArrayAllocHeader* header = reinterpret_cast<BBArrayAllocHeader*>(ptr);
+			header->arraySize = a_Count;
+
+			Pointer::Add(ptr, headerSize);
 
 			if (!std::is_trivially_constructible<T>()) {
 				for (size_t i = 0; i < a_Count; i++)
