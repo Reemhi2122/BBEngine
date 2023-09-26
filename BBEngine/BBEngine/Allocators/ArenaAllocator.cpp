@@ -34,9 +34,11 @@ namespace BBE {
 			uintptr_t offset = curPointer + CalculateAlignOffset(curPointer, a_Align);
 			offset -= (uintptr_t)m_Arena.buf;
 
-			ARESULT res = ResizeVirtual(m_Arena.buf, m_Arena.bufLeng);
+			if (offset + a_Size > m_Arena.bufLeng) {
+				ResizeVirtual(m_Arena.buf, m_Arena.bufLeng);
+			}
 
-			if (res) {
+			if (offset + a_Size <= m_Arena.bufLeng) {
 				void* ptr = Pointer::Add(m_Arena.buf, offset);
 				m_Arena.prevOffset = offset;
 				m_Arena.currOffset = offset + a_Size;

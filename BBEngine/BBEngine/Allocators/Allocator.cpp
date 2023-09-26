@@ -49,12 +49,14 @@ namespace BBE {
 			return p;
 		}
 
-		void* Allocator::AllocVirtual(size_t a_Size)
+		void* Allocator::AllocVirtual(size_t& a_Size)
 		{
 			constexpr int pageSize = 4096;
 			constexpr int virtualExpansion = 4;
 
-			m_VirtualSize = (pageSize - (a_Size % pageSize)) * virtualExpansion;
+			a_Size += (pageSize - (a_Size % pageSize));
+			m_VirtualSize = a_Size;
+			m_VirtualSize *= virtualExpansion;
 			void* ptr = VirtualAlloc(NULL, m_VirtualSize, MEM_RESERVE, PAGE_NOACCESS);
 
 			return VirtualAlloc(ptr, a_Size, MEM_COMMIT, PAGE_READWRITE);
