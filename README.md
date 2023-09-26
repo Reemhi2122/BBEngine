@@ -1,5 +1,5 @@
 # BBEngine
-Building Block Engine ("BBEngine") is my playground engine.
+Building Block Engine ("BBE") is my playground engine.
 
 ## Engine
 ### Allocators
