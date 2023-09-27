@@ -1,6 +1,6 @@
 ﻿# CMakeList.txt : Top-level CMake project file, do global configuration
 # and include sub-projects here.
-#
+
 cmake_minimum_required (VERSION 3.8)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -13,3 +13,4 @@ project ("BBEngine")
 add_subdirectory ("BBRenderer")
 add_subdirectory ("BBEngine")
 add_subdirectory ("BBMath")
+add_subdirectory ("UnitTest")
