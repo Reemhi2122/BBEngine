@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
-add_executable (BBEngine 
+add_library (BBEngine 
 "main.cpp" 
 "BBEngine.h"
 "BBEngine.cpp" 
@@ -30,6 +30,7 @@ add_executable (BBEngine
 "BBCommon.h" 
 "BBMemory.h")
 
+
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 
 Renderer
@@ -37,11 +38,11 @@ BBMath
 )
 
 #copy shaders when a change happened.
-add_custom_target(game_copy_shaders ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/BBRenderer/Shader"
-    ${CMAKE_CURRENT_BINARY_DIR}/assets
-    COMMENT "Copying DX12 asset folder to output d1 folder")
+#add_custom_target(game_copy_shaders ALL
+#    COMMAND ${CMAKE_COMMAND} -E copy_directory
+#    "${CMAKE_SOURCE_DIR}/BBRenderer/Shader"
+#    ${CMAKE_CURRENT_BINARY_DIR}/assets
+#    COMMENT "Copying DX11 asset folder to output d1 folder")
 
     
-add_dependencies(BBEngine game_copy_shaders)
+#add_dependencies(BBEngine game_copy_shaders)

@@ -23,8 +23,6 @@ namespace BBE {
 			BB_Assert(IsPowerOfTwo(a_Size), "Buddy allocator size is not in a power of two");
 			BB_Assert(IsPowerOfTwo(a_Allignment), "Alignment is not a power of two");
 
-			size_t testsize = sizeof(Buddy);
-
 			BB_Assert((sizeof(Buddy) < a_Size), "Buddy allocator size to small for header");
 
 			m_BuddyAlloc.allignment = a_Allignment;
@@ -44,11 +42,13 @@ namespace BBE {
 				return NULL;
 			}
 
-			Buddy* found = FindBestBuddy(m_BuddyAlloc.head, m_BuddyAlloc.tail, a_Size);
+			size_t actualSize = GetBuddySizeRequired(a_Size);
+
+			Buddy* found = FindBestBuddy(m_BuddyAlloc.head, m_BuddyAlloc.tail, actualSize);
 
 			if (found == NULL) {
 				BuddyCoalescence(m_BuddyAlloc.head, m_BuddyAlloc.tail);
-				found = FindBestBuddy(m_BuddyAlloc.head, m_BuddyAlloc.tail, a_Size);
+				found = FindBestBuddy(m_BuddyAlloc.head, m_BuddyAlloc.tail, actualSize);
 			}
 
 			if (found != NULL) {

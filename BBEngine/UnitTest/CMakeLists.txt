@@ -12,13 +12,14 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(
-  BBETesting
-  AllocatorTest.cpp
-)
+	BBETesting
+	"AllocatorTest.cpp"
+	)
 
 target_link_libraries(
   BBETesting
   GTest::gtest_main
+  BBEngine
 )
 
 include(GoogleTest)

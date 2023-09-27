@@ -232,7 +232,6 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 
 	m_Context->PSSetConstantBuffers(0, 1, constantBufferColor.GetAddressOf());
 
-
 	//Create blob
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 
