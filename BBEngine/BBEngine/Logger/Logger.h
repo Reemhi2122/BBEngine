@@ -6,36 +6,36 @@
 #define DEFAULT_LOG_CHANNEL 0
 #define LOG_ALL 127
 
-#define BB_Log_Init(name, filter, path)\
-do {\
-	BBUtility::Logger::GetInstance()->SetupLogger(name, filter, path);\
+#define BB_Log_Init(name, filter, path)																							\
+do {																															\
+	BBUtility::Logger::GetInstance()->SetupLogger(name, filter, path);															\
 } while (0)
 
-#define BB_RegisterChannel(name, handle)\
-do{\
-	BBUtility::Logger::GetInstance()->RegisterChannel(name, handle);\
+#define BB_RegisterChannel(name, handle)																						\
+do{																																\
+	BBUtility::Logger::GetInstance()->RegisterChannel(name, handle);															\
 } while (0)
 
-#define BB_Log(handle, severity, message)\
-do{\
-	BBUtility::Logger::GetInstance()->Log(handle, severity, message, __FILE__, __LINE__);\
-	if (severity == BBUtility::LogAssert)\
-		assert(0 && message);\
+#define BB_Log(handle, severity, message)																						\
+do{																																\
+	BBUtility::Logger::GetInstance()->Log(handle, severity, message, __FILE__, __LINE__);										\
+	if (severity == BBUtility::LogAssert)																						\
+		assert(0 && message);																									\
 } while (0)
 
-#define BB_LogF(handle, severity, message, ...)\
-do{\
-	BBUtility::Logger::GetInstance()->LogF(handle, severity, message, __FILE__, __LINE__, ##__VA_ARGS__);\
-	if (severity == BBUtility::LogAssert)\
-		assert(0 && message);\
+#define BB_LogF(handle, severity, message, ...)																					\
+do{																																\
+	BBUtility::Logger::GetInstance()->LogF(handle, severity, message, __FILE__, __LINE__, ##__VA_ARGS__);						\
+	if (severity == BBUtility::LogAssert)																						\
+		assert(0 && message);																									\
 } while (0)
 
-#define BB_Assert(condition, message, ...)\
-do{\
-	if(!condition){\
-		BBUtility::Logger::GetInstance()->LogF(0, BBUtility::LogAssert, message, __FILE__, __LINE__, ##__VA_ARGS__);\
-		assert(0 && message);\
-	}\
+#define BB_Assert(condition, message, ...)																						\
+do{																																\
+	if(!condition){																												\
+		BBUtility::Logger::GetInstance()->LogF(0, BBUtility::LogAssert, message, __FILE__, __LINE__, ##__VA_ARGS__);			\
+		assert(0 && message);																									\
+	}																															\
 } while (0)
 
 
