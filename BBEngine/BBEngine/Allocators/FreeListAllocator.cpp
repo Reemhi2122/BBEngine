@@ -90,7 +90,7 @@ namespace BBE {
 			if (a_Ptr == NULL)
 				return;
 		
-			FreeListHeader* header = reinterpret_cast<FreeListHeader*>(Pointer::Add(a_Ptr, sizeof(FreeListHeader)));
+			FreeListHeader* header = reinterpret_cast<FreeListHeader*>(Pointer::Subtract(a_Ptr, sizeof(FreeListHeader)));
 			FreeListNode* newNode = reinterpret_cast<FreeListNode*>(header);
 			FreeListNode* node = m_FreeList.head;
 			FreeListNode* prevNode = NULL;
@@ -115,14 +115,16 @@ namespace BBE {
 
 		void FreeListAllocator::FreeCoalescence(FreeListNode* a_PrevNode, FreeListNode* a_FreeNode)
 		{
-			if (a_FreeNode->next != NULL && a_FreeNode + a_FreeNode->blockSize == a_FreeNode->next) {
+			if (a_FreeNode->next != NULL && Pointer::Add(a_FreeNode, a_FreeNode->blockSize) == a_FreeNode->next) {
 				a_FreeNode->blockSize += a_FreeNode->next->blockSize;
 				RemoveNode(m_FreeList.head, a_FreeNode, a_FreeNode->next);
 			}
 
-			if (a_PrevNode->next != NULL && a_PrevNode + a_PrevNode->blockSize == a_FreeNode) {
-				a_PrevNode->blockSize += a_FreeNode->blockSize;
-				RemoveNode(m_FreeList.head, a_PrevNode, a_PrevNode->next);
+			if (a_PrevNode != NULL) {
+				if (a_PrevNode->next != NULL && Pointer::Add(a_PrevNode, a_PrevNode->blockSize) == a_FreeNode) {
+					a_PrevNode->blockSize += a_FreeNode->blockSize;
+					RemoveNode(m_FreeList.head, a_PrevNode, a_PrevNode->next);
+				}
 			}
 		}
 
@@ -200,7 +202,8 @@ namespace BBE {
 		{
 			if (a_PrevNode == NULL) {
 				if (a_Head != NULL) {
-					a_NewNode->next = a_Head; // Only thing I am quite unsure of?
+					a_NewNode->next = a_Head;
+					a_Head = a_NewNode;
 				}
 				else {
 					a_Head = a_NewNode;
