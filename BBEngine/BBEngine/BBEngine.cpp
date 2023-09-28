@@ -3,7 +3,7 @@
 #include "Matrix4x4.h"
 #include "Logger/Logger.h"
 
-#include "BBMemory.h"
+#include "Allocators/Allocator.h"
 #include "Allocators/ArenaAllocator.h"
 #include "Allocators/StackAllocator.h"
 #include "Allocators/PoolAllocator.h"
@@ -22,7 +22,7 @@ BBEngine::BBEngine()
 
 int BBEngine::StartBBEngine()
 {
-    BB_Log_Init("BBLogger", LOG_ALL, "./Test");
+    BB_Log_Init("BBLogger", LOG_ALL, "logs/");
 
     TestCode();
 
@@ -48,7 +48,8 @@ public:
 void BBEngine::TestCode()
 {
 
-
+    BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
+    BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
 
 }
 

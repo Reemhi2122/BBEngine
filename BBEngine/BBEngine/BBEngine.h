@@ -1,7 +1,7 @@
 #pragma once
 #include "BBRenderer.h"
 #include "BBWindow.h"
-#include "Timer/BBTimer.h"
+#include "Utility/BBTimer.h"
 #include "Vector3.h"
 
 class BBEngine {
@@ -15,6 +15,6 @@ private:
 
 private:
 	BBWindow m_Window;
-	BBTimer m_Timer;
+	BBE::BBTimer m_Timer;
 	BBWinRenderer m_BBWinRenderer;
 };

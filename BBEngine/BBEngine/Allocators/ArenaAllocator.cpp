@@ -1,5 +1,5 @@
-#include "ArenaAllocator.h"
-#include "../Logger/Logger.h"
+#include "Allocators/ArenaAllocator.h"
+#include "Logger/Logger.h"
 
 namespace BBE {
 	namespace Allocators {

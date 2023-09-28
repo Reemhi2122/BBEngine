@@ -1,6 +1,11 @@
-#include "Thread.h"
+#include "Thread/Thread.h"
+namespace BBE {
 
-BBUtility::Thread::Thread()
-{
+	Thread::Thread()
+	{
+	}
 
+	Thread::~Thread()
+	{
+	}
 }

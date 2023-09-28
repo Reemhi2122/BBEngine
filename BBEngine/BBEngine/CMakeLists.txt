@@ -3,38 +3,32 @@
 
 cmake_minimum_required (VERSION 3.8)
 
+
+
 # Add source to this project's executable.
 add_library (BBEngine 
-"main.cpp" 
-"BBEngine.h"
 "BBEngine.cpp" 
-"Timer/BBTimer.h"
 "Timer/BBTimer.cpp"
-"Logger/Logger.h"
 "Logger/logger.cpp" 
-"Utility/HelperFunctions.h" 
 "Thread/Thread.cpp" 
-"Thread/Thread.h" 
 "Allocators/StackAllocator.cpp" 
-"Allocators/StackAllocator.h"
-"Allocators/ArenaAllocator.h" 
 "Allocators/ArenaAllocator.cpp" 
-"Allocators/PoolAllocator.h"
 "Allocators/PoolAllocator.cpp"
 "Allocators/FreeListAllocator.cpp"
-"Allocators/FreeListAllocator.h"
 "Allocators/BuddyAllocator.cpp"
-"Allocators/BuddyAllocator.h"
 "Allocators/Allocator.cpp" 
-"Allocators/Allocator.h" 
-"BBCommon.h" 
-"BBMemory.h")
+"Thread/ThreadPool.cpp"
+"System/FileHandler/FileHandler_Windows.cpp")
 
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 
 Renderer
 BBMath
+)
+
+target_include_directories(BBEngine PUBLIC
+"Include/"
 )
 
 #copy shaders when a change happened.

@@ -1,6 +1,6 @@
-#include "BuddyAllocator.h"
+#include "Allocators/BuddyAllocator.h"
 #include <malloc.h>
-#include "../Logger/Logger.h"
+#include "Logger/Logger.h"
 
 namespace BBE {
 	namespace Allocators {
