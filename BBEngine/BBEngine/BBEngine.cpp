@@ -10,6 +10,10 @@
 #include "Allocators/FreeListAllocator.h"
 #include "Allocators/BuddyAllocator.h"
 
+#include "Utility/BBMemory.h"
+
+#include "Thread/ThreadPool.h"
+
 #include <chrono>
 #include <iostream>
 #include <cstdint>
@@ -45,12 +49,26 @@ public:
     int m_testvalue = 255;
 };
 
+void ThreadTest(void* test) {
+    printf("Thread is working! %d", *reinterpret_cast<int*>(test));
+}
+
 void BBEngine::TestCode()
 {
 
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
 
+    BBE::ThreadPool pool;
+
+    BBE::Allocators::StackAllocator alloc;
+    alloc.Init(1024);
+
+    int* test = BBNew(alloc, int)(55);
+
+    BBE::BBThreadHandle temp = pool.StartTask(&ThreadTest, test);
+
+    WaitForSingleObject(temp, INFINITE);
 }
 
 void BBEngine::Update()

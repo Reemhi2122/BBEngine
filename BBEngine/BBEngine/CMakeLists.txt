@@ -10,7 +10,7 @@ add_library (BBEngine
 "BBEngine.cpp" 
 "Timer/BBTimer.cpp"
 "Logger/logger.cpp" 
-"Thread/Thread.cpp" 
+ 
 "Allocators/StackAllocator.cpp" 
 "Allocators/ArenaAllocator.cpp" 
 "Allocators/PoolAllocator.cpp"
