@@ -80,7 +80,9 @@ namespace BBE {
 
 			std::string message = FormatLogMessage(a_Flag, a_Handle, a_LogMessage, a_File, a_Line);
 
+			m_LoggerThread = std::thread(&Logger::PrintToFile, this, message);
 			vprintf(message.c_str(), va_format_list);
+			m_LoggerThread.join();
 		}
 
 		bool Logger::ValidFilter(const ChannelHandle& a_Handle, const LogFlag& a_Flag)

@@ -5,6 +5,7 @@
 
 namespace BBE {
 	namespace BBSystem {
+		
 		void CreateDirBB(std::string a_Path)
 		{
 			BOOL isLogCreated = CreateDirectory(a_Path.c_str(), NULL);
