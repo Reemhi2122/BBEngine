@@ -49,8 +49,15 @@ public:
     int m_testvalue = 255;
 };
 
-void ThreadTest(void* test) {
-    printf("Thread is working! %d", *reinterpret_cast<int*>(test));
+void ThreadTest() {
+    for (int i = 0; i < 1 * 1024 * 1024; i++) {
+        int x = 10;
+        int y = 30;
+        
+        x += y;
+    }
+
+    printf("done!");
 }
 
 void BBEngine::TestCode()
@@ -59,16 +66,16 @@ void BBEngine::TestCode()
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
 
-    BBE::ThreadPool pool;
+    BBE::ThreadPool pool = BBE::ThreadPool(2);
 
     BBE::Allocators::StackAllocator alloc;
     alloc.Init(1024);
 
     int* test = BBNew(alloc, int)(55);
 
-    BBE::BBThreadHandle temp = pool.StartTask(&ThreadTest, test);
+    BBE::BBThreadHandle temp = pool.AddTask(&ThreadTest);
+    BBE::BBThreadHandle temp2 = pool.AddTask(&ThreadTest);
 
-    WaitForSingleObject(temp, INFINITE);
 }
 
 void BBEngine::Update()
