@@ -18,7 +18,8 @@ add_library (BBEngine
 "Allocators/BuddyAllocator.cpp"
 "Allocators/Allocator.cpp" 
 "Thread/ThreadPool.cpp"
-"System/FileHandler/FileHandler_Windows.cpp")
+"System/FileHandler/FileHandler_Windows.cpp"
+"Containers/Pool.cpp")
 
 
 # TODO: Add tests and install targets if needed.

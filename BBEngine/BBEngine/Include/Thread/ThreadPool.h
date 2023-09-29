@@ -13,15 +13,6 @@ namespace BBE {
 		Terminate
 	};
 
-	struct Thread {
-		Thread* thread;
-	};
-
-	struct ThreadQueue {
-		Thread* m_head;
-		uint8_t size;
-	};
-
 	class ThreadPool
 	{
 	public:
