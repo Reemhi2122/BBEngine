@@ -4,34 +4,33 @@
 
 #include "Logger/Logger.h" 
 
+#define MIMTHREADS 8
+
 namespace BBE {
 
-	enum class ThreadStatus {
-		Idle,
-		Working,
-		Waiting
+	struct ThreadDesc {
+		ThreadStatus	thdStatus;
+		BBThreadHandle	thdHandle;
+		void			(*thdFunction)(void*);
+		void*			thdParams;
 	};
 
-	struct Thread {
-		ThreadStatus status = ThreadStatus::Idle;
-		BBThreadHandle handle = 0;
-		DWORD threadId = 0;
+	DWORD WINAPI ThreadFunction(LPVOID lpParam) {
+		ThreadDesc* thread = static_cast<ThreadDesc*>(lpParam);
 
-		BBThreadHandle StartThread(void(*a_ThreadFunction), void* a_ThreaFunctionParam) {
-			BBThreadHandle handle = CreateThread(
-				NULL,
-				0,
-				(LPTHREAD_START_ROUTINE)a_ThreadFunction,
-				(LPVOID)a_ThreaFunctionParam,
-				0,
-				&threadId);
-
-			status = ThreadStatus::Working;
-			printf("Thread %d: doing task", (int)threadId);
-
-			return handle;
+		while (thread->thdStatus != ThreadStatus::Terminate)
+		{
+			if (thread->thdStatus == ThreadStatus::Working) {
+				thread->thdFunction(thread->thdParams);
+				thread->thdFunction = nullptr;
+				thread->thdParams = nullptr;
+				thread->thdStatus = ThreadStatus::Idle;
+			}
 		}
-	};
+
+		CloseHandle(thread->thdHandle);
+		return 0;
+	}
 
 	ThreadPool::ThreadPool(const uint8_t& AmountOfStaticThreads)
 	{
@@ -46,36 +45,35 @@ namespace BBE {
 		m_StaticThreadCount = AmountOfStaticThreads;
 		m_PoolThreadCount = m_ThreadCount - m_StaticThreadCount;
 
-		m_ThreadAlloc.Init(PageSize);
-		m_PoolThreads = BBNewArr(m_ThreadAlloc, m_PoolThreadCount, Thread);
-		m_StaticThreads = BBNewArr(m_ThreadAlloc, m_StaticThreadCount, Thread);
-
+		InitializeThreads(MIMTHREADS);
 	}
 
 	ThreadPool::~ThreadPool()
 	{
-		BBFreeArr(m_ThreadAlloc, m_PoolThreads);
-		BBFreeArr(m_ThreadAlloc, m_StaticThreads);
 	}
 
 	BBThreadHandle ThreadPool::AddTask(void(*a_ThreadFunction), void* a_ThreaFunctionParam)
 	{
-		for (int i = 0; i < m_PoolThreadCount; i++) {
-			if (m_PoolThreads[i].status == ThreadStatus::Idle) {
-				return m_PoolThreads[i].StartThread(a_ThreadFunction, a_ThreaFunctionParam);
-			}
-		}
+
 
 		return NULL;
 	}
 
-	uint8_t ThreadPool::GetNumberOfStaticThreads() const
+	void ThreadPool::InitializeThreads(const uint8_t& a_Count)
 	{
-		return m_StaticThreadCount;
-	}
+		for (int i = 0; i < 8; i++) {
+			ThreadDesc pram;
+			pram.thdStatus = ThreadStatus::Idle;
+			pram.thdFunction = nullptr;
+			pram.thdParams = nullptr;
 
-	uint8_t ThreadPool::GetNumberOfPoolThreads() const
-	{
-		return m_PoolThreadCount;
+			pram.thdHandle = CreateThread(
+				NULL,
+				0,
+				ThreadFunction,
+				&pram,
+				0,
+				NULL);
+		}
 	}
 }

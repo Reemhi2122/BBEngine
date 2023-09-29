@@ -12,7 +12,6 @@
 
 #include "Utility/BBMemory.h"
 
-#include "Thread/ThreadPool.h"
 
 #include <chrono>
 #include <iostream>
@@ -24,9 +23,15 @@ BBEngine::BBEngine()
 {
 }
 
+BBEngine::~BBEngine()
+{
+    BBFree(m_StackAlloc, m_ThreadPool);
+}
+
 int BBEngine::StartBBEngine()
 {
     BB_Log_Init("BBLogger", LOG_ALL, "logs/");
+    m_StackAlloc.Init(BBE::PageSize);
 
     TestCode();
 
@@ -37,17 +42,6 @@ int BBEngine::StartBBEngine()
         Update();
     }
 }
-
-class testClass
-{
-public:
-    testClass() { m_testvalue = 0; }
-    testClass(int a_Int) { m_testvalue = a_Int; }
-    ~testClass() = default;
-
-public:
-    int m_testvalue = 255;
-};
 
 void ThreadTest() {
     for (int i = 0; i < 1 * 1024 * 1024; i++) {
@@ -66,16 +60,11 @@ void BBEngine::TestCode()
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
 
-    BBE::ThreadPool pool = BBE::ThreadPool(2);
-
-    BBE::Allocators::StackAllocator alloc;
-    alloc.Init(1024);
-
-    int* test = BBNew(alloc, int)(55);
-
-    BBE::BBThreadHandle temp = pool.AddTask(&ThreadTest);
-    BBE::BBThreadHandle temp2 = pool.AddTask(&ThreadTest);
-
+    m_ThreadPool = BBNew(m_StackAlloc, BBE::ThreadPool)(2);
+    
+    for (int i = 0; i < 8; i++) {
+        m_ThreadPool->AddTask(&ThreadTest);
+    }
 }
 
 void BBEngine::Update()
