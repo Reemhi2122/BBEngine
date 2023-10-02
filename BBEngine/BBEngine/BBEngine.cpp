@@ -56,7 +56,6 @@ void ThreadTest() {
 
 void BBEngine::TestCode()
 {
-
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
     BB_Log(0, BBE::BBUtility::LogFlag::LogInfo, "ello");
 

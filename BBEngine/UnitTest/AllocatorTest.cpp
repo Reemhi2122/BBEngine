@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../BBEngine/BBMemory.h"
+#include "Utility/BBMemory.h"
 
 constexpr int OneKB = 1024;
 constexpr int OneMB = 1024 * OneKB;
