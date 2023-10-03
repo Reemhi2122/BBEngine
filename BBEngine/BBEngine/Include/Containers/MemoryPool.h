@@ -24,7 +24,7 @@ namespace BBE {
 	template<typename T>
 	MemoryPool<T>::MemoryPool(size_t a_MaxSize) {
 		
-		BB_StaticAssert(sizeof(T) >= 8, "Memory pool type size is smaller than pointer size!");
+		BB_StaticAssert(sizeof(T) >= sizeof(uintptr_t), "Memory pool type size is smaller than pointer size!");
 		m_Alloc.Init(sizeof(T) * a_MaxSize);
 		InitNewElements(a_MaxSize);
 	}

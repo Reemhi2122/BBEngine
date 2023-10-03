@@ -1,5 +1,6 @@
 #pragma once
 #include "Utility/BBMemory.h"
+#include "Logger/Logger.h"
 
 namespace BBE {
 
@@ -22,36 +23,39 @@ namespace BBE {
 		void InitNewElements(size_t a_num = 5);
 
 		PoolElement<T>* m_Head;
-		Allocators::ArenaAllocator m_Alloc;
+		Allocators::ArenaAllocator m_ArenaAlloc;
+		Allocators::StackAllocator m_StackAlloc;
 		size_t m_Size;
 		size_t m_MaxSize;
 	};
 
 	template<typename T>
 	Pool<T>::Pool(size_t a_MaxSize) {
+		m_Head = nullptr;
+		m_Size = 0;
 		m_MaxSize = a_MaxSize;
-		m_Alloc.Init(sizeof(T) * m_MaxSize);
+
+		m_ArenaAlloc.Init(sizeof(T) * m_MaxSize);
+		m_StackAlloc.Init(sizeof(T) * m_MaxSize);
+
 		InitNewElements();
 	}
 
 	template<typename T>
 	Pool<T>::~Pool() {
-		m_Alloc.Clear();
+		m_ArenaAlloc.Clear();
 	}
 
 	template<typename T>
 	void Pool<T>::InitNewElements(size_t a_num) {
-		PoolElement<T>* prev = NULL;
-
+		
 		for (size_t i = 0; i < a_num; i++) {
-			PoolElement<T> el;
-			el.element = BBNew(m_Alloc, T);
-			el.nextElement = prev;
-			prev = &el;
+			PoolElement<T>* el = BBNew(m_StackAlloc, PoolElement<T>);
+			el->element = BBNew(m_ArenaAlloc, T);
+			el->nextElement = m_Head;
+			m_Head = el;
 			m_Size++;
 		}
-		
-		m_Head = prev;
 	}
 
 	template<typename T>
@@ -59,7 +63,10 @@ namespace BBE {
 		if (m_Head != NULL) {
 			PoolElement<T>* el = m_Head;
 			m_Head = m_Head->nextElement;
-			return el->element;
+	
+			T* value = el->element;
+			BBFree(m_StackAlloc, el);
+			return value;
 		}
 
 		if (m_Size < m_MaxSize) {
@@ -68,14 +75,15 @@ namespace BBE {
 			Pop();
 		}
 
+		BB_Assert(0, "No more entries in pool available");
 		return nullptr;
 	}
 
 	template<typename T>
 	void Pool<T>::PushFront(T* a_Element) {
-		PoolElement<T> el;
-		el.element = a_Element;
-		el.nextElement = m_Head;
-		m_Head = &el;
+		PoolElement<T>* el = BBNew(m_StackAlloc, PoolElement<T>);
+		el->element = a_Element;
+		el->nextElement = m_Head;
+		m_Head = el;
 	}
 }

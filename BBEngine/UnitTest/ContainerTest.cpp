@@ -1,15 +1,20 @@
 #include <gtest/gtest.h>
 #include "Containers/Pool.h"
 #include "Containers/MemoryPool.h"
+#include "Containers/Queue.h"
 
 TEST(Containers, Pool)
 {
-	BBE::Pool<int> pool = BBE::Pool<int>(16);
+	BBE::Pool<int> pool = BBE::Pool<int>(4);
 
 	int* test = pool.Pop();
-	
-	pool.PushFront(test);
+	int* test1 = pool.Pop();
 	int* test2 = pool.Pop();
+	int* test3 = pool.Pop();
+	
+	pool.PushFront(test1);
+	
+	int* test6 = pool.Pop();
 }
 
 TEST(Containers, MemoryPool) 
@@ -28,4 +33,17 @@ TEST(Containers, MemoryPool)
 
 	size_t* test4 = pool.Pop();
 	size_t* test5 = pool.Pop();
+}
+
+TEST(Containers, Queue)
+{
+	BBE::Queue<int> queue = BBE::Queue<int>();
+
+	queue.Add(1);
+	queue.Add(2);
+	queue.Add(3);
+	queue.Add(4);
+
+	int test2 = queue.Get();
+	int test3 = queue.Get();
 }
