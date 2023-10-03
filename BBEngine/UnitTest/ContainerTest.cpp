@@ -4,26 +4,28 @@
 
 TEST(Containers, Pool)
 {
-	BBE::Pool<int> pool = BBE::Pool<int>(32);
+	BBE::Pool<int> pool = BBE::Pool<int>(16);
 
 	int* test = pool.Pop();
-	*test = 10;
-
+	
 	pool.PushFront(test);
 	int* test2 = pool.Pop();
-
-	printf("%d", *test2);
 }
 
 TEST(Containers, MemoryPool) 
 {
-	BBE::M<int> pool = BBE::Pool<int>(32);
+	BBE::MemoryPool<size_t> pool = BBE::MemoryPool<size_t>(4);
 
-	int* test = pool.Pop();
+	size_t* test = pool.Pop();
 	*test = 10;
 
-	pool.PushFront(test);
-	int* test2 = pool.Pop();
+	size_t* test1 = pool.Pop();
+	size_t* test2 = pool.Pop();
+	size_t* test3 = pool.Pop();
 
-	printf("%d", *test2);
+	pool.PushFront(test);
+	pool.PushFront(test1);
+
+	size_t* test4 = pool.Pop();
+	size_t* test5 = pool.Pop();
 }
