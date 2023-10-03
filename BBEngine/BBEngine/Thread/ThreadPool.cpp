@@ -4,7 +4,7 @@
 
 #include "Logger/Logger.h" 
 
-#define MIMTHREADS 8
+constexpr uint8_t systemThreads = 1;
 
 namespace BBE {
 
@@ -32,34 +32,33 @@ namespace BBE {
 		return 0;
 	}
 
-	ThreadPool::ThreadPool(const uint8_t& AmountOfStaticThreads)
+	ThreadPool::ThreadPool(const uint8_t& a_DynamicThreads)
 	{
 		SYSTEM_INFO info;
 		GetSystemInfo(&info);
 		m_ThreadCount = static_cast<uint8_t>(info.dwNumberOfProcessors);
 
-		if (m_ThreadCount < AmountOfStaticThreads) {
-			BB_Assert(0, "Assigning more static threads than threads available");
-		}
-		
-		m_StaticThreadCount = AmountOfStaticThreads;
-		m_PoolThreadCount = m_ThreadCount - m_StaticThreadCount;
+		int totalThreads = a_DynamicThreads + OccupiedThreads + systemThreads;
 
-		InitializeThreads(MIMTHREADS);
+		BB_Assert(totalThreads < m_ThreadCount, "Assigning more static threads than threads available");
+
+		InitializePoolThreads(a_DynamicThreads);
 	}
 
 	ThreadPool::~ThreadPool()
 	{
 	}
 
-	BBThreadHandle ThreadPool::AddTask(void(*a_ThreadFunction), void* a_ThreaFunctionParam)
+	BBTaskHandle ThreadPool::AddTask(void(*a_ThreadFunction), void* a_ThreadFunctionParam)
 	{
-
-
-		return NULL;
+		ThreadTaskDesc task;
+		task.tskStatus = TaskStatus::Queue;
+		task.tskFunction = a_ThreadFunction;
+		task.tskParam = a_ThreadFunctionParam;
+		return TaskQueue.Add(task);
 	}
 
-	void ThreadPool::InitializeThreads(const uint8_t& a_Count)
+	void ThreadPool::InitializePoolThreads(const uint8_t& a_Count)
 	{
 		for (int i = 0; i < 8; i++) {
 			ThreadDesc pram;
@@ -67,13 +66,13 @@ namespace BBE {
 			pram.thdFunction = nullptr;
 			pram.thdParams = nullptr;
 
-			pram.thdHandle = CreateThread(
+			m_Pool.PushFront(CreateThread(
 				NULL,
 				0,
 				ThreadFunction,
 				&pram,
 				0,
-				NULL);
+				NULL));
 		}
 	}
 }

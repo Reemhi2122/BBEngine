@@ -2,7 +2,6 @@
 #include "Utility/BBMemory.h"
 
 namespace BBE {
-
 	template<typename T>
 	struct QueueElement {
 		T element;
@@ -16,7 +15,7 @@ namespace BBE {
 		Queue();
 		~Queue();
 
-		void Add(T a_Element);
+		void* Add(T a_Element);
 		T Get();
 
 	private:
@@ -41,7 +40,7 @@ namespace BBE {
 	}
 
 	template<typename T>
-	inline void Queue<T>::Add(T a_Element)
+	inline void* Queue<T>::Add(T a_Element)
 	{
 		QueueElement<T>* el = BBNew(m_Alloc, QueueElement<T>);
 		el->element = a_Element;
@@ -50,11 +49,13 @@ namespace BBE {
 			el->next = nullptr;
 			m_Head = el;
 			m_Tail = el;
-			return;
+			return m_Tail;
 		}
 
 		m_Tail->next = el;
 		m_Tail = el;
+
+		return m_Tail;
 	}
 
 	template<typename T>

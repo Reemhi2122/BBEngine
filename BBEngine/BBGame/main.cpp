@@ -2,7 +2,7 @@
 
 int main() {
     try {
-        return BBEngine{}.StartBBEngine();
+        return BBE::BBEngine{}.StartBBEngine();
     }
     catch (const BBException& e) {
         MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);

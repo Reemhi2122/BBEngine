@@ -1,28 +1,30 @@
 #pragma once
 #include "BBRenderer.h"
 #include "BBWindow.h"
+
 #include "Utility/BBTimer.h"
-#include "Vector3.h"
+#include "Utility/BBMemory.h"
 
-#include "Thread/ThreadPool.h"
+namespace BBE {
+	
+	class BBEngine {
+	public:
+		BBEngine();
+		~BBEngine();
 
-class BBEngine {
-public:
-	BBEngine();
-	~BBEngine();
+		int StartBBEngine();
+		void TestCode();
 
-	int StartBBEngine();
-	void TestCode();
+	private:
+		void Update();
 
-private:
-	void Update();
+	private:
+		BBWindow m_Window;
+		BBTimer m_Timer;
+		BBWinRenderer m_BBWinRenderer;
 
-private:
-	BBWindow m_Window;
-	BBE::BBTimer m_Timer;
-	BBWinRenderer m_BBWinRenderer;
+		Allocators::StackAllocator m_StackAlloc;
+		class ThreadPool* m_ThreadPool;
+	};
 
-	BBE::Allocators::StackAllocator m_StackAlloc;
-
-	BBE::ThreadPool* m_ThreadPool;
-};
+}
