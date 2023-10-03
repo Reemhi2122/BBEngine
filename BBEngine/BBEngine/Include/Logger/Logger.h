@@ -19,14 +19,14 @@ do{																																\
 #define BB_Log(handle, severity, message)																						\
 do{																																\
 	BBE::BBUtility::Logger::GetInstance()->Log(handle, severity, message, __FILE__, __LINE__);									\
-	if (severity == BBE::BBUtility::LogAssert)																						\
+	if (severity == BBE::BBUtility::LogAssert)																					\
 		assert(0 && message);																									\
 } while (0)
 
 #define BB_LogF(handle, severity, message, ...)																					\
 do{																																\
 	BBE::BBUtility::Logger::GetInstance()->LogF(handle, severity, message, __FILE__, __LINE__, ##__VA_ARGS__);					\
-	if (severity == BBE::BBUtility::LogAssert)																						\
+	if (severity == BBE::BBUtility::LogAssert)																					\
 		assert(0 && message);																									\
 } while (0)
 
@@ -36,6 +36,11 @@ do{																																\
 		BBE::BBUtility::Logger::GetInstance()->LogF(0, BBUtility::LogAssert, message, __FILE__, __LINE__, ##__VA_ARGS__);		\
 		assert(0 && message);																									\
 	}																															\
+} while (0)
+
+#define BB_StaticAssert(condition, message, ...)																				\
+do{																																\
+	static_assert(condition, message);																								\
 } while (0)
 
 
