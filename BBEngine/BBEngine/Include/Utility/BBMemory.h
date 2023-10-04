@@ -11,8 +11,8 @@
 #define BBNew(a_Allocator, a_Type) new (BBE::BBAllocFunc(a_Allocator, sizeof(a_Type))) a_Type
 #define BBNewArr(a_Allocator, a_Num, a_Type) BBE::BBAllocArrayFunc<a_Type>(a_Allocator, sizeof(a_Type), a_Num)
 
-#define BBFree(a_Allocator, a_Pointer) BBE::BBFreeFunc(a_Allocator, a_Pointer);
-#define BBFreeArr(a_Allocator, a_Pointer);
+#define BBFree(a_Allocator, a_Pointer) BBE::BBFreeFunc<a_Type>(a_Allocator, a_Pointer);
+#define BBFreeArr(a_Allocator, a_Pointer) BBE::BBFreeArrFunc<a_Type>(a_Allocator, a_Pointer);
 
 #define BBStackScope(a_Allocator) for (int i = a_Allocator.SetPoint(); i; a_Allocator.ReturnToPoint(), i = 0)
 
@@ -59,7 +59,12 @@ namespace BBE {
 		return nullptr;
 	}
 
+	template<typename T>
 	inline void BBFreeFunc(Allocators::Allocator& a_Allocator, void* a_Ptr) {
+		
+		if constexpr (!std::is_trivially_destructible<T>()) {
+			~T();
+		}
 		a_Allocator.Free(a_Ptr);
 	}
 
