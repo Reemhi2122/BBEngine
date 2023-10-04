@@ -18,6 +18,8 @@ namespace BBE {
 		void* Add(T a_Element);
 		T Get();
 
+		bool IsEmpty();
+
 	private:
 		QueueElement<T>* m_Head;
 		QueueElement<T>* m_Tail;
@@ -40,7 +42,7 @@ namespace BBE {
 	}
 
 	template<typename T>
-	inline void* Queue<T>::Add(T a_Element)
+	void* Queue<T>::Add(T a_Element)
 	{
 		QueueElement<T>* el = BBNew(m_Alloc, QueueElement<T>);
 		el->element = a_Element;
@@ -59,12 +61,18 @@ namespace BBE {
 	}
 
 	template<typename T>
-	inline T Queue<T>::Get()
+	T Queue<T>::Get()
 	{
 		QueueElement<T>* el = m_Head;
 		T ptr = m_Head->element;
 		m_Head = m_Head->next;
 		BBFree(m_Alloc, el);
 		return ptr;
+	}
+
+	template<typename T>
+	bool Queue<T>::IsEmpty()
+	{
+		return m_Head == nullptr;
 	}
 }

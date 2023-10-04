@@ -22,10 +22,22 @@ namespace BBE {
 		Done
 	};
 
-	struct ThreadTaskDesc {
+	struct TaskDesc {
 		TaskStatus		tskStatus;
-		void*			tskFunction;
+		void			(*tskFunction)(void*);
 		void*			tskParam;
+	};
+
+	struct ThreadDesc {
+		ThreadStatus	thdStatus;
+		BBThreadHandle	thdHandle;
+		void			(*thdFunction)(void*);
+		void*			thdParams;
+	};
+
+	struct SystemThreadDesc {
+		Queue<TaskDesc>* sthdQueue;
+		Pool<ThreadDesc>* sthdPool;
 	};
 
 	class ThreadPool
@@ -35,7 +47,7 @@ namespace BBE {
 		ThreadPool(const uint8_t& AmountOfStaticThreads);
 		~ThreadPool();
 
-		BBTaskHandle AddTask(void(*a_ThreadFunction), void* a_ThreaFunctionParam = NULL);
+		BBTaskHandle AddTask(void (*a_void)(void*), void* a_ThreaFunctionParam = NULL);
 		uint8_t GetNumberOfStaticThreads() const;
 		uint8_t GetNumberOfPoolThreads() const;
 
@@ -43,13 +55,19 @@ namespace BBE {
 
 	private:
 		void InitializePoolThreads(const uint8_t& a_Count);
+		void CreatePoolSystemThread();
 
 		uint8_t m_ThreadCount = 0u;
 		uint8_t m_PoolThreadCount = 0u;
 		uint8_t m_StaticThreadCount = 0u;
 
-		Queue<ThreadTaskDesc> TaskQueue;
-		Pool<BBThreadHandle> m_Pool = Pool<BBThreadHandle>(8);
+		Queue<TaskDesc> m_TaskQueue;
+		Pool<ThreadDesc> m_Pool = Pool<ThreadDesc>(32);
+
+		SystemThreadDesc m_SystemDesc;
+		ThreadDesc m_SystemThread;
+
+		ThreadDesc* m_PoolThreads;
 
 		Allocators::StackAllocator m_ThreadAlloc;
 	};

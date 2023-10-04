@@ -28,13 +28,13 @@ namespace BBE {
 
     BBEngine::~BBEngine()
     {
-        BBFree(m_StackAlloc, m_ThreadPool);
+        BBFree(m_ArenaAllocator, m_ThreadPool);
     }
 
     int BBEngine::StartBBEngine()
     {
         BB_Log_Init("BBLogger", LOG_ALL, "logs/");
-        m_StackAlloc.Init(BBE::PageSize);
+        m_ArenaAllocator.Init(BBE::PageSize);
 
         TestCode();
 
@@ -46,20 +46,15 @@ namespace BBE {
         }
     }
 
-    void ThreadTest() {
-        for (int i = 0; i < 1 * 1024 * 1024; i++) {
-            int x = 10;
-            int y = 30;
-
-            x += y;
-        }
+    void ThreadTest(void*) {
+        Sleep(10 * 1000);
 
         printf("done!");
     }
 
     void BBEngine::TestCode()
     {
-        m_ThreadPool = BBNew(m_StackAlloc, BBE::ThreadPool)(6);
+        m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(6);
         m_ThreadPool->AddTask(ThreadTest);
     }
 

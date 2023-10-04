@@ -33,7 +33,7 @@ namespace BBE {
 	inline T* BBAllocArrayFunc(Allocators::Allocator& a_Allocator, const size_t& a_Size, const size_t a_Count) {
 		
 		if constexpr (std::is_trivially_constructible<T>() && std::is_trivially_destructible<T>()) {
-			return reinterpret_cast<T>(BBAllocFunc(a_Allocator, a_Size));
+			return reinterpret_cast<T*>(BBAllocFunc(a_Allocator, a_Size));
 		}
 		else {
 			size_t headerSize = sizeof(BBArrayAllocHeader);

@@ -23,7 +23,7 @@ namespace BBE {
 		BBTimer m_Timer;
 		BBWinRenderer m_BBWinRenderer;
 
-		Allocators::StackAllocator m_StackAlloc;
+		Allocators::ArenaAllocator m_ArenaAllocator;
 		class ThreadPool* m_ThreadPool;
 	};
 
