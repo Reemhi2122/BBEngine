@@ -13,14 +13,14 @@ namespace BBE {
 	template<typename T>
 	class Pool {
 	public:
-		Pool(size_t maxPool);
+		Pool(size_t a_MaxSize, size_t a_StartSize = 0);
 		~Pool();
 
 		T* Pop();
 		void PushFront(T* a_Element);
 
 	private:
-		void InitNewElements(size_t a_num = 5);
+		void InitNewElements(size_t a_num);
 
 		PoolElement<T>* m_Head;
 		Allocators::ArenaAllocator m_ArenaAlloc;
@@ -29,8 +29,9 @@ namespace BBE {
 		size_t m_MaxSize;
 	};
 
+
 	template<typename T>
-	Pool<T>::Pool(size_t a_MaxSize) {
+	Pool<T>::Pool(size_t a_MaxSize, size_t a_StartSize) {
 		m_Head = nullptr;
 		m_Size = 0;
 		m_MaxSize = a_MaxSize;
@@ -38,7 +39,7 @@ namespace BBE {
 		m_ArenaAlloc.Init(sizeof(T) * m_MaxSize);
 		m_StackAlloc.Init(sizeof(T) * m_MaxSize);
 
-		InitNewElements();
+		InitNewElements(a_StartSize);
 	}
 
 	template<typename T>

@@ -39,6 +39,8 @@ namespace BBE {
 		uint8_t GetNumberOfStaticThreads() const;
 		uint8_t GetNumberOfPoolThreads() const;
 
+		static uint8_t OccupiedThreads;
+
 	private:
 		void InitializePoolThreads(const uint8_t& a_Count);
 
@@ -47,14 +49,11 @@ namespace BBE {
 		uint8_t m_StaticThreadCount = 0u;
 
 		Queue<ThreadTaskDesc> TaskQueue;
-		Pool<HANDLE> m_Pool;
+		Pool<BBThreadHandle> m_Pool = Pool<BBThreadHandle>(8);
 
 		Allocators::StackAllocator m_ThreadAlloc;
-
-		static uint8_t OccupiedThreads;
 	};
 
-	uint8_t ThreadPool::OccupiedThreads = 0;
 
 	inline uint8_t ThreadPool::GetNumberOfStaticThreads() const
 	{
@@ -66,4 +65,3 @@ namespace BBE {
 		return m_PoolThreadCount;
 	}
 }
-
