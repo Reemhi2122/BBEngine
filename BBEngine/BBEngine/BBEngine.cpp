@@ -12,6 +12,8 @@
 
 namespace BBE {
 
+    TaskDesc* testdesc = nullptr;
+
     BBEngine::BBEngine()
         : m_Window(800, 600, "BBWindow test")
     {
@@ -47,7 +49,7 @@ namespace BBE {
     void BBEngine::TestCode()
     {
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(6);
-        m_ThreadPool->AddTask(ThreadTest);
+        testdesc = reinterpret_cast<TaskDesc*>(m_ThreadPool->AddTask(ThreadTest));
         m_ThreadPool->AddTask(ThreadTest);
         m_ThreadPool->AddTask(ThreadTest);
         m_ThreadPool->AddTask(ThreadTest);
@@ -61,6 +63,8 @@ namespace BBE {
 
     void BBEngine::Update()
     {
+        printf("Current status is: %d \n", testdesc->tskStatus);
+
         const float c = std::sin(m_Timer.Peek()) / 2.0f + 0.5f;
         m_Window.GetGraphics().ClearBuffer(c, c, 1.0f);
 
