@@ -70,13 +70,12 @@ namespace BBE {
 			return value;
 		}
 
-		if (m_Size < m_MaxSize) {
-			size_t newAmount = (m_MaxSize - m_Size) % 5;
-			InitNewElements(newAmount);
-			Pop();
-		}
+		//if (m_Size < m_MaxSize) {
+		//	size_t newAmount = (m_MaxSize - m_Size) % 5;
+		//	InitNewElements(newAmount);
+		//	Pop();
+		//}
 
-		BB_Assert(0, "No more entries in pool available");
 		return nullptr;
 	}
 

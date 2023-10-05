@@ -3,15 +3,7 @@
 #include "Matrix4x4.h"
 #include "Logger/Logger.h"
 
-#include "Allocators/Allocator.h"
-#include "Allocators/ArenaAllocator.h"
-#include "Allocators/StackAllocator.h"
-#include "Allocators/PoolAllocator.h"
-#include "Allocators/FreeListAllocator.h"
-#include "Allocators/BuddyAllocator.h"
-
 #include "Utility/BBMemory.h"
-
 #include "Thread/ThreadPool.h"
 
 #include <chrono>
@@ -55,6 +47,15 @@ namespace BBE {
     void BBEngine::TestCode()
     {
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(6);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
+        m_ThreadPool->AddTask(ThreadTest);
         m_ThreadPool->AddTask(ThreadTest);
     }
 

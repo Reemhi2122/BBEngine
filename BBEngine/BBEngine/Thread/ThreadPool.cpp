@@ -4,33 +4,35 @@
 
 #include "Logger/Logger.h" 
 
-constexpr uint8_t systemThreads = 1;
-uint8_t BBE::ThreadPool::OccupiedThreads = 0;
-
 namespace BBE {
 
-	HANDLE m_QueueMutex;
+	uint8_t ThreadPool::OccupiedThreads = 0;
+	constexpr uint8_t systemThreads = 1;
 
 	void ThreadPoolSystem(void* a_SthdDesc) {
 		SystemThreadDesc* sthdDesc = reinterpret_cast<SystemThreadDesc*>(a_SthdDesc);
-
-		WaitForSingleObject(m_QueueMutex, INFINITE);
 
 		if (sthdDesc->sthdQueue->IsEmpty()) {
 			return;
 		}
 
 		ThreadDesc* thdDesc = sthdDesc->sthdPool->Pop();
-		if (thdDesc != NULL) {
+		if (thdDesc != NULL && thdDesc->thdStatus == ThreadStatus::Waiting) {
 			TaskDesc tskDesc = sthdDesc->sthdQueue->Get();
 			thdDesc->thdFunction = tskDesc.tskFunction;
 			thdDesc->thdParams = tskDesc.tskParam;
 			thdDesc->thdStatus = ThreadStatus::Working;
 			return;
 		}
-		ReleaseMutex(m_QueueMutex);
 
-		printf("No threads available \n");
+		for (size_t i = 0; i < sthdDesc->sthdPoolSize; i++)
+		{
+			ThreadDesc* trd = &sthdDesc->sthdPoolArray[i];
+			if (trd != NULL && trd->thdStatus == ThreadStatus::Idle) {
+				trd->thdStatus = ThreadStatus::Waiting;
+				sthdDesc->sthdPool->PushFront(trd);
+			}
+		}
 	}
 
 	DWORD WINAPI ThreadFunction(LPVOID lpParam) {
@@ -69,8 +71,9 @@ namespace BBE {
 		uint8_t SystemThreadCount = static_cast<uint8_t>(info.dwNumberOfProcessors);
 
 		m_ThreadAlloc.Init(a_ThreadPoolCount * sizeof(ThreadDesc));
-
-		m_ThreadCount = a_ThreadPoolCount + systemThreads;
+		
+		m_PoolThreadCount = a_ThreadPoolCount;
+		m_ThreadCount = m_PoolThreadCount + systemThreads;
 		uint8_t totalThreads = OccupiedThreads + m_ThreadCount;
 
 		BB_Assert((totalThreads < SystemThreadCount), "Assigning more threads than threads available");
@@ -81,8 +84,11 @@ namespace BBE {
 
 	ThreadPool::~ThreadPool()
 	{
-		//This still causes issues with deconstructing
 		m_SystemThread.thdStatus = ThreadStatus::Terminate;
+
+		for (size_t i = 0; i < m_PoolThreadCount; i++) {
+			m_PoolThreads[i].thdStatus = ThreadStatus::Terminate;
+		}
 
 		OccupiedThreads -= m_ThreadCount;
 		BBFreeArr(m_ThreadAlloc, m_PoolThreads);
@@ -120,10 +126,10 @@ namespace BBE {
 
 	void ThreadPool::CreatePoolSystemThread()
 	{
-		CreateMutex(NULL, false, "QueueMutex");
-
 		m_SystemDesc.sthdQueue = &m_TaskQueue;
 		m_SystemDesc.sthdPool = &m_Pool;
+		m_SystemDesc.sthdPoolSize = m_PoolThreadCount;
+		m_SystemDesc.sthdPoolArray = m_PoolThreads;
 
 		m_SystemThread.thdStatus = ThreadStatus::Working;
 		m_SystemThread.thdFunction = ThreadPoolSystem;
