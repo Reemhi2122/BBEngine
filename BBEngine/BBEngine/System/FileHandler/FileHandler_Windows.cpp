@@ -3,6 +3,9 @@
 #include <fileapi.h>
 #include "Logger/Logger.h"
 
+#include "FileLoaders/BMPLoader.h"
+#include <stdint.h>
+
 namespace BBE {
 	namespace BBSystem {
 		
@@ -37,15 +40,38 @@ namespace BBE {
 				NULL);
 		}
 
-		BBFILE OpenFileBB(std::string a_Path) {
+		BBFILE OpenFileWriteBB(std::string a_Path) {
 			return CreateFile(
 				a_Path.c_str(), 
-				FILE_APPEND_DATA, 
+				FILE_APPEND_DATA,
 				FILE_SHARE_READ, 
 				NULL, 
 				OPEN_ALWAYS, 
 				FILE_ATTRIBUTE_NORMAL, 
 				NULL);
+		}
+
+		BBFILE OpenFileReadBB(std::string a_Path) {
+			return CreateFile(
+				a_Path.c_str(),
+				GENERIC_READ,
+				FILE_SHARE_READ,
+				NULL,
+				OPEN_EXISTING,
+				FILE_ATTRIBUTE_NORMAL,
+				NULL);
+		}
+
+		void ReadFileBB(BBFILE a_Handle, char* a_Buffer) {
+			
+			DWORD dwBytesRead = 0;
+			BOOL result = ReadFile(a_Handle, a_Buffer, BUFFERSIZE, &dwBytesRead, NULL);
+
+			if (!result) {
+				BB_LogF(DEFAULT_LOG_CHANNEL, BBUtility::LogWarningHigh,"Cannot read file error code: %d", GetLastError());
+				BB_Assert(0, "Cannot read file");
+			}
+
 		}
 
 		void WriteToFileBB(BBFILE a_File, std::string a_Message)

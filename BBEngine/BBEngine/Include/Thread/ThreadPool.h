@@ -47,11 +47,11 @@ namespace BBE {
 	class ThreadPool
 	{
 	public:
-		ThreadPool() = default;
+		ThreadPool();
 		ThreadPool(const uint8_t& AmountOfStaticThreads, const uint8_t& a_StaticThreadCount = 0);
 		~ThreadPool();
 
-		BBTaskHandle AddTask(void (*a_void)(void*), void* a_ThreaFunctionParam = NULL);
+		void AddTask(void (*a_void)(void*), void* a_ThreaFunctionParam = NULL);
 		BBThreadHandle CreateStaticThread(void (*a_void)(void*), void* a_ThreaFunctionParam = NULL);
 		void DestoryStaticThread(BBThreadHandle a_Handle);
 

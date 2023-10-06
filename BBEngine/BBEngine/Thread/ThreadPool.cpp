@@ -69,6 +69,14 @@ namespace BBE {
 		return 0;
 	}
 
+	ThreadPool::ThreadPool()
+	{
+		m_PoolThreads = nullptr;
+		m_StaticThreads = nullptr;
+		m_SystemDesc = SystemThreadDesc();
+		m_SystemThread = ThreadDesc();
+	}
+
 	ThreadPool::ThreadPool(const uint8_t& a_ThreadPoolCount, const uint8_t& a_StaticThreadCount)
 	{
 		SYSTEM_INFO info;
@@ -104,14 +112,15 @@ namespace BBE {
 		BBFreeArr(m_ThreadAlloc, m_StaticThreads);
 	}
 
-	BBTaskHandle ThreadPool::AddTask(void (*a_void)(void*), void* a_ThreadFunctionParam)
+	void ThreadPool::AddTask(void (*a_void)(void*), void* a_ThreadFunctionParam)
 	{
 		//Need to think of a different way to manage tasks data
 		TaskDesc task;
 		task.tskStatus = TaskStatus::Queue;
 		task.tskFunction = a_void;
 		task.tskParam = a_ThreadFunctionParam;
-		return m_TaskQueue.Add(task);
+		m_TaskQueue.Add(task);
+		return; // Add a way to return task data
 	}
 
 	BBThreadHandle ThreadPool::CreateStaticThread(void(*a_void)(void*), void* a_ThreaFunctionParam)

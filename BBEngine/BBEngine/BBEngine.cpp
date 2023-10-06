@@ -5,6 +5,7 @@
 
 #include "Utility/BBMemory.h"
 #include "Thread/ThreadPool.h"
+#include "FileLoaders/BMPLoader.h"
 
 #include <chrono>
 #include <iostream>
@@ -22,7 +23,7 @@ namespace BBE {
 
     BBEngine::~BBEngine()
     {
-        BBFree(m_ArenaAllocator, m_ThreadPool);
+        //BBFree(m_ArenaAllocator, m_ThreadPool);
     }
 
     int BBEngine::StartBBEngine()
@@ -40,31 +41,14 @@ namespace BBE {
         }
     }
 
-    void ThreadTest(void*) {
-        Sleep(10 * 1000);
-
-        printf("done!");
-    }
-
     void BBEngine::TestCode()
     {
-        m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(6);
-        testdesc = reinterpret_cast<TaskDesc*>(m_ThreadPool->AddTask(ThreadTest));
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
-        m_ThreadPool->AddTask(ThreadTest);
+        BMP bmp;
+        bmp.LoadBMP("C:/Users/svogels/Pictures/BMP/Cheese.bmp");
     }
 
     void BBEngine::Update()
     {
-        printf("Current status is: %d \n", testdesc->tskStatus);
-
         const float c = std::sin(m_Timer.Peek()) / 2.0f + 0.5f;
         m_Window.GetGraphics().ClearBuffer(c, c, 1.0f);
 
@@ -80,3 +64,30 @@ namespace BBE {
         m_Window.GetGraphics().EndFrame();
     }
 }
+
+//void ThreadTest(void*) {
+//    Sleep(10 * 1000);
+//
+//    printf("done!");
+//}
+//
+//void StaticThreadTest(void*) {
+//    Sleep(1 * 1000);
+//
+//    printf("Static thread called!");
+//}
+
+//m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(6, 2);
+//testdesc = reinterpret_cast<TaskDesc*>(m_ThreadPool->AddTask(ThreadTest));
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//m_ThreadPool->AddTask(ThreadTest);
+//
+//BBThreadHandle static_handle = m_ThreadPool->CreateStaticThread(StaticThreadTest);
+//m_ThreadPool->DestoryStaticThread(static_handle);

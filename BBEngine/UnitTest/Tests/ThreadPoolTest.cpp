@@ -10,9 +10,18 @@ void ThreadTest(void*) {
     printf("done!");
 }
 
+void StaticThreadTest(void*) {
+    Sleep(1 * 1000);
+
+    printf("Static thread called!");
+}
+
 TEST(Thread, ThreadPool) 
 {
     for (int i = 0; i < 10; i++) {
         m_ThreadPool.AddTask(ThreadTest);
     }
+
+    BBE::BBThreadHandle static_handle = m_ThreadPool.CreateStaticThread(StaticThreadTest);
+    m_ThreadPool.DestoryStaticThread(static_handle);
 }

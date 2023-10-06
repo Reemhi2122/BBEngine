@@ -10,6 +10,7 @@ add_library (BBEngine
 "BBEngine.cpp" 
 "Timer/BBTimer.cpp"
 "Logger/logger.cpp" 
+"Thread/ThreadPool.cpp"
  
 "Allocators/StackAllocator.cpp" 
 "Allocators/ArenaAllocator.cpp" 
@@ -17,7 +18,9 @@ add_library (BBEngine
 "Allocators/FreeListAllocator.cpp"
 "Allocators/BuddyAllocator.cpp"
 "Allocators/Allocator.cpp" 
-"Thread/ThreadPool.cpp"
+
+"FileLoaders/BMPLoader.cpp"
+
 "System/FileHandler/FileHandler_Windows.cpp"
 )
 
