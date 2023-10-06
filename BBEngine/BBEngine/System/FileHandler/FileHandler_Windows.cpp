@@ -79,6 +79,10 @@ namespace BBE {
 			WriteFile(a_File, a_Message.c_str(), a_Message.length(), NULL, NULL);
 		}
 
+		void WriteToFileBinary(BBFILE a_File, void* buffer, uint32_t a_Size) {
+			WriteFile(a_File, buffer, a_Size, NULL, NULL);
+		}
+
 		void CloseFileBB(BBFILE a_File)
 		{
 			CloseHandle(a_File);

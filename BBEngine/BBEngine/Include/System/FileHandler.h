@@ -18,6 +18,7 @@ namespace BBE {
 
 		void ReadFileBB(BBFILE a_Handle, char* a_Buffer);
 
+		void WriteToFileBinary(BBFILE a_File, void* buffer, uint32_t a_Size);
 		void WriteToFileBB(BBFILE a_File, std::string a_Message);
 		void CloseFileBB(BBFILE a_File);
 	}

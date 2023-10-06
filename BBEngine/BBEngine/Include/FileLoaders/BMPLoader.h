@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <vector>
 #include "Allocators/ArenaAllocator.h"
+#include "System/FileHandler.h"
 
 namespace BBE {
 
@@ -40,7 +41,6 @@ namespace BBE {
 		uint32_t unused[16]{ 0u };
 	};
 #pragma pack(pop)
-
 	class BMP
 	{
 	public:
@@ -52,7 +52,12 @@ namespace BBE {
 		void LoadBMP(const char* a_Name);
 		void WriteBMP(const char* a_Name);
 
+		void FillRegion(uint32_t a_X, uint32_t a_Y, uint32_t a_W, uint32_t a_H, uint8_t a_B, uint8_t a_G, uint8_t a_R, uint8_t a_A);
+
 	private:
+		void WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle);
+		void WriteHeaders(BBSystem::BBFILE& a_FileHandle);
+
 		void CheckColorHeader(BMPColorHeader& a_ColorHeader);
 		uint32_t MakeStrideAligned(uint32_t align_stride);
 
@@ -61,7 +66,7 @@ namespace BBE {
 		BMPFileHeader m_FileHeader;
 		BMPInfoHeader m_InfoHeader;
 		BMPColorHeader m_ColorHeader;
-		uint8_t* data;
+		uint8_t* m_Data;
 
 		Allocators::ArenaAllocator m_BMPAlloc;
 		Allocators::ArenaAllocator m_BMPPaddingAlloc;

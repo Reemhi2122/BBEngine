@@ -1,5 +1,4 @@
 #include "FileLoaders/BMPLoader.h"
-#include "System/FileHandler.h"
 #include "Logger/Logger.h"
 #include "Utility/BBMemory.h"
 
@@ -10,9 +9,35 @@ namespace BBE {
 
 	}
 	
-	BMP::BMP(int32_t a_Width, int32_t a_Height, bool a_Alpha)
+	BMP::BMP(int32_t a_Width, int32_t a_Height, bool a_HasAlpha)
 	{
+		BB_Assert((a_Width > 0 || a_Height > 0), "The image width and height must be positive");
 
+		m_InfoHeader.width = a_Width;
+		m_InfoHeader.height = a_Height;
+
+		if (a_HasAlpha) {
+			m_InfoHeader.size = sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
+			m_FileHeader.offsetData = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
+			
+			m_InfoHeader.bitCount = 32;
+			m_InfoHeader.compression = 3;
+			m_RowStride = a_Width * 4;
+			m_Data = BBNewArr(m_BMPBufferAlloc, (m_RowStride * a_Height), uint8_t);
+			m_FileHeader.fileSize = m_FileHeader.offsetData + (m_RowStride * a_Height);
+		}
+		else {
+			m_InfoHeader.size = sizeof(BMPInfoHeader);
+			m_FileHeader.offsetData = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader);
+			
+			m_InfoHeader.bitCount = 24;
+			m_InfoHeader.compression = 0;
+			m_RowStride = a_Width * 3;
+			m_Data = BBNewArr(m_BMPBufferAlloc, (m_RowStride * a_Height), uint8_t);
+			
+			uint32_t newStride = MakeStrideAligned(4);
+			m_FileHeader.fileSize = m_FileHeader.offsetData + (m_RowStride * a_Height) + m_InfoHeader.height * (newStride - m_RowStride);
+		}
 	}
 
 	BMP::~BMP()
@@ -26,78 +51,78 @@ namespace BBE {
 		BBSystem::BBFILE file;
 		file = BBSystem::OpenFileReadBB(a_Name);
 
-
-		if (file) {
-			m_BMPBufferAlloc.Init(4*MBSize);
-			char* buffer = BBAlloc(m_BMPBufferAlloc, 4 * MBSize, char*);
-			BBSystem::ReadFileBB(file, buffer);
-
-			uint32_t offset = 0;
-			m_FileHeader = *reinterpret_cast<BMPFileHeader*>(buffer);
-			offset += sizeof(BMPFileHeader);
-
-			BB_Assert((m_FileHeader.fileType == 0x4D42), "Loaded BMP file is not of correct file type");
-
-			m_InfoHeader = *reinterpret_cast<BMPInfoHeader*>(buffer + offset);
-			offset += sizeof(BMPInfoHeader);
-
-			if (m_InfoHeader.bitCount == 32) {
-				if (m_InfoHeader.size >= sizeof(BMPInfoHeader) + sizeof(BMPColorHeader)) {
-					m_ColorHeader = *reinterpret_cast<BMPColorHeader*>(buffer + offset);
-					CheckColorHeader(m_ColorHeader);
-				}
-				else {
-					BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogWarningHigh, "The file %s does not contain bit mask information", a_Name);
-					BB_Assert(0, "Unrecognized file!");
-				}
-			}
-
-			//Not sure about the jumping yet
-			offset = m_FileHeader.offsetData;
-
-			if (m_InfoHeader.bitCount == 32) {
-				m_InfoHeader.size = sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
-				m_FileHeader.offsetData = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
-			}
-			else {
-				m_InfoHeader.size = sizeof(BMPInfoHeader);
-				m_FileHeader.offsetData = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader);
-			}
-			m_FileHeader.fileSize = m_FileHeader.offsetData;
-
-			BB_Assert((m_InfoHeader.height > 0), "This BMP converter only supports images with the origin in the bottom left corner.");
-
-			int dataSize = m_InfoHeader.width * m_InfoHeader.height * m_InfoHeader.bitCount / 8;
-			m_BMPAlloc.Init(dataSize);
-			data = BBNewArr(m_BMPAlloc, dataSize, uint8_t);
-
-			if (m_InfoHeader.width % 4 == 0) {
-				memcpy(data, buffer + offset, dataSize);
-				m_FileHeader.fileSize += (dataSize * sizeof(uint8_t));
-			}
-			else {
-				m_RowStride = m_InfoHeader.width * m_InfoHeader.bitCount / 8;
-				uint32_t newStride = MakeStrideAligned(4);
-				uint32_t strideOffset = newStride - m_RowStride;
-				m_BMPPaddingAlloc.Init(strideOffset);
-
-				uint32_t* paddingRow = BBNewArr(m_BMPPaddingAlloc, strideOffset, uint32_t);
-				uint8_t* ptr = reinterpret_cast<uint8_t*>(data);
-
-				for (int y = 0; y < m_InfoHeader.height; ++y) {
-					memcpy(ptr, buffer + offset, m_RowStride);
-					offset += m_RowStride;
-					memcpy(paddingRow, buffer + offset, strideOffset);
-					offset += strideOffset;
-					ptr += m_RowStride;
-				}
-				
-				m_FileHeader.fileSize += dataSize + m_InfoHeader.height * (newStride - m_RowStride);
-			}
-
-		} else {
+		if (!file) {
 			BBSystem::CloseFileBB(file);
 			BB_Assert(0, "Unable to open the image file!");
+			return;
+		}
+
+		m_BMPBufferAlloc.Init(4*MBSize);
+		char* buffer = BBAlloc(m_BMPBufferAlloc, 4 * MBSize, char*);
+		BBSystem::ReadFileBB(file, buffer);
+
+		uint32_t offset = 0;
+		m_FileHeader = *reinterpret_cast<BMPFileHeader*>(buffer);
+		offset += sizeof(BMPFileHeader);
+
+		BB_Assert((m_FileHeader.fileType == 0x4D42), "Loaded BMP file is not of correct file type");
+
+		m_InfoHeader = *reinterpret_cast<BMPInfoHeader*>(buffer + offset);
+		offset += sizeof(BMPInfoHeader);
+
+		if (m_InfoHeader.bitCount == 32) {
+			if (m_InfoHeader.size >= sizeof(BMPInfoHeader) + sizeof(BMPColorHeader)) {
+				m_ColorHeader = *reinterpret_cast<BMPColorHeader*>(buffer + offset);
+				CheckColorHeader(m_ColorHeader);
+			}
+			else {
+				BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogWarningHigh, "The file %s does not contain bit mask information", a_Name);
+				BB_Assert(0, "Unrecognized file!");
+			}
+		}
+
+		//Not sure about the jumping yet
+		offset = m_FileHeader.offsetData;
+
+		if (m_InfoHeader.bitCount == 32) {
+			m_InfoHeader.size = sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
+			m_FileHeader.offsetData = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
+		}
+		else {
+			m_InfoHeader.size = sizeof(BMPInfoHeader);
+			m_FileHeader.offsetData = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader);
+		}
+		m_FileHeader.fileSize = m_FileHeader.offsetData;
+
+		BB_Assert((m_InfoHeader.height > 0), "This BMP converter only supports images with the origin in the bottom left corner.");
+
+		int dataSize = m_InfoHeader.width * m_InfoHeader.height * m_InfoHeader.bitCount / 8;
+		m_BMPAlloc.Init(dataSize);
+		m_Data = BBNewArr(m_BMPAlloc, dataSize, uint8_t);
+
+		if (m_InfoHeader.width % 4 == 0) {
+			memcpy(m_Data, buffer + offset, dataSize);
+			m_FileHeader.fileSize += (dataSize * sizeof(uint8_t));
+		}
+		else {
+			m_RowStride = m_InfoHeader.width * m_InfoHeader.bitCount / 8;
+			uint32_t newStride = MakeStrideAligned(4);
+			uint32_t strideOffset = newStride - m_RowStride;
+			m_BMPPaddingAlloc.Init(strideOffset);
+
+			uint32_t* paddingRow = BBNewArr(m_BMPPaddingAlloc, strideOffset, uint32_t);
+			uint8_t* ptr = reinterpret_cast<uint8_t*>(m_Data);
+
+			for (int y = 0; y < m_InfoHeader.height; ++y) {
+				memcpy(ptr, buffer + offset, m_RowStride);
+				offset += m_RowStride;
+				memcpy(paddingRow, buffer + offset, strideOffset);
+				offset += strideOffset;
+				ptr += m_RowStride;
+			}
+
+			m_FileHeader.fileSize += dataSize + m_InfoHeader.height * (newStride - m_RowStride);
+			m_BMPPaddingAlloc.Clear();
 		}
 
 		BBSystem::CloseFileBB(file);
@@ -105,7 +130,67 @@ namespace BBE {
 	
 	void BMP::WriteBMP(const char* a_Name)
 	{
+		BBSystem::BBFILE file;
+		file = BBSystem::OpenFileWriteBB(a_Name);
 
+		if (!file) {
+			BBSystem::CloseFileBB(file);
+			BB_Assert(0, "Unable to open the image file!");
+			return;
+		}
+
+		if (m_InfoHeader.bitCount == 32) {
+			WriteHeadersAndData(file);
+		}
+		else if (m_InfoHeader.bitCount == 24) {
+			if (m_InfoHeader.width % 4 == 0) {
+				WriteHeadersAndData(file);
+			}
+			else {
+				uint32_t newStride = MakeStrideAligned(4);
+				uint32_t strideOffset = newStride - m_RowStride;
+				uint32_t* paddingRow = BBNewArr(m_BMPPaddingAlloc, strideOffset, uint32_t);
+
+				int offset;
+
+				WriteHeaders(file);
+				for (int y = 0; y < m_InfoHeader.height; ++y) {
+					BBSystem::WriteToFileBinary(file, m_Data + offset, m_RowStride);
+					offset += m_RowStride;
+					BBSystem::WriteToFileBinary(file, m_Data + offset, strideOffset);
+					offset += strideOffset;
+				}
+			}
+		}
+		else {
+			BB_Assert(0, "The program can treat only 24 or 32 bits per pixel!");
+		}
+
+		BBSystem::CloseFileBB(file);
+	}
+
+	void BMP::FillRegion(uint32_t a_X, uint32_t a_Y, uint32_t a_W, uint32_t a_H, uint8_t a_B, uint8_t a_G, uint8_t a_R, uint8_t a_A)
+	{
+		//if (a_X > m_InfoHeader.width && ) {
+
+		//}
+	}
+
+	void BMP::WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle)
+	{
+		BBSystem::WriteToFileBinary(a_FileHandle, &m_FileHeader, sizeof(BMPFileHeader));
+		BBSystem::WriteToFileBinary(a_FileHandle, &m_InfoHeader, sizeof(BMPInfoHeader));
+		if(m_InfoHeader.bitCount == 32) {
+			BBSystem::WriteToFileBinary(a_FileHandle, &m_ColorHeader, sizeof(BMPColorHeader));
+		}
+	}
+
+	void BMP::WriteHeaders(BBSystem::BBFILE& a_FileHandle)
+	{
+		WriteHeaders(a_FileHandle);
+		//Not sure if this works..
+		printf("size of data %d", sizeof(m_Data));
+		BBSystem::WriteToFileBinary(a_FileHandle, &m_Data, sizeof(m_Data));
 	}
 
 	void BMP::CheckColorHeader(BMPColorHeader& a_ColorHeader)
