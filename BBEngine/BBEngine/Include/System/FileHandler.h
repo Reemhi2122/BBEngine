@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-#define BUFFERSIZE 5000
+#define BUFFERSIZE 2000000
 
 namespace BBE {
 	namespace BBSystem {

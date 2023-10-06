@@ -1,6 +1,7 @@
 #pragma once
 #include <stdint.h>
 #include <vector>
+#include "Allocators/ArenaAllocator.h"
 
 namespace BBE {
 
@@ -46,20 +47,25 @@ namespace BBE {
 		BMP() = default;
 		BMP(const char* a_FileName);
 		BMP(int32_t a_Width, int32_t a_Height, bool a_Alpha = true);
-		~BMP() = default;
+		~BMP();
 
 		void LoadBMP(const char* a_Name);
 		void WriteBMP(const char* a_Name);
 
 	private:
 		void CheckColorHeader(BMPColorHeader& a_ColorHeader);
+		uint32_t MakeStrideAligned(uint32_t align_stride);
+
+		uint32_t m_RowStride{ 0 };
 
 		BMPFileHeader m_FileHeader;
 		BMPInfoHeader m_InfoHeader;
 		BMPColorHeader m_ColorHeader;
-		std::vector<uint8_t> data;
+		uint8_t* data;
 
-
+		Allocators::ArenaAllocator m_BMPAlloc;
+		Allocators::ArenaAllocator m_BMPPaddingAlloc;
+		Allocators::ArenaAllocator m_BMPBufferAlloc;
 	};
 
 }

@@ -19,6 +19,7 @@
 namespace BBE {
 
 	constexpr unsigned int PageSize = 4096;
+	constexpr unsigned int MBSize = 1024 * 1024;
 
 	struct BBArrayAllocHeader
 	{
