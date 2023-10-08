@@ -5,20 +5,11 @@ class Bindable
 {
 public:
 	Bindable() = default;
-	~Bindable() = default;
 
 	virtual void Bind(Graphics& gfx) noexcept = 0;
+	virtual ~Bindable() = default;
 
-private:
+protected:
 	static ID3D11DeviceContext* GetContext(Graphics& gfx) noexcept;
 	static ID3D11Device* GetDevice(Graphics& gfx) noexcept;
-
 };
-
-Bindable::Bindable()
-{
-}
-
-Bindable::~Bindable()
-{
-}
