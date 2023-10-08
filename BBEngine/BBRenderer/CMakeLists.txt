@@ -12,7 +12,7 @@ add_library (Renderer STATIC
  "Graphics/Graphics.cpp"
  "DXERR/dxerr.cpp"
  "Shader/VertexShader.hlsl" 
- "Bindable/Topology.cpp")
+ "Bindable/Topology.cpp" "Bindable/IndexBuffer.cpp")
 
 target_include_directories(Renderer PUBLIC
 "Include")

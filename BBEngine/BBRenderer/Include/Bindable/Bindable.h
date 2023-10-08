@@ -6,7 +6,7 @@ class Bindable
 public:
 	Bindable() = default;
 
-	virtual void Bind(Graphics& gfx) noexcept = 0;
+	virtual void Bind(Graphics& a_Gfx) noexcept = 0;
 	virtual ~Bindable() = default;
 
 protected:
