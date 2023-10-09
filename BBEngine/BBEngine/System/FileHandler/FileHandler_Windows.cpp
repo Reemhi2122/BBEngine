@@ -43,7 +43,7 @@ namespace BBE {
 		BBFILE OpenFileWriteBB(std::string a_Path) {
 			return CreateFile(
 				a_Path.c_str(), 
-				FILE_APPEND_DATA,
+				FILE_GENERIC_WRITE,
 				FILE_SHARE_READ, 
 				NULL, 
 				OPEN_ALWAYS, 
@@ -80,13 +80,13 @@ namespace BBE {
 		}
 
 		void WriteToFileBinary(BBFILE a_File, void* buffer, uint32_t a_Size) {
-			WriteFile(a_File, buffer, a_Size, NULL, NULL);
+			BOOL res = WriteFile(a_File, buffer, a_Size, NULL, NULL);
+			BB_Assert((res == TRUE), "Couldn't write to file!");
 		}
 
 		void CloseFileBB(BBFILE a_File)
 		{
 			CloseHandle(a_File);
 		}
-
 	}
 }

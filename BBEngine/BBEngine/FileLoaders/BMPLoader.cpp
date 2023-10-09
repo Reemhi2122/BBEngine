@@ -16,6 +16,8 @@ namespace BBE {
 		m_InfoHeader.width = a_Width;
 		m_InfoHeader.height = a_Height;
 
+		m_BMPBufferAlloc.Init(4 * MBSize);
+
 		if (a_HasAlpha) {
 			m_InfoHeader.size = sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
 			m_FileHeader.offsetData = sizeof(BMPFileHeader) + sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
@@ -151,14 +153,12 @@ namespace BBE {
 				uint32_t strideOffset = newStride - m_RowStride;
 				uint32_t* paddingRow = BBNewArr(m_BMPPaddingAlloc, strideOffset, uint32_t);
 
-				int offset;
-
+				int offset = 0;
 				WriteHeaders(file);
-				for (int y = 0; y < m_InfoHeader.height; ++y) {
-					BBSystem::WriteToFileBinary(file, m_Data + offset, m_RowStride);
+				for (int y = 0; y < m_InfoHeader.height; y++) {
+					BBSystem::WriteToFileBinary(file, Pointer::Add(m_Data, offset), m_RowStride);
 					offset += m_RowStride;
-					BBSystem::WriteToFileBinary(file, m_Data + offset, strideOffset);
-					offset += strideOffset;
+					BBSystem::WriteToFileBinary(file, paddingRow, strideOffset);
 				}
 			}
 		}
@@ -176,8 +176,8 @@ namespace BBE {
 		}
 
 		uint32_t channels = m_InfoHeader.bitCount / 8;
-		for (uint32_t y = a_Y; y < a_W; y++) {
-			for (uint32_t x = a_X; x < a_H; x++)
+		for (uint32_t y = a_Y; y < (a_Y + a_H); y++) {
+			for (uint32_t x = a_X; x < (a_X + a_W); x++)
 			{
 				m_Data[channels * (y * m_InfoHeader.width + x) + 0] = a_B;
 				m_Data[channels * (y * m_InfoHeader.width + x) + 1] = a_G;
@@ -189,7 +189,7 @@ namespace BBE {
 		}
 	}
 
-	void BMP::WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle)
+	void BMP::WriteHeaders(BBSystem::BBFILE& a_FileHandle)
 	{
 		BBSystem::WriteToFileBinary(a_FileHandle, &m_FileHeader, sizeof(BMPFileHeader));
 		BBSystem::WriteToFileBinary(a_FileHandle, &m_InfoHeader, sizeof(BMPInfoHeader));
@@ -198,12 +198,11 @@ namespace BBE {
 		}
 	}
 
-	void BMP::WriteHeaders(BBSystem::BBFILE& a_FileHandle)
+	void BMP::WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle)
 	{
 		WriteHeaders(a_FileHandle);
-		//Not sure if this works..
-		printf("size of data %d", sizeof(m_Data));
-		BBSystem::WriteToFileBinary(a_FileHandle, &m_Data, sizeof(m_Data));
+		uint32_t size = (m_InfoHeader.width * m_InfoHeader.height) * (m_InfoHeader.bitCount / 8);
+		BBSystem::WriteToFileBinary(a_FileHandle, m_Data, size);
 	}
 
 	void BMP::CheckColorHeader(BMPColorHeader& a_ColorHeader)
