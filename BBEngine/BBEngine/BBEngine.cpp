@@ -42,7 +42,8 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-        BMP bmp("C:/Users/svogels/Pictures/BMP/Shapes_24.bmp");
+        BMP bmp("C:/Users/svogels/Pictures/BMP/blurimage.bmp");
+        bmp.ApplyBlur();
         bmp.WriteBMP("CopyShapes.bmp");
     }
 

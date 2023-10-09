@@ -9,10 +9,10 @@ namespace BBE {
 #pragma pack(push, 1)
 	struct BMPFileHeader {
 		uint16_t fileType{ 0x4D42 };
-		uint32_t fileSize{ 0 };
-		uint16_t reserved1{ 0 };
-		uint16_t resvered2{ 0 };
-		uint32_t offsetData{ 0 };
+		uint32_t fileSize{ 0u };
+		uint16_t reserved1{ 0u };
+		uint16_t resvered2{ 0u };
+		uint32_t offsetData{ 0u };
 	};
 
 
@@ -27,8 +27,8 @@ namespace BBE {
 		uint32_t sizeImage{ 0u };
 		int32_t xPixelPerMeter { 0 };
 		int32_t yPixelPerMeter { 0 };
-		uint32_t colorsUsed{ 0 };
-		uint32_t colorsImportant{ 0 };
+		uint32_t colorsUsed{ 0u };
+		uint32_t colorsImportant{ 0u };
 	};
 
 	struct BMPColorHeader
@@ -54,6 +54,8 @@ namespace BBE {
 		void WriteBMP(const char* a_Name);
 
 		void FillRegion(uint32_t a_X, uint32_t a_Y, uint32_t a_W, uint32_t a_H, uint8_t a_B, uint8_t a_G, uint8_t a_R, uint8_t a_A);
+
+		void ApplyBlur();
 
 	private:
 		void WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle);
