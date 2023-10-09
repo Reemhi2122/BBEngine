@@ -171,9 +171,22 @@ namespace BBE {
 
 	void BMP::FillRegion(uint32_t a_X, uint32_t a_Y, uint32_t a_W, uint32_t a_H, uint8_t a_B, uint8_t a_G, uint8_t a_R, uint8_t a_A)
 	{
-		//if (a_X > m_InfoHeader.width && ) {
+		if (a_X + a_W > (uint32_t)m_InfoHeader.width || a_Y + a_H > (uint32_t)m_InfoHeader.height ) {
+			BB_Assert(0, "Trying to fill region outside of BMP!");
+		}
 
-		//}
+		uint32_t channels = m_InfoHeader.bitCount / 8;
+		for (uint32_t y = a_Y; y < a_W; y++) {
+			for (uint32_t x = a_X; x < a_H; x++)
+			{
+				m_Data[channels * (y * m_InfoHeader.width + x) + 0] = a_B;
+				m_Data[channels * (y * m_InfoHeader.width + x) + 1] = a_G;
+				m_Data[channels * (y * m_InfoHeader.width + x) + 2] = a_R;
+				if (channels == 4) {
+					m_Data[channels * (y * m_InfoHeader.width + x) + 3] = a_A;
+				}
+			}
+		}
 	}
 
 	void BMP::WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle)

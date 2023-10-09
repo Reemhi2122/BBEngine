@@ -28,7 +28,3 @@ UINT IndexBuffer::Getcount() const noexcept
 {
 	return 0;
 }
-
-IndexBuffer::~IndexBuffer()
-{
-}

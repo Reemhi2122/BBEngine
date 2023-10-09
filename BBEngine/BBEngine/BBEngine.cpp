@@ -44,7 +44,9 @@ namespace BBE {
     void BBEngine::TestCode()
     {
         BMP bmp;
-        bmp.LoadBMP("C:/Users/svogels/Pictures/BMP/t2_24.bmp");
+        bmp.LoadBMP("C:/Users/svogels/Pictures/BMP/Shapes.bmp");
+        bmp.WriteBMP("Shapes_copy.bmp");
+
     }
 
     void BBEngine::Update()
