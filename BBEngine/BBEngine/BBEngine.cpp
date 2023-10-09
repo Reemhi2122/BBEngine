@@ -18,19 +18,18 @@ namespace BBE {
     BBEngine::BBEngine()
         : m_Window(800, 600, "BBWindow test")
     {
-        m_ThreadPool = nullptr;
+        BB_Log_Init("BBLogger", LOG_ALL, "logs/");
+        m_ArenaAllocator.Init(BBE::PageSize);
+        m_ThreadPool = BBNew(m_ArenaAllocator, ThreadPool);
     }
 
     BBEngine::~BBEngine()
     {
-        //BBFree(m_ArenaAllocator, m_ThreadPool);
+        BBFree(m_ArenaAllocator, m_ThreadPool);
     }
 
     int BBEngine::StartBBEngine()
     {
-        BB_Log_Init("BBLogger", LOG_ALL, "logs/");
-        m_ArenaAllocator.Init(BBE::PageSize);
-
         TestCode();
 
         while (true) {
@@ -43,7 +42,8 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-
+        BMP bmp("C:/Users/svogels/Pictures/BMP/Shapes_24.bmp");
+        bmp.WriteBMP("CopyShapes.bmp");
     }
 
     void BBEngine::Update()

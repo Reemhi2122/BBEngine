@@ -41,10 +41,11 @@ namespace BBE {
 		uint32_t unused[16]{ 0u };
 	};
 #pragma pack(pop)
+	
 	class BMP
 	{
 	public:
-		BMP() = default;
+		BMP();
 		BMP(const char* a_FileName);
 		BMP(int32_t a_Width, int32_t a_Height, bool a_Alpha = true);
 		~BMP();
@@ -72,5 +73,4 @@ namespace BBE {
 		Allocators::ArenaAllocator m_BMPPaddingAlloc;
 		Allocators::ArenaAllocator m_BMPBufferAlloc;
 	};
-
 }

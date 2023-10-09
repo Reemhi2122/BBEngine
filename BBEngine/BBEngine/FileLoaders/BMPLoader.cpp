@@ -3,10 +3,15 @@
 #include "Utility/BBMemory.h"
 
 namespace BBE {
-	
+	BMP::BMP()
+	{
+		m_Data = nullptr;
+	}
+
 	BMP::BMP(const char* a_FileName)
 	{
-
+		m_Data = nullptr;
+		LoadBMP(a_FileName);
 	}
 	
 	BMP::BMP(int32_t a_Width, int32_t a_Height, bool a_HasAlpha)
