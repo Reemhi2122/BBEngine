@@ -6,6 +6,7 @@
 #include "Utility/BBMemory.h"
 #include "Thread/ThreadPool.h"
 #include "FileLoaders/BMPLoader.h"
+#include "Utility/ImageProcessing.h"
 
 #include <chrono>
 #include <iostream>
@@ -42,16 +43,22 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-        float Gausian3x3Kernal[9]{
+        const float Gausian3x3Kernal[9]{
             1.f, 2.f, 1.f,
             2.f, 4.f, 2.f,
             1.f, 2.f, 1.f
         };
 
         BMP bmp("C:/Users/svogels/Pictures/BMP/blurimage.bmp");
+        
+        Utility::ConvolutionDesc desc;
+        desc.buffer = bmp.GetBuffer();
+        desc.width = bmp.GetWidth();
+        desc.height = bmp.GetHeight();
+        desc.channelCount = 3;
+        desc.kernel = gaussian_blur;
 
-        //bmp.ApplyBlur(*Gausian3x3Kernal, 9.f, 0.0625);
-        bmp.WriteBMP("CopyShapes.bmp");
+        bmp.WriteBMP("blurImage.bmp");
 
         BMP bmp1("C:/Users/svogels/Pictures/BMP/Shapes.bmp");
         bmp1.WriteBMP("BMPCopy.bmp");

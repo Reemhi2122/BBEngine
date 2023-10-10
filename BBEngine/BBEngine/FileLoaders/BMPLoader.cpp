@@ -193,11 +193,6 @@ namespace BBE {
 		}
 	}
 
-	//void BMP::ApplyBlur(const float& a_Kernel, const int& a_KernelSize, const int& multiplier = 0)
-	//{
-	//	
-	//}
-
 	void BMP::WriteHeaders(BBSystem::BBFILE& a_FileHandle)
 	{
 		BBSystem::WriteToFileBinary(a_FileHandle, &m_FileHeader, sizeof(BMPFileHeader));
