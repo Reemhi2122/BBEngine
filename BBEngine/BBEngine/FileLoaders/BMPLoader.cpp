@@ -1,7 +1,6 @@
 #include "FileLoaders/BMPLoader.h"
 #include "Logger/Logger.h"
 #include "Utility/BBMemory.h"
-#include <algorithm>
 
 namespace BBE {
 	BMP::BMP()
@@ -194,53 +193,10 @@ namespace BBE {
 		}
 	}
 
-	void BMP::ApplyBlur()
-	{
-		float Gausian3x3[9]{
-			1.f, 2.f, 1.f,
-			2.f, 4.f, 2.f,
-			1.f, 2.f, 1.f
-		};
-
-		uint32_t width = m_InfoHeader.width;
-		uint32_t height = m_InfoHeader.height;
-
-		uint32_t channels = m_InfoHeader.bitCount / 8;
-
-		for (int y = 0; y < height; y ++) {
-			for (int x = 0; x < width; x++) {
-				
-				int matrixIndex = 0;
-				uint8_t RAccumulator = 0;
-				uint8_t GAccumulator = 0;
-				uint8_t BAccumulator = 0;
-
-				uint32_t accum = 0;
-
-				for (int r = -1; r < 2; r++)
-				{
-					for (int c = -1; c < 2; c++) {
-						int y0 = std::clamp((y+r), 0, (int)height);
-						int x0 = std::clamp((x+c), 0, (int)width);
-
-						uint32_t PixelIndex = channels * (y0 * m_InfoHeader.width + x0);
-
-						RAccumulator += m_Data[PixelIndex + 0] * Gausian3x3[matrixIndex] * 0.0625;
-						GAccumulator += m_Data[PixelIndex + 1] * Gausian3x3[matrixIndex] * 0.0625;
-						BAccumulator += m_Data[PixelIndex + 2] * Gausian3x3[matrixIndex] * 0.0625;
-						matrixIndex++;
-					}
-				}
-
-				uint32_t PixelIndex = channels * (y * m_InfoHeader.width + x);
-				m_Data[PixelIndex] = accum;
-				m_Data[PixelIndex + 0] = RAccumulator;
-				m_Data[PixelIndex + 1] = GAccumulator;
-				m_Data[PixelIndex + 2] = BAccumulator;
-			}
-		}
-
-	}
+	//void BMP::ApplyBlur(const float& a_Kernel, const int& a_KernelSize, const int& multiplier = 0)
+	//{
+	//	
+	//}
 
 	void BMP::WriteHeaders(BBSystem::BBFILE& a_FileHandle)
 	{

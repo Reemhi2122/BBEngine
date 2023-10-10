@@ -54,8 +54,7 @@ namespace BBE {
 		void WriteBMP(const char* a_Name);
 
 		void FillRegion(uint32_t a_X, uint32_t a_Y, uint32_t a_W, uint32_t a_H, uint8_t a_B, uint8_t a_G, uint8_t a_R, uint8_t a_A);
-
-		void ApplyBlur();
+		//void ApplyBlur(const float& a_Kernel, const int& a_KernelSize, const int& multiplier = 0);
 
 	private:
 		void WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle);

@@ -21,6 +21,8 @@ add_library (BBEngine
 
 "FileLoaders/BMPLoader.cpp"
 
+"Utility/ImageProcessing.cpp"
+
 "System/FileHandler/FileHandler_Windows.cpp"
 )
 

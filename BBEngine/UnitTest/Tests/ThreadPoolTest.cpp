@@ -3,7 +3,7 @@
 #include "Thread/ThreadPool.h"
 
 BBE::Allocators::ArenaAllocator m_ArenaAllocator;
-BBE::ThreadPool m_ThreadPool = BBE::ThreadPool(8);
+BBE::ThreadPool m_ThreadPool = BBE::ThreadPool(8, 2);
 
 void ThreadTest(void*) {
     Sleep(2 * 1000);
@@ -25,3 +25,4 @@ TEST(Thread, ThreadPool)
     BBE::BBThreadHandle static_handle = m_ThreadPool.CreateStaticThread(StaticThreadTest);
     m_ThreadPool.DestoryStaticThread(static_handle);
 }
+

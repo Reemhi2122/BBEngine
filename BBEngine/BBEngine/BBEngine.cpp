@@ -42,9 +42,19 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
+        float Gausian3x3Kernal[9]{
+            1.f, 2.f, 1.f,
+            2.f, 4.f, 2.f,
+            1.f, 2.f, 1.f
+        };
+
         BMP bmp("C:/Users/svogels/Pictures/BMP/blurimage.bmp");
-        bmp.ApplyBlur();
+
+        //bmp.ApplyBlur(*Gausian3x3Kernal, 9.f, 0.0625);
         bmp.WriteBMP("CopyShapes.bmp");
+
+        BMP bmp1("C:/Users/svogels/Pictures/BMP/Shapes.bmp");
+        bmp1.WriteBMP("BMPCopy.bmp");
     }
 
     void BBEngine::Update()
