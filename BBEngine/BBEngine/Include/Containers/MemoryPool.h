@@ -4,12 +4,16 @@
 
 namespace BBE {
 
-
 	template<typename T>
 	class MemoryPool {
 	public:
 		MemoryPool(size_t maxPool);
 		~MemoryPool();
+
+		MemoryPool& operator=(const MemoryPool& a_Rhs);
+		MemoryPool(MemoryPool&& a_Rhs) noexcept;
+		MemoryPool& operator=(const MemoryPool& other);
+		MemoryPool& operator=(MemoryPool&& other) noexcept;
 
 		T* Pop();
 		void PushFront(T* a_Element);
@@ -35,16 +39,27 @@ namespace BBE {
 	}
 
 	template<typename T>
-	void MemoryPool<T>::InitNewElements(size_t a_num) {
-		void* m_Start = BBAlloc(m_Alloc, a_num * sizeof(T), T*);
-		m_Head = reinterpret_cast<T**>(m_Start);
+	MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& a_Rhs) // copy constructor
+	{ 
 
-		for (size_t i = 0; i < a_num - 1; i++) {
-			*m_Head = (reinterpret_cast<T*>(m_Head) + 1);
-			m_Head = reinterpret_cast<T**>(*m_Head);
-		}
+	}
 
-		m_Head = reinterpret_cast<T**>(m_Start);
+	template<typename T>
+	MemoryPool<T>::MemoryPool(MemoryPool&& a_Rhs) noexcept // move constructor
+	{
+
+	}
+
+	template<typename T>
+	MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& other) // copy assignment
+	{
+
+	}
+
+	template<typename T>
+	MemoryPool<T>& MemoryPool<T>::operator=(MemoryPool&& other) noexcept // move assignment
+	{
+
 	}
 
 	template<typename T>
@@ -62,5 +77,18 @@ namespace BBE {
 	void MemoryPool<T>::PushFront(T* a_Element) {
 		(*reinterpret_cast<T**>(a_Element)) = reinterpret_cast<T*>(m_Head);
 		m_Head = reinterpret_cast<T**>(a_Element);
+	}
+
+	template<typename T>
+	void MemoryPool<T>::InitNewElements(size_t a_num) {
+		void* m_Start = BBAlloc(m_Alloc, a_num * sizeof(T), T*);
+		m_Head = reinterpret_cast<T**>(m_Start);
+
+		for (size_t i = 0; i < a_num - 1; i++) {
+			*m_Head = (reinterpret_cast<T*>(m_Head) + 1);
+			m_Head = reinterpret_cast<T**>(*m_Head);
+		}
+
+		m_Head = reinterpret_cast<T**>(m_Start);
 	}
 }
