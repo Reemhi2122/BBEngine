@@ -67,6 +67,8 @@ namespace BBE {
 			DWORD dwBytesRead = 0;
 			BOOL result = ReadFile(a_Handle, a_Buffer, BUFFERSIZE, &dwBytesRead, NULL);
 
+			int test = GetLastError();
+
 			if (!result) {
 				BB_LogF(DEFAULT_LOG_CHANNEL, BBUtility::LogWarningHigh,"Cannot read file error code: %d", GetLastError());
 				BB_Assert(0, "Cannot read file");

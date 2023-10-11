@@ -21,7 +21,7 @@ namespace BBE {
 		m_InfoHeader.width = a_Width;
 		m_InfoHeader.height = a_Height;
 
-		m_BMPBufferAlloc.Init(4 * MBSize);
+		m_BMPBufferAlloc.Init(128 * MBSize);
 
 		if (a_HasAlpha) {
 			m_InfoHeader.size = sizeof(BMPInfoHeader) + sizeof(BMPColorHeader);
@@ -64,8 +64,8 @@ namespace BBE {
 			return;
 		}
 
-		m_BMPBufferAlloc.Init(4*MBSize);
-		char* buffer = BBAlloc(m_BMPBufferAlloc, 4 * MBSize, char*);
+		m_BMPBufferAlloc.Init(128 * MBSize);
+		char* buffer = BBAlloc(m_BMPBufferAlloc, 128 * MBSize, char*);
 		BBSystem::ReadFileBB(file, buffer);
 
 		uint32_t offset = 0;
@@ -102,13 +102,13 @@ namespace BBE {
 
 		BB_Assert((m_InfoHeader.height > 0), "This BMP converter only supports images with the origin in the bottom left corner.");
 
-		int dataSize = m_InfoHeader.width * m_InfoHeader.height * m_InfoHeader.bitCount / 8;
+		int dataSize = (m_InfoHeader.width * m_InfoHeader.height) * (m_InfoHeader.bitCount / 8);
 		m_BMPAlloc.Init(dataSize);
 		m_Data = BBNewArr(m_BMPAlloc, dataSize, uint8_t);
 
 		if (m_InfoHeader.width % 4 == 0) {
 			memcpy(m_Data, buffer + offset, dataSize);
-			m_FileHeader.fileSize += (dataSize * sizeof(uint8_t));
+			m_FileHeader.fileSize += dataSize;
 		}
 		else {
 			m_RowStride = m_InfoHeader.width * m_InfoHeader.bitCount / 8;

@@ -2,7 +2,13 @@
 #include <windows.h>
 #include <iostream>
 
+#include "Windows.h"
+
 #include "Logger/Logger.h" 
+
+#define UnprocessedThread 0
+
+uint32_t* m_TasksHandled;
 
 namespace BBE {
 
@@ -19,12 +25,12 @@ namespace BBE {
 		ThreadDesc* thdDesc = sthdDesc->sthdPool->Pop();
 		if (thdDesc != NULL && thdDesc->thdStatus == ThreadStatus::Waiting) {
 			TaskDesc tskDesc = sthdDesc->sthdQueue->Get();
-			tskDesc.tskStatus = TaskStatus::Process;
 
 			thdDesc->thdTskHandle = &tskDesc;
 			thdDesc->thdFunction = tskDesc.tskFunction;
 			thdDesc->thdParams = tskDesc.tskParam;
 			thdDesc->thdStatus = ThreadStatus::Working;
+			*tskDesc.tskHandle = ((uint64_t)sthdDesc->sthdTasksHandled[thdDesc->thdId] + 1) << 32 | thdDesc->thdId;
 			return;
 		}
 
@@ -45,10 +51,10 @@ namespace BBE {
 		{
 			if (thread->thdStatus == ThreadStatus::Working) {
 				thread->thdFunction(thread->thdParams);
-				thread->thdTskHandle->tskStatus = TaskStatus::Done;
 				thread->thdTskHandle = nullptr;
 				thread->thdFunction = nullptr;
 				thread->thdParams = nullptr;
+				m_TasksHandled[thread->thdId] = m_TasksHandled[thread->thdId] + 1;
 				thread->thdStatus = ThreadStatus::Idle;
 			}
 		}
@@ -75,6 +81,7 @@ namespace BBE {
 		m_StaticThreads = nullptr;
 		m_SystemDesc = SystemThreadDesc();
 		m_SystemThread = ThreadDesc();
+		m_TasksHandled = nullptr;
 	}
 
 	ThreadPool::ThreadPool(const uint8_t& a_ThreadPoolCount, const uint8_t& a_StaticThreadCount)
@@ -88,8 +95,14 @@ namespace BBE {
 		m_ThreadCount = m_PoolThreadCount + m_StaticThreadCount + SYSTEM_THREADS;
 		uint8_t totalThreads = OccupiedThreads + m_ThreadCount;
 		BB_Assert((totalThreads < SystemThreadCount), "Assigning more threads than threads available");
-		
-		m_ThreadAlloc.Init((m_PoolThreadCount + m_StaticThreadCount) * sizeof(ThreadDesc));
+
+		uint32_t allocSize =
+			((m_PoolThreadCount + m_StaticThreadCount) * sizeof(ThreadDesc)) +
+			(m_PoolThreadCount * sizeof(uint32_t));
+
+		m_ThreadAlloc.Init(allocSize);
+
+		m_TasksHandled = BBNewArr(m_ThreadAlloc, a_ThreadPoolCount, uint32_t);
 
 		InitializeThreads();
 		CreatePoolSystemThread();
@@ -110,17 +123,46 @@ namespace BBE {
 		OccupiedThreads -= m_ThreadCount;
 		BBFreeArr(m_ThreadAlloc, m_PoolThreads);
 		BBFreeArr(m_ThreadAlloc, m_StaticThreads);
+		BBFreeArr(m_ThreadAlloc, m_TasksHandled);
 	}
 
-	void ThreadPool::AddTask(void (*a_void)(void*), void* a_ThreadFunctionParam)
+	void ThreadPool::AddTask(void (*a_void)(void*), void* a_ThreadFunctionParam, BBTaskHandle* a_Handle)
 	{
-		//Need to think of a different way to manage tasks data
+		*a_Handle = UnprocessedThread;
+
 		TaskDesc task;
-		task.tskStatus = TaskStatus::Queue;
+		task.tskHandle = a_Handle;
 		task.tskFunction = a_void;
 		task.tskParam = a_ThreadFunctionParam;
 		m_TaskQueue.Add(task);
-		return; // Add a way to return task data
+	}
+
+	bool ThreadPool::IsTaskDone(BBTaskHandle& a_Handle)
+	{
+		if (a_Handle == UnprocessedThread)
+			return false;
+
+		uint32_t taskHandle = (uint32_t)((a_Handle & 0xFFFFFFFF00000000LL) >> 32);
+		uint32_t threadHandle = (uint32_t)(a_Handle & 0xFFFFFFFFLL);
+
+		if (m_TasksHandled[threadHandle] >= taskHandle) {
+			return true;
+		}
+
+		return false;
+	}
+
+	void ThreadPool::WaitTillTaskIsDone(BBTaskHandle& a_Handle)
+	{
+		uint32_t maxWait = 10000000;
+		uint32_t times = 0;
+		while (!IsTaskDone(a_Handle) && times < maxWait) {
+			times++;
+		}
+
+		if (times >= maxWait) {
+			printf("f");
+		}
 	}
 
 	BBThreadHandle ThreadPool::CreateStaticThread(void(*a_void)(void*), void* a_ThreaFunctionParam)
@@ -132,6 +174,7 @@ namespace BBE {
 
 		ThreadDesc* thdDesc = &m_StaticThreads[m_UsedStaticThreads];
 		thdDesc->thdStatus = ThreadStatus::Working;
+		thdDesc->thdId = -1;
 		thdDesc->thdTskHandle = nullptr;
 		thdDesc->thdFunction = a_void;
 		thdDesc->thdParams = a_ThreaFunctionParam;
@@ -159,8 +202,11 @@ namespace BBE {
 		m_PoolThreads = BBNewArr(m_ThreadAlloc, m_PoolThreadCount, ThreadDesc);
 
 		for (int i = 0; i < m_PoolThreadCount; i++) {
+			m_TasksHandled[i] = 0;
+
 			ThreadDesc* thdDesc = &m_PoolThreads[i];
 			thdDesc->thdStatus = ThreadStatus::Idle;
+			thdDesc->thdId = i;
 			thdDesc->thdTskHandle = nullptr;
 			thdDesc->thdFunction = nullptr;
 			thdDesc->thdParams = nullptr;
@@ -181,9 +227,11 @@ namespace BBE {
 		m_SystemDesc.sthdQueue = &m_TaskQueue;
 		m_SystemDesc.sthdPool = &m_Pool;
 		m_SystemDesc.sthdPoolSize = m_PoolThreadCount;
+		m_SystemDesc.sthdTasksHandled = m_TasksHandled;
 		m_SystemDesc.sthdPoolArray = m_PoolThreads;
 
 		m_SystemThread.thdStatus = ThreadStatus::Working;
+		m_SystemThread.thdId = -1;
 		m_SystemThread.thdFunction = ThreadPoolSystem;
 		m_SystemThread.thdParams = &m_SystemDesc;
 		m_SystemThread.thdHandle = CreateThread(

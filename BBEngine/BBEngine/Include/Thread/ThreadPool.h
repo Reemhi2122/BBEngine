@@ -7,7 +7,7 @@
 
 namespace BBE {
 
-	typedef void* BBTaskHandle;
+	typedef uint64_t BBTaskHandle;
 	typedef void* BBThreadHandle;
 
 	enum class ThreadStatus {
@@ -24,7 +24,7 @@ namespace BBE {
 	};
 
 	struct TaskDesc {
-		TaskStatus		tskStatus;
+		uint64_t*		tskHandle;
 		void			(*tskFunction)(void*);
 		void*			tskParam;
 	};
@@ -32,6 +32,7 @@ namespace BBE {
 	struct ThreadDesc {
 		ThreadStatus	thdStatus;
 		TaskDesc*		thdTskHandle;
+		uint32_t		thdId;
 		BBThreadHandle	thdHandle;
 		void			(*thdFunction)(void*);
 		void*			thdParams;
@@ -41,6 +42,7 @@ namespace BBE {
 		Queue<TaskDesc>*	sthdQueue;
 		Pool<ThreadDesc>*	sthdPool;
 		ThreadDesc*			sthdPoolArray;
+		uint32_t*			sthdTasksHandled;
 		uint8_t				sthdPoolSize;
 	};
 
@@ -51,7 +53,10 @@ namespace BBE {
 		ThreadPool(const uint8_t& AmountOfStaticThreads, const uint8_t& a_StaticThreadCount = 0);
 		~ThreadPool();
 
-		void AddTask(void (*a_void)(void*), void* a_ThreaFunctionParam = NULL);
+		void AddTask(void (*a_void)(void*), void* a_ThreaFunctionParam, BBTaskHandle* a_Handle);
+		bool IsTaskDone(BBTaskHandle& a_Handle);
+		void WaitTillTaskIsDone(BBTaskHandle& a_Handle);
+		
 		BBThreadHandle CreateStaticThread(void (*a_void)(void*), void* a_ThreaFunctionParam = NULL);
 		void DestoryStaticThread(BBThreadHandle a_Handle);
 
