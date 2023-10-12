@@ -76,7 +76,7 @@ namespace BBE {
 
 		uint8_t m_UsedStaticThreads = 0u;
 
-		Queue<TaskDesc> m_TaskQueue;
+		Queue<TaskDesc> m_TaskQueue = Queue<TaskDesc>(256u);
 		Pool<ThreadDesc> m_Pool = Pool<ThreadDesc>(32u);
 
 		SystemThreadDesc m_SystemDesc;

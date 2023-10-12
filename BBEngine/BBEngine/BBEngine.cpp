@@ -21,7 +21,7 @@ namespace BBE {
     {
         BB_Log_Init("BBLogger", LOG_ALL, "logs/");
         m_ArenaAllocator.Init(BBE::PageSize);
-        m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(10, 2);
+        m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(16, 2);
     }
 
     BBEngine::~BBEngine()
@@ -49,45 +49,45 @@ namespace BBE {
             1.f, 2.f, 1.f
         };
 
-        //std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-        //BMP bmp("C:/Users/svogels/Pictures/BMP/f1.bmp");
-        //
-        //Utility::ConvolutionDesc desc;
-        //desc.buffer = bmp.GetBuffer();
-        //desc.width = bmp.GetWidth();
-        //desc.height = bmp.GetHeight();
-        //desc.channelCount = 3;
-        //desc.kernel = gaussian_blur;
+        BMP bmp("C:/Users/svogels/Pictures/BMP/f1.bmp");
+        
+        Utility::ConvolutionDesc desc;
+        desc.buffer = bmp.GetBuffer();
+        desc.width = bmp.GetWidth();
+        desc.height = bmp.GetHeight();
+        desc.channelCount = 3;
+        desc.kernel = gaussian_blur;
 
-        //Utility::ConvolutionMultiThreaded(desc, m_ThreadPool, 8);
-        //
-        //bmp.WriteBMP("blurImage.bmp");
+        Utility::ConvolutionMultiThreaded(desc, m_ThreadPool, 16);
+        
+        bmp.WriteBMP("blurImage.bmp");
 
-        //std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
 
-        //begin = std::chrono::steady_clock::now();
+        begin = std::chrono::steady_clock::now();
 
-        BMP bmp1("C:/Users/svogels/Pictures/BMP/sky.bmp");
+        BMP bmp1("C:/Users/svogels/Pictures/BMP/f1.bmp");
 
-        //Utility::ConvolutionDesc desc1;
-        //desc1.buffer = bmp1.GetBuffer();
-        //desc1.width = bmp1.GetWidth();
-        //desc1.height = bmp1.GetHeight();
-        //desc1.channelCount = 3;
-        //desc1.kernel = gaussian_blur;
+        Utility::ConvolutionDesc desc1;
+        desc1.buffer = bmp1.GetBuffer();
+        desc1.width = bmp1.GetWidth();
+        desc1.height = bmp1.GetHeight();
+        desc1.channelCount = 3;
+        desc1.kernel = gaussian_blur;
 
-        //Utility::Convolution(desc1);
+        Utility::Convolution(desc1);
 
         bmp1.WriteBMP("blurImage1.bmp");
    
-        //end = std::chrono::steady_clock::now();
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
+        end = std::chrono::steady_clock::now();
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
     }
 
     void BBEngine::Update()

@@ -12,7 +12,7 @@ namespace BBE {
 	class Queue
 	{
 	public:
-		Queue();
+		Queue(uint32_t a_Size);
 		~Queue();
 
 		void* Add(T a_Element);
@@ -28,11 +28,11 @@ namespace BBE {
 	};
 
 	template<typename T>
-	Queue<T>::Queue() {
+	Queue<T>::Queue(uint32_t a_Size) {
 		m_Head = nullptr;
 		m_Tail = nullptr;
 
-		m_Alloc.Init(sizeof(T) * 32, DEFAULT_ALIGNMENT, sizeof(T));
+		m_Alloc.Init(sizeof(T) * a_Size, DEFAULT_ALIGNMENT, sizeof(T));
 	}
 
 	template<typename T>

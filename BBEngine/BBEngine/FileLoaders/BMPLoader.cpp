@@ -64,9 +64,10 @@ namespace BBE {
 			return;
 		}
 
-		m_BMPBufferAlloc.Init(128 * MBSize);
-		char* buffer = BBAlloc(m_BMPBufferAlloc, 128 * MBSize, char*);
-		BBSystem::ReadFileBB(file, buffer);
+		uint32_t fileSize = BBSystem::GetFileSize(file);
+		m_BMPBufferAlloc.Init(fileSize);
+		char* buffer = BBAlloc(m_BMPBufferAlloc, fileSize, char*);
+		BBSystem::ReadFileBB(file, buffer, fileSize);
 
 		uint32_t offset = 0;
 		m_FileHeader = *reinterpret_cast<BMPFileHeader*>(buffer);
