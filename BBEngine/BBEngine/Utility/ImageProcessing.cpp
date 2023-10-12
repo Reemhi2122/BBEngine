@@ -1,42 +1,45 @@
 #include "Utility/ImageProcessing.h"
 #include <algorithm>
+#include "Utility/BBMemory.h"
+
+
 
 namespace BBE {
 	namespace Utility {
-
-		bool Convolution(const ConvolutionDesc& a_Desc)
+		void Convolution(const ConvolutionDesc& a_Desc)
 		{
+			uint32_t range = sqrt(a_Desc.kernel.size);
+			uint32_t filterHeight = range;
+			uint32_t filterWidth = range;
+
 			for (int y = 0; y < a_Desc.height; y++) {
 				for (int x = 0; x < a_Desc.width; x++) {
-			
 					int matrixIndex = 0;
-					uint8_t RAccumulator = 0;
-					uint8_t GAccumulator = 0;
-					uint8_t BAccumulator = 0;
+					float RAccumulator = 0;
+					float GAccumulator = 0;
+					float BAccumulator = 0;
+
+					for (uint32_t kernalY = 0; kernalY < filterHeight; kernalY++) {
+						for (uint32_t kernelX = 0; kernelX < filterWidth; kernelX++)
+						{
+							const uint32_t imageX = (x - filterWidth / 2 + kernelX + a_Desc.width) % a_Desc.width;
+							const uint32_t imageY = (y - filterHeight / 2 + kernalY + a_Desc.height) % a_Desc.height;
 			
-					for (int r = -1; r < 2; r++)
-					{
-						for (int c = -1; c < 2; c++) {
-							uint32_t y0 = std::clamp((y + r), 0, a_Desc.height - 1);
-							uint32_t x0 = std::clamp((x + c), 0, a_Desc.width - 1);
-			
-							uint32_t PixelIndex = a_Desc.channelCount * (y0 * a_Desc.width + x0);
+							uint32_t PixelIndex = a_Desc.channelCount * (imageY * a_Desc.width + imageX);
 							RAccumulator += a_Desc.buffer[PixelIndex + 0] * a_Desc.kernel.kernel[matrixIndex] * a_Desc.kernel.multiplier;
 							GAccumulator += a_Desc.buffer[PixelIndex + 1] * a_Desc.kernel.kernel[matrixIndex] * a_Desc.kernel.multiplier;
 							BAccumulator += a_Desc.buffer[PixelIndex + 2] * a_Desc.kernel.kernel[matrixIndex] * a_Desc.kernel.multiplier;
 							matrixIndex++;
 						}
 					}
-
 					
 					uint32_t PixelIndex = a_Desc.channelCount * (y * a_Desc.width + x);
-					a_Desc.buffer[PixelIndex + 0] = RAccumulator;
-					a_Desc.buffer[PixelIndex + 1] = GAccumulator;
-					a_Desc.buffer[PixelIndex + 2] = BAccumulator;
+					a_Desc.buffer[PixelIndex + 0] = RAccumulator > 0 ? RAccumulator : 0;
+					a_Desc.buffer[PixelIndex + 1] = GAccumulator > 0 ? GAccumulator : 0;
+					a_Desc.buffer[PixelIndex + 2] = BAccumulator > 0 ? BAccumulator : 0;
+					PixelIndex = 0;
 				}
 			}
-			
-			return false;
 		}
 
 		void ConvolutionTask(void* ptr) {
@@ -44,21 +47,25 @@ namespace BBE {
 			ThreadConvolutionDesc* desc = reinterpret_cast<ThreadConvolutionDesc*>(ptr);
 			ConvolutionDesc convoDes = desc->desc;
 
+			uint32_t range = sqrt(desc->desc.kernel.size);
+			uint32_t kernelHeight = range;
+			uint32_t kernelWidth = range;
+
 			for (int y = desc->StartPosX; y < desc->ThreadHeight; y++) {
 				for (int x = desc->StartPosY; x < desc->ThreadWidth; x++) {
 
 					int matrixIndex = 0;
-					uint8_t RAccumulator = 0;
-					uint8_t GAccumulator = 0;
-					uint8_t BAccumulator = 0;
+					float RAccumulator = 0;
+					float GAccumulator = 0;
+					float BAccumulator = 0;
 
-					for (int r = -1; r < 2; r++)
-					{
-						for (int c = -1; c < 2; c++) {
-							int y0 = std::clamp((y + r), 0, convoDes.height - 1);
-							int x0 = std::clamp((x + c), 0, convoDes.width - 1);
+					for (uint32_t kernalY = 0; kernalY < kernelHeight; kernalY++) {
+						for (uint32_t kernelX = 0; kernelX < kernelWidth; kernelX++)
+						{
+							const uint32_t imageX = (x - kernelWidth / 2 + kernelX + desc->desc.width) % desc->desc.width;
+							const uint32_t imageY = (y - kernelHeight / 2 + kernalY + desc->desc.height) % desc->desc.height;
 
-							uint32_t PixelIndex = convoDes.channelCount * (y0 * convoDes.width + x0);
+							uint32_t PixelIndex = convoDes.channelCount * (imageY * convoDes.width + imageX);
 							RAccumulator += convoDes.buffer[PixelIndex + 0] * convoDes.kernel.kernel[matrixIndex] * convoDes.kernel.multiplier;
 							GAccumulator += convoDes.buffer[PixelIndex + 1] * convoDes.kernel.kernel[matrixIndex] * convoDes.kernel.multiplier;
 							BAccumulator += convoDes.buffer[PixelIndex + 2] * convoDes.kernel.kernel[matrixIndex] * convoDes.kernel.multiplier;
@@ -75,24 +82,27 @@ namespace BBE {
 			printf("done \n");
 		}
 
-		void ConvolutionMultiThreaded(const ConvolutionDesc& a_Desc, ThreadPool* a_ThreadPool, int a_Threads) {
-			uint32_t threadHeight = a_Desc.height / a_Threads;
-			uint32_t threadWidth = a_Desc.width;
+		void ConvolutionMultiThreaded(const ConvolutionDesc& a_Desc, ThreadPool* a_ThreadPool, int a_Threads, BBE::Allocators::StackAllocator& a_Alloc) {
 
-			ThreadConvolutionDesc desc[16] = {};
-			BBTaskHandle handle[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+			BBStackScope(a_Alloc) {
+				uint32_t threadHeight = a_Desc.height / a_Threads;
+				uint32_t threadWidth = a_Desc.width;
 
-			for (int i = 0; i < a_Threads; i++) {
-				desc[i].desc = a_Desc;
-				desc[i].StartPosX = threadHeight * i;
-				desc[i].StartPosY = 0;
-				desc[i].ThreadHeight = desc[i].StartPosX + threadHeight;
-				desc[i].ThreadWidth = threadWidth;
-				a_ThreadPool->AddTask(ConvolutionTask, &desc[i], &handle[i]);
-			}
+				ThreadConvolutionDesc* desc = BBNewArr(a_Alloc, a_Threads, ThreadConvolutionDesc);
+				BBTaskHandle* handle = BBNewArr(a_Alloc, a_Threads, BBTaskHandle);
 
-			for (int i = 0; i < 8; i++) {
-				a_ThreadPool->WaitTillTaskIsDone(handle[i]);
+				for (int i = 0; i < a_Threads; i++) {
+					desc[i].desc = a_Desc;
+					desc[i].StartPosX = threadHeight * i;
+					desc[i].StartPosY = 0;
+					desc[i].ThreadHeight = desc[i].StartPosX + threadHeight;
+					desc[i].ThreadWidth = threadWidth;
+					a_ThreadPool->AddTask(ConvolutionTask, &desc[i], &handle[i]);
+				}
+
+				for (int i = 0; i < a_Threads; i++) {
+					a_ThreadPool->WaitTillTaskIsDone(handle[i]);
+				}
 			}
 		}
 	}

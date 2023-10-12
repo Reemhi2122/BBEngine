@@ -24,7 +24,7 @@ add_library (BBEngine
 "Utility/ImageProcessing.cpp"
 
 "System/FileHandler/FileHandler_Windows.cpp"
-)
+ )
 
 
 # TODO: Add tests and install targets if needed.

@@ -24,6 +24,7 @@ namespace BBE {
 		BBWinRenderer m_BBWinRenderer;
 
 		Allocators::ArenaAllocator m_ArenaAllocator;
+		Allocators::StackAllocator m_StackAllocator;
 		class ThreadPool* m_ThreadPool;
 	};
 
