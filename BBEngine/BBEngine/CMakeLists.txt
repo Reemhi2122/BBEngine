@@ -24,7 +24,7 @@ add_library (BBEngine
 "Source/Utility/ImageProcessing.cpp"
 
 "Source/System/FileHandler/FileHandler_Windows.cpp"
- )
+  "Include/FileLoaders/WAVLoader.h" "Source/FileLoaders/WAVLoader.cpp")
 
 
 # TODO: Add tests and install targets if needed.

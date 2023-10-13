@@ -69,7 +69,7 @@ namespace BBE {
 			return static_cast<uint32_t>(fileSize.LowPart);
 		}
 
-		void ReadFileBB(BBFILE a_Handle, char* a_Buffer, uint32_t a_Size) {
+		void ReadFileBB(BBFILE a_Handle, unsigned char* a_Buffer, uint32_t a_Size) {
 			
 			DWORD dwBytesRead = 0;
 			BOOL result = ReadFile(a_Handle, a_Buffer, a_Size, &dwBytesRead, NULL);

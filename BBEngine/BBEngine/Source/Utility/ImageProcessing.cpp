@@ -5,6 +5,7 @@
 namespace BBE {
 	namespace Utility {
 
+		//NOTE(Stan): Maybe add SIMD to these later
 		void Convolution(const ConvolutionDesc& a_Desc, Allocators::StackAllocator& a_Alloc)
 		{
 			BBStackScope(a_Alloc) {
@@ -28,7 +29,7 @@ namespace BBE {
 							{
 								const uint32_t imageX = (x - filterWidth / 2 + kernelX + a_Desc.width) % a_Desc.width;
 								const uint32_t imageY = (y - filterHeight / 2 + kernalY + a_Desc.height) % a_Desc.height;
-
+			
 								uint32_t PixelIndex = a_Desc.channelCount * (imageY * a_Desc.width + imageX);
 								RAccumulator += oldData[PixelIndex + 0] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
 								GAccumulator += oldData[PixelIndex + 1] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
@@ -36,7 +37,7 @@ namespace BBE {
 								kernelIndex++;
 							}
 						}
-
+					
 						uint32_t PixelIndex = a_Desc.channelCount * (y * a_Desc.width + x);
 						a_Desc.buffer[PixelIndex + 0] = std::clamp(RAccumulator, 0.f, 255.f);
 						a_Desc.buffer[PixelIndex + 1] = std::clamp(GAccumulator, 0.f, 255.f);
@@ -44,6 +45,7 @@ namespace BBE {
 						PixelIndex = 0;
 					}
 				}
+				BBFreeArr(a_Alloc, oldData);
 			}
 		}
 

@@ -6,14 +6,7 @@
 #define gaussian_blur BBE::Utility::Kernel{ GaussianBlurKernel, GaussianBlurMultiplier, GaussianBlurSize };
 #define box_blur BBE::Utility::Kernel{ BoxBlurBlurKernel, BoxBlurMultiplier, BoxBlurSize };
 #define sharpen BBE::Utility::Kernel{ SharpenKernel, SharpenMultiplier, SharpenSize };
-
-constexpr float GaussianBlurSize = 9;
-constexpr float GaussianBlurMultiplier = 1.f / 16.f;
-constexpr float GaussianBlurKernel[3 * 3]{
-	1, 2, 1,
-	2, 4, 2,
-	1, 2, 1
-};
+#define ridge_detection BBE::Utility::Kernel{ RidgeDetectionKernel, RidgeDetectionMultiplier, RidgeDetectionSize };
 
 constexpr float SharpenSize = 9;
 constexpr float SharpenMultiplier = 1.f;
@@ -23,6 +16,14 @@ constexpr float SharpenKernel[3 * 3]{
 	0, -1, 0
 };
 
+constexpr float RidgeDetectionSize = 9;
+constexpr float RidgeDetectionMultiplier = 1.f;
+constexpr float RidgeDetectionKernel[3 * 3]{
+	-1, -1, -1,
+	-1, 8, -1,
+	-1, -1, -1
+};
+
 constexpr float BoxBlurSize = 9;
 constexpr float BoxBlurMultiplier = 1.f / 9.f;
 constexpr float BoxBlurBlurKernel[3 * 3]{
@@ -30,6 +31,15 @@ constexpr float BoxBlurBlurKernel[3 * 3]{
 	1, 1, 1,
 	1, 1, 1
 };
+
+constexpr float GaussianBlurSize = 9;
+constexpr float GaussianBlurMultiplier = 1.f / 16.f;
+constexpr float GaussianBlurKernel[3 * 3]{
+	1, 2, 1,
+	2, 4, 2,
+	1, 2, 1
+};
+
 
 constexpr float GaussianBlur5x5Size = 25;
 constexpr float GaussianBlur5x5Multiplier = 1.f / 256.f;

@@ -21,7 +21,7 @@ namespace BBE {
     {
         BB_Log_Init("BBLogger", LOG_ALL, "logs/");
         m_ArenaAllocator.Init(BBE::PageSize);
-        m_StackAllocator.Init(4 * BBE::MBSize);
+        m_StackAllocator.Init(1 * BBE::MBSize);
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(16, 2);
     }
 
@@ -42,20 +42,13 @@ namespace BBE {
         }
     }
 
+    void ThreadTest(void* test) {
+        printf("done!");
+    }
+
     void BBEngine::TestCode()
     {
-        BMP bmp1("C:/Users/svogels/Pictures/BMP/BlurImage.bmp");
 
-        Utility::ConvolutionDesc desc1;
-        desc1.buffer = bmp1.GetBuffer();
-        desc1.width = bmp1.GetWidth();
-        desc1.height = bmp1.GetHeight();
-        desc1.channelCount = 3;
-        desc1.kernel = sharpen;
-
-        Utility::ConvolutionMultiThreaded(desc1, m_ThreadPool, 5, m_StackAllocator);
-
-        bmp1.WriteBMP("gaussianblur5x5.bmp");
     }
 
     void BBEngine::Update()

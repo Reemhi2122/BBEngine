@@ -59,14 +59,13 @@ namespace BBE {
 		file = BBSystem::OpenFileReadBB(a_Name);
 
 		if (!file) {
-			BBSystem::CloseFileBB(file);
 			BB_Assert(0, "Unable to open the image file!");
 			return;
 		}
 
 		uint32_t fileSize = BBSystem::GetFileSize(file);
 		m_BMPBufferAlloc.Init(fileSize);
-		char* buffer = BBAlloc(m_BMPBufferAlloc, fileSize, char*);
+		unsigned char* buffer = BBAlloc(m_BMPBufferAlloc, fileSize, unsigned char*);
 		BBSystem::ReadFileBB(file, buffer, fileSize);
 
 		uint32_t offset = 0;

@@ -53,7 +53,7 @@ namespace BBE {
 		ThreadPool(const uint8_t& AmountOfStaticThreads, const uint8_t& a_StaticThreadCount = 0);
 		~ThreadPool();
 
-		void AddTask(void (*a_void)(void*), void* a_ThreaFunctionParam, BBTaskHandle* a_Handle);
+		void AddTask(void (*a_void)(void*), void* a_ThreaFunctionParam, BBTaskHandle* a_Handle = NULL);
 		bool IsTaskDone(BBTaskHandle& a_Handle);
 		void WaitTillTaskIsDone(BBTaskHandle& a_Handle);
 		

@@ -154,7 +154,7 @@ namespace BBE {
 
 	void ThreadPool::WaitTillTaskIsDone(BBTaskHandle& a_Handle)
 	{
-		uint32_t maxWait = 10000000;
+		uint32_t maxWait = MAXINT32;
 		uint32_t times = 0;
 		while (!IsTaskDone(a_Handle) && times < maxWait) {
 			times++;
