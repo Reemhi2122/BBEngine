@@ -2,22 +2,29 @@
 #include <algorithm>
 #include "Utility/BBMemory.h"
 
-
-
 namespace BBE {
 	namespace Utility {
-		void Convolution(const ConvolutionDesc& a_Desc)
+
+
+
+		//This function doesn't deal with negative filters yet..
+		//Need to fix this later because my brain is FRIED
+		void Convolution(const ConvolutionDesc& a_Desc, Allocators::StackAllocator& a_Alloc)
 		{
+			uint32_t size = a_Desc.height * a_Desc.width * a_Desc.channelCount;
+			uint8_t* oldData = BBNewArr(a_Alloc, size, uint8_t);
+			memcpy(oldData, a_Desc.buffer, size);
+
 			uint32_t range = sqrt(a_Desc.kernel.size);
 			uint32_t filterHeight = range;
 			uint32_t filterWidth = range;
 
 			for (int y = 0; y < a_Desc.height; y++) {
 				for (int x = 0; x < a_Desc.width; x++) {
-					int matrixIndex = 0;
-					float RAccumulator = 0;
-					float GAccumulator = 0;
-					float BAccumulator = 0;
+					int kernelIndex = 0;
+					float RAccumulator = 0.f;
+					float GAccumulator = 0.f;
+					float BAccumulator = 0.f;
 
 					for (uint32_t kernalY = 0; kernalY < filterHeight; kernalY++) {
 						for (uint32_t kernelX = 0; kernelX < filterWidth; kernelX++)
@@ -26,17 +33,17 @@ namespace BBE {
 							const uint32_t imageY = (y - filterHeight / 2 + kernalY + a_Desc.height) % a_Desc.height;
 			
 							uint32_t PixelIndex = a_Desc.channelCount * (imageY * a_Desc.width + imageX);
-							RAccumulator += a_Desc.buffer[PixelIndex + 0] * a_Desc.kernel.kernel[matrixIndex] * a_Desc.kernel.multiplier;
-							GAccumulator += a_Desc.buffer[PixelIndex + 1] * a_Desc.kernel.kernel[matrixIndex] * a_Desc.kernel.multiplier;
-							BAccumulator += a_Desc.buffer[PixelIndex + 2] * a_Desc.kernel.kernel[matrixIndex] * a_Desc.kernel.multiplier;
-							matrixIndex++;
+							RAccumulator += oldData[PixelIndex + 0] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
+							GAccumulator += oldData[PixelIndex + 1] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
+							BAccumulator += oldData[PixelIndex + 2] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
+							kernelIndex++;
 						}
 					}
 					
 					uint32_t PixelIndex = a_Desc.channelCount * (y * a_Desc.width + x);
-					a_Desc.buffer[PixelIndex + 0] = RAccumulator > 0 ? RAccumulator : 0;
-					a_Desc.buffer[PixelIndex + 1] = GAccumulator > 0 ? GAccumulator : 0;
-					a_Desc.buffer[PixelIndex + 2] = BAccumulator > 0 ? BAccumulator : 0;
+					a_Desc.buffer[PixelIndex + 0] = std::clamp(RAccumulator, 0.f, 255.f);
+					a_Desc.buffer[PixelIndex + 1] = std::clamp(GAccumulator, 0.f, 255.f);
+					a_Desc.buffer[PixelIndex + 2] = std::clamp(BAccumulator, 0.f, 255.f);
 					PixelIndex = 0;
 				}
 			}

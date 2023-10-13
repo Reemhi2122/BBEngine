@@ -44,30 +44,6 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-        //std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
-        //BMP bmp("C:/Users/svogels/Pictures/BMP/Lenna.bmp");
-        //bmp.WriteBMP("Orignal.bmp");
-
-        //Utility::ConvolutionDesc desc;
-        //desc.buffer = bmp.GetBuffer();
-        //desc.width = bmp.GetWidth();
-        //desc.height = bmp.GetHeight();
-        //desc.channelCount = 3;
-        //desc.kernel = gaussian_blur5x5;
-
-        //Utility::ConvolutionMultiThreaded(desc, m_ThreadPool, 16, m_StackAllocator);
-        //
-        //bmp.WriteBMP("gaussianblur5x5MT.bmp");
-
-        //std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-        //std::cout << "\n5x5 gausian with multi threading" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
-
-        //begin = std::chrono::steady_clock::now();
-
         BMP bmp1("C:/Users/svogels/Pictures/BMP/BlurImage.bmp");
 
         Utility::ConvolutionDesc desc1;
@@ -75,31 +51,11 @@ namespace BBE {
         desc1.width = bmp1.GetWidth();
         desc1.height = bmp1.GetHeight();
         desc1.channelCount = 3;
-        desc1.kernel = sharpen;
+        desc1.kernel = gaussian_blur;
 
-        Utility::Convolution(desc1);
+        Utility::Convolution(desc1, m_StackAllocator);
 
         bmp1.WriteBMP("gaussianblur5x5.bmp");
-   
-        //end = std::chrono::steady_clock::now();
-        //std::cout << "\n5x5 gausian" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
-        //std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
-    
-    
-        //BMP bmp2("C:/Users/svogels/Pictures/BMP/Lenna.bmp");
-
-        //Utility::ConvolutionDesc desc2;
-        //desc2.buffer = bmp2.GetBuffer();
-        //desc2.width = bmp2.GetWidth();
-        //desc2.height = bmp2.GetHeight();
-        //desc2.channelCount = 3;
-        //desc2.kernel = gaussian_blur;
-
-        //Utility::Convolution(desc2);
-
-        //bmp2.WriteBMP("gaussianBlur.bmp");
     }
 
     void BBEngine::Update()
@@ -119,30 +75,3 @@ namespace BBE {
         m_Window.GetGraphics().EndFrame();
     }
 }
-
-//void ThreadTest(void*) {
-//    Sleep(10 * 1000);
-//
-//    printf("done!");
-//}
-//
-//void StaticThreadTest(void*) {
-//    Sleep(1 * 1000);
-//
-//    printf("Static thread called!");
-//}
-
-//m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(6, 2);
-//testdesc = reinterpret_cast<TaskDesc*>(m_ThreadPool->AddTask(ThreadTest));
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//m_ThreadPool->AddTask(ThreadTest);
-//
-//BBThreadHandle static_handle = m_ThreadPool->CreateStaticThread(StaticThreadTest);
-//m_ThreadPool->DestoryStaticThread(static_handle);

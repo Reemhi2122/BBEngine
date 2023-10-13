@@ -8,22 +8,22 @@ cmake_minimum_required (VERSION 3.8)
 # Add source to this project's executable.
 add_library (BBEngine 
 "BBEngine.cpp" 
-"Timer/BBTimer.cpp"
-"Logger/logger.cpp" 
-"Thread/ThreadPool.cpp"
+"Source/Timer/BBTimer.cpp"
+"Source/Logger/logger.cpp" 
+"Source/Thread/ThreadPool.cpp"
  
-"Allocators/StackAllocator.cpp" 
-"Allocators/ArenaAllocator.cpp" 
-"Allocators/PoolAllocator.cpp"
-"Allocators/FreeListAllocator.cpp"
-"Allocators/BuddyAllocator.cpp"
-"Allocators/Allocator.cpp" 
+"Source/Allocators/StackAllocator.cpp" 
+"Source/Allocators/ArenaAllocator.cpp" 
+"Source/Allocators/PoolAllocator.cpp"
+"Source/Allocators/FreeListAllocator.cpp"
+"Source/Allocators/BuddyAllocator.cpp"
+"Source/Allocators/Allocator.cpp" 
 
-"FileLoaders/BMPLoader.cpp"
+"Source/FileLoaders/BMPLoader.cpp"
 
-"Utility/ImageProcessing.cpp"
+"Source/Utility/ImageProcessing.cpp"
 
-"System/FileHandler/FileHandler_Windows.cpp"
+"Source/System/FileHandler/FileHandler_Windows.cpp"
  )
 
 
