@@ -62,6 +62,7 @@ namespace BBE {
 		struct ThreadConvolutionDesc {
 			ConvolutionDesc desc;
 
+			uint8_t* OldData;
 			uint32_t StartPosX;
 			uint32_t StartPosY;
 			uint32_t ThreadWidth;

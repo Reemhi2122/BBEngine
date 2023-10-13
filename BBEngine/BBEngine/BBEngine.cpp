@@ -51,9 +51,9 @@ namespace BBE {
         desc1.width = bmp1.GetWidth();
         desc1.height = bmp1.GetHeight();
         desc1.channelCount = 3;
-        desc1.kernel = gaussian_blur;
+        desc1.kernel = sharpen;
 
-        Utility::Convolution(desc1, m_StackAllocator);
+        Utility::ConvolutionMultiThreaded(desc1, m_ThreadPool, 5, m_StackAllocator);
 
         bmp1.WriteBMP("gaussianblur5x5.bmp");
     }
