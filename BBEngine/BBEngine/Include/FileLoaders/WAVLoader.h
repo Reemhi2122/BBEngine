@@ -32,8 +32,8 @@ namespace BBE {
         WAV(const char* a_FileName);
         ~WAV() = default;
 
-        void LoadWav(const char* a_FileName);
-        void WriteWav();
+        void LoadWav(const char* a_FileName); //Note(Stan): This is currently only loading the RIFF, FMT and Data. It will skip all the other chunks.
+        void WriteWav(); //Note(Stan): See no reason to implement this yet, don't think I would save WAV Files
 
     private:
         Allocators::ArenaAllocator m_BufferAlloc;

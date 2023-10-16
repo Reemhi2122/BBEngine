@@ -7,7 +7,8 @@
 #include "Thread/ThreadPool.h"
 
 //temp
-#include "FileLoaders/WAVLoader.h"
+#include "FileLoaders/BMPLoader.h"
+#include "Utility/ImageProcessing.h"
 
 #include <chrono>
 #include <iostream>
@@ -43,14 +44,27 @@ namespace BBE {
         }
     }
 
-    void ThreadTest(void* test) {
-        printf("done!");
-    }
-
     void BBEngine::TestCode()
     {
-        WAV wav;
-        wav.LoadWav("Assets/16.WAV");
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+        BMP bmp("assets/Images/Lenna.bmp");
+        
+        Utility::ConvolutionDesc desc;
+        desc.buffer = bmp.GetBuffer();
+        desc.height = bmp.GetHeight();
+        desc.width = bmp.GetWidth();
+        desc.channelCount = 3;
+        desc.kernel = gaussian_blur;
+
+        Utility::Convolution(desc, m_StackAllocator);
+
+        bmp.WriteBMP("LennaBlur.bmp");
+
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
     }
 
     void BBEngine::Update()

@@ -6,6 +6,10 @@ namespace BBE {
 	
 	WAV::WAV()
 	{
+		m_RiffHeader = nullptr;
+		m_FmtHeader = nullptr;
+		m_DataHeader = nullptr;
+		m_Data = nullptr;
 	}
 
 	WAV::WAV(const char* a_FileName)
@@ -62,8 +66,6 @@ namespace BBE {
 		}
 
 		assert(whilecount < whileLimit, "Couldn't find data in WAV file");
-
 		BBSystem::CloseFileBB(file);
 	}
-
 }
