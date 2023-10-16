@@ -5,8 +5,9 @@
 
 #include "Utility/BBMemory.h"
 #include "Thread/ThreadPool.h"
-#include "FileLoaders/BMPLoader.h"
-#include "Utility/ImageProcessing.h"
+
+//temp
+#include "FileLoaders/WAVLoader.h"
 
 #include <chrono>
 #include <iostream>
@@ -48,7 +49,8 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-
+        WAV wav;
+        wav.LoadFile("Assets/16.WAV");
     }
 
     void BBEngine::Update()
