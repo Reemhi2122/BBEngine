@@ -17,10 +17,10 @@ namespace BBE {
 		LoadWav(a_FileName);
 	}
 
-	void WAV::LoadWav(const char* a_FileName)
+	void WAV::LoadWav(const char* a_FilePath)
 	{
 		BBSystem::BBFILE file;
-		file = BBSystem::OpenFileReadBB(a_FileName);
+		file = BBSystem::OpenFileReadBB(a_FilePath);
 		
 		if (!file) {
 			BB_Assert(0, "Unable to open the image file!");
@@ -67,5 +67,21 @@ namespace BBE {
 
 		assert(whilecount < whileLimit, "Couldn't find data in WAV file");
 		BBSystem::CloseFileBB(file);
+	}
+
+	void WAV::WriteWav(const char* a_FilePath)
+	{
+		BBSystem::BBFILE file;
+		file = BBSystem::OpenFileWriteBB(a_FilePath);
+
+		if (!file) {
+			BB_Assert(0, "Unable to open create / open write file!");
+			return;
+		}
+
+		BBSystem::WriteToFileBinary(file, m_RiffHeader, sizeof(RIFF));
+		BBSystem::WriteToFileBinary(file, m_FmtHeader, sizeof(FMT));
+		BBSystem::WriteToFileBinary(file, m_DataHeader, sizeof(Data));
+		BBSystem::WriteToFileBinary(file, m_Data, m_DataHeader->Subchunk2Size);
 	}
 }
