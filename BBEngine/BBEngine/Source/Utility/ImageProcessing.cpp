@@ -7,8 +7,8 @@
 namespace BBE {
 	namespace Utility {
 
-		//NOTE(Stan): Maybe add SIMD to these later
-		void Convolution(const ConvolutionDesc& a_Desc, Allocators::StackAllocator& a_Alloc)
+		//Note(Stan): SIMD seems to be slower than normal img processing
+		void ConvolutionSIMD(const ConvolutionDesc& a_Desc, Allocators::StackAllocator& a_Alloc)
 		{
 			BBStackScope(a_Alloc) {
 				uint32_t size = a_Desc.height * a_Desc.width * a_Desc.channelCount;
@@ -29,10 +29,6 @@ namespace BBE {
 
 						__m128 accums = _mm_set_ps(0, 0, 0, 0);
 
-						//float RAccumulator = 0.f;
-						//float GAccumulator = 0.f;
-						//float BAccumulator = 0.f;
-
 						for (uint32_t kernalY = 0; kernalY < filterHeight; kernalY++) {
 							for (uint32_t kernelX = 0; kernelX < filterWidth; kernelX++)
 							{
@@ -49,29 +45,61 @@ namespace BBE {
 
 								__m128 kernel = _mm_set_ps1(a_Desc.kernel.kernel[kernelIndex]);
 
-								_mm_add_ps(accums, _mm_mul_ps(_mm_mul_ps(oldValues, kernel), mul));
-
+								accums = _mm_add_ps(accums, _mm_mul_ps(_mm_mul_ps(oldValues, kernel), mul));
 								
-								//RAccumulator += oldData[PixelIndex + 0] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
-								//GAccumulator += oldData[PixelIndex + 1] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
-								//BAccumulator += oldData[PixelIndex + 2] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
 								kernelIndex++;
 							}
 						}
 					
+						accums = _mm_min_ps(_mm_max_ps(accums, min), max);
 						uint32_t PixelIndex = a_Desc.channelCount * (y * a_Desc.width + x);
+						a_Desc.buffer[PixelIndex + 0] = accums.m128_f32[3];
+						a_Desc.buffer[PixelIndex + 1] = accums.m128_f32[2];
+						a_Desc.buffer[PixelIndex + 2] = accums.m128_f32[1];
+						PixelIndex = 0;
+					}
+				}
+				BBFreeArr(a_Alloc, oldData);
+			}
+		}
 
-						_mm_min_ps(_mm_max_ps(accums, max), min);
+		void Convolution(const ConvolutionDesc& a_Desc, Allocators::StackAllocator& a_Alloc)
+		{
+			BBStackScope(a_Alloc) {
+				uint32_t size = a_Desc.height * a_Desc.width * a_Desc.channelCount;
+				uint8_t* oldData = BBNewArr(a_Alloc, size, uint8_t);
+				memcpy(oldData, a_Desc.buffer, size);
 
-						float res[4]{0};
-						_mm_store_ps(res, accums);
-						a_Desc.buffer[PixelIndex + 0] = res[0];
-						a_Desc.buffer[PixelIndex + 1] = res[1];
-						a_Desc.buffer[PixelIndex + 2] = res[2];
+				uint32_t range = sqrt(a_Desc.kernel.size);
+				uint32_t filterHeight = range;
+				uint32_t filterWidth = range;
 
-						//a_Desc.buffer[PixelIndex + 0] = std::clamp(RAccumulator, 0.f, 255.f);
-						//a_Desc.buffer[PixelIndex + 1] = std::clamp(GAccumulator, 0.f, 255.f);
-						//a_Desc.buffer[PixelIndex + 2] = std::clamp(BAccumulator, 0.f, 255.f);
+				for (int y = 0; y < a_Desc.height; y++) {
+					for (int x = 0; x < a_Desc.width; x++) {
+						int kernelIndex = 0;
+
+						float RAccumulator = 0.f;
+						float GAccumulator = 0.f;
+						float BAccumulator = 0.f;
+
+						for (uint32_t kernalY = 0; kernalY < filterHeight; kernalY++) {
+							for (uint32_t kernelX = 0; kernelX < filterWidth; kernelX++)
+							{
+								const uint32_t imageX = (x - filterWidth / 2 + kernelX + a_Desc.width) % a_Desc.width;
+								const uint32_t imageY = (y - filterHeight / 2 + kernalY + a_Desc.height) % a_Desc.height;
+
+								uint32_t PixelIndex = a_Desc.channelCount * (imageY * a_Desc.width + imageX);
+								RAccumulator += oldData[PixelIndex + 0] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
+								GAccumulator += oldData[PixelIndex + 1] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
+								BAccumulator += oldData[PixelIndex + 2] * a_Desc.kernel.kernel[kernelIndex] * a_Desc.kernel.multiplier;
+								kernelIndex++;
+							}
+						}
+
+						uint32_t PixelIndex = a_Desc.channelCount * (y * a_Desc.width + x);
+						a_Desc.buffer[PixelIndex + 0] = std::clamp(RAccumulator, 0.f, 255.f);
+						a_Desc.buffer[PixelIndex + 1] = std::clamp(GAccumulator, 0.f, 255.f);
+						a_Desc.buffer[PixelIndex + 2] = std::clamp(BAccumulator, 0.f, 255.f);
 						PixelIndex = 0;
 					}
 				}

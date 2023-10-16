@@ -79,6 +79,7 @@ namespace BBE {
 			uint32_t ThreadHeight;
 		};
 
+		void ConvolutionSIMD(const ConvolutionDesc& a_Desc, Allocators::StackAllocator& a_Alloc);
 		void Convolution(const ConvolutionDesc& a_Desc, Allocators::StackAllocator& a_Alloc);
 		void ConvolutionMultiThreaded(const ConvolutionDesc& a_Desc, ThreadPool* a_ThreadPool, int a_Threads, BBE::Allocators::StackAllocator& a_Alloc);
 	}

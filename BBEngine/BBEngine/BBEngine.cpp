@@ -57,14 +57,40 @@ namespace BBE {
         desc.channelCount = 3;
         desc.kernel = gaussian_blur;
 
-        Utility::Convolution(desc, m_StackAllocator);
+        for (int i = 0; i < 255; i++) {
+            Utility::Convolution(desc, m_StackAllocator);
+        }
 
         bmp.WriteBMP("LennaBlur.bmp");
 
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        std::cout << "No SIMD" << std::endl;
         std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count() << "[us]" << std::endl;
         std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end - begin).count() << "[ns]" << std::endl;
         std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count() << "[ms]" << std::endl;
+        
+        std::chrono::steady_clock::time_point begin2 = std::chrono::steady_clock::now();
+
+        BMP bmp2("assets/Images/Lenna.bmp");
+
+        Utility::ConvolutionDesc desc2;
+        desc2.buffer = bmp2.GetBuffer();
+        desc2.height = bmp2.GetHeight();
+        desc2.width = bmp2.GetWidth();
+        desc2.channelCount = 3;
+        desc2.kernel = gaussian_blur;
+
+        for (int i = 0; i < 255; i++) {
+            Utility::ConvolutionSIMD(desc2, m_StackAllocator);
+        }
+
+        bmp2.WriteBMP("LennaBlur2.bmp");
+
+        std::chrono::steady_clock::time_point end2 = std::chrono::steady_clock::now();
+        std::cout << "SIMD" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end2 - begin2).count() << "[us]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end2 - begin2).count() << "[ns]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end2 - begin2).count() << "[ms]" << std::endl;
     }
 
     void BBEngine::Update()
