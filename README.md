@@ -7,5 +7,9 @@ After having some working graphics in my engine, I decided to do research in all
 
 [Linear/Arena](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Allocators/ArenaAllocator.cpp), [Stack](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Allocators/StackAllocator.cpp), [Free list](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Allocators/FreeListAllocator.cpp), [Pool](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Allocators/PoolAllocator.cpp), [Buddy](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Allocators/BuddyAllocator.cpp)
 
+### File support
+Current files it supports is:
+[Wav files](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Source/FileLoaders/WAVLoader.cpp), [BMP files](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Source/FileLoaders/BMPLoader.cpp).
+
 ## Graphics
 The graphics library is currently based on DX11 and is very much still in progress.
