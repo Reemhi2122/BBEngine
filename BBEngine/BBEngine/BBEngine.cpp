@@ -50,7 +50,7 @@ namespace BBE {
     void BBEngine::TestCode()
     {
         WAV wav;
-        wav.LoadFile("Assets/16.WAV");
+        wav.LoadWav("Assets/16.WAV");
     }
 
     void BBEngine::Update()

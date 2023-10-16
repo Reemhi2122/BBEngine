@@ -10,10 +10,10 @@ namespace BBE {
 
 	WAV::WAV(const char* a_FileName)
 	{
-		LoadFile(a_FileName);
+		LoadWav(a_FileName);
 	}
 
-	void WAV::LoadFile(const char* a_FileName)
+	void WAV::LoadWav(const char* a_FileName)
 	{
 		BBSystem::BBFILE file;
 		file = BBSystem::OpenFileReadBB(a_FileName);
@@ -29,19 +29,39 @@ namespace BBE {
 		BBSystem::ReadFileBB(file, buffer, BufferSize);
 
 		uint32_t offset = 0;
-
 		m_RiffHeader = reinterpret_cast<RIFF*>(buffer);
 		offset += sizeof(RIFF);
 
-		m_FmtHeader = reinterpret_cast<FMT*>(buffer + offset);
-		offset += sizeof(FMT);
+		char name[5]{0};
+		bool dataRead = false;
 
-		m_DataHeader = reinterpret_cast<Data*>(buffer + offset);
-		offset += sizeof(Data);
+		uint8_t whileLimit = 200;
+		uint8_t whilecount = 0;
 
-		m_WavBufferAlloc.Init(m_DataHeader->Subchunk2Size);
-		m_Data = BBNewArr(m_WavBufferAlloc, m_DataHeader->Subchunk2Size, unsigned char);
-		memcpy(m_Data, buffer + offset, m_DataHeader->Subchunk2Size);
+		while (!dataRead && whilecount < whileLimit) {
+			memcpy(name, buffer + offset, 4);
+			name[4] = 0;
+
+			if (strcmp(name, "fmt ") == 0) {
+				m_FmtHeader = reinterpret_cast<FMT*>(buffer + offset);
+				offset += sizeof(FMT);
+			}
+
+			if (strcmp(name, "data") == 0) {
+				m_DataHeader = reinterpret_cast<Data*>(buffer + offset);
+				offset += sizeof(Data);
+
+				m_WavBufferAlloc.Init(m_DataHeader->Subchunk2Size);
+				m_Data = BBNewArr(m_WavBufferAlloc, m_DataHeader->Subchunk2Size, unsigned char);
+				memcpy(m_Data, buffer + offset, m_DataHeader->Subchunk2Size);
+
+				offset += m_DataHeader->Subchunk2Size;
+				dataRead = true;
+			}
+			whilecount++;
+		}
+
+		assert(whilecount < whileLimit, "Couldn't find data in WAV file");
 
 		BBSystem::CloseFileBB(file);
 	}
