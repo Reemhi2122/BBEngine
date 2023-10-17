@@ -49,12 +49,11 @@ namespace BBE {
 			return BB_TRUE;
 		}
 
-		bool BBFStream::Good() {
-			if ((m_Flags ^ FSTREAM_BITFLAG_GOODBIT) == 0) {
-				return true;
-			}
+		void BBFStream::Clear(IOF state)
+		{
+			m_Flags = IOF::GOODBIT;
+
 			
-			return false;
 		}
 	}
 }

@@ -92,6 +92,9 @@ namespace BBE {
 
 	void JsonParser::RollBackToken()
 	{
+		if (m_FStream.Eof()) {
+			m_FStream.Clear();
+		}
 
 	}
 }
