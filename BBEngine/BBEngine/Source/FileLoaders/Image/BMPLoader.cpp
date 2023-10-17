@@ -1,4 +1,4 @@
-#include "FileLoaders/BMPLoader.h"
+#include "FileLoaders/Image/BMPLoader.h"
 #include "Logger/Logger.h"
 #include "Utility/BBMemory.h"
 

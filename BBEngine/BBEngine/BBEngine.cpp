@@ -7,9 +7,9 @@
 #include "Thread/ThreadPool.h"
 
 //temp
-#include "FileLoaders/BMPLoader.h"
+#include "FileLoaders/Image/BMPLoader.h"
 #include "Utility/ImageProcessing.h"
-#include "FileLoaders/WAVLoader.h"
+#include "FileLoaders/Sound/WAVLoader.h"
 
 #include <chrono>
 #include <iostream>

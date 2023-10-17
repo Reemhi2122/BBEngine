@@ -19,12 +19,15 @@ add_library (BBEngine
 "Source/Allocators/BuddyAllocator.cpp"
 "Source/Allocators/Allocator.cpp" 
 
-"Source/FileLoaders/BMPLoader.cpp"
+"Source/System/FileHandler/FileHandler_Windows.cpp"
+"Source/System/BBFStream.cpp"
 
 "Source/Utility/ImageProcessing.cpp"
 
-"Source/System/FileHandler/FileHandler_Windows.cpp"
-  "Include/FileLoaders/WAVLoader.h" "Source/FileLoaders/WAVLoader.cpp")
+"Source/FileLoaders/Sound/WAVLoader.cpp"
+"Source/FileLoaders/Image/BMPLoader.cpp"
+"Source/FileLoaders/Data/JsonParser.cpp"
+)
 
 
 # TODO: Add tests and install targets if needed.

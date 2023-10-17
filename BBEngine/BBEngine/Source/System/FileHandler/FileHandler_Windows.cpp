@@ -3,7 +3,6 @@
 #include <fileapi.h>
 #include "Logger/Logger.h"
 
-#include "FileLoaders/BMPLoader.h"
 #include <stdint.h>
 
 namespace BBE {
@@ -97,5 +96,6 @@ namespace BBE {
 		{
 			CloseHandle(a_File);
 		}
+
 	}
 }

@@ -1,4 +1,4 @@
-#include "FileLoaders/WAVLoader.h"
+#include "FileLoaders/Sound/WAVLoader.h"
 #include "System/FileHandler.h"
 #include "Logger/Logger.h"
 
