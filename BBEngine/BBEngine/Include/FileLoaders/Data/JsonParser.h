@@ -71,6 +71,8 @@ namespace BBE {
 		void RollBackToken();
 
 		BBSystem::BBFStream m_FStream;
+		size_t prevPos;
+
 		JSONNode* root;
 		JSONNode* current;
 	};

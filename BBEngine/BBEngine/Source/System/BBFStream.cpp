@@ -7,6 +7,7 @@ namespace BBE {
 		BBFStream::BBFStream()
 		{
 			m_BufferPos = 0;
+			m_BufferSize = 0;
 			m_Buffer = nullptr;
 			m_File = NULL;
 		}
@@ -36,12 +37,14 @@ namespace BBE {
 			m_BufferAlloc.Init(m_BufferSize);
 			m_Buffer = BBNewArr(m_BufferAlloc, m_BufferSize, unsigned char);
 			ReadFileBB(m_File, m_Buffer, m_BufferSize);
+
+			Clear();
 		}
 
 		BB_BOOL BBFStream::Get(char& c)
 		{
 			if ((m_BufferPos + 1) > m_BufferSize) {
-				m_Flags = FSTREAM_BITFLAG_EOFBIT;
+				m_Flags = FSF::EOFBIT;
 				return BB_FALSE;
 			}
 
@@ -49,11 +52,22 @@ namespace BBE {
 			return BB_TRUE;
 		}
 
-		void BBFStream::Clear(IOF state)
+		BB_BOOL BBFStream::SeekPos(uint8_t a_Pos)
 		{
-			m_Flags = IOF::GOODBIT;
+			if (a_Pos < 0 || a_Pos > m_BufferSize) {
+				return BB_FALSE;
+			}
 
-			
+			m_BufferPos = a_Pos;
+			return BB_TRUE;
+		}
+
+		void BBFStream::Clear(FSF::FSFlag flag)
+		{
+			if (m_Buffer == nullptr) {
+				m_Flags = FSF::BADBIT;
+			}
+			m_Flags = flag;
 		}
 	}
 }

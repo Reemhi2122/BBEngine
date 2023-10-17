@@ -67,7 +67,29 @@ namespace BBE {
 
 	JSONToken JsonParser::GetToken()
 	{
+		char c;
+		if (m_FStream.Eof()) {
+			BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, "Exhaused tokens");
+		}
+		prevPos = m_FStream.GetPos();
+		c = GetWithoutWhiteSpace();
 
+		JSONToken tkn;
+		if (c == '"') {
+			tkn.type = JSONTokenType::String;
+			tkn.value = "";
+			
+			m_FStream.Get(c);
+			while (c != '"') {
+				tkn.value += c;
+				m_FStream.Get(c);
+			}
+		}
+		else if (c == '-' || c > '1' && c < '9') {
+			tkn.type = JSONTokenType::Number;
+
+
+		}
 
 		return JSONToken();
 	}
@@ -95,6 +117,6 @@ namespace BBE {
 		if (m_FStream.Eof()) {
 			m_FStream.Clear();
 		}
-
+		m_FStream.SeekPos(prevPos);
 	}
 }
