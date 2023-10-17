@@ -9,6 +9,8 @@ namespace BBE {
 			BBFStream(const char* a_FilePath);
 
 		private:
+			BBFile m_File;
+
 			uint32_t m_BufferStart;
 			uint32_t m_BufferPos;
 			char* buffer;
