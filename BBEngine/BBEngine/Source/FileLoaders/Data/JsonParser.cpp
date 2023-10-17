@@ -50,13 +50,19 @@ namespace BBE {
 
 	JsonParser::JsonParser(const char* a_FilePath)
 	{
-		//BBSystem::BBFStream file;
-
+		Parse(a_FilePath);
 	}
 
-	void JsonParser::Parse()
+	void JsonParser::Parse(const char* a_FilePath)
 	{
-		
+		m_FStream.LoadFile(a_FilePath);
+
+		char c;
+		while (m_FStream.Good()) {
+
+			m_FStream.Get(c);
+			printf("%c", c);
+		}
 	}
 
 	JSONToken JsonParser::GetToken()
@@ -69,11 +75,15 @@ namespace BBE {
 	char JsonParser::GetWithoutWhiteSpace()
 	{
 		char c = ' ';
-
-
 		while ((c == ' ' || c == '\n')) {
-			if ((c == ' ' || c == '\n')) {
+
+			m_FStream.Get(c);
+
+			if ((c == ' ' || c == '\n') && !m_FStream.Good()) {
 				BB_Assert(0, "Ran out of tokens during parsing!");
+			}
+			else if (!m_FStream.Good()) {
+				return c;
 			}
 		}
 

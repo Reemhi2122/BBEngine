@@ -2,7 +2,7 @@
 #include <string>
 #include <map>
 #include <vector>
-#include "System/FileHandler.h"
+#include "System/BBFStream.h"
 
 namespace BBE {
 
@@ -63,14 +63,14 @@ namespace BBE {
 		JsonParser(const char* a_FilePath);
 		~JsonParser() = default;
 
-		void Parse();
+		void Parse(const char* a_FilePath);
 
 	private:
 		JSONToken GetToken();
 		char GetWithoutWhiteSpace();
 		void RollBackToken();
 
-		BBSystem::BBFILE m_File;
+		BBSystem::BBFStream m_FStream;
 		JSONNode* root;
 		JSONNode* current;
 	};

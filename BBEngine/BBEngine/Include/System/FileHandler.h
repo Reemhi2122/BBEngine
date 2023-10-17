@@ -2,12 +2,16 @@
 #include <string>
 
 #define BUFFERSIZE  8 * 1024 * 1024
+#define BB_TRUE 0
+#define BB_FALSE 1
 
 namespace BBE {
 	namespace BBSystem {
 		
 		using DWORD = unsigned long;
 		using BBFILE = void*;
+
+		using BB_BOOL = int;
 
 		void CreateDirBB(std::string path);
 		bool FileExistsBB(std::string path);

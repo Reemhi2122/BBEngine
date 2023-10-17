@@ -10,6 +10,7 @@
 #include "FileLoaders/Image/BMPLoader.h"
 #include "Utility/ImageProcessing.h"
 #include "FileLoaders/Sound/WAVLoader.h"
+#include "FileLoaders/Data/JsonParser.h"
 
 #include <chrono>
 #include <iostream>
@@ -47,6 +48,8 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
+        JsonParser parser;
+        parser.Parse("assets/Data/test.txt");
     }
 
     void BBEngine::Update()
