@@ -87,11 +87,68 @@ namespace BBE {
 		}
 		else if (c == '-' || c > '1' && c < '9') {
 			tkn.type = JSONTokenType::Number;
+			tkn.value = "";
+			tkn.value += c;
 
+			uint32_t prevCharPos;
+			while (c == '-' || c == '.' || c > '1' && c < '9') {
+				prevCharPos = m_FStream.GetPos();
+				m_FStream.Get(c);
 
+				if (m_FStream.Eof()) {
+					break;
+				}
+				
+				if (c == '-' || c == '.' || c > '1' && c < '9') {
+					tkn.value += c;
+				}
+				else {
+					m_FStream.SeekPos(prevCharPos);
+				}
+			}
+		}
+		else {
+			uint8_t charNum = static_cast<uint8_t>(c);
+			switch (charNum)
+			{
+			case '{':
+				tkn.type = JSONTokenType::CurlyOpen;
+				break;
+			case '}':
+				tkn.type = JSONTokenType::CurlyClose;
+				break;
+			case '[':
+				tkn.type = JSONTokenType::ArrayOpen;
+				break;
+			case ']':
+				tkn.type = JSONTokenType::ArrayClose;
+				break;
+			case ':':
+				tkn.type = JSONTokenType::Colon;
+				break;
+			case ',':
+				tkn.type = JSONTokenType::Comma;
+				break;
+			case 't':
+				tkn.type = JSONTokenType::Boolean;
+				tkn.value = "True";
+				m_FStream.SeekPos(m_FStream.GetPos() + 3);
+				break;
+			case 'f':
+				tkn.type = JSONTokenType::Boolean;
+				tkn.value = "False";
+				m_FStream.SeekPos(m_FStream.GetPos() + 4);
+				break;
+			case 'n':
+				tkn.type = JSONTokenType::NullType;
+				m_FStream.SeekPos(m_FStream.GetPos() + 3);
+				break;
+			default:
+				break;
+			}
 		}
 
-		return JSONToken();
+		return tkn;
 	}
 	
 	char JsonParser::GetWithoutWhiteSpace()
