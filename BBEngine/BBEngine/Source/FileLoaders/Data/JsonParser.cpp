@@ -208,22 +208,39 @@ namespace BBE {
 
 	JSONNode* JsonParser::ParseString()
 	{
-		return nullptr;
+		JSONNode* node = new JSONNode();
+		JSONToken tkn = GetToken();
+	
+		node->value.string->assign(tkn.value.c_str());
+		node->type = NodeType::String;
+		return node;
 	}
 
 	JSONNode* JsonParser::ParseNumber()
 	{
-		return nullptr;
+		JSONNode* node = new JSONNode();
+		JSONToken tkn = GetToken();
+
+		node->value.floatValue = std::stof(tkn.value);
+		node->type = NodeType::Number;
+		return node;
 	}
 
 	JSONNode* JsonParser::ParseBool()
 	{
-		return nullptr;
+		JSONNode* node = new JSONNode();
+		JSONToken tkn = GetToken();
+
+		node->value.floatValue = strcmp(tkn.value.c_str(), "f");
+		node->type = NodeType::Number;
+		return node;
 	}
 
 	JSONNode* JsonParser::ParseNull()
 	{
-		return nullptr;
+		JSONNode* node = new JSONNode();
+		node->type = NodeType::NULL_Type;
+		return node;
 	}
 
 	//NOTE(Stan): Might want to do some more checking on the 
