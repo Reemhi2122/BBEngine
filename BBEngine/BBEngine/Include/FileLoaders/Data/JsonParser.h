@@ -77,6 +77,8 @@ namespace BBE {
 		void RollBackToken();
 		bool EndOfFile();
 
+		void ParseOn(JSONNode* a_Node, JSONTokenType& a_Type);
+
 		BBSystem::BBFStream m_FStream;
 		size_t prevPos;
 

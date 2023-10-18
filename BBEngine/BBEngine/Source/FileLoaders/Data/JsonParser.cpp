@@ -57,37 +57,13 @@ namespace BBE {
 	{
 		m_FStream.LoadFile(a_FilePath);
 
-		char* key = "";
-
 		while(!EndOfFile()){
 			JSONToken tkn;
 			tkn = GetToken();
 			BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
 
 			JSONNode* newNode;
-			switch (tkn.type)
-			{
-			case JSONTokenType::CurlyOpen:
-				JSONNode* newNode = ParseObject();
-				break;
-			case JSONTokenType::ArrayOpen:
-				JSONNode* newNode = ParseList();
-				break;
-			case JSONTokenType::String:
-				RollBackToken();
-				JSONNode* newNode = ParseString();
-				break;
-			case JSONTokenType::Boolean:
-				RollBackToken();
-				JSONNode* newNode = ParseBool();
-				break;
-			case JSONTokenType::Number:
-				RollBackToken();
-				JSONNode* newNode = ParseNumber();
-				break;
-			default:
-				break;
-			}
+			SwitchOn(newNode, tkn.type);
 
 			if (!root) {
 				root = newNode;
@@ -110,32 +86,7 @@ namespace BBE {
 				GetToken();
 				curtkn = GetToken();
 
-				switch (curtkn.type)
-				{
-				case JSONTokenType::CurlyOpen:
-					(*obj)[key] = ParseObject();
-					break;
-				case JSONTokenType::ArrayOpen:
-					(*obj)[key] = ParseList();
-					break;
-				case JSONTokenType::String:
-					RollBackToken();
-					(*obj)[key] = ParseString();
-					break;
-				case JSONTokenType::Number:
-					RollBackToken();
-					(*obj)[key] = ParseNumber();
-					break;
-				case JSONTokenType::Boolean:
-					RollBackToken();
-					(*obj)[key] = ParseBool();
-					break;
-				case JSONTokenType::NullType:
-					(*obj)[key] = ParseNull();
-					break;
-				default:
-					break;
-				}
+				SwitchOn((*obj)[key], curtkn.type);
 
 				curtkn = GetToken();
 				hasCompleted = (curtkn.type == JSONTokenType::CurlyClose);
@@ -165,33 +116,8 @@ namespace BBE {
 				GetToken();
 				curtkn = GetToken();
 
-				switch (curtkn.type)
-				{
-				case JSONTokenType::CurlyOpen:
-					node = ParseObject();
-					break;
-				case JSONTokenType::ArrayOpen:
-					node = ParseList();
-					break;
-				case JSONTokenType::String:
-					RollBackToken();
-					node = ParseString();
-					break;
-				case JSONTokenType::Number:
-					RollBackToken();
-					node = ParseNumber();
-					break;
-				case JSONTokenType::Boolean:
-					RollBackToken();
-					node = ParseBool();
-					break;
-				case JSONTokenType::NullType:
-					node = ParseNull();
-					break;
-				default:
-					break;
-				}
-
+				SwitchOn(node, curtkn.type);
+				
 				list->push_back(node);
 				curtkn = GetToken();
 				hasCompleted = (curtkn.type == JSONTokenType::ArrayClose);
@@ -360,5 +286,35 @@ namespace BBE {
 	bool JsonParser::EndOfFile()
 	{
 		return m_FStream.Eof();
+	}
+
+	void JsonParser::SwitchOn(JSONNode* a_Node, JSONTokenType& a_Type)
+	{
+		switch (a_Type)
+		{
+		case JSONTokenType::CurlyOpen:
+			a_Node = ParseObject();
+			break;
+		case JSONTokenType::ArrayOpen:
+			a_Node = ParseList();
+			break;
+		case JSONTokenType::String:
+			RollBackToken();
+			a_Node = ParseString();
+			break;
+		case JSONTokenType::Number:
+			RollBackToken();
+			a_Node = ParseNumber();
+			break;
+		case JSONTokenType::Boolean:
+			RollBackToken();
+			a_Node = ParseBool();
+			break;
+		case JSONTokenType::NullType:
+			a_Node = ParseNull();
+			break;
+		default:
+			break;
+		}
 	}
 }
