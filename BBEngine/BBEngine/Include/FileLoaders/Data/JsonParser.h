@@ -64,11 +64,18 @@ namespace BBE {
 		~JsonParser() = default;
 
 		void Parse(const char* a_FilePath);
+		JSONNode* ParseObject();
+		JSONNode* ParseList();
+		JSONNode* ParseString();
+		JSONNode* ParseNumber();
+		JSONNode* ParseBool();
+		JSONNode* ParseNull();
 
 	private:
 		JSONToken GetToken();
 		char GetWithoutWhiteSpace();
 		void RollBackToken();
+		bool EndOfFile();
 
 		BBSystem::BBFStream m_FStream;
 		size_t prevPos;

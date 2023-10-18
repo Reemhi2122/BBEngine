@@ -57,14 +57,177 @@ namespace BBE {
 	{
 		m_FStream.LoadFile(a_FilePath);
 
-		char c;
-		while (m_FStream.Good()) {
+		char* key = "";
 
-			m_FStream.Get(c);
-			printf("%c", c);
+		while(!EndOfFile()){
+			JSONToken tkn;
+			tkn = GetToken();
+			BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
+
+			JSONNode* newNode;
+			switch (tkn.type)
+			{
+			case JSONTokenType::CurlyOpen:
+				JSONNode* newNode = ParseObject();
+				break;
+			case JSONTokenType::ArrayOpen:
+				JSONNode* newNode = ParseList();
+				break;
+			case JSONTokenType::String:
+				RollBackToken();
+				JSONNode* newNode = ParseString();
+				break;
+			case JSONTokenType::Boolean:
+				RollBackToken();
+				JSONNode* newNode = ParseBool();
+				break;
+			case JSONTokenType::Number:
+				RollBackToken();
+				JSONNode* newNode = ParseNumber();
+				break;
+			default:
+				break;
+			}
+
+			if (!root) {
+				root = newNode;
+			}
 		}
+
 	}
 
+	JSONNode* JsonParser::ParseObject()
+	{
+		//NOTE(Stan): Need to change this to memallocator
+		JSONNode* node = new JSONNode();
+		JSONObject* obj = new JSONObject();
+		bool hasCompleted = false;
+
+		while (!hasCompleted) {
+			if (!EndOfFile) {
+				JSONToken curtkn = GetToken();
+				std::string key = curtkn.value;
+				GetToken();
+				curtkn = GetToken();
+
+				switch (curtkn.type)
+				{
+				case JSONTokenType::CurlyOpen:
+					(*obj)[key] = ParseObject();
+					break;
+				case JSONTokenType::ArrayOpen:
+					(*obj)[key] = ParseList();
+					break;
+				case JSONTokenType::String:
+					RollBackToken();
+					(*obj)[key] = ParseString();
+					break;
+				case JSONTokenType::Number:
+					RollBackToken();
+					(*obj)[key] = ParseNumber();
+					break;
+				case JSONTokenType::Boolean:
+					RollBackToken();
+					(*obj)[key] = ParseBool();
+					break;
+				case JSONTokenType::NullType:
+					(*obj)[key] = ParseNull();
+					break;
+				default:
+					break;
+				}
+
+				curtkn = GetToken();
+				hasCompleted = (curtkn.type == JSONTokenType::CurlyClose);
+			}
+			else {
+				BB_Assert(0, "No more tokens left while creating list.");
+			}
+		}
+
+		node->value.obj = obj;
+		node->type = NodeType::Object;
+		return node;
+	}
+
+	JSONNode* JsonParser::ParseList()
+	{
+		//NOTE(Stan): Need to change this to memallocator
+		JSONNode* node = new JSONNode();
+		JSONList* list = new JSONList();
+		bool hasCompleted = false;
+
+		while (!hasCompleted) {
+			if (!EndOfFile) {
+				JSONToken curtkn = GetToken();
+				std::string key = curtkn.value;
+
+				GetToken();
+				curtkn = GetToken();
+
+				switch (curtkn.type)
+				{
+				case JSONTokenType::CurlyOpen:
+					node = ParseObject();
+					break;
+				case JSONTokenType::ArrayOpen:
+					node = ParseList();
+					break;
+				case JSONTokenType::String:
+					RollBackToken();
+					node = ParseString();
+					break;
+				case JSONTokenType::Number:
+					RollBackToken();
+					node = ParseNumber();
+					break;
+				case JSONTokenType::Boolean:
+					RollBackToken();
+					node = ParseBool();
+					break;
+				case JSONTokenType::NullType:
+					node = ParseNull();
+					break;
+				default:
+					break;
+				}
+
+				list->push_back(node);
+				curtkn = GetToken();
+				hasCompleted = (curtkn.type == JSONTokenType::ArrayClose);
+			}
+			else {
+				BB_Assert(0, "No more tokens left while creating list.");
+			}
+		}
+
+		node->value.list = list;
+		node->type = NodeType::List;
+		return node;
+	}
+
+	JSONNode* JsonParser::ParseString()
+	{
+		return nullptr;
+	}
+
+	JSONNode* JsonParser::ParseNumber()
+	{
+		return nullptr;
+	}
+
+	JSONNode* JsonParser::ParseBool()
+	{
+		return nullptr;
+	}
+
+	JSONNode* JsonParser::ParseNull()
+	{
+		return nullptr;
+	}
+
+	//NOTE(Stan): Might want to do some more checking on the 
+	//True, False & Null if they are actually spelled correctly
 	JSONToken JsonParser::GetToken()
 	{
 		char c;
@@ -85,13 +248,13 @@ namespace BBE {
 				m_FStream.Get(c);
 			}
 		}
-		else if (c == '-' || c > '1' && c < '9') {
+		else if (c == '-' || c >= '1' && c <= '9') {
 			tkn.type = JSONTokenType::Number;
 			tkn.value = "";
 			tkn.value += c;
 
 			uint32_t prevCharPos;
-			while (c == '-' || c == '.' || c > '1' && c < '9') {
+			while (c == '-' || c == '.' || c >= '1' && c <= '9') {
 				prevCharPos = m_FStream.GetPos();
 				m_FStream.Get(c);
 
@@ -154,11 +317,11 @@ namespace BBE {
 	char JsonParser::GetWithoutWhiteSpace()
 	{
 		char c = ' ';
-		while ((c == ' ' || c == '\n')) {
+		while ((c == ' ' || c == '\n' || c == '\t')) {
 
 			m_FStream.Get(c);
 
-			if ((c == ' ' || c == '\n') && !m_FStream.Good()) {
+			if ((c == ' ' || c == '\n' || c == '\t') && !m_FStream.Good()) {
 				BB_Assert(0, "Ran out of tokens during parsing!");
 			}
 			else if (!m_FStream.Good()) {
@@ -175,5 +338,10 @@ namespace BBE {
 			m_FStream.Clear();
 		}
 		m_FStream.SeekPos(prevPos);
+	}
+
+	bool JsonParser::EndOfFile()
+	{
+		return m_FStream.Eof();
 	}
 }

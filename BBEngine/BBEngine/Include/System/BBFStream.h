@@ -36,6 +36,7 @@ namespace BBE {
 			uint8_t GetPos();
 			void Clear(FSF::FSFlag flag = FSF::GOODBIT);
 
+
 			
 			bool Good() const noexcept;
 			bool Eof() const noexcept;

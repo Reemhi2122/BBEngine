@@ -49,7 +49,7 @@ namespace BBE {
     void BBEngine::TestCode()
     {
         JsonParser parser;
-        parser.Parse("assets/Data/test.txt");
+        parser.Parse("assets/Data/sample.json");
     }
 
     void BBEngine::Update()
