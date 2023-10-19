@@ -52,7 +52,7 @@ namespace BBE {
 			return BB_TRUE;
 		}
 
-		BB_BOOL BBFStream::SeekPos(uint8_t a_Pos)
+		BB_BOOL BBFStream::SeekPos(size_t a_Pos)
 		{
 			if (a_Pos < 0 || a_Pos > m_BufferSize) {
 				return BB_FALSE;

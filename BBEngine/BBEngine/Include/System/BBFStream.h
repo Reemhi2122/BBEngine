@@ -32,11 +32,9 @@ namespace BBE {
 			void LoadFile(const char* a_FilePath);
 
 			BB_BOOL Get(char& c);
-			BB_BOOL SeekPos(uint8_t a_Pos);
-			uint8_t GetPos();
+			BB_BOOL SeekPos(size_t a_Pos);
+			size_t GetPos();
 			void Clear(FSF::FSFlag flag = FSF::GOODBIT);
-
-
 			
 			bool Good() const noexcept;
 			bool Eof() const noexcept;
@@ -85,7 +83,7 @@ namespace BBE {
 			return false;
 		}
 
-		inline uint8_t BBFStream::GetPos() {
+		inline size_t BBFStream::GetPos() {
 			return m_BufferPos;
 		}
 	}

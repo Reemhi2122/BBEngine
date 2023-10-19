@@ -50,11 +50,11 @@ namespace BBE {
 		} value;
 		NodeType type;
 	
-		JSONObject GetObject() const;
-		JSONList GetList() const;
-		std::string GetString() const;
-		float GetFloat() const;
-		bool GetBool() const;
+		JSONObject GetObjectBB() const;
+		JSONList GetListBB() const;
+		std::string GetStringBB() const;
+		float GetFloatBB() const;
+		bool GetBoolBB() const;
 	};
 
 	class JsonParser {
@@ -64,12 +64,7 @@ namespace BBE {
 		~JsonParser() = default;
 
 		void Parse(const char* a_FilePath);
-		JSONNode* ParseObject();
-		JSONNode* ParseList();
-		JSONNode* ParseString();
-		JSONNode* ParseNumber();
-		JSONNode* ParseBool();
-		JSONNode* ParseNull();
+		JSONObject GetRootNode() const noexcept;
 
 	private:
 		JSONToken GetToken();
@@ -77,7 +72,14 @@ namespace BBE {
 		void RollBackToken();
 		bool EndOfFile();
 
-		void ParseOn(JSONNode* a_Node, JSONTokenType& a_Type);
+		JSONNode* ParseObject();
+		JSONNode* ParseList();
+		JSONNode* ParseString();
+		JSONNode* ParseNumber();
+		JSONNode* ParseBool();
+		JSONNode* ParseNull();
+
+		JSONNode* SwitchOn(JSONTokenType& a_Type);
 
 		BBSystem::BBFStream m_FStream;
 		size_t prevPos;
@@ -85,5 +87,9 @@ namespace BBE {
 		JSONNode* root;
 		JSONNode* current;
 	};
+
+	inline JSONObject JsonParser::GetRootNode() const noexcept {
+		return root->GetObjectBB();
+	}
 
 }

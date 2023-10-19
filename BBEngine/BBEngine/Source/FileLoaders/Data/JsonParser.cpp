@@ -4,7 +4,7 @@
 
 namespace BBE {
 
-	JSONObject JSONNode::GetObject() const {
+	JSONObject JSONNode::GetObjectBB() const {
 		if (type == NodeType::Object) {
 			return *value.obj;
 		}
@@ -12,7 +12,7 @@ namespace BBE {
 		BB_Assert(0, "Requested JSON node not of correct type!");
 	}
 
-	JSONList JSONNode::GetList() const
+	JSONList JSONNode::GetListBB() const
 	{
 		if (type == NodeType::List) {
 			return *value.list;
@@ -21,7 +21,7 @@ namespace BBE {
 		BB_Assert(0, "Requested JSON node not of correct type!");
 	}
 
-	std::string JSONNode::GetString() const
+	std::string JSONNode::GetStringBB() const
 	{
 		if (type == NodeType::String) {
 			return *value.string;
@@ -30,7 +30,7 @@ namespace BBE {
 		BB_Assert(0, "Requested JSON node not of correct type!");
 	}
 
-	float JSONNode::GetFloat() const 
+	float JSONNode::GetFloatBB() const
 	{
 		if (type == NodeType::Number) {
 			return value.floatValue;
@@ -39,7 +39,7 @@ namespace BBE {
 		BB_Assert(0, "Requested JSON node not of correct type!");
 	}
 
-	bool JSONNode::GetBool() const
+	bool JSONNode::GetBoolBB() const
 	{
 		if (type == NodeType::Boolean) {
 			return value.boolValue;
@@ -57,36 +57,29 @@ namespace BBE {
 	{
 		m_FStream.LoadFile(a_FilePath);
 
-		while(!EndOfFile()){
-			JSONToken tkn;
-			tkn = GetToken();
-			BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
+		JSONToken tkn;
+		tkn = GetToken();
+		BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
 
-			JSONNode* newNode;
-			SwitchOn(newNode, tkn.type);
-
-			if (!root) {
-				root = newNode;
-			}
-		}
-
+		root = SwitchOn(tkn.type);
 	}
 
 	JSONNode* JsonParser::ParseObject()
 	{
-		//NOTE(Stan): Need to change this to memallocator
-		JSONNode* node = new JSONNode();
+		//NOTE(Stan): Need to change this to memory allocator
+		JSONNode* node;
 		JSONObject* obj = new JSONObject();
 		bool hasCompleted = false;
 
 		while (!hasCompleted) {
-			if (!EndOfFile) {
+			if (!EndOfFile()) {
+				node = new JSONNode();
 				JSONToken curtkn = GetToken();
 				std::string key = curtkn.value;
 				GetToken();
 				curtkn = GetToken();
 
-				SwitchOn((*obj)[key], curtkn.type);
+				(*obj)[key] = SwitchOn(curtkn.type);
 
 				curtkn = GetToken();
 				hasCompleted = (curtkn.type == JSONTokenType::CurlyClose);
@@ -104,19 +97,16 @@ namespace BBE {
 	JSONNode* JsonParser::ParseList()
 	{
 		//NOTE(Stan): Need to change this to memallocator
-		JSONNode* node = new JSONNode();
+		
 		JSONList* list = new JSONList();
+		JSONNode* node;
 		bool hasCompleted = false;
 
 		while (!hasCompleted) {
-			if (!EndOfFile) {
+			if (!EndOfFile()) {
 				JSONToken curtkn = GetToken();
-				std::string key = curtkn.value;
 
-				GetToken();
-				curtkn = GetToken();
-
-				SwitchOn(node, curtkn.type);
+				node = SwitchOn(curtkn.type);
 				
 				list->push_back(node);
 				curtkn = GetToken();
@@ -137,7 +127,7 @@ namespace BBE {
 		JSONNode* node = new JSONNode();
 		JSONToken tkn = GetToken();
 	
-		node->value.string->assign(tkn.value.c_str());
+		node->value.string = new std::string(tkn.value.c_str());
 		node->type = NodeType::String;
 		return node;
 	}
@@ -205,7 +195,7 @@ namespace BBE {
 					break;
 				}
 				
-				if (c == '-' || c == '.' || c > '1' && c < '9') {
+				if (c == '-' || c == '.' || c >= '1' && c <= '9') {
 					tkn.value += c;
 				}
 				else {
@@ -288,31 +278,25 @@ namespace BBE {
 		return m_FStream.Eof();
 	}
 
-	void JsonParser::SwitchOn(JSONNode* a_Node, JSONTokenType& a_Type)
+	JSONNode* JsonParser::SwitchOn(JSONTokenType& a_Type)
 	{
 		switch (a_Type)
 		{
 		case JSONTokenType::CurlyOpen:
-			a_Node = ParseObject();
-			break;
+			return ParseObject();
 		case JSONTokenType::ArrayOpen:
-			a_Node = ParseList();
-			break;
+			return ParseList();
 		case JSONTokenType::String:
 			RollBackToken();
-			a_Node = ParseString();
-			break;
+			return ParseString();
 		case JSONTokenType::Number:
 			RollBackToken();
-			a_Node = ParseNumber();
-			break;
+			return ParseNumber();
 		case JSONTokenType::Boolean:
 			RollBackToken();
-			a_Node = ParseBool();
-			break;
+			return ParseBool();
 		case JSONTokenType::NullType:
-			a_Node = ParseNull();
-			break;
+			return ParseNull();
 		default:
 			break;
 		}
