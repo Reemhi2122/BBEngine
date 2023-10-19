@@ -9,7 +9,7 @@ After having some working graphics in my engine, I decided to do research in all
 
 ### File support
 Current files it supports is:
-[Wav files](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Source/FileLoaders/WAVLoader.cpp), [BMP files](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Source/FileLoaders/BMPLoader.cpp).
+[Wav files](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Source/FileLoaders/Sound/WAVLoader.cpp), [BMP files](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Source/FileLoaders/Image/BMPLoader.cpp), [JSON files](https://github.com/Reemhi2122/BBEngine/blob/main/BBEngine/BBEngine/Source/FileLoaders/Data/JsonParser.cpp)
 
 ## Graphics
 The graphics library is currently based on DX11 and is very much still in progress.
