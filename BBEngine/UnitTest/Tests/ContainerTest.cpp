@@ -53,11 +53,13 @@ TEST(Containers, LinkedList)
 {
 	BBE::LinkedList<int> linkedList;
 
-	linkedList.Add(2);
-	linkedList.Add(4);
-	linkedList.Add(6);
-	linkedList.Add(8);
+	linkedList.Push_Back(2);
+	linkedList.Push_Back(4);
+	linkedList.Push_Back(6);
+	linkedList.Push_Back(8);
 
-	int x = linkedList.Get();
-	int y = linkedList.Get();
+	linkedList.Push_Front(8);
+
+	int x = linkedList.Pop_Front();
+	int y = linkedList.Pop_Front();
 }

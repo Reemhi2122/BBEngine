@@ -73,9 +73,6 @@ namespace BBE {
 
 	}
 
-	//NOTE(Stan):	Not sure if this is correct..
-	//				It seems like its setting the element to the head
-	//				instead of the other way around.
 	template<typename T>
 	void MemoryPool<T>::PushFront(T* a_Element) {
 		(*reinterpret_cast<T**>(a_Element)) = reinterpret_cast<T*>(m_Head);
