@@ -51,8 +51,7 @@ namespace BBE {
         JsonParser parser;
         parser.Parse("assets/Data/sample.json");
         
-        std::string test = parser.GetRootNode()["children"]->GetListBB()[3]->GetObjectBB()["name"]->GetStringBB();
-        
+        bool test = parser.GetRootNode()["truebool"]->GetBoolBB();
     }
 
     void BBEngine::Update()

@@ -59,9 +59,9 @@ namespace BBE {
 
 	class JsonParser {
 	public:
-		JsonParser() = default;
+		JsonParser();
 		JsonParser(const char* a_FilePath);
-		~JsonParser() = default;
+		~JsonParser();
 
 		void Parse(const char* a_FilePath);
 		JSONObject GetRootNode() const noexcept;
@@ -81,15 +81,14 @@ namespace BBE {
 
 		JSONNode* SwitchOn(JSONTokenType& a_Type);
 
+		Allocators::StackAllocator m_JsonAlloc;
 		BBSystem::BBFStream m_FStream;
-		size_t prevPos;
-
-		JSONNode* root;
-		JSONNode* current;
+		size_t m_PrevPos;
+		JSONNode* m_Root;
 	};
 
 	inline JSONObject JsonParser::GetRootNode() const noexcept {
-		return root->GetObjectBB();
+		return m_Root->GetObjectBB();
 	}
 
 }

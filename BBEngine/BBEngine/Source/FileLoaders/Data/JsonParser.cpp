@@ -48,32 +48,44 @@ namespace BBE {
 		BB_Assert(0, "Requested JSON node not of correct type!");
 	}
 
+	JsonParser::JsonParser()
+	{
+		m_Root = nullptr;
+		m_PrevPos = 0;
+	}
+
 	JsonParser::JsonParser(const char* a_FilePath)
 	{
 		Parse(a_FilePath);
 	}
 
+	JsonParser::~JsonParser()
+	{
+		m_JsonAlloc.Clear();
+	}
+
 	void JsonParser::Parse(const char* a_FilePath)
 	{
+		m_JsonAlloc.Init(1 * MBSize);
 		m_FStream.LoadFile(a_FilePath);
 
 		JSONToken tkn;
 		tkn = GetToken();
 		BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
 
-		root = SwitchOn(tkn.type);
+		m_Root = SwitchOn(tkn.type);
 	}
 
 	JSONNode* JsonParser::ParseObject()
 	{
 		//NOTE(Stan): Need to change this to memory allocator
 		JSONNode* node;
-		JSONObject* obj = new JSONObject();
+		JSONObject* obj = BBNew(m_JsonAlloc, JSONObject);
 		bool hasCompleted = false;
 
 		while (!hasCompleted) {
 			if (!EndOfFile()) {
-				node = new JSONNode();
+				node = BBNew(m_JsonAlloc, JSONNode);
 				JSONToken curtkn = GetToken();
 				std::string key = curtkn.value;
 				GetToken();
@@ -98,17 +110,16 @@ namespace BBE {
 	{
 		//NOTE(Stan): Need to change this to memallocator
 		
-		JSONList* list = new JSONList();
-		JSONNode* node;
+		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
+		JSONList* list = BBNew(m_JsonAlloc, JSONList);
 		bool hasCompleted = false;
 
 		while (!hasCompleted) {
 			if (!EndOfFile()) {
 				JSONToken curtkn = GetToken();
-
-				node = SwitchOn(curtkn.type);
+				JSONNode* listNode = SwitchOn(curtkn.type);
 				
-				list->push_back(node);
+				list->push_back(listNode);
 				curtkn = GetToken();
 				hasCompleted = (curtkn.type == JSONTokenType::ArrayClose);
 			}
@@ -124,17 +135,17 @@ namespace BBE {
 
 	JSONNode* JsonParser::ParseString()
 	{
-		JSONNode* node = new JSONNode();
+		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		JSONToken tkn = GetToken();
 	
-		node->value.string = new std::string(tkn.value.c_str());
+		node->value.string = BBNew(m_JsonAlloc, std::string)(tkn.value.c_str());
 		node->type = NodeType::String;
 		return node;
 	}
 
 	JSONNode* JsonParser::ParseNumber()
 	{
-		JSONNode* node = new JSONNode();
+		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		JSONToken tkn = GetToken();
 
 		node->value.floatValue = std::stof(tkn.value);
@@ -144,17 +155,17 @@ namespace BBE {
 
 	JSONNode* JsonParser::ParseBool()
 	{
-		JSONNode* node = new JSONNode();
+		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		JSONToken tkn = GetToken();
 
-		node->value.floatValue = strcmp(tkn.value.c_str(), "f");
-		node->type = NodeType::Number;
+		node->value.boolValue = strcmp(tkn.value.c_str(), "f");
+		node->type = NodeType::Boolean;
 		return node;
 	}
 
 	JSONNode* JsonParser::ParseNull()
 	{
-		JSONNode* node = new JSONNode();
+		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		node->type = NodeType::NULL_Type;
 		return node;
 	}
@@ -167,7 +178,7 @@ namespace BBE {
 		if (m_FStream.Eof()) {
 			BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, "Exhaused tokens");
 		}
-		prevPos = m_FStream.GetPos();
+		m_PrevPos = m_FStream.GetPos();
 		c = GetWithoutWhiteSpace();
 
 		JSONToken tkn;
@@ -270,7 +281,7 @@ namespace BBE {
 		if (m_FStream.Eof()) {
 			m_FStream.Clear();
 		}
-		m_FStream.SeekPos(prevPos);
+		m_FStream.SeekPos(m_PrevPos);
 	}
 
 	bool JsonParser::EndOfFile()
