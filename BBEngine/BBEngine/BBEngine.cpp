@@ -26,7 +26,7 @@ namespace BBE {
         BB_Log_Init("BBLogger", LOG_ALL, "logs/");
         m_ArenaAllocator.Init(BBE::PageSize);
         m_StackAllocator.Init(1 * BBE::MBSize);
-        m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(16, 2);
+        m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(8, 2);
     }
 
     BBEngine::~BBEngine()
@@ -50,8 +50,9 @@ namespace BBE {
     {
         JsonParser parser;
         parser.Parse("assets/Data/sample.json");
-        
-        bool test = parser.GetRootNode()["truebool"]->GetBoolBB();
+        parser.WriteJson("writebackJson.json");
+
+        //bool test = parser.GetRootNode()["truebool"]->GetBoolBB();
     }
 
     void BBEngine::Update()

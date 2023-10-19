@@ -20,8 +20,9 @@ namespace BBE {
 		BBFStream::~BBFStream()
 		{
 			m_BufferPos = 0;
-			m_Buffer = nullptr;
 			m_File = NULL;
+			BBFreeArr(m_BufferAlloc, m_Buffer);
+			m_BufferAlloc.Clear();
 		}
 
 		void BBFStream::LoadFile(const char* a_FilePath)
@@ -37,6 +38,8 @@ namespace BBE {
 			m_BufferAlloc.Init(m_BufferSize);
 			m_Buffer = BBNewArr(m_BufferAlloc, m_BufferSize, unsigned char);
 			ReadFileBB(m_File, m_Buffer, m_BufferSize);
+
+			CloseFileBB(m_File);
 
 			Clear();
 		}

@@ -32,7 +32,7 @@ namespace BBE {
 		m_Head = nullptr;
 		m_Tail = nullptr;
 
-		m_Alloc.Init(sizeof(T) * a_Size, DEFAULT_ALIGNMENT, sizeof(T));
+		m_Alloc.Init(sizeof(QueueElement<T>) * a_Size, DEFAULT_ALIGNMENT, sizeof(T));
 	}
 
 	template<typename T>

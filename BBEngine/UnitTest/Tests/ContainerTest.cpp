@@ -2,6 +2,7 @@
 #include "Containers/Pool.h"
 #include "Containers/MemoryPool.h"
 #include "Containers/Queue.h"
+#include "Containers/LinkedList.h"
 
 TEST(Containers, Pool)
 {
@@ -37,7 +38,7 @@ TEST(Containers, MemoryPool)
 
 TEST(Containers, Queue)
 {
-	BBE::Queue<int> queue = BBE::Queue<int>();
+	BBE::Queue<int> queue = BBE::Queue<int>(5);
 
 	queue.Add(1);
 	queue.Add(2);
@@ -46,4 +47,17 @@ TEST(Containers, Queue)
 
 	int test2 = queue.Get();
 	int test3 = queue.Get();
+}
+
+TEST(Containers, LinkedList) 
+{
+	BBE::LinkedList<int> linkedList;
+
+	linkedList.Add(2);
+	linkedList.Add(4);
+	linkedList.Add(6);
+	linkedList.Add(8);
+
+	int x = linkedList.Get();
+	int y = linkedList.Get();
 }

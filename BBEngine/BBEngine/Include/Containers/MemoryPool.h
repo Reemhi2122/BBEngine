@@ -10,10 +10,10 @@ namespace BBE {
 		MemoryPool(size_t maxPool);
 		~MemoryPool();
 
-		MemoryPool& operator=(const MemoryPool& a_Rhs);
-		MemoryPool(MemoryPool&& a_Rhs) noexcept;
-		MemoryPool& operator=(const MemoryPool& other);
-		MemoryPool& operator=(MemoryPool&& other) noexcept;
+		//MemoryPool& operator=(const MemoryPool& a_Rhs);
+		//MemoryPool(MemoryPool&& a_Rhs) noexcept;
+		//MemoryPool& operator=(const MemoryPool& other);
+		//MemoryPool& operator=(MemoryPool&& other) noexcept;
 
 		T* Pop();
 		void PushFront(T* a_Element);
@@ -38,29 +38,29 @@ namespace BBE {
 		m_Alloc.Clear();
 	}
 
-	template<typename T>
-	MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& a_Rhs) // copy constructor
-	{ 
+	//template<typename T>
+	//MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& a_Rhs) // copy constructor
+	//{ 
 
-	}
+	//}
 
-	template<typename T>
-	MemoryPool<T>::MemoryPool(MemoryPool&& a_Rhs) noexcept // move constructor
-	{
+	//template<typename T>
+	//MemoryPool<T>::MemoryPool(MemoryPool&& a_Rhs) noexcept // move constructor
+	//{
 
-	}
+	//}
 
-	template<typename T>
-	MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& other) // copy assignment
-	{
+	//template<typename T>
+	//MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& other) // copy assignment
+	//{
 
-	}
+	//}
 
-	template<typename T>
-	MemoryPool<T>& MemoryPool<T>::operator=(MemoryPool&& other) noexcept // move assignment
-	{
+	//template<typename T>
+	//MemoryPool<T>& MemoryPool<T>::operator=(MemoryPool&& other) noexcept // move assignment
+	//{
 
-	}
+	//}
 
 	template<typename T>
 	T* MemoryPool<T>::Pop() {
@@ -73,6 +73,9 @@ namespace BBE {
 
 	}
 
+	//NOTE(Stan):	Not sure if this is correct..
+	//				It seems like its setting the element to the head
+	//				instead of the other way around.
 	template<typename T>
 	void MemoryPool<T>::PushFront(T* a_Element) {
 		(*reinterpret_cast<T**>(a_Element)) = reinterpret_cast<T*>(m_Head);

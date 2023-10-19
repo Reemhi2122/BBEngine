@@ -50,7 +50,7 @@ namespace BBE {
 		} value;
 		NodeType type;
 	
-		JSONObject GetObjectBB() const;
+		JSONObject* GetObjectBB() const;
 		JSONList GetListBB() const;
 		std::string GetStringBB() const;
 		float GetFloatBB() const;
@@ -64,7 +64,8 @@ namespace BBE {
 		~JsonParser();
 
 		void Parse(const char* a_FilePath);
-		JSONObject GetRootNode() const noexcept;
+		void WriteJson(const char* a_FilePath);
+		JSONObject* GetRootNode() const noexcept;
 
 	private:
 		JSONToken GetToken();
@@ -85,9 +86,11 @@ namespace BBE {
 		BBSystem::BBFStream m_FStream;
 		size_t m_PrevPos;
 		JSONNode* m_Root;
+
+		JSONNode** m_List;
 	};
 
-	inline JSONObject JsonParser::GetRootNode() const noexcept {
+	inline JSONObject* JsonParser::GetRootNode() const noexcept {
 		return m_Root->GetObjectBB();
 	}
 

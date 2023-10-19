@@ -4,9 +4,9 @@
 
 namespace BBE {
 
-	JSONObject JSONNode::GetObjectBB() const {
+	JSONObject* JSONNode::GetObjectBB() const {
 		if (type == NodeType::Object) {
-			return *value.obj;
+			return value.obj;
 		}
 
 		BB_Assert(0, "Requested JSON node not of correct type!");
@@ -74,11 +74,54 @@ namespace BBE {
 		BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
 
 		m_Root = SwitchOn(tkn.type);
+
+	}
+
+	void JsonParser::WriteJson(const char* a_FilePath)
+	{
+		BBSystem::BBFILE file = BBSystem::OpenFileWriteBB(a_FilePath);
+		NodeType type = NodeType::String;
+
+		JSONObject::iterator it = m_Root->GetObjectBB()->begin();
+		for (it = m_Root->GetObjectBB()->begin(); it != m_Root->GetObjectBB()->end(); it++) {
+			std::string print = "";
+			switch (it->second->type)
+			{
+			case NodeType::String:
+			{
+				print += it->first;
+				print += ":";
+				print += it->second->GetStringBB();
+				print += "\n";
+				BBSystem::WriteToFileBB(file, print);
+				break;
+			}
+			case NodeType::Number:
+			{
+				print += it->first;
+				print += ":";
+				print += it->second->GetFloatBB();
+				print += "\n";
+				BBSystem::WriteToFileBB(file, print);
+				break;
+			}
+			case NodeType::Boolean:
+			{
+				print += it->first;
+				print += ":";
+				print += it->second->GetBoolBB();
+				print += "\n";
+				BBSystem::WriteToFileBB(file, print);
+				break;
+			}
+			default:
+				break;
+			}
+		}
 	}
 
 	JSONNode* JsonParser::ParseObject()
 	{
-		//NOTE(Stan): Need to change this to memory allocator
 		JSONNode* node;
 		JSONObject* obj = BBNew(m_JsonAlloc, JSONObject);
 		bool hasCompleted = false;
@@ -108,8 +151,6 @@ namespace BBE {
 
 	JSONNode* JsonParser::ParseList()
 	{
-		//NOTE(Stan): Need to change this to memallocator
-		
 		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		JSONList* list = BBNew(m_JsonAlloc, JSONList);
 		bool hasCompleted = false;

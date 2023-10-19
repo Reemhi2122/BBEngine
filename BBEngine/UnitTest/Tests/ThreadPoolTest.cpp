@@ -18,8 +18,10 @@ void StaticThreadTest(void*) {
 
 TEST(Thread, ThreadPool) 
 {
+    
     for (int i = 0; i < 10; i++) {
-        m_ThreadPool.AddTask(ThreadTest);
+        BBE::BBTaskHandle handle;
+        m_ThreadPool.AddTask(ThreadTest, NULL, &handle);
     }
 
     BBE::BBThreadHandle static_handle = m_ThreadPool.CreateStaticThread(StaticThreadTest);
