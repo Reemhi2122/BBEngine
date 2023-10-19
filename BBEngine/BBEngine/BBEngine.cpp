@@ -48,11 +48,7 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-        JsonParser parser;
-        parser.Parse("assets/Data/sample.json");
-        parser.WriteJson("writebackJson.json");
-
-        //bool test = parser.GetRootNode()["truebool"]->GetBoolBB();
+;
     }
 
     void BBEngine::Update()

@@ -3,6 +3,7 @@
 #include <map>
 #include <vector>
 #include "System/BBFStream.h"
+#include "Containers/LinkedList.h"
 
 namespace BBE {
 
@@ -86,8 +87,7 @@ namespace BBE {
 		BBSystem::BBFStream m_FStream;
 		size_t m_PrevPos;
 		JSONNode* m_Root;
-
-		JSONNode** m_List;
+		LinkedList<JSONNode*> m_List;
 	};
 
 	inline JSONObject* JsonParser::GetRootNode() const noexcept {

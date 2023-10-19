@@ -25,9 +25,13 @@ namespace BBE {
 		T Pop_Back();
 		T Pop_Front();
 
+		uint32_t Size();
+
 	private:
 		LinkedListElement<T>* m_Head;
 		LinkedListElement<T>* m_Current;
+
+		uint32_t m_Size;
 
 		Allocators::StackAllocator m_Alloc;
 	};
@@ -42,7 +46,7 @@ namespace BBE {
 
 	template<typename T>
 	LinkedList<T>::~LinkedList() {
-
+		m_Alloc.Clear();
 	}
 
 	template<typename T>
@@ -58,6 +62,7 @@ namespace BBE {
 		newElement->element = a_Element;
 		newElement->next = nullptr;
 		newElement->prev = nullptr;
+		m_Size++;
 
 		if (!m_Head) {
 			m_Head = newElement;
@@ -77,6 +82,7 @@ namespace BBE {
 		newElement->element = a_Element;
 		newElement->next = nullptr;
 		newElement->prev = nullptr;
+		m_Size++;
 
 		if (!m_Head) {
 			m_Head = newElement;
@@ -93,7 +99,8 @@ namespace BBE {
 	T LinkedList<T>::Pop_Back()
 	{
 		BB_Assert(m_Current != NULL, "No more elements in list!");
-	
+		
+		m_Size--;
 		T& res = m_Current->element;
 		m_Current = m_Current->prev;
 		return res;
@@ -104,8 +111,15 @@ namespace BBE {
 	{
 		BB_Assert(m_Head != NULL, "No more elements in list!");
 
+		m_Size--;
 		T& res = m_Head->element;
 		m_Head = m_Head->next;
 		return res;
+	}
+
+	template<typename T>
+	inline uint32_t LinkedList<T>::Size()
+	{
+		return m_Size;
 	}
 }

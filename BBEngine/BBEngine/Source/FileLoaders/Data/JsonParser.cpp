@@ -74,7 +74,7 @@ namespace BBE {
 		BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
 
 		m_Root = SwitchOn(tkn.type);
-
+		m_List.Push_Front(m_Root);
 	}
 
 	void JsonParser::WriteJson(const char* a_FilePath)
@@ -82,42 +82,40 @@ namespace BBE {
 		BBSystem::BBFILE file = BBSystem::OpenFileWriteBB(a_FilePath);
 		NodeType type = NodeType::String;
 
-		JSONObject::iterator it = m_Root->GetObjectBB()->begin();
-		for (it = m_Root->GetObjectBB()->begin(); it != m_Root->GetObjectBB()->end(); it++) {
-			std::string print = "";
-			switch (it->second->type)
+		uint32_t size = m_List.Size();
+		for (int i = 0; i < size; i++) {
+			JSONNode* node = m_List.Pop_Front();
+			std::string out;
+			switch (node->type)
 			{
 			case NodeType::String:
 			{
-				print += it->first;
-				print += ":";
-				print += it->second->GetStringBB();
-				print += "\n";
-				BBSystem::WriteToFileBB(file, print);
+				out.append(node->GetStringBB());
+				BBSystem::WriteToFileBB(file, out);
 				break;
 			}
 			case NodeType::Number:
 			{
-				print += it->first;
-				print += ":";
-				print += it->second->GetFloatBB();
-				print += "\n";
-				BBSystem::WriteToFileBB(file, print);
+				out.append(std::to_string(node->GetFloatBB()));
+				BBSystem::WriteToFileBB(file, out);
 				break;
 			}
 			case NodeType::Boolean:
 			{
-				print += it->first;
-				print += ":";
-				print += it->second->GetBoolBB();
-				print += "\n";
-				BBSystem::WriteToFileBB(file, print);
+				out.append(node->GetBoolBB() ? "True" : "False");
+				BBSystem::WriteToFileBB(file, out);
 				break;
 			}
 			default:
 				break;
 			}
 		}
+
+		//JSONObject::iterator it = m_Root->GetObjectBB()->begin();
+		//for (it = m_Root->GetObjectBB()->begin(); it != m_Root->GetObjectBB()->end(); it++) {
+		//	std::string print = "";
+		//	
+		//}
 	}
 
 	JSONNode* JsonParser::ParseObject()
@@ -146,6 +144,7 @@ namespace BBE {
 
 		node->value.obj = obj;
 		node->type = NodeType::Object;
+		m_List.Push_Back(node);
 		return node;
 	}
 
@@ -171,6 +170,7 @@ namespace BBE {
 
 		node->value.list = list;
 		node->type = NodeType::List;
+		m_List.Push_Back(node);
 		return node;
 	}
 
@@ -181,6 +181,7 @@ namespace BBE {
 	
 		node->value.string = BBNew(m_JsonAlloc, std::string)(tkn.value.c_str());
 		node->type = NodeType::String;
+		m_List.Push_Back(node);
 		return node;
 	}
 
@@ -191,6 +192,7 @@ namespace BBE {
 
 		node->value.floatValue = std::stof(tkn.value);
 		node->type = NodeType::Number;
+		m_List.Push_Back(node);
 		return node;
 	}
 
@@ -201,6 +203,7 @@ namespace BBE {
 
 		node->value.boolValue = strcmp(tkn.value.c_str(), "f");
 		node->type = NodeType::Boolean;
+		m_List.Push_Back(node);
 		return node;
 	}
 
@@ -208,6 +211,7 @@ namespace BBE {
 	{
 		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		node->type = NodeType::NULL_Type;
+		m_List.Push_Back(node);
 		return node;
 	}
 
