@@ -74,6 +74,8 @@ namespace BBE {
 		void RollBackToken();
 		bool EndOfFile();
 
+		std::string WriteJsonRecursive(JSONNode* node, std::string a_Prefix, bool a_Last);
+
 		JSONNode* ParseObject();
 		JSONNode* ParseList();
 		JSONNode* ParseString();

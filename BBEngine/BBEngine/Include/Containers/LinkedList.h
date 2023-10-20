@@ -31,7 +31,7 @@ namespace BBE {
 		LinkedListElement<T>* m_Head;
 		LinkedListElement<T>* m_Current;
 
-		uint32_t m_Size;
+		uint32_t m_Size = 0;
 
 		Allocators::StackAllocator m_Alloc;
 	};

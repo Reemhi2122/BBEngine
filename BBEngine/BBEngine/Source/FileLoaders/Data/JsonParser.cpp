@@ -71,64 +71,102 @@ namespace BBE {
 
 		JSONToken tkn;
 		tkn = GetToken();
-		BB_Log(DEFAULT_LOG_CHANNEL, BBUtility::LogInfo, tkn.value.c_str());
 
 		m_Root = SwitchOn(tkn.type);
-		m_List.Push_Front(m_Root);
 	}
 
 	void JsonParser::WriteJson(const char* a_FilePath)
 	{
 		BBSystem::BBFILE file = BBSystem::OpenFileWriteBB(a_FilePath);
-		NodeType type = NodeType::String;
+		std::string out;
 
-		uint32_t size = m_List.Size();
-		for (int i = 0; i < size; i++) {
-			JSONNode* node = m_List.Pop_Front();
-			std::string out;
-			switch (node->type)
-			{
-			case NodeType::String:
-			{
-				out.append(node->GetStringBB());
-				BBSystem::WriteToFileBB(file, out);
-				break;
+		JSONNode* node = m_List.Pop_Front();
+		out = WriteJsonRecursive(node, "", false);
+
+		BBSystem::WriteToFileBB(file, out);
+	}
+
+	std::string JsonParser::WriteJsonRecursive(JSONNode* a_Node, std::string a_Prefix, bool a_Last) {
+		std::string out;
+		switch (a_Node->type)
+		{
+		case NodeType::String:
+		{
+			out.append("\"" + a_Node->GetStringBB() + "\"");
+			out.append(a_Last ? "," : "");
+			out.append("\n");
+			break;
+		}
+		case NodeType::Number:
+		{
+			out.append(std::to_string(a_Node->GetFloatBB()));
+			out.append(a_Last ? "" : "");
+			out.append("\n");
+			break;
+		}
+		case NodeType::Boolean:
+		{
+			out.append(a_Node->GetBoolBB() ? "true" : "false");
+			out.append(a_Last ? "," : "");
+			out.append("\n");
+			break;
+		}
+		case NodeType::Object:
+		{
+			out.append("{\n");
+			uint32_t size = a_Node->GetObjectBB()->size();
+			for (size_t i = 0; i < size; i++) {
+				JSONNode* node = m_List.Pop_Front();
+				out.append(a_Prefix + "    ");
+				out.append("\"" + node->GetStringBB() + "\"");
+				out.append(": ");
+				node = m_List.Pop_Front();
+				
+				bool last = i != (size - 1);
+				out.append(WriteJsonRecursive(node, "    ", last));
 			}
-			case NodeType::Number:
-			{
-				out.append(std::to_string(node->GetFloatBB()));
-				BBSystem::WriteToFileBB(file, out);
-				break;
+			out.append(a_Prefix);
+			out.append("}");
+			out.append(a_Last ? "," : "");
+			out.append("\n");
+			break;
+		}
+		case NodeType::List:
+		{
+			out.append("[\n");
+			uint32_t size = a_Node->GetListBB().size();
+			for (size_t i = 0; i < size; i++) {
+				out.append(a_Prefix + "    ");
+				JSONNode* node = m_List.Pop_Front();
+				bool last = i != (size - 1);
+				out.append(WriteJsonRecursive(node, a_Prefix + "    ", last));
 			}
-			case NodeType::Boolean:
-			{
-				out.append(node->GetBoolBB() ? "True" : "False");
-				BBSystem::WriteToFileBB(file, out);
-				break;
-			}
-			default:
-				break;
-			}
+			out.append(a_Prefix);
+			out.append("]");
+			out.append(a_Last ? "," : "");
+			out.append("\n");
+			break;
+		}
+		default:
+			break;
 		}
 
-		//JSONObject::iterator it = m_Root->GetObjectBB()->begin();
-		//for (it = m_Root->GetObjectBB()->begin(); it != m_Root->GetObjectBB()->end(); it++) {
-		//	std::string print = "";
-		//	
-		//}
+		return out;
 	}
 
 	JSONNode* JsonParser::ParseObject()
 	{
-		JSONNode* node;
+		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		JSONObject* obj = BBNew(m_JsonAlloc, JSONObject);
 		bool hasCompleted = false;
+		m_List.Push_Back(node);
 
 		while (!hasCompleted) {
 			if (!EndOfFile()) {
-				node = BBNew(m_JsonAlloc, JSONNode);
 				JSONToken curtkn = GetToken();
+
 				std::string key = curtkn.value;
+				JSONNode* keynode = SwitchOn(curtkn.type);
 				GetToken();
 				curtkn = GetToken();
 
@@ -144,7 +182,6 @@ namespace BBE {
 
 		node->value.obj = obj;
 		node->type = NodeType::Object;
-		m_List.Push_Back(node);
 		return node;
 	}
 
@@ -153,6 +190,7 @@ namespace BBE {
 		JSONNode* node = BBNew(m_JsonAlloc, JSONNode);
 		JSONList* list = BBNew(m_JsonAlloc, JSONList);
 		bool hasCompleted = false;
+		m_List.Push_Back(node);
 
 		while (!hasCompleted) {
 			if (!EndOfFile()) {
@@ -170,7 +208,6 @@ namespace BBE {
 
 		node->value.list = list;
 		node->type = NodeType::List;
-		m_List.Push_Back(node);
 		return node;
 	}
 
