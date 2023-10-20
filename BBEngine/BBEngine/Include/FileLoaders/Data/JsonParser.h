@@ -10,8 +10,9 @@ namespace BBE {
 	struct JSONNode;
 
 	//NOTE(Stan): might remove these later for own datastructures
+	//NOTE(Stan): Replaced vector with my own linked list, might move it back to my own vector
 	using JSONObject = std::map<std::string, JSONNode*>;
-	using JSONList = std::vector<JSONNode*>;
+	using JSONList = LinkedList<JSONNode*>;
 
 	enum class NodeType { 
 		Object, 
@@ -95,5 +96,4 @@ namespace BBE {
 	inline JSONObject* JsonParser::GetRootNode() const noexcept {
 		return m_Root->GetObjectBB();
 	}
-
 }

@@ -134,7 +134,7 @@ namespace BBE {
 		case NodeType::List:
 		{
 			out.append("[\n");
-			uint32_t size = a_Node->GetListBB().size();
+			uint32_t size = a_Node->GetListBB().Size();
 			for (size_t i = 0; i < size; i++) {
 				out.append(a_Prefix + "    ");
 				JSONNode* node = m_List.Pop_Front();
@@ -197,7 +197,7 @@ namespace BBE {
 				JSONToken curtkn = GetToken();
 				JSONNode* listNode = SwitchOn(curtkn.type);
 				
-				list->push_back(listNode);
+				list->Push_Back(listNode);
 				curtkn = GetToken();
 				hasCompleted = (curtkn.type == JSONTokenType::ArrayClose);
 			}
