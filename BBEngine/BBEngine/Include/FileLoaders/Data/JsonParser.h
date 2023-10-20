@@ -12,7 +12,7 @@ namespace BBE {
 	//NOTE(Stan): might remove these later for own datastructures
 	//NOTE(Stan): Replaced vector with my own linked list, might move it back to my own vector
 	using JSONObject = std::map<std::string, JSONNode*>;
-	using JSONList = LinkedList<JSONNode*>;
+	using JSONList = std::vector<JSONNode*>;
 
 	enum class NodeType { 
 		Object, 
@@ -52,11 +52,15 @@ namespace BBE {
 		} value;
 		NodeType type;
 	
-		JSONObject* GetObjectBB() const;
+		JSONObject GetObjectBB() const;
 		JSONList GetListBB() const;
 		std::string GetStringBB() const;
 		float GetFloatBB() const;
 		bool GetBoolBB() const;
+
+		void SetStringBB(std::string a_String);
+		void SetFloatBB(float a_Float);
+		void SetBoolBB(bool a_Bool);
 	};
 
 	class JsonParser {
@@ -67,7 +71,7 @@ namespace BBE {
 
 		void Parse(const char* a_FilePath);
 		void WriteJson(const char* a_FilePath);
-		JSONObject* GetRootNode() const noexcept;
+		JSONObject GetRootNode() const noexcept;
 
 	private:
 		JSONToken GetToken();
@@ -93,7 +97,7 @@ namespace BBE {
 		LinkedList<JSONNode*> m_List;
 	};
 
-	inline JSONObject* JsonParser::GetRootNode() const noexcept {
+	inline JSONObject JsonParser::GetRootNode() const noexcept {
 		return m_Root->GetObjectBB();
 	}
 }

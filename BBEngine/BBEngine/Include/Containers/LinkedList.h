@@ -19,6 +19,7 @@ namespace BBE {
 		~LinkedList();
 
 		T operator[](int a_Index);
+		LinkedList<T>& operator=(const LinkedList<T>& other);
 
 		void Push_Back(T a_Element);
 		void Push_Front(T a_Element);
@@ -52,7 +53,21 @@ namespace BBE {
 	template<typename T>
 	T LinkedList<T>::operator[](int a_Index)
 	{
-		return m_Head[a_Index];
+		return m_Head[a_Index].element;
+	}
+
+	template<typename T>
+	LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& a_Rhs)
+	{
+		if (this == &a_Rhs)
+			return *this;
+	
+		m_Head = a_Rhs.m_Head;
+		m_Current = a_Rhs.m_Current;
+		m_Size = a_Rhs.m_Size;
+		m_Alloc = a_Rhs.m_Alloc;
+
+		return *this;
 	}
 
 	template<typename T>

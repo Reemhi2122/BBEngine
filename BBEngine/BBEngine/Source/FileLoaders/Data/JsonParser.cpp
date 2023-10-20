@@ -4,9 +4,9 @@
 
 namespace BBE {
 
-	JSONObject* JSONNode::GetObjectBB() const {
+	JSONObject JSONNode::GetObjectBB() const {
 		if (type == NodeType::Object) {
-			return value.obj;
+			return *value.obj;
 		}
 
 		BB_Assert(0, "Requested JSON node not of correct type!");
@@ -43,6 +43,36 @@ namespace BBE {
 	{
 		if (type == NodeType::Boolean) {
 			return value.boolValue;
+		}
+
+		BB_Assert(0, "Requested JSON node not of correct type!");
+	}
+
+	void JSONNode::SetStringBB(std::string a_String)
+	{
+		if (type == NodeType::String) {
+			value.string->assign(a_String);
+			return;
+		}
+
+		BB_Assert(0, "Requested JSON node not of correct type!");
+	}
+
+	void JSONNode::SetFloatBB(float a_Float)
+	{
+		if (type == NodeType::Number) {
+			value.floatValue = a_Float;
+			return;
+		}
+
+		BB_Assert(0, "Requested JSON node not of correct type!");
+	}
+
+	void JSONNode::SetBoolBB(bool a_Bool)
+	{
+		if (type == NodeType::Boolean) {
+			value.boolValue = a_Bool;
+			return;
 		}
 
 		BB_Assert(0, "Requested JSON node not of correct type!");
@@ -100,7 +130,7 @@ namespace BBE {
 		case NodeType::Number:
 		{
 			out.append(std::to_string(a_Node->GetFloatBB()));
-			out.append(a_Last ? "" : "");
+			out.append(a_Last ? "," : "");
 			out.append("\n");
 			break;
 		}
@@ -114,7 +144,7 @@ namespace BBE {
 		case NodeType::Object:
 		{
 			out.append("{\n");
-			uint32_t size = a_Node->GetObjectBB()->size();
+			uint32_t size = a_Node->GetObjectBB().size();
 			for (size_t i = 0; i < size; i++) {
 				JSONNode* node = m_List.Pop_Front();
 				out.append(a_Prefix + "    ");
@@ -134,7 +164,7 @@ namespace BBE {
 		case NodeType::List:
 		{
 			out.append("[\n");
-			uint32_t size = a_Node->GetListBB().Size();
+			uint32_t size = a_Node->GetListBB().size();
 			for (size_t i = 0; i < size; i++) {
 				out.append(a_Prefix + "    ");
 				JSONNode* node = m_List.Pop_Front();
@@ -197,7 +227,7 @@ namespace BBE {
 				JSONToken curtkn = GetToken();
 				JSONNode* listNode = SwitchOn(curtkn.type);
 				
-				list->Push_Back(listNode);
+				list->push_back(listNode);
 				curtkn = GetToken();
 				hasCompleted = (curtkn.type == JSONTokenType::ArrayClose);
 			}
