@@ -19,7 +19,7 @@ namespace BBE {
 		~LinkedList();
 
 		T operator[](int a_Index);
-		LinkedList<T>& operator=(const LinkedList<T>& other);
+		LinkedList<T>& operator=(const LinkedList<T>& a_Rhs);
 
 		void Push_Back(T a_Element);
 		void Push_Front(T a_Element);

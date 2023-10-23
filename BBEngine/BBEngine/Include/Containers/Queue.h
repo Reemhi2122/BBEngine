@@ -15,6 +15,8 @@ namespace BBE {
 		Queue(uint32_t a_Size);
 		~Queue();
 
+		Queue<T>& operator=(const Queue<T>& a_Rhs);
+
 		void* Add(T a_Element);
 		T Get();
 
@@ -39,6 +41,20 @@ namespace BBE {
 	Queue<T>::~Queue() {
 		m_Head = nullptr;
 		m_Tail = nullptr;
+	}
+
+	template<typename T>
+	inline Queue<T>& Queue<T>::operator=(const Queue<T>& a_Rhs)
+	{
+		if (this == &a_Rhs) {
+			return *this;
+		}
+
+		m_Head = a_Rhs.m_Head;
+		m_Alloc = a_Rhs.m_Alloc;
+		m_Tail = a_Rhs.m_Tail;
+
+		return *this;
 	}
 
 	template<typename T>

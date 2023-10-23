@@ -10,10 +10,7 @@ namespace BBE {
 		MemoryPool(size_t maxPool);
 		~MemoryPool();
 
-		//MemoryPool& operator=(const MemoryPool& a_Rhs);
-		//MemoryPool(MemoryPool&& a_Rhs) noexcept;
-		//MemoryPool& operator=(const MemoryPool& other);
-		//MemoryPool& operator=(MemoryPool&& other) noexcept;
+		MemoryPool& operator=(const MemoryPool& a_Rhs);
 
 		T* Pop();
 		void PushFront(T* a_Element);
@@ -38,29 +35,18 @@ namespace BBE {
 		m_Alloc.Clear();
 	}
 
-	//template<typename T>
-	//MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& a_Rhs) // copy constructor
-	//{ 
+	template<typename T>
+	MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& a_Rhs) // copy constructor
+	{ 
+		if (this == &a_Rhs) {
+			return *this;
+		}
 
-	//}
+		m_Head = a_Rhs.m_Head;
+		m_Alloc = a_Rhs.m_Alloc;
 
-	//template<typename T>
-	//MemoryPool<T>::MemoryPool(MemoryPool&& a_Rhs) noexcept // move constructor
-	//{
-
-	//}
-
-	//template<typename T>
-	//MemoryPool<T>& MemoryPool<T>::operator=(const MemoryPool& other) // copy assignment
-	//{
-
-	//}
-
-	//template<typename T>
-	//MemoryPool<T>& MemoryPool<T>::operator=(MemoryPool&& other) noexcept // move assignment
-	//{
-
-	//}
+		return *this;
+	}
 
 	template<typename T>
 	T* MemoryPool<T>::Pop() {

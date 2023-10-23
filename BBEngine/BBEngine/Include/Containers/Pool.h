@@ -16,6 +16,8 @@ namespace BBE {
 		Pool(size_t a_MaxSize, size_t a_StartSize = 0);
 		~Pool();
 
+		Pool<T>& operator=(const Pool<T>& a_Rhs);
+
 		T* Pop();
 		void PushFront(T* a_Element);
 
@@ -45,6 +47,22 @@ namespace BBE {
 	template<typename T>
 	Pool<T>::~Pool() {
 		m_ArenaAlloc.Clear();
+	}
+
+	template<typename T>
+	inline Pool<T>& Pool<T>::operator=(const Pool<T>& a_Rhs)
+	{
+		if (this == &a_Rhs) {
+			return *this;
+		}
+
+		m_Head =		a_Rhs.m_Head;
+		m_Size =		a_Rhs.m_Size;
+		m_MaxSize =		a_Rhs.m_MaxSize;
+		m_ArenaAlloc =	a_Rhs.m_ArenaAlloc;
+		m_StackAlloc =	a_Rhs.m_StackAlloc;
+
+		return *this;
 	}
 
 	template<typename T>

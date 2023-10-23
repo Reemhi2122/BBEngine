@@ -270,7 +270,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	//Set primitive topology
 	m_Context->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	//Configure a viewpoprt
+	//Configure a viewport
 	D3D11_VIEWPORT viewport;
 	viewport.Width = 800;
 	viewport.Height = 600;

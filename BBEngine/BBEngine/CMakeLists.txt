@@ -27,7 +27,7 @@ add_library (BBEngine
 "Source/FileLoaders/Sound/WAVLoader.cpp"
 "Source/FileLoaders/Image/BMPLoader.cpp"
 "Source/FileLoaders/Data/JsonParser.cpp"
- "Include/Containers/LinkedList.h" "Include/FileLoaders/Data/INIParser.h" "Source/FileLoaders/Data/INIParser.cpp")
+ "Include/Containers/LinkedList.h" "Include/FileLoaders/Data/INIParser.h" "Source/FileLoaders/Data/INIParser.cpp" "Include/Containers/Vector.h")
 
 
 # TODO: Add tests and install targets if needed.
