@@ -7,8 +7,8 @@
 #include "Allocators/BuddyAllocator.h"
 #include <type_traits>
 
-#define BBAlloc(a_Allocator, a_Size, a_Type) reinterpret_cast<a_Type>(BBE::BBAllocFunc(a_Allocator, a_Size))
-#define BBNew(a_Allocator, a_Type) new (BBE::BBAllocFunc(a_Allocator, sizeof(a_Type))) a_Type
+#define BBAlloc(a_Allocator, a_Size, a_Type) reinterpret_cast<a_Type>(BBE::BBAllocFunc(a_Allocator, a_Size, alignof(a_Type)))
+#define BBNew(a_Allocator, a_Type) new (BBE::BBAllocFunc(a_Allocator, sizeof(a_Type), alignof(a_Type))) a_Type
 #define BBNewArr(a_Allocator, a_Num, a_Type) BBE::BBAllocArrayFunc<a_Type>(a_Allocator, sizeof(a_Type), a_Num)
 
 #define BBFree(a_Allocator, a_Pointer) BBE::BBFreeFunc(a_Allocator, a_Pointer);
@@ -26,21 +26,21 @@ namespace BBE {
 		size_t arraySize;
 	};
 
-	inline void* BBAllocFunc(Allocators::Allocator& a_Allocator, const size_t& a_Size) {
-		return a_Allocator.Alloc(a_Size);
+	inline void* BBAllocFunc(Allocators::Allocator& a_Allocator, const size_t& a_Size, const size_t& a_Allignment) {
+		return a_Allocator.Alloc(a_Size, a_Allignment);
 	}
 
 	template<typename T>
 	inline T* BBAllocArrayFunc(Allocators::Allocator& a_Allocator, const size_t& a_Size, const size_t a_Count) {
 		
 		if constexpr (std::is_trivially_constructible<T>() && std::is_trivially_destructible<T>()) {
-			return reinterpret_cast<T*>(BBAllocFunc(a_Allocator, a_Size * a_Count));
+			return reinterpret_cast<T*>(BBAllocFunc(a_Allocator, a_Size * a_Count, alignof(T)));
 		}
 		else {
 			size_t headerSize = sizeof(BBArrayAllocHeader);
 			size_t allocationSize = a_Size * a_Count;
 			
-			T* ptr = reinterpret_cast<T*>(a_Allocator.Alloc(allocationSize + headerSize));
+			T* ptr = reinterpret_cast<T*>(a_Allocator.Alloc(allocationSize + headerSize, alignof(T)));
 
 			BBArrayAllocHeader* header = reinterpret_cast<BBArrayAllocHeader*>(ptr);
 			header->arraySize = a_Count;

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include "Utility/BBMemory.h"
+#include <chrono>
 
 constexpr int OneKB = 1024;
 constexpr int OneMB = 1024 * OneKB;
@@ -34,7 +35,11 @@ TEST(Allocation, ArenaAllocation)
 	int* test[FORLOOPSIZE];
 
 	for (int i = 0; i < FORLOOPSIZE; i++) {
-		test[i] = BBNew(arena, int)(50);
+		test[i] = BBNew(arena, int);
+	}
+
+	for (int i = 0; i < FORLOOPSIZE; i++) {
+		*test[i] = 'fd';
 	}
 
 	for (int i = 0; i < FORLOOPSIZE; i++) {
