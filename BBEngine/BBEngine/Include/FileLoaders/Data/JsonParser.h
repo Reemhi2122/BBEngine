@@ -90,7 +90,7 @@ namespace BBE {
 
 		JSONNode* SwitchOn(JSONTokenType& a_Type);
 
-		Allocators::StackAllocator m_JsonAlloc;
+		Allocators::ArenaAllocator m_JsonAlloc;
 		BBSystem::BBFStream m_FStream;
 		size_t m_PrevPos;
 		JSONNode* m_Root;

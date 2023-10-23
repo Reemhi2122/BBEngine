@@ -194,12 +194,11 @@ namespace BBE {
 		while (!hasCompleted) {
 			if (!EndOfFile()) {
 				JSONToken curtkn = GetToken();
-
 				std::string key = curtkn.value;
 				JSONNode* keynode = SwitchOn(curtkn.type);
+
 				GetToken();
 				curtkn = GetToken();
-
 				(*obj)[key] = SwitchOn(curtkn.type);
 
 				curtkn = GetToken();
@@ -384,7 +383,6 @@ namespace BBE {
 				return c;
 			}
 		}
-
 		return c;
 	}
 
