@@ -80,7 +80,6 @@ Graphics::Graphics(HWND a_HWnd)
 	descDSV.Texture2D.MipSlice = 0u;
 	m_Device->CreateDepthStencilView(depthStencil.Get(), &descDSV, &m_DepthStencilView);
 
-	//imgui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
