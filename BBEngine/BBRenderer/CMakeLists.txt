@@ -13,7 +13,7 @@ add_library (Renderer STATIC
 "Source/Input/Mouse.cpp" 
 "Source/Graphics/Graphics.cpp"
 "Source/Bindable/Topology.cpp" 
-"Source/Bindable/IndexBuffer.cpp")
+"Source/Bindable/IndexBuffer.cpp" "Source/Bindable/VertexBuffer.cpp" "Include/Bindable/VertexBuffer.h")
 
 target_include_directories(Renderer PUBLIC
 "Include")
