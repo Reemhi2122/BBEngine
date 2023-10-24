@@ -160,9 +160,7 @@ namespace BBE {
 			times++;
 		}
 
-		if (times >= maxWait) {
-			printf("f");
-		}
+		BB_Assert(times < maxWait, "Task took too long on main thread, exceeded waiting time!");
 	}
 
 	BBThreadHandle ThreadPool::CreateStaticThread(void(*a_void)(void*), void* a_ThreaFunctionParam)
