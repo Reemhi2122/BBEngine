@@ -3,6 +3,7 @@
 #include "Containers/MemoryPool.h"
 #include "Containers/Queue.h"
 #include "Containers/LinkedList.h"
+#include "Containers/Vector.h"
 
 TEST(Containers, Pool)
 {
@@ -40,10 +41,10 @@ TEST(Containers, Queue)
 {
 	BBE::Queue<int> queue = BBE::Queue<int>(5);
 
-	queue.Add(1);
-	queue.Add(2);
-	queue.Add(3);
-	queue.Add(4);
+	queue.Push_Back(1);
+	queue.Push_Back(2);
+	queue.Push_Back(3);
+	queue.Push_Back(4);
 
 	int test2 = queue.Get();
 	int test3 = queue.Get();
@@ -62,4 +63,19 @@ TEST(Containers, LinkedList)
 
 	int x = linkedList.Pop_Front();
 	int y = linkedList.Pop_Front();
+}
+
+TEST(Containers, Vector)
+{
+	BBE::Vector<int> vector;
+
+	uint32_t amount = 16;
+
+	for (int i = 0; i < amount; i++) {
+		vector.Push_Back(i);
+	}
+
+	for (int i = 0; i < amount; i++) {
+		printf("position %d: %d \n", i, vector[i]);
+	}
 }

@@ -134,7 +134,7 @@ namespace BBE {
 		task.tskHandle = a_Handle;
 		task.tskFunction = a_void;
 		task.tskParam = a_ThreadFunctionParam;
-		m_TaskQueue.Add(task);
+		m_TaskQueue.Push_Back(task);
 	}
 
 	bool ThreadPool::IsTaskDone(BBTaskHandle& a_Handle)

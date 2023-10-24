@@ -17,7 +17,7 @@ namespace BBE {
 
 		Queue<T>& operator=(const Queue<T>& a_Rhs);
 
-		void* Add(T a_Element);
+		void* Push_Back(T a_Element);
 		T Get();
 
 		bool IsEmpty();
@@ -58,7 +58,7 @@ namespace BBE {
 	}
 
 	template<typename T>
-	void* Queue<T>::Add(T a_Element)
+	void* Queue<T>::Push_Back(T a_Element)
 	{
 		QueueElement<T>* el = BBNew(m_Alloc, QueueElement<T>);
 		el->element = a_Element;
