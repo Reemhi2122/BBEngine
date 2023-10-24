@@ -44,9 +44,6 @@ Graphics::Graphics(HWND a_HWnd)
 		nullptr,
 		&m_Context));
 
-	int isf = 0;
-	isf = isf + 5;
-
 	Microsoft::WRL::ComPtr<ID3D11Resource> backBuffer;
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
@@ -83,11 +80,32 @@ Graphics::Graphics(HWND a_HWnd)
 	descDSV.Texture2D.MipSlice = 0u;
 	m_Device->CreateDepthStencilView(depthStencil.Get(), &descDSV, &m_DepthStencilView);
 
+	//imgui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplWin32_Init(a_HWnd);
+	ImGui_ImplDX11_Init(m_Device.Get(), m_Context.Get());
+
+
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());
+}
+
+Graphics::~Graphics() {
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 void Graphics::EndFrame()
 {
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	HRESULT hr;
 	if (FAILED(hr = m_SwapChain->Present(1u, 0u))) {
 		if (hr == DXGI_ERROR_DEVICE_REMOVED) {
@@ -104,6 +122,10 @@ void Graphics::ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept
 	const float color[] = { a_Red, a_Green, a_Blue, 1.0f };
 	m_Context->ClearRenderTargetView(m_Target.Get(), color);
 	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 }
 
 void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {

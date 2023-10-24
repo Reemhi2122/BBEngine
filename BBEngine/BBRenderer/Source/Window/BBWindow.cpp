@@ -1,8 +1,12 @@
 #include "BBWindow.h"
 #include <sstream>
 
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 
 BBWindow::WindowClass BBWindow::WindowClass::wndClass;
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 BBWindow::WindowClass::WindowClass() noexcept 
 	: hInst(GetModuleHandle(nullptr)) {
@@ -114,6 +118,9 @@ LRESULT CALLBACK BBWindow::BBHandleMsgThunk(HWND a_hWnd, UINT a_Msg, WPARAM a_WP
 
 LRESULT BBWindow::BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept
 {
+    if (ImGui_ImplWin32_WndProcHandler(a_hWnd, a_Msg, a_WParam, a_LParam))
+        return true;
+
     switch (a_Msg)
     {
     case WM_CLOSE:

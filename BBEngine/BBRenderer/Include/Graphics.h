@@ -5,6 +5,11 @@
 #include <dxerr.h>
 #include <wrl.h>
 
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+
+
 class Graphics {
 public:
 	class Exception : public BBException {
@@ -34,7 +39,7 @@ public:
 	Graphics(HWND a_HWnd);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
-	~Graphics() = default;
+	~Graphics();
 
 	void EndFrame();
 	void ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept;
