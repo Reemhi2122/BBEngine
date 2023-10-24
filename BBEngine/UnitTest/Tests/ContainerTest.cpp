@@ -67,7 +67,7 @@ TEST(Containers, LinkedList)
 
 TEST(Containers, Vector)
 {
-	BBE::Vector<int> vector;
+	BBE::Vector<uint32_t> vector;
 
 	uint32_t amount = 16;
 
@@ -75,7 +75,9 @@ TEST(Containers, Vector)
 		vector.Push_Back(i);
 	}
 
-	for (int i = 0; i < amount; i++) {
-		printf("position %d: %d \n", i, vector[i]);
-	}
+	uint32_t value0 = vector.Pop_Back();
+	uint32_t value1 = vector.Pop_Back();
+
+	vector.Insert(6, 3);
+	vector.Remove(8, 2);
 }
