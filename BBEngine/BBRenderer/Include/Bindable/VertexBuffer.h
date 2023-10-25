@@ -10,9 +10,9 @@ struct Vertex {
 
 class VertexBuffer : public Bindable {
 public:
-	VertexBuffer(Graphics& a_Gfx, std::vector<Vertex> verts);
+	VertexBuffer(Graphics& a_Gfx, const std::vector<Vertex>& a_Vertices);
 	void Bind(Graphics& a_Gfx) noexcept override;
-	UINT Getcount() const noexcept;
+	UINT GetCount() const noexcept;
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;

@@ -135,13 +135,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 
 	HRESULT hr;
 
-	struct Vertex {
-		struct {
-			float x, y, z;
-		} pos;
-	};
-
-	const Vertex vertices[] = {
+	const std::vector<Vertex> vertices = {
 		{ -1.0f, -1.0f, -1.0f},
 		{ 1.0f, -1.0f, -1.0f},
 		{ -1.0f, 1.0f, -1.0f},
@@ -152,7 +146,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 		{ 1.0f, 1.0f, 1.0f}
 	};
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
+	/*Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	desc.Usage = D3D11_USAGE_DEFAULT;
@@ -166,10 +160,13 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0;
-	m_Context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+	m_Context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);*/
+
+	VertexBuffer vBuffer(*this, vertices);
+	vBuffer.Bind(*this);
 
 	//Create index buffer
-	std::vector<unsigned short> indices = {
+	const std::vector<unsigned short> indices = {
 		0,2,1, 2,3,1,
 		1,3,5, 3,7,5,
 		2,6,3, 3,6,7,
@@ -178,8 +175,8 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 		0,1,4, 1,5,4
 	};
 
-	IndexBuffer buffer(*this, indices);
-	buffer.Bind(*this);
+	IndexBuffer iBuffer(*this, indices);
+	iBuffer.Bind(*this);
 
 	//Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
 	//D3D11_BUFFER_DESC ibd = {};

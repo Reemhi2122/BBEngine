@@ -1,7 +1,7 @@
 #include "Bindable/IndexBuffer.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-IndexBuffer::IndexBuffer(Graphics& a_Gfx, std::vector<unsigned short>& a_Indices)
+IndexBuffer::IndexBuffer(Graphics& a_Gfx, const std::vector<unsigned short>& a_Indices)
 	: m_Count(a_Indices.size())
 {
 	INFOMAN(a_Gfx);
