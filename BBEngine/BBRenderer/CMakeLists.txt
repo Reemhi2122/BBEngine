@@ -14,7 +14,8 @@ add_library (Renderer STATIC
 "Source/Graphics/Graphics.cpp"
 "Source/Bindable/Topology.cpp" 
 "Source/Bindable/IndexBuffer.cpp" 
-"Source/Bindable/VertexBuffer.cpp")
+"Source/Bindable/VertexBuffer.cpp"
+"Source/Bindable/PixelShader.cpp" "Include/Bindable/VertexShader.h" "Source/Bindable/VertexShader.cpp" "Include/Bindable/InputLayout.h" "Source/Bindable/InputLayout.cpp")
 
 target_include_directories(Renderer PUBLIC
 "Include")
