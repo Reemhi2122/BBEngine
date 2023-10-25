@@ -16,14 +16,14 @@ VertexBuffer::VertexBuffer(Graphics& a_Gfx, std::vector<Vertex> verts)
 	D3D11_SUBRESOURCE_DATA source = {};
 	source.pSysMem = verts.data();
 
-	GFX_THROW_FAILED(GetDevice(a_Gfx)->CreateBuffer(&desc, &source, &vertex_buffer));
+	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &vertex_buffer));
 }
 
 void VertexBuffer::Bind(Graphics& a_Gfx) noexcept
 {
 	const UINT stride = sizeof(Vertex);
 	const UINT offset = 0;
-	GetContext(a_Gfx)->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+	a_Gfx.GetContext()->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
 }
 
 UINT VertexBuffer::Getcount() const noexcept

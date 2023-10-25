@@ -36,6 +36,9 @@ public:
 		const char* GetType() const noexcept override;
 	};
 
+	ID3D11DeviceContext* GetContext() const noexcept;
+	ID3D11Device* GetDevice() const noexcept;
+
 	Graphics(HWND a_HWnd);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
@@ -53,3 +56,11 @@ private:
 
 	Microsoft::WRL::ComPtr <ID3D11DepthStencilView> m_DepthStencilView;
 };
+
+inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {
+	return m_Context.Get();
+}
+
+inline ID3D11Device* Graphics::GetDevice() const noexcept {
+	return m_Device.Get();
+}

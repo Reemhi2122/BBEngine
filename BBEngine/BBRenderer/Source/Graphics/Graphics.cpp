@@ -5,6 +5,10 @@
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 
+#include "Bindable/IndexBuffer.h"
+#include "Bindable/VertexBuffer.h"
+#include "Bindable/ConstantBuffer.h"
+
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
@@ -48,7 +52,7 @@ Graphics::Graphics(HWND a_HWnd)
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
 
-	//Create depth stensil
+	//Create depth stencil
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
 	dsDesc.DepthEnable = TRUE;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -59,7 +63,7 @@ Graphics::Graphics(HWND a_HWnd)
 	//Bind depth state
 	m_Context->OMSetDepthStencilState(dsState.Get(), 1);
 
-	// create depth stensil texture
+	// create depth stencil texture
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
 	descDepth.Width = 800u;
@@ -165,7 +169,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	m_Context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
 
 	//Create index buffer
-	const unsigned short indices[] = {
+	std::vector<unsigned short> indices = {
 		0,2,1, 2,3,1,
 		1,3,5, 3,7,5,
 		2,6,3, 3,6,7,
@@ -174,19 +178,22 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 		0,1,4, 1,5,4
 	};
 
-	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
-	D3D11_BUFFER_DESC ibd = {};
-	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	ibd.Usage = D3D11_USAGE_DEFAULT;
-	ibd.CPUAccessFlags = 0;
-	ibd.MiscFlags = 0;
-	ibd.ByteWidth = sizeof(indices);
-	ibd.StructureByteStride = sizeof(unsigned short);
-	D3D11_SUBRESOURCE_DATA isd = {};
-	isd.pSysMem = indices;
-	m_Device->CreateBuffer(&ibd, &isd, &indexBuffer);
+	IndexBuffer buffer(*this, indices);
+	buffer.Bind(*this);
 
-	m_Context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+	//Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
+	//D3D11_BUFFER_DESC ibd = {};
+	//ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	//ibd.Usage = D3D11_USAGE_DEFAULT;
+	//ibd.CPUAccessFlags = 0;
+	//ibd.MiscFlags = 0;
+	//ibd.ByteWidth = sizeof(indices);
+	//ibd.StructureByteStride = sizeof(unsigned short);
+	//D3D11_SUBRESOURCE_DATA isd = {};
+	//isd.pSysMem = indices;
+	//GFX_THROW_FAILED(m_Device->CreateBuffer(&ibd, &isd, &indexBuffer));
+
+	//m_Context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 
 	//Create constant buffer for matrix
 	struct ConstantBuffer {
@@ -214,7 +221,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	cbd.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA csd = {};
 	csd.pSysMem = &cb;
-	m_Device->CreateBuffer(&cbd, &csd, &constantBuffer);
+	GFX_THROW_FAILED(m_Device->CreateBuffer(&cbd, &csd, &constantBuffer));
 
 	m_Context->VSSetConstantBuffers(0, 1, constantBuffer.GetAddressOf());
 
@@ -249,7 +256,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	cbdc.StructureByteStride = 0;
 	D3D11_SUBRESOURCE_DATA csdc = {};
 	csdc.pSysMem = &cbc;
-	m_Device->CreateBuffer(&cbdc, &csdc, &constantBufferColor);
+	GFX_THROW_FAILED(m_Device->CreateBuffer(&cbdc, &csdc, &constantBufferColor));
 
 	m_Context->PSSetConstantBuffers(0, 1, constantBufferColor.GetAddressOf());
 
