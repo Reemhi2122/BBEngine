@@ -11,7 +11,7 @@ IndexBuffer::IndexBuffer(Graphics& a_Gfx, std::vector<unsigned short>& a_Indices
 	ibd.Usage = D3D11_USAGE_DEFAULT;
 	ibd.CPUAccessFlags = 0u;
 	ibd.MiscFlags = 0u;
-	ibd.ByteWidth = sizeof(m_Count * sizeof(unsigned short));
+	ibd.ByteWidth = m_Count * sizeof(unsigned short);
 	ibd.StructureByteStride = sizeof(unsigned short);
 	D3D11_SUBRESOURCE_DATA isd = {};
 	isd.pSysMem = a_Indices.data();
