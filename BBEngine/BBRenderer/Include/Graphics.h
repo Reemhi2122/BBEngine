@@ -5,7 +5,6 @@
 #include <dxerr.h>
 #include <wrl.h>
 #include <DirectXMath.h>
-#include "Bindable/Bindable.h"
 
 #include "imgui.h"
 #include "imgui_impl_dx11.h"

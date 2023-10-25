@@ -2,7 +2,7 @@
 #include "Utils/GraphicsThrowMacros.h"
 
 VertexBuffer::VertexBuffer(Graphics& a_Gfx, const std::vector<Vertex>& a_Vertices)
-	: m_Count(a_Vertices.size())
+	: m_Count((UINT)a_Vertices.size())
 {
 	INFOMAN(a_Gfx);
 

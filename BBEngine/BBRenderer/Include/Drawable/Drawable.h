@@ -3,6 +3,9 @@
 #include <DirectXMath.h>
 #include <vector>
 
+class Bindable;
+class IndexBuffer;
+
 class Drawable {
 public:
 	Drawable() = default;
@@ -13,7 +16,7 @@ public:
 	void Draw(Graphics& a_Gfx) const noexcept;
 	virtual void Update(float dt) noexcept = 0;
 	void AddBind(Bindable* a_Bind) noexcept;
-	void AddIndexBuffer(class IndexBuffer* a_Buf) noexcept;
+	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
 
 private:
 	const IndexBuffer* m_IndexBuffer;

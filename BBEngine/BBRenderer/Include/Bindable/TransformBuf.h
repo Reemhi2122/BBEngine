@@ -1,5 +1,5 @@
 #pragma once
-#include "Bindable/Bindable.h"
+#include "Bindable/ConstantBuffer.h"
 #include "Drawable/Drawable.h"
 #include <DirectXMath.h>
 
@@ -8,8 +8,7 @@ public:
 	TransformBuf(Graphics& a_Gfx, const Drawable& a_Parent);
 	void Bind(Graphics& a_Gfx) noexcept;
 	
-
 private:
-	VertexConstantBuffer<DirectX::XMMATRIX> vcbuf;
+	VertexConstantBuffer<DirectX::XMMATRIX> m_VCB;
 	const Drawable& m_Parent;
 };
