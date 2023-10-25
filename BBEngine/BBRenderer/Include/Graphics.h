@@ -4,6 +4,8 @@
 #include <d3d11.h>
 #include <dxerr.h>
 #include <wrl.h>
+#include <DirectXMath.h>
+#include "Bindable/Bindable.h"
 
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
@@ -47,8 +49,14 @@ public:
 	void EndFrame();
 	void ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept;
 	void DrawTestTriangle(float a_Angle, float x, float y);
+	void DrawIndexed(UINT a_Count) noexcept;
+
+	void SetProjection(DirectX::XMMATRIX a_Projections);
+	DirectX::XMMATRIX GetProjection() const noexcept;
 
 private:
+	DirectX::XMMATRIX m_Projection;
+
 	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
 	Microsoft::WRL::ComPtr <IDXGISwapChain>			m_SwapChain;
 	Microsoft::WRL::ComPtr <ID3D11DeviceContext>	m_Context;

@@ -3,7 +3,6 @@
 
 #include <sstream>
 #include <d3dcompiler.h>
-#include <DirectXMath.h>
 
 #include "Bindable/IndexBuffer.h"
 #include "Bindable/VertexBuffer.h"
@@ -422,6 +421,14 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 
 	//Draw
 	m_Context->DrawIndexed((UINT)std::size(indices), 0, 0);
+}
+
+void Graphics::SetProjection(DirectX::XMMATRIX a_Projections) {
+	m_Projection = a_Projections;
+}
+
+DirectX::XMMATRIX Graphics::GetProjection() const noexcept {
+	return m_Projection;
 }
 
 Graphics::HrException::HrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept
