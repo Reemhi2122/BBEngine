@@ -40,14 +40,14 @@ public:
 		INFOMAN(a_Gfx);
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		GFX_THROW_FAILED(
+		GFX_THROW_FAILED(		
 			a_Gfx.GetContext()->Map(
-				m_ConstantBuffer.Get(),
-				0u,
-				D3D11_MAP_WRITE_DISCARD,
-				0u,
-				&msr;
-		)
+			m_ConstantBuffer.Get(),
+			0u,
+			D3D11_MAP_WRITE_DISCARD,
+			0u,
+			&msr
+			)
 		);
 		memcpy(msr.pData, &a_Consts, sizeof(a_Consts));
 		a_Gfx.GetContext()->Unmap(m_ConstantBuffer.Get(), 0u);
@@ -69,11 +69,11 @@ public:
 };
 
 template<typename T>
-class IndexConstantBuffer : public ConstantBuffer<T>
+class PixelConstantBuffer : public ConstantBuffer<T>
 {
 public:
 	using ConstantBuffer<T>::ConstantBuffer;
-	void Bind(Graphics& a_Gfx)
+	void Bind(Graphics& a_Gfx) noexcept override
 	{
 		a_Gfx.GetContext()->PSSetConstantBuffers(0u, 1u, m_ConstantBuffer.GetAddressOf());
 	}

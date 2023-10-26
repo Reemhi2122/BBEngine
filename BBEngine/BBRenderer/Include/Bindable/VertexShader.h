@@ -1,7 +1,7 @@
 #pragma once
 #include "Bindable/Bindable.h"
 
-class VertexShader : Bindable {
+class VertexShader : public Bindable {
 public:
 	VertexShader(Graphics& a_Gfx, std::wstring a_Path);
 	void Bind(Graphics& a_Gfx) noexcept override;

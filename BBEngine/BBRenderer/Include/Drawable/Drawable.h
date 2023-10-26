@@ -19,7 +19,7 @@ public:
 	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
 
 private:
-	const IndexBuffer* m_IndexBuffer;
+	const IndexBuffer* m_IndexBuffer = nullptr;
 	std::vector<Bindable*> m_Binds;
 
 };

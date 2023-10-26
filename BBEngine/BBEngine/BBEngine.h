@@ -5,6 +5,8 @@
 #include "Utility/BBTimer.h"
 #include "Utility/BBMemory.h"
 
+#include "Drawable/Box.h"
+
 namespace BBE {
 	
 	class BBEngine {
@@ -22,6 +24,8 @@ namespace BBE {
 		BBWindow m_Window;
 		BBTimer m_Timer;
 		BBWinRenderer m_BBWinRenderer;
+
+		std::vector<Box*> m_Boxes;
 
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;
