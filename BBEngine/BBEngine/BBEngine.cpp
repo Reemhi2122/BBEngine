@@ -32,6 +32,8 @@ namespace BBE {
         std::uniform_real_distribution<float> odist(0.0f, 3.1415926f * 0.3f);
         std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
 
+        m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+
         for (size_t i = 0; i < 80; i++) {
             m_Boxes.push_back(BBNew(m_StackAllocator, Box)(m_Window.GetGraphics(), rng, adist, ddist, odist, rdist));
         }
@@ -86,7 +88,7 @@ namespace BBE {
             m_Boxes[i]->Draw(m_Window.GetGraphics());
         }
 
-        m_Window.GetGraphics().DrawTestTriangle(90, 0, 0);
+        //m_Window.GetGraphics().DrawTestTriangle(90, 0, 0);
 
         ImGui::ShowDemoWindow(&show_demo_window);
 

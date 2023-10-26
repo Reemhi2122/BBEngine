@@ -33,7 +33,7 @@ public:
 		D3D11_SUBRESOURCE_DATA csd = {};
 		csd.pSysMem = &a_Consts;
 
-		GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
+		GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
 	}
 
 	void Update(Graphics& a_Gfx, const T& a_Consts) {
