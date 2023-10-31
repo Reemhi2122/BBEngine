@@ -22,8 +22,10 @@ add_library (Renderer STATIC
 "Source/Bindable/TransformBuf.cpp"
 "Source/Drawable/Box.cpp")
 
+
 target_include_directories(Renderer PUBLIC
-"Include")
+"${CMAKE_CURRENT_SOURCE_DIR}"
+)
 
 target_link_libraries(Renderer
 ImGUI
