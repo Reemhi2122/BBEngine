@@ -15,11 +15,15 @@ add_library (Renderer STATIC
 "Source/Bindable/Topology.cpp" 
 "Source/Bindable/IndexBuffer.cpp" 
 "Source/Bindable/VertexBuffer.cpp"
-"Source/Bindable/PixelShader.cpp" "Include/Bindable/VertexShader.h" "Source/Bindable/VertexShader.cpp" "Include/Bindable/InputLayout.h" "Source/Bindable/InputLayout.cpp" "Include/Drawable/Drawable.h" "Source/Drawable/Drawable.cpp" "Include/Bindable/TransformBuf.h" "Source/Bindable/TransformBuf.cpp" "Include/Bindable/BindableInclude.h" "Include/Drawable/Box.h" "Source/Drawable/Box.cpp")
+"Source/Bindable/PixelShader.cpp"
+"Source/Bindable/VertexShader.cpp"
+"Source/Bindable/InputLayout.cpp"
+"Source/Drawable/Drawable.cpp"
+"Source/Bindable/TransformBuf.cpp"
+"Source/Drawable/Box.cpp")
 
 target_include_directories(Renderer PUBLIC
 "Include")
-
 
 target_link_libraries(Renderer
 ImGUI
