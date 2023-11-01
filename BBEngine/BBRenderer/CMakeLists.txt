@@ -22,9 +22,10 @@ add_library (Renderer STATIC
 "Source/Bindable/TransformBuf.cpp"
 "Source/Drawable/Box.cpp")
 
+set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")
 
 target_include_directories(Renderer PUBLIC
-"${CMAKE_CURRENT_SOURCE_DIR}"
+"Include/"
 )
 
 target_link_libraries(Renderer
