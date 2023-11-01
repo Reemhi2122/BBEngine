@@ -77,6 +77,9 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 		AddStaticBind(m_Topology);
 
 	}
+	else {
+		AddIndexFromStatic();
+	}
 
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);

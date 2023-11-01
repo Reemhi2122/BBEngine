@@ -20,6 +20,20 @@ public:
 		m_StaticBinds.push_back(a_IBuf);
 	}
 
+	void AddIndexFromStatic() {
+		assert("Attempting to add index buffer a second time" && GetIndexBuffer() == nullptr);
+
+		for (size_t i = 0; i < m_StaticBinds.size(); i++)
+		{
+			if( dynamic_cast<IndexBuffer*>(m_StaticBinds[i])) {
+				SetIndexBuffer(dynamic_cast<IndexBuffer*>(m_StaticBinds[i]));
+				return;
+			}
+		}
+
+		assert("Failed to find index buffer in static binds!" && 0);
+	}
+
 private:
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override {
 		return m_StaticBinds;
