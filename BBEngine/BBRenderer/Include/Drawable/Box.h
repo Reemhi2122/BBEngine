@@ -1,5 +1,5 @@
 #pragma once
-#include "Drawable/Drawable.h"
+#include "Drawable/DrawableBase.h"
 #include <random>
 #include "Bindable/BindableInclude.h"
 
@@ -12,7 +12,7 @@ struct ConstantBufferColor {
 	}face_colors[6];
 };
 
-class Box : public Drawable {
+class Box : public DrawableBase<Box> {
 
 public:
 	Box(Graphics& a_Gfx, std::mt19937& rng,

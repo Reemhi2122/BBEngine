@@ -19,61 +19,64 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 	m_Theta(adist(rng)),
 	m_Phi(adist(rng))
 {
-	const std::vector<Vertex> vertices = {
-		{ -1.0f, -1.0f, -1.0f},
-		{ 1.0f, -1.0f, -1.0f},
-		{ -1.0f, 1.0f, -1.0f},
-		{ 1.0f, 1.0f, -1.0f},
-		{ -1.0f, -1.0f, 1.0f},
-		{ 1.0f, -1.0f, 1.0f},
-		{ -1.0f, 1.0f, 1.0f},
-		{ 1.0f, 1.0f, 1.0f}
-	};
+	if (!IsStaticInitialized()) {
+		const std::vector<Vertex> vertices = {
+			{ -1.0f, -1.0f, -1.0f},
+			{ 1.0f, -1.0f, -1.0f},
+			{ -1.0f, 1.0f, -1.0f},
+			{ 1.0f, 1.0f, -1.0f},
+			{ -1.0f, -1.0f, 1.0f},
+			{ 1.0f, -1.0f, 1.0f},
+			{ -1.0f, 1.0f, 1.0f},
+			{ 1.0f, 1.0f, 1.0f}
+		};
 
-	vBuffer = new VertexBuffer(a_Gfx, vertices);
-	AddBind(vBuffer);
+		vBuffer = new VertexBuffer(a_Gfx, vertices);
+		AddStaticBind(vBuffer);
 
-	vShader = new VertexShader(a_Gfx, L"Assets/VertexShader.hlsl");
-	AddBind(vShader);
+		vShader = new VertexShader(a_Gfx, L"Assets/VertexShader.hlsl");
+		AddStaticBind(vShader);
 
-	pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
-	AddBind(pShader);
+		pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
+		AddStaticBind(pShader);
 
-	const std::vector<unsigned short> indices = {
-		0,2,1, 2,3,1,
-		1,3,5, 3,7,5,
-		2,6,3, 3,6,7,
-		4,5,7, 4,7,6,
-		0,4,2, 2,4,6,
-		0,1,4, 1,5,4
-	};
+		const std::vector<unsigned short> indices = {
+			0,2,1, 2,3,1,
+			1,3,5, 3,7,5,
+			2,6,3, 3,6,7,
+			4,5,7, 4,7,6,
+			0,4,2, 2,4,6,
+			0,1,4, 1,5,4
+		};
 
-	IBuffer = new IndexBuffer(a_Gfx, indices);
-	AddIndexBuffer(IBuffer);
+		IBuffer = new IndexBuffer(a_Gfx, indices);
+		AddStaticBindIndexBuffer(IBuffer);
 
-	const ConstantBufferColor cbc = {
-		{
-			{1.0f, 0.0f, 1.0f, 1.0f},
-			{1.0f, 0.0f, 0.0f, 1.0f},
-			{0.0f, 1.0f, 0.0f, 1.0f},
-			{0.0f, 0.0f, 1.0f, 1.0f},
-			{1.0f, 1.0f, 0.0f, 1.0f},
-			{0.0f, 1.0f, 1.0f, 1.0f}
-		}
-	};
+		const ConstantBufferColor cbc = {
+			{
+				{1.0f, 0.0f, 1.0f, 1.0f},
+				{1.0f, 0.0f, 0.0f, 1.0f},
+				{0.0f, 1.0f, 0.0f, 1.0f},
+				{0.0f, 0.0f, 1.0f, 1.0f},
+				{1.0f, 1.0f, 0.0f, 1.0f},
+				{0.0f, 1.0f, 1.0f, 1.0f}
+			}
+		};
 
-	cCB = new PixelConstantBuffer<ConstantBufferColor>(a_Gfx, cbc);
-	AddBind(cCB);
+		cCB = new PixelConstantBuffer<ConstantBufferColor>(a_Gfx, cbc);
+		AddStaticBind(cCB);
 
-	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
-		{"Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
+		const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
+			{"Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
 
-	m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());
-	AddBind(m_InputLayout);
+		m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());
+		AddStaticBind(m_InputLayout);
 
-	m_Topology = new Topology(a_Gfx, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	AddBind(m_Topology);
+		m_Topology = new Topology(a_Gfx, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		AddStaticBind(m_Topology);
+
+	}
 
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);

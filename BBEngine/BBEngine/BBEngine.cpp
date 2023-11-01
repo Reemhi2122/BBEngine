@@ -75,7 +75,7 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+        /*std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         BMP bmp("assets/Images/Lenna.bmp");
 
         Utility::ConvolutionDesc desc;
@@ -118,7 +118,7 @@ namespace BBE {
         std::cout << "SIMD" << std::endl;
         std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(end2 - begin2).count() << "[us]" << std::endl;
         std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds> (end2 - begin2).count() << "[ns]" << std::endl;
-        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end2 - begin2).count() << "[ms]" << std::endl;
+        std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds> (end2 - begin2).count() << "[ms]" << std::endl;*/
     }
 
     bool show_demo_window = true;

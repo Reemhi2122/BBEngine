@@ -18,8 +18,23 @@ public:
 	void AddBind(Bindable* a_Bind) noexcept;
 	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
 
-private:
-	const IndexBuffer* m_IndexBuffer = nullptr;
-	std::vector<Bindable*> m_Binds;
+	virtual const std::vector<Bindable*>& GetStaticBinds() const noexcept = 0;
 
+protected:
+	void SetIndexBuffer(IndexBuffer* a_Buffer);
+	IndexBuffer* GetIndexBuffer() const;
+
+private:
+	IndexBuffer* m_IndexBuffer = nullptr;
+	std::vector<Bindable*> m_Binds;
 };
+
+inline void Drawable::SetIndexBuffer(IndexBuffer* a_Buffer)
+{
+	m_IndexBuffer = a_Buffer;
+}
+
+inline IndexBuffer* Drawable::GetIndexBuffer() const
+{
+	return m_IndexBuffer;
+}
