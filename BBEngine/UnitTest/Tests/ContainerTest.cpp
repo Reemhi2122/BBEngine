@@ -4,6 +4,7 @@
 #include "Containers/Queue.h"
 #include "Containers/LinkedList.h"
 #include "Containers/Vector.h"
+#include "Containers/HashMap.h"
 
 TEST(Containers, Pool)
 {
@@ -80,4 +81,9 @@ TEST(Containers, Vector)
 
 	vector.Insert(6, 3);
 	vector.Remove(8, 2);
+}
+
+TEST(Containers, Vector)
+{
+	
 }
