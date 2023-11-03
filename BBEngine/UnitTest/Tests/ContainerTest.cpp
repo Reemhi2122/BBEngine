@@ -85,5 +85,7 @@ TEST(Containers, Vector)
 
 TEST(Containers, Vector)
 {
-	
+	BBE::HashMap<std::string, uint32_t> map;
+
+
 }
