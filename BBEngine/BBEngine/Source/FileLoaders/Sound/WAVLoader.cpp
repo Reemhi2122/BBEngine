@@ -7,8 +7,7 @@ namespace BBE {
 	WAV::WAV()
 	{
 		m_RiffHeader = nullptr;
-		m_FmtHeader = nullptr;
-		m_DataHeader = nullptr;
+		m_FmtData = nullptr;
 		m_Data = nullptr;
 	}
 
@@ -36,32 +35,41 @@ namespace BBE {
 		m_RiffHeader = reinterpret_cast<RIFF*>(buffer);
 		offset += sizeof(RIFF);
 
-		char name[5]{0};
 		bool dataRead = false;
 
 		uint8_t whileLimit = 200;
 		uint8_t whilecount = 0;
 
 		while (!dataRead && whilecount < whileLimit) {
-			memcpy(name, buffer + offset, 4);
-			name[4] = 0;
+			WAVHeader header;
+			memcpy(&header, buffer + offset, sizeof(WAVHeader));
+			offset += sizeof(WAVHeader);
 
-			if (strcmp(name, "fmt ") == 0) {
-				m_FmtHeader = reinterpret_cast<FMT*>(buffer + offset);
+			bool found = false;;
+			if (strncmp(header.Type, "fmt ", 4) == 0) {
+				memcpy(&m_FmtHeader, &header, sizeof(WAVHeader));
+
+				m_FmtData = reinterpret_cast<FMT*>(buffer + offset);
 				offset += sizeof(FMT);
+				found = true;
 			}
 
-			if (strcmp(name, "data") == 0) {
-				m_DataHeader = reinterpret_cast<Data*>(buffer + offset);
-				offset += sizeof(Data);
+			if (strncmp(header.Type, "data", 4) == 0) {
+				memcpy(&m_DataHeader, &header, sizeof(WAVHeader));
 
-				m_WavBufferAlloc.Init(m_DataHeader->Subchunk2Size);
-				m_Data = BBNewArr(m_WavBufferAlloc, m_DataHeader->Subchunk2Size, unsigned char);
-				memcpy(m_Data, buffer + offset, m_DataHeader->Subchunk2Size);
+				m_WavBufferAlloc.Init(header.ChunkSize);
+				m_Data = BBNewArr(m_WavBufferAlloc, header.ChunkSize, unsigned char);
+				memcpy(m_Data, buffer + offset, header.ChunkSize);
 
-				offset += m_DataHeader->Subchunk2Size;
+				offset += header.ChunkSize;
 				dataRead = true;
+				found = true;
 			}
+
+			if (!found) {
+				offset += header.ChunkSize;
+			}
+
 			whilecount++;
 		}
 
@@ -80,8 +88,9 @@ namespace BBE {
 		}
 
 		BBSystem::WriteToFileBinary(file, m_RiffHeader, sizeof(RIFF));
-		BBSystem::WriteToFileBinary(file, m_FmtHeader, sizeof(FMT));
-		BBSystem::WriteToFileBinary(file, m_DataHeader, sizeof(Data));
-		BBSystem::WriteToFileBinary(file, m_Data, m_DataHeader->Subchunk2Size);
+		BBSystem::WriteToFileBinary(file, &m_FmtHeader, sizeof(WAVHeader));
+		BBSystem::WriteToFileBinary(file, m_FmtData, sizeof(FMT));
+		BBSystem::WriteToFileBinary(file, &m_DataHeader, sizeof(WAVHeader));
+		BBSystem::WriteToFileBinary(file, m_Data, m_DataHeader.ChunkSize);
 	}
 }

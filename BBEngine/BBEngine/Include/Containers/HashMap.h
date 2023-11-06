@@ -19,7 +19,7 @@ namespace BBE {
 	private:
 		uint32_t StringToHash();
 
-		Value* m_HashMap
+		Value* m_HashMap;
 	};
 
 	template<typename Key, typename Value>

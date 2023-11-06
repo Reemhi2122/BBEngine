@@ -83,9 +83,8 @@ TEST(Containers, Vector)
 	vector.Remove(8, 2);
 }
 
-TEST(Containers, Vector)
+TEST(Containers, HashMap)
 {
 	BBE::HashMap<std::string, uint32_t> map;
-
 
 }

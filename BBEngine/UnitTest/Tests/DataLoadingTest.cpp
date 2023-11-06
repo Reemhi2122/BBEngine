@@ -1,9 +1,12 @@
 #include <gtest/gtest.h>
 #include "FileLoaders/Data/JsonParser.h"
+#include "FileLoaders/Sound/WAVLoader.h"
 
 TEST(Fileloading, WAV)
 {
-
+    BBE::WAV WAVFile;
+    WAVFile.LoadWav("assets/Sound/music.wav");
+    WAVFile.WriteWav("music_copy.wav");
 }
 
 TEST(Fileloading, Bitmap)

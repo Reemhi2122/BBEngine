@@ -4,6 +4,11 @@
 
 namespace BBE {
 
+    struct WAVHeader {
+        char            Type[4]{ 0u };
+        uint32_t         ChunkSize{ 0u };
+    };
+
     struct RIFF {
         uint8_t			Type[4]{ 0u };
         uint32_t		ChunkSize{ 0u };
@@ -11,19 +16,12 @@ namespace BBE {
     };
 
     struct FMT {
-        uint8_t			fmt[4]{ 0u };
-        uint32_t        Subchunk1Size{ 0u };
         uint16_t        AudioFormat{ 0u };
         uint16_t        NumOfChan{ 0u };
         uint32_t        SamplesPerSec{ 0u };
         uint32_t        bytesPerSec{ 0u };
         uint16_t        blockAlign{ 0u };
         uint16_t        bitsPerSample{ 0u };
-    };
-
-    struct Data {
-        uint8_t         Subchunk2ID[4]{ 0u };
-        uint32_t        Subchunk2Size{ 0u };
     };
 
     class WAV {
@@ -40,9 +38,9 @@ namespace BBE {
         Allocators::ArenaAllocator m_WavBufferAlloc;
 
         RIFF* m_RiffHeader;
-        FMT* m_FmtHeader;
-        Data* m_DataHeader;
-
+        WAVHeader m_FmtHeader;
+        FMT* m_FmtData;
+        WAVHeader m_DataHeader;
         unsigned char* m_Data;
     };
 
