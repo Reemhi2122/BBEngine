@@ -13,9 +13,11 @@ enable_testing()
 
 add_executable(
 	BBETesting
-	"Tests/AllocatorTest.cpp"
-	"Tests/MathTest.cpp" 
-	"Tests/ContainerTest.cpp" "Tests/ThreadPoolTest.cpp" "Tests/DataLoadingTest.cpp")
+	"AllocatorTest.cpp"
+	"MathTest.cpp" 
+	"ContainerTest.cpp" 
+	"ThreadPoolTest.cpp" 
+	"DataLoadingTest.cpp")
 
 target_link_libraries(
   BBETesting
