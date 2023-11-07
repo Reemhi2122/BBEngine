@@ -25,5 +25,14 @@ target_link_libraries(
   BBEngine
 )
 
+add_custom_target(game_copy_assets_unit_test ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_SOURCE_DIR}/BBGame/Assets"
+    "${CMAKE_CURRENT_BINARY_DIR}/Assets"
+    COMMENT "Copying DX11 asset folder to output d1 folder")
+
+    
+add_dependencies(BBETesting game_copy_assets_unit_test)
+
 include(GoogleTest)
 gtest_discover_tests(BBETesting)

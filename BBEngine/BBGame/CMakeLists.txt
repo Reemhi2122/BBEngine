@@ -12,8 +12,15 @@ BBEngine
 add_custom_target(game_copy_shaders ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${CMAKE_SOURCE_DIR}/BBRenderer/Shader"
-    ${CMAKE_CURRENT_BINARY_DIR}/assets
+    "${CMAKE_CURRENT_BINARY_DIR}/Assets"
+    COMMENT "Copying DX11 asset folder to output d1 folder")
+
+add_custom_target(game_copy_assets ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_SOURCE_DIR}/BBGame/Assets"
+    "${CMAKE_CURRENT_BINARY_DIR}/Assets"
     COMMENT "Copying DX11 asset folder to output d1 folder")
 
     
 add_dependencies(BBGame game_copy_shaders)
+add_dependencies(BBGame game_copy_assets)
