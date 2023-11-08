@@ -372,11 +372,11 @@ namespace BBE {
 	char JsonParser::GetWithoutWhiteSpace()
 	{
 		char c = ' ';
-		while ((c == ' ' || c == '\n' || c == '\t')) {
+		while ((c == ' ' || c == '\n' || c == '\t' || c == '\r')) {
 
 			m_FStream.Get(c);
 
-			if ((c == ' ' || c == '\n' || c == '\t') && !m_FStream.Good()) {
+			if ((c == ' ' || c == '\n' || c == '\t' || c == '\r') && !m_FStream.Good()) {
 				BB_Assert(0, "Ran out of tokens during parsing!");
 			}
 			else if (!m_FStream.Good()) {

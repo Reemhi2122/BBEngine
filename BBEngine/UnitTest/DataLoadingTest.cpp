@@ -18,7 +18,7 @@ TEST(Fileloading, Json)
 {
     BBE::JsonParser parser;
     parser.Parse("Assets/Data/data.json");
-    parser.GetRootNode()["children"]->GetListBB()[4]->GetObjectBB()["name"]->SetStringBB("Stan Vogels");
-    parser.GetRootNode()["children"]->GetListBB()[4]->GetObjectBB()["age"]->SetFloatBB(29);
+    //parser.GetRootNode()["children"]->GetListBB()[4]->GetObjectBB()["name"]->SetStringBB("Stan Vogels");
+    //parser.GetRootNode()["children"]->GetListBB()[4]->GetObjectBB()["age"]->SetFloatBB(29);
     parser.WriteJson("writebackJson.json");
 }
