@@ -1,24 +1,23 @@
 {
-    "employees": {
-      "employee": [
-        {
-          "id": "1",
-          "firstName": "Tom",
-          "lastName": "Cruise",
-          "photo": "https://jsonformatter.org/img/tom-cruise.jpg"
-        },
-        {
-          "id": "2",
-          "firstName": "Maria",
-          "lastName": "Sharapova",
-          "photo": "https://jsonformatter.org/img/Maria-Sharapova.jpg"
-        },
-        {
-          "id": "3",
-          "firstName": "Robert",
-          "lastName": "Downey Jr.",
-          "photo": "https://jsonformatter.org/img/Robert-Downey-Jr.jpg"
-        }
-      ]
-    }
-  }
+	"squadName": "Super hero squad",
+	"members": [
+		{
+			"index": 0,
+			"isActive": false,
+			"age": 21,
+			"eyeColor": "blue",
+			"name": "Bentley Clayton",
+			"gender": "male",
+			"registered": "2018-05-02T05:35:41 +04:00"
+		},
+		{
+			"index": 1,
+			"isActive": false,
+			"age": 23,
+			"eyeColor": "blue",
+			"name": "Lela Ramos",
+			"gender": "female",
+			"registered": "2014-02-24T03:13:50 +05:00"
+		}
+	]
+}

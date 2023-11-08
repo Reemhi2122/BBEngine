@@ -48,6 +48,7 @@ namespace BBE {
 		{
 			if ((m_BufferPos + 1) > m_BufferSize) {
 				m_Flags = FSF::EOFBIT;
+				c = -1;
 				return BB_FALSE;
 			}
 
