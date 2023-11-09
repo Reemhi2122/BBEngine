@@ -303,13 +303,13 @@ namespace BBE {
 				m_FStream.Get(c);
 			}
 		}
-		else if (c == '-' || c >= '1' && c <= '9') {
+		else if (c == '-' || c >= '0' && c <= '9') {
 			tkn.type = JSONTokenType::Number;
 			tkn.value = "";
 			tkn.value += c;
 
 			uint32_t prevCharPos;
-			while (c == '-' || c == '.' || c >= '1' && c <= '9') {
+			while (c == '-' || c == '.' || c >= '0' && c <= '9') {
 				prevCharPos = m_FStream.GetPos();
 				m_FStream.Get(c);
 
@@ -317,7 +317,7 @@ namespace BBE {
 					break;
 				}
 				
-				if (c == '-' || c == '.' || c >= '1' && c <= '9') {
+				if (c == '-' || c == '.' || c >= '0' && c <= '9') {
 					tkn.value += c;
 				}
 				else {
