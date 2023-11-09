@@ -87,4 +87,6 @@ TEST(Containers, HashMap)
 {
 	BBE::HashMap<std::string, uint32_t> map;
 
+	uint32_t handle = map.Insert("Test", 10);
+	uint32_t value = map.Get("Test");
 }
