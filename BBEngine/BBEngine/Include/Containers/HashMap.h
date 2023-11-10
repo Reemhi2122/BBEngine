@@ -1,5 +1,6 @@
 #pragma once
 #include "Utility/BBMemory.h"
+#include "Containers/LinkedList.h"
 
 namespace BBE {
 
@@ -19,28 +20,28 @@ namespace BBE {
 	private:
 		uint32_t StringToHash(const char* a_Str);
 
-		Value* m_HashMap;
+		LinkedList<Value>* m_HashMap;
 		uint32_t m_MapSize;
 		Allocators::ArenaAllocator M_HashMapAlloc;
 	};
 
 	template<typename Key, typename Value>
 	HashMap<Key, Value>::HashMap() {
-		M_HashMapAlloc.Init(DEFAULT_SIZE);
-		m_HashMap = BBNewArr(M_HashMapAlloc, DEFAULT_SIZE, Value);
+		M_HashMapAlloc.Init(DEFAULT_SIZE * sizeof(LinkedList<Value>));
+		m_HashMap = BBNewArr(M_HashMapAlloc, DEFAULT_SIZE, LinkedList<Value>);
 		m_MapSize = DEFAULT_SIZE;
 	}
 
 	template<typename Key, typename Value>
 	HashMap<Key, Value>::HashMap(uint32_t a_HashMapArraySize) {
-		M_HashMapAlloc.Init(a_HashMapArraySize);
-		m_HashMap = BBNewArr(M_HashMapAlloc, a_HashMapArraySize, Value);
+		M_HashMapAlloc.Init(a_HashMapArraySize * sizeof(LinkedList<Value>));
+		m_HashMap = BBNewArr(M_HashMapAlloc, a_HashMapArraySize, LinkedList<Value>);
 		m_MapSize = a_HashMapArraySize;
 	}
 
 	template<typename Key, typename Value>
 	HashMap<Key, Value>::~HashMap() {
-		BBFreeArrFunc(M_HashMapAlloc, m_HashMap);
+		BBFreeArr(M_HashMapAlloc, m_HashMap);
 		M_HashMapAlloc.Clear();
 	}
 
@@ -48,7 +49,7 @@ namespace BBE {
 	int HashMap<Key, Value>::Insert(Key a_Key, Value a_Value) {
 		uint32_t index = StringToHash(static_cast<std::string>(a_Key).c_str());
 		uint32_t mappedIndex = index % m_MapSize;
-		m_HashMap[mappedIndex] = a_Value;
+		m_HashMap[mappedIndex].Push_Back(a_Value);
 		return index;
 	}
 
@@ -56,7 +57,7 @@ namespace BBE {
 	Value HashMap<Key, Value>::Get(Key a_Key) {
 		uint32_t index = StringToHash(static_cast<std::string>(a_Key).c_str());
 		uint32_t mappedIndex = index % m_MapSize;
-		return m_HashMap[mappedIndex];
+		return m_HashMap[mappedIndex][0];
 	}
 
 #define A 54059 /* a prime */
