@@ -1,18 +1,49 @@
 #pragma once
 
-template<typename TChar>
-class BB_Basic_String {
-public:
-	BB_Basic_String();
-	BB_Basic_String(const char* a_Char);
-	~BB_Basic_String();
+namespace BBE {
+	
+	template<typename TypeChar>
+	class BB_Basic_String {
+	public:
+		BB_Basic_String();
+		BB_Basic_String(const TypeChar* a_String);
+		~BB_Basic_String();
 
-	void Append();
+		TypeChar* Append();
 
-private:
-	char* m_String;
+		TypeChar* CStr();
 
-};
+	private:
+		TypeChar* m_String;
+	};
 
-typedef BB_Basic_String<wchar_t> BBString;
-typedef BB_Basic_String<char> BBWString;
+	typedef BB_Basic_String<char> BBString;
+	typedef BB_Basic_String<wchar_t> BBWString;
+
+	template<typename TypeChar>
+	BB_Basic_String<TypeChar>::BB_Basic_String(){
+		m_String = nullptr;
+	}
+
+	template<typename TypeChar>
+	BB_Basic_String<TypeChar>::BB_Basic_String(const TypeChar* a_String){
+
+	}
+
+	template<typename TypeChar>
+	BB_Basic_String<TypeChar>::~BB_Basic_String() {
+
+	}
+
+	template<typename TypeChar>
+	TypeChar* BB_Basic_String<TypeChar>::Append() {
+
+		return m_String;
+	}
+
+	template<typename TypeChar>
+	TypeChar* BB_Basic_String<TypeChar>::CStr() {
+		return m_String;
+	}
+
+}

@@ -17,7 +17,8 @@ add_executable(
 	"MathTest.cpp" 
 	"ContainerTest.cpp" 
 	"ThreadPoolTest.cpp" 
-	"DataLoadingTest.cpp")
+	"DataLoadingTest.cpp" 
+	"SystemTest.cpp")
 
 target_link_libraries(
   BBETesting

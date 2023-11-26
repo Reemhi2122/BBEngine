@@ -19,7 +19,6 @@ add_library (BBEngine
 
 "Source/System/FileHandler/FileHandler_Windows.cpp"
 "Source/System/BBFStream.cpp"
-"Source/System/BBString.cpp"
 
 "Source/Utility/ImageProcessing.cpp"
 
