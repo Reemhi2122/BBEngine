@@ -4,8 +4,10 @@
 TEST(Systems, BBString)
 {
 	BBE::BBString str("Testing");
-	
-	str.Append();
+	BBE::BBString str1("Testing");
+
+	str.Append(str1);
+
 
 
 }

@@ -6,12 +6,12 @@ namespace BBE {
 	class BB_Basic_String {
 	public:
 		BB_Basic_String();
-		BB_Basic_String(const TypeChar* a_String);
+		BB_Basic_String(TypeChar* a_Str);
 		~BB_Basic_String();
 
-		TypeChar* Append();
+		BB_Basic_String<TypeChar>* Append(const BB_Basic_String& a_Str);
 
-		TypeChar* CStr();
+		BB_Basic_String<TypeChar>* CStr();
 
 	private:
 		TypeChar* m_String;
@@ -26,8 +26,8 @@ namespace BBE {
 	}
 
 	template<typename TypeChar>
-	BB_Basic_String<TypeChar>::BB_Basic_String(const TypeChar* a_String){
-
+	BB_Basic_String<TypeChar>::BB_Basic_String(TypeChar* a_Str){
+		m_String = a_Str;
 	}
 
 	template<typename TypeChar>
@@ -36,13 +36,13 @@ namespace BBE {
 	}
 
 	template<typename TypeChar>
-	TypeChar* BB_Basic_String<TypeChar>::Append() {
+	BB_Basic_String<TypeChar>* BB_Basic_String<TypeChar>::Append(const BB_Basic_String& a_Str) {
 
-		return m_String;
+		return this;
 	}
 
 	template<typename TypeChar>
-	TypeChar* BB_Basic_String<TypeChar>::CStr() {
+	BB_Basic_String<TypeChar>* BB_Basic_String<TypeChar>::CStr() {
 		return m_String;
 	}
 
