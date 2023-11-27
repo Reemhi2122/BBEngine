@@ -8,6 +8,6 @@ TEST(Systems, BBString)
 
 	str.Append(str1);
 
-
+	
 
 }

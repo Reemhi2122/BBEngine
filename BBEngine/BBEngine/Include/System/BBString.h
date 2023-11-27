@@ -12,6 +12,7 @@ namespace BBE {
 		BB_Basic_String<TypeChar>* Append(const BB_Basic_String& a_Str);
 
 		BB_Basic_String<TypeChar>* CStr();
+		uint32_t Strlen(const TypeChar* a_Str);
 
 	private:
 		TypeChar* m_String;
@@ -37,13 +38,25 @@ namespace BBE {
 
 	template<typename TypeChar>
 	BB_Basic_String<TypeChar>* BB_Basic_String<TypeChar>::Append(const BB_Basic_String& a_Str) {
-
-		return this;
+		
 	}
 
 	template<typename TypeChar>
 	BB_Basic_String<TypeChar>* BB_Basic_String<TypeChar>::CStr() {
 		return m_String;
+	}
+
+	template<typename TypeChar>
+	uint32_t BB_Basic_String<TypeChar>::Strlen(const TypeChar* a_Str) {
+		uint32_t strCount = 0;
+		uint32_t index = 0;
+
+		while (a_Str[index] == '\0') {
+			strCount++;
+			index++;
+		}
+
+		return strCount;
 	}
 
 }
