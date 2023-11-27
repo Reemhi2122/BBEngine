@@ -45,7 +45,7 @@ namespace BBE {
 			BBArrayAllocHeader* header = reinterpret_cast<BBArrayAllocHeader*>(ptr);
 			header->arraySize = a_Count;
 
-			Pointer::Add(ptr, headerSize);
+			ptr = reinterpret_cast<T*>(Pointer::Add(ptr, headerSize));
 
 			if (!std::is_trivially_constructible<T>()) {
 				for (size_t i = 0; i < a_Count; i++)
