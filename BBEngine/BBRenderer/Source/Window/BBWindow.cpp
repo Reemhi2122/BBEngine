@@ -5,16 +5,16 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
-BBWindow::WindowClass BBWindow::WindowClass::wndClass;
+WindowClass WindowClass::wndClass;
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-BBWindow::WindowClass::WindowClass() noexcept 
+WindowClass::WindowClass() noexcept 
 	: hInst(GetModuleHandle(nullptr)) {
 
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(wc);
     wc.style = CS_OWNDC;
-    wc.lpfnWndProc = BBHandleMsgSetup;
+    wc.lpfnWndProc = BBWindow::BBHandleMsgSetup;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = GetInstance();
@@ -27,15 +27,15 @@ BBWindow::WindowClass::WindowClass() noexcept
     RegisterClassEx(&wc);
 }
 
-BBWindow::WindowClass::~WindowClass() {
+WindowClass::~WindowClass() {
     UnregisterClass(wndClassName, GetInstance());
 }
 
-const char* BBWindow::WindowClass::GetName() noexcept {
+const char* WindowClass::GetName() noexcept {
     return wndClassName;
 }
 
-HINSTANCE BBWindow::WindowClass::GetInstance() noexcept {
+HINSTANCE WindowClass::GetInstance() noexcept {
     return wndClass.hInst;
 }
 

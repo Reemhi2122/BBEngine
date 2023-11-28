@@ -38,7 +38,7 @@ namespace BBE {
 
 	template<typename TypeChar>
 	BB_Basic_String<TypeChar>* BB_Basic_String<TypeChar>::Append(const BB_Basic_String& a_Str) {
-		
+		return 0;
 	}
 
 	template<typename TypeChar>

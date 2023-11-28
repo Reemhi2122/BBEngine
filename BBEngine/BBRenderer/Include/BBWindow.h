@@ -9,6 +9,21 @@
 #include <memory>
 #include <optional>
 
+class WindowClass {
+public:
+	static const char* GetName() noexcept;
+	static HINSTANCE GetInstance() noexcept;
+
+private:
+	WindowClass() noexcept;
+	~WindowClass();
+	WindowClass(const WindowClass&) = delete;
+	WindowClass& operator=(const WindowClass&) = delete;
+	static constexpr const char* wndClassName = "BBEngine Window";
+	static WindowClass wndClass;
+	HINSTANCE hInst;
+};
+
 class BBWindow {
 public:
 	class Exception : public BBException {
@@ -35,22 +50,6 @@ public:
 		const char* GetType() const noexcept override;
 	};
 
-private:
-	class WindowClass {
-	public:
-		static const char* GetName() noexcept;
-		static HINSTANCE GetInstance() noexcept;
-
-	private:
-		WindowClass() noexcept;
-		~WindowClass();
-		WindowClass(const WindowClass& ) = delete;
-		WindowClass& operator=(const WindowClass&) = delete;
-		static constexpr const char* wndClassName = "BBEngine Window";
-		static WindowClass wndClass;
-		HINSTANCE hInst;
-	};
-
 public:
 	BBWindow(int a_Width, int a_Height, const char* a_Name);
 	~BBWindow();
@@ -60,7 +59,6 @@ public:
 	static std::optional<int> ProcessMessages();
 	Graphics& GetGraphics();
 
-private:
 	static LRESULT CALLBACK BBHandleMsgSetup(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept;
 	static LRESULT CALLBACK BBHandleMsgThunk(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept;
 	LRESULT BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a_LParam) noexcept;
