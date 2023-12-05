@@ -25,7 +25,8 @@ add_library (BBEngine
 "Source/FileLoaders/Sound/WAVLoader.cpp"
 "Source/FileLoaders/Image/BMPLoader.cpp"
 "Source/FileLoaders/Data/JsonParser.cpp"
-"Source/FileLoaders/Data/INIParser.cpp")
+"Source/FileLoaders/Data/INIParser.cpp"
+"Source/FileLoaders/Models/GLTFParser.cpp")
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 

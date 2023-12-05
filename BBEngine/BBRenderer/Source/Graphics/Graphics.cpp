@@ -92,7 +92,6 @@ Graphics::Graphics(HWND a_HWnd)
 	ImGui_ImplWin32_Init(a_HWnd);
 	ImGui_ImplDX11_Init(m_Device.Get(), m_Context.Get());
 
-
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());
 
 	//Configure a viewport
