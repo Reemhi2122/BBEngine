@@ -1,4 +1,6 @@
-namespace BB {
+#include "System/FileHandler.h"
+
+namespace BBE {
 
 	class GLTFParser {
 
@@ -6,7 +8,7 @@ namespace BB {
 		GLTFParser();
 		~GLTFParser();
 
-
+		int Parse(char* a_Path);
 
 	private:
 
