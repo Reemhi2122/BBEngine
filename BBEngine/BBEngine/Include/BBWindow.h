@@ -26,31 +26,6 @@ private:
 
 class BBWindow {
 public:
-	class Exception : public BBException {
-	public:
-		using BBException::BBException;
-		static std::string TranslateErrorCode(HRESULT a_Hr) noexcept;
-	};
-
-	class HrException : public Exception {
-	public:
-		HrException(int a_Line, const char* a_File, HRESULT a_HR) noexcept;
-		const char* what() const noexcept override;
-		const char* GetType() const noexcept override;
-		HRESULT GetErrorCode() const noexcept;
-		std::string GetErrorString() const noexcept;
-
-	private:
-		HRESULT m_Hr;
-	};
-
-	class NoGfxException : public Exception {
-	public:
-		using Exception::Exception;
-		const char* GetType() const noexcept override;
-	};
-
-public:
 	BBWindow(int a_Width, int a_Height, const char* a_Name);
 	~BBWindow();
 	BBWindow(const BBWindow&) = delete;

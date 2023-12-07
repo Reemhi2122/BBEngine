@@ -54,7 +54,7 @@ namespace BBE {
         TestCode();
 
         try {
-            while (true) {
+            for (;;) {
                 if (const auto ecode = BBWindow::ProcessMessages())
                     return *ecode;
 

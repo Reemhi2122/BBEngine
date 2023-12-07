@@ -70,6 +70,7 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name)
 }
 
 BBWindow::~BBWindow() {
+    delete(m_Graphics);
     DestroyWindow(m_hWnd);
 }
 
@@ -197,53 +198,4 @@ LRESULT BBWindow::BBHandleMsg(HWND a_hWnd, UINT a_Msg, WPARAM a_WParam, LPARAM a
     }
 
     return DefWindowProc(a_hWnd, a_Msg, a_WParam, a_LParam);
-}
-
-std::string BBWindow::Exception::TranslateErrorCode(HRESULT a_Hr) noexcept
-{
-    char* pMsgBuf = nullptr;
-    DWORD nMsgLen = FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr, a_Hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        reinterpret_cast<LPSTR>(&pMsgBuf), 0, nullptr);
-
-    if (nMsgLen == 0)
-        return "Unidentified error code";
-
-    std::string errorString = pMsgBuf;
-    LocalFree(pMsgBuf);
-    return errorString;
-}
-
-BBWindow::HrException::HrException(int a_Line, const char* a_File, HRESULT a_HR) noexcept
-    :   Exception(a_Line, a_File),
-        m_Hr(a_HR)
-{}
-
-const char* BBWindow::HrException::what() const noexcept{
-    std::ostringstream oss;
-    oss << GetType() << std::endl
-        << "[Error Code]" << GetErrorCode() << std::endl
-        << "[Descriptoin]" << GetErrorString() << std::endl
-        << GetOriginString() << std::endl;
-    m_WhatBuffer = oss.str();
-    return m_WhatBuffer.c_str();
-}
-
-const char* BBWindow::HrException::GetType() const noexcept {
-    return "[BBWindow Exception]";
-}
-
-HRESULT BBWindow::HrException::GetErrorCode() const noexcept {
-    return m_Hr;
-}
-
-std::string BBWindow::HrException::GetErrorString() const noexcept {
-    return TranslateErrorCode(m_Hr);
-}
-
-const char* BBWindow::NoGfxException::GetType() const noexcept
-{
-    return "[BB Exception [No Graphics]]";
 }
