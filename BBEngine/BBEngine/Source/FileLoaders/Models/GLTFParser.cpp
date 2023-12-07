@@ -15,7 +15,7 @@ namespace BBE {
 		BBSystem::BBFILE file;
 
 
-		
+		return 0;
 	}
 
 }

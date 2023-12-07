@@ -15,6 +15,8 @@ public:
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
 	void Draw(Graphics& a_Gfx) const noexcept;
 	virtual void Update(float dt) noexcept = 0;
+	
+	
 	void AddBind(Bindable* a_Bind) noexcept;
 	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
 
