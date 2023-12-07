@@ -17,6 +17,11 @@ add_library (BBEngine
 "Source/Allocators/BuddyAllocator.cpp"
 "Source/Allocators/Allocator.cpp" 
 
+"Source/Window/BBWindow.cpp" 
+
+"Source/Input/Keyboard.cpp" 
+"Source/Input/Mouse.cpp" 
+
 "Source/System/FileHandler/FileHandler_Windows.cpp"
 "Source/System/BBFStream.cpp"
 

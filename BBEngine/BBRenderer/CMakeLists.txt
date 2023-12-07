@@ -4,13 +4,10 @@
 cmake_minimum_required (VERSION 3.8)
 
 add_library (Renderer STATIC 
-"BBRenderer.cpp"
+"Source/BBRenderer.cpp"
 "DXERR/dxerr.cpp"
 
-"Source/Window/BBWindow.cpp" 
 "Source/BBException/BBException.cpp"
-"Source/Input/Keyboard.cpp" 
-"Source/Input/Mouse.cpp" 
 "Source/Graphics/Graphics.cpp"
 "Source/Bindable/Topology.cpp" 
 "Source/Bindable/IndexBuffer.cpp" 

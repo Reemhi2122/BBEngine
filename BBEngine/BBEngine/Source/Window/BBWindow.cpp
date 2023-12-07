@@ -64,7 +64,9 @@ BBWindow::BBWindow(int a_Width, int a_Height, const char* a_Name)
 
     ShowWindow(m_hWnd, SW_SHOWDEFAULT);
 
-    m_Graphics = std::make_unique<Graphics>(m_hWnd);
+    //TODO(Stan):   Change this to custom allocation
+    //              or change this to stack allocation
+    m_Graphics = new Graphics(m_hWnd);
 }
 
 BBWindow::~BBWindow() {

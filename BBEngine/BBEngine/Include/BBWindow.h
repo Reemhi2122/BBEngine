@@ -1,8 +1,8 @@
 #pragma once
 #include "BBWin.h"
 #include "BBException.h"
-#include "Keyboard.h"
-#include "Mouse.h"
+#include "Input/Keyboard.h"
+#include "Input/Mouse.h"
 #include "Graphics.h"
 #include "Utils/WindowsthrowMacros.h"
 
@@ -72,5 +72,5 @@ private:
 	int m_Height;
 	HWND m_hWnd;
 
-	std::unique_ptr<Graphics> m_Graphics;
+	Graphics* m_Graphics;
 };
