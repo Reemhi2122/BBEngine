@@ -2,7 +2,6 @@
 #include "BBWin.h"
 #include "BBException.h"
 #include <d3d11.h>
-#include <dxerr.h>
 #include <wrl.h>
 #include <DirectXMath.h>
 
@@ -10,28 +9,8 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
-
 class Graphics {
 public:
-	class HrException : public BBException {
-	public:
-		HrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept;
-		const char* what() const noexcept override;
-		const char* GetType() const noexcept override;
-		HRESULT GetErrorCode() const noexcept;
-		std::string GetErrorString() const noexcept;
-		std::string GetErrorDescription() const noexcept;
-
-	private:
-		HRESULT m_Hr;
-	};
-
-	class DeviceRemovedException : public HrException {
-	public:
-		HrException::HrException;
-		const char* GetType() const noexcept override;
-	};
-
 	ID3D11DeviceContext* GetContext() const noexcept;
 	ID3D11Device* GetDevice() const noexcept;
 

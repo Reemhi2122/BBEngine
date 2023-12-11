@@ -1,5 +1,7 @@
 #include "BBException.h"
 
+#include <dxerr.h>
+
 //Note(Stan):   Some global exception code that is used througout the code base
 static std::string ExTranslateErrorCode(HRESULT a_Hr) noexcept
 {
@@ -59,7 +61,11 @@ const std::string BBException::GetOriginString() const noexcept
 	return oss.str();
 }
 
+/////////////////////////////
+// Class specific exceptions
+/////////////////////////////
 
+//Windows exceptions
 HrException::HrException(int a_Line, const char* a_File, HRESULT a_HR) noexcept
     : BBException(a_Line, a_File),
     m_Hr(a_HR)
@@ -90,4 +96,52 @@ std::string HrException::GetErrorString() const noexcept {
 const char* NoGfxException::GetType() const noexcept
 {
     return "[BB Exception [No Graphics]]";
+}
+
+
+//Graphics exceptions
+GfxHrException::GfxHrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept
+	: BBException(a_Line, a_File),
+	m_Hr(a_Hr)
+{}
+
+const char* GfxHrException::what() const noexcept
+{
+	std::ostringstream oss;
+	oss << GetType() << std::endl
+		<< "[Error Code] 0x" << std::hex << std::uppercase << GetErrorCode()
+		<< std::dec << " (" << (unsigned long)GetErrorCode() << ")" << std::endl
+		<< "[Error String] " << GetErrorString() << std::endl
+		<< "[Description] " << GetErrorDescription() << std::endl;
+	oss << GetOriginString();
+
+	m_WhatBuffer = oss.str();
+	return m_WhatBuffer.c_str();
+}
+
+const char* GfxHrException::GetType() const noexcept
+{
+	return "[BB Graphics Exception]";
+}
+
+HRESULT GfxHrException::GetErrorCode() const noexcept
+{
+	return m_Hr;
+}
+
+std::string GfxHrException::GetErrorString() const noexcept
+{
+	return DXGetErrorString(m_Hr);
+}
+
+std::string GfxHrException::GetErrorDescription() const noexcept
+{
+	char buf[512];
+	DXGetErrorDescription(m_Hr, buf, sizeof(buf));
+	return buf;
+}
+
+const char* DeviceRemovedException::GetType() const noexcept
+{
+	return "[BB Graphics Exception] [Device Removed] (DXGI_ERROR_DEVICE_REMOVED)";
 }
