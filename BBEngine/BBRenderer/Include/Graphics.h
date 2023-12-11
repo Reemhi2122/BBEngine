@@ -13,11 +13,7 @@
 
 class Graphics {
 public:
-	class Exception : public BBException {
-		using BBException::BBException;
-	};
-
-	class HrException : public Exception {
+	class HrException : public BBException {
 	public:
 		HrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept;
 		const char* what() const noexcept override;
@@ -31,9 +27,8 @@ public:
 	};
 
 	class DeviceRemovedException : public HrException {
-		using HrException::HrException;
-
 	public:
+		HrException::HrException;
 		const char* GetType() const noexcept override;
 	};
 

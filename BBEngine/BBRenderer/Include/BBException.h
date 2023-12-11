@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 
+//TODO(Stan):	Don't really want this call to BBWin in here
+//				need to look into reworking the exception class
 #include "BBWin.h"
 
 class BBException : public std::exception
@@ -23,13 +25,7 @@ protected:
 	mutable std::string m_WhatBuffer;
 };
 
-class Exception : public BBException {
-public:
-	using BBException::BBException;
-	static std::string TranslateErrorCode(HRESULT a_Hr) noexcept;
-};
-
-class HrException : public Exception {
+class HrException : public BBException {
 public:
 	HrException(int a_Line, const char* a_File, HRESULT a_HR) noexcept;
 	const char* what() const noexcept override;
@@ -41,8 +37,8 @@ private:
 	HRESULT m_Hr;
 };
 
-class NoGfxException : public Exception {
+class NoGfxException : public BBException {
 public:
-	using Exception::Exception;
+	using BBException::BBException;
 	const char* GetType() const noexcept override;
 };

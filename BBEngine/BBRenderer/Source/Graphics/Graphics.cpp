@@ -311,7 +311,7 @@ DirectX::XMMATRIX Graphics::GetProjection() const noexcept {
 }
 
 Graphics::HrException::HrException(int a_Line, const char* a_File, HRESULT a_Hr) noexcept
-	:	Exception(a_Line, a_File),
+	:	BBException(a_Line, a_File),
 		m_Hr (a_Hr)
 {}
 

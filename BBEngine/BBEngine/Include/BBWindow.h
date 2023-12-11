@@ -30,6 +30,7 @@ public:
 	~BBWindow();
 	BBWindow(const BBWindow&) = delete;
 	BBWindow& operator=(const BBWindow&) = delete;
+
 	void SetTitle(const std::string a_Title);
 	static std::optional<int> ProcessMessages();
 	Graphics& GetGraphics();
