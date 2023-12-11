@@ -10,14 +10,13 @@
 #include <iostream>
 #include <cstdint>
 
-#pragma region TempIncludes
-#include "FileLoaders/Image/BMPLoader.h"
-#include "Utility/ImageProcessing.h"
-#pragma endregion //Temp Includes
-
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+
+#pragma region TempIncludes
+#include "FileLoaders/Models/GLTFParser.h"
+#pragma endregion
 
 namespace BBE {
 
@@ -76,7 +75,8 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-
+        GLTFParser parser;
+        parser.Parse("Assets/Models/Cube/glTF/Cube.gltf");
     }
 
     bool show_demo_window = true;
