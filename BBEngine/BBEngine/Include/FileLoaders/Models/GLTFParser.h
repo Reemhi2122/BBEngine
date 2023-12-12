@@ -5,15 +5,13 @@ namespace BBE {
 	class GLTFParser {
 	public:
 		GLTFParser();
+		GLTFParser(std::string m_GLTFPath, std::string m_BinFile);
 		~GLTFParser();
 
-		int Parse(char* a_Path);
-
+		int Parse(std::string m_GLTFPath, std::string m_BinFile);
+	
 	private:
-		BBSystem::BBFILE m_GLTFFile;
 		BBSystem::BBFILE m_BinFile;
-		
-
 	};
 
 }
