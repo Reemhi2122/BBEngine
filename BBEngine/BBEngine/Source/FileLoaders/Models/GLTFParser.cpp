@@ -18,10 +18,18 @@ namespace BBE {
 	int GLTFParser::Parse(std::string a_GLTFPath, std::string a_BinFile) {
 		
 		JsonParser parser(a_GLTFPath.c_str());
-		m_BinFile = BBSystem::OpenFileWriteBB(a_BinFile.c_str());
+		m_BinFile = BBSystem::OpenFileReadBB(a_BinFile.c_str());
 		
-		std::string str = parser.GetRootNode()["meshes"]->GetListBB()[0]->GetObjectBB()["name"]->GetStringBB();
+		int accessorIndex = (int)parser.GetRootNode()["meshes"]->GetListBB()[0]->GetObjectBB()["primitives"]->GetListBB()[0]->GetObjectBB()["attributes"]->GetObjectBB()["POSITION"]->GetFloatBB();
+		int bufferViewIndex = (int)parser.GetRootNode()["accessors"]->GetListBB()[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB();
 
+		uint32_t byteLength = (int)parser.GetRootNode()["bufferViews"]->GetListBB()[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB();
+		uint32_t byteOffset = (int)parser.GetRootNode()["bufferViews"]->GetListBB()[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB();
+		
+		unsigned char* buffer = (unsigned char*)malloc(byteLength);
+		BBSystem::ReadFileAtBB(m_BinFile, buffer, byteLength, byteOffset);
+
+		float* vertBuffer = reinterpret_cast<float*>(buffer);
 
 
 		return 0;

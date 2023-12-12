@@ -82,6 +82,13 @@ namespace BBE {
 
 		}
 
+		void ReadFileAtBB(BBFILE a_Handle, unsigned char* a_Buffer, uint32_t a_Size, uint32_t a_Offset) 
+		{
+			SetFilePointer(a_Handle, a_Offset, NULL, FILE_BEGIN);
+			ReadFileBB(a_Handle, a_Buffer, a_Size);
+			SetFilePointer(a_Handle, 0, NULL, FILE_BEGIN);
+		}
+
 		void WriteToFileBB(BBFILE a_File, std::string a_Message)
 		{
 			WriteFile(a_File, a_Message.c_str(), a_Message.length(), NULL, NULL);

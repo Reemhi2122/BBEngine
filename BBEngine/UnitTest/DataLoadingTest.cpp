@@ -27,5 +27,5 @@ TEST(Fileloading, Json)
 TEST(FileLoading, GLTF) 
 {
     BBE::GLTFParser parser;
-    parser.Parse("Assets/Models/Cube/glTF/Cube.gltf");
+    parser.Parse("Assets/Models/Cube/glTF/Cube.gltf", "Assets/Models/Cube/glTF/Cube.bin");
 }
