@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include "FileLoaders/Data/JsonParser.h"
 #include "FileLoaders/Sound/WAVLoader.h"
+#include "FileLoaders/Models/GLTFParser.h"
 
 TEST(Fileloading, WAV)
 {
@@ -21,4 +22,10 @@ TEST(Fileloading, Json)
     parser.GetRootNode()["members"]->GetListBB()[0]->GetObjectBB()["name"]->SetStringBB("Stan Vogels");
     parser.GetRootNode()["members"]->GetListBB()[0]->GetObjectBB()["age"]->SetFloatBB(29);
     parser.WriteJson("writebackJson.json");
+}
+
+TEST(FileLoading, GLTF) 
+{
+    BBE::GLTFParser parser;
+    parser.Parse("Assets/Models/Cube/glTF/Cube.gltf");
 }

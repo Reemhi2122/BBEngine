@@ -194,14 +194,17 @@ namespace BBE {
 		while (!hasCompleted) {
 			if (!EndOfFile()) {
 				JSONToken curtkn = GetToken();
-				std::string key = curtkn.value;
-				JSONNode* keynode = SwitchOn(curtkn.type);
+				if (curtkn.type != JSONTokenType::CurlyClose) {
+					std::string key = curtkn.value;
+					JSONNode* keynode = SwitchOn(curtkn.type);
 
-				GetToken();
-				curtkn = GetToken();
-				(*obj)[key] = SwitchOn(curtkn.type);
+					GetToken();
+					curtkn = GetToken();
+					(*obj)[key] = SwitchOn(curtkn.type);
 
-				curtkn = GetToken();
+					curtkn = GetToken();
+				}
+				
 				hasCompleted = (curtkn.type == JSONTokenType::CurlyClose);
 			}
 			else {
@@ -224,10 +227,12 @@ namespace BBE {
 		while (!hasCompleted) {
 			if (!EndOfFile()) {
 				JSONToken curtkn = GetToken();
-				JSONNode* listNode = SwitchOn(curtkn.type);
-				
-				list->push_back(listNode);
-				curtkn = GetToken();
+				if (curtkn.type != JSONTokenType::ArrayClose) {
+					JSONNode* listNode = SwitchOn(curtkn.type);
+
+					list->push_back(listNode);
+					curtkn = GetToken();
+				}
 				hasCompleted = (curtkn.type == JSONTokenType::ArrayClose);
 			}
 			else {
