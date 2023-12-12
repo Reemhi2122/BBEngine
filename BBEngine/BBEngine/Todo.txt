@@ -1,0 +1,9 @@
+List of planned implementations
+- Resource manager
+- DX11 sponza
+- 
+
+
+Stretch goals:
+- Raytraced audio w/ doppler
+- Vulkan / DX12 renderer

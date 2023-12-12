@@ -2,6 +2,13 @@
 #include "Utility/BBMemory.h"
 #include "Containers/LinkedList.h"
 
+//Note(Stan): Some hashing prime numbers found this
+//				hashing formula online somewhere
+#define A 54059
+#define B 76963
+#define C 86969
+#define FIRSTH 37
+
 namespace BBE {
 
 	constexpr uint32_t DEFAULT_SIZE = 255;
@@ -59,11 +66,6 @@ namespace BBE {
 		uint32_t mappedIndex = index % m_MapSize;
 		return m_HashMap[mappedIndex][0];
 	}
-
-#define A 54059 /* a prime */
-#define B 76963 /* another prime */
-#define C 86969 /* yet another prime */
-#define FIRSTH 37 /* also prime */
 
 	template<typename Key, typename Value>
 	uint32_t HashMap<Key, Value>::StringToHash(const char* a_Str) {
