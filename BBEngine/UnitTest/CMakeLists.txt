@@ -24,6 +24,7 @@ target_link_libraries(
   BBETesting
   GTest::gtest_main
   BBEngine
+  BBMath
 )
 
 add_custom_target(game_copy_assets_unit_test ALL
