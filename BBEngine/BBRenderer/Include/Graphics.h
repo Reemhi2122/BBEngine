@@ -21,7 +21,7 @@ public:
 
 	void EndFrame();
 	void ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept;
-	void DrawTestTriangle(float a_Angle, float x, float y);
+	void DrawTestTriangle(float a_Angle, float x, float y, struct Vertex* ver, unsigned short* indices);
 	void DrawIndexed(UINT a_Count) noexcept;
 
 	void SetProjection(DirectX::XMMATRIX a_Projections);

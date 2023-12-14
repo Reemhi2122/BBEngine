@@ -31,7 +31,7 @@ namespace BBE {
 		uint32_t byteLength = (int)parser.GetRootNode()["bufferViews"]->GetListBB()[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB();
 		uint32_t byteOffset = (int)parser.GetRootNode()["bufferViews"]->GetListBB()[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB();
 		
-		file->Vertices = reinterpret_cast<Vector3*>(malloc(bufferCount));
+		file->Vertices = reinterpret_cast<Vector3*>(malloc(bufferCount * sizeof(Vector3)));
 		BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(file->Vertices), byteLength, byteOffset);
 
 		// Indices
@@ -42,9 +42,8 @@ namespace BBE {
 		byteLength =		(int)parser.GetRootNode()["bufferViews"]->GetListBB()[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB();
 		byteOffset =		(int)parser.GetRootNode()["bufferViews"]->GetListBB()[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB();
 
-		file->Indices = reinterpret_cast<uint32_t*>(malloc(bufferCount));
+		file->Indices = reinterpret_cast<unsigned short*>(malloc(bufferCount * sizeof(unsigned short)));
 		BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(file->Indices), byteLength, byteOffset);
-
 
 		return file;
 	}

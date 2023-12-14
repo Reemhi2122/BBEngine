@@ -6,6 +6,8 @@
 #include "Utility/BBMemory.h"
 #include "Thread/ThreadPool.h"
 
+#include "FileLoaders/Models/GLTFParser.h"
+
 #include <chrono>
 #include <iostream>
 #include <cstdint>
@@ -20,6 +22,8 @@
 namespace BBE {
 
     TaskDesc* testdesc = nullptr;
+
+    GLTFFile* file;
 
     BBEngine::BBEngine()
         : m_Window(800, 600, "BBWindow test")
@@ -74,7 +78,8 @@ namespace BBE {
 
     void BBEngine::TestCode()
     {
-
+        GLTFParser parser;
+        file = parser.Parse("Assets/Models/Cube/glTF/Cube.gltf");
     }
 
     bool show_demo_window = true;
@@ -86,12 +91,12 @@ namespace BBE {
         float time = m_Timer.Stamp();
         m_Window.GetGraphics().ClearBuffer(0.07f, 0.0f, 0.012f);
 
-        for (size_t i = 0; i < m_Boxes.size(); i++) {
-            m_Boxes[i]->Update(time);
-            m_Boxes[i]->Draw(m_Window.GetGraphics());
-        }
+        //for (size_t i = 0; i < m_Boxes.size(); i++) {
+        //    m_Boxes[i]->Update(time);
+        //    m_Boxes[i]->Draw(m_Window.GetGraphics());
+        //}
 
-        //m_Window.GetGraphics().DrawTestTriangle(90, 0, 0);
+        m_Window.GetGraphics().DrawTestTriangle(0, 0, 0, reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
 
         ImGui::ShowDemoWindow(&show_demo_window);
 

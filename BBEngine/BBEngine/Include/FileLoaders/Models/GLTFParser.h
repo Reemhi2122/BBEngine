@@ -6,7 +6,7 @@ namespace BBE {
 	struct GLTFFile
 	{
 		Vector3* Vertices;
-		uint32_t* Indices;
+		unsigned short* Indices;
 	};
 
 	class GLTFParser {

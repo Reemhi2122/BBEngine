@@ -137,20 +137,20 @@ void Graphics::ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept
 	ImGui::NewFrame();
 }
 
-void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
+void Graphics::DrawTestTriangle(float a_Angle, float x, float y, Vertex* ver, unsigned short* indices) {
 
 	HRESULT hr;
 
-	const Vertex vertices[] = {
-		{ -1.0f, -1.0f, -1.0f},
-		{ 1.0f, -1.0f, -1.0f},
-		{ -1.0f, 1.0f, -1.0f},
-		{ 1.0f, 1.0f, -1.0f},
-		{ -1.0f, -1.0f, 1.0f},
-		{ 1.0f, -1.0f, 1.0f},
-		{ -1.0f, 1.0f, 1.0f},
-		{ 1.0f, 1.0f, 1.0f}
-	};
+	//const Vertex vertices[] = {
+	//	{ -1.0f, -1.0f, -1.0f},
+	//	{ 1.0f, -1.0f, -1.0f},
+	//	{ -1.0f, 1.0f, -1.0f},
+	//	{ 1.0f, 1.0f, -1.0f},
+	//	{ -1.0f, -1.0f, 1.0f},
+	//	{ 1.0f, -1.0f, 1.0f},
+	//	{ -1.0f, 1.0f, 1.0f},
+	//	{ 1.0f, 1.0f, 1.0f}
+	//};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
 	D3D11_BUFFER_DESC desc = {};
@@ -158,10 +158,10 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
-	desc.ByteWidth = sizeof(vertices);
+	desc.ByteWidth = 432;
 	desc.StructureByteStride = sizeof(Vertex);
 	D3D11_SUBRESOURCE_DATA source = {};
-	source.pSysMem = vertices;
+	source.pSysMem = ver;
 	GFX_THROW_FAILED(m_Device->CreateBuffer(&desc, &source, &vertex_buffer));
 
 	const UINT stride = sizeof(Vertex);
@@ -169,14 +169,14 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	m_Context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
 
 	//Create index buffer
-	const unsigned short indices[] = {
-		0,2,1, 2,3,1,
-		1,3,5, 3,7,5,
-		2,6,3, 3,6,7,
-		4,5,7, 4,7,6,
-		0,4,2, 2,4,6,
-		0,1,4, 1,5,4
-	};
+	//const unsigned short indicesOld[] = {
+	//	0,2,1, 2,3,1,
+	//	1,3,5, 3,7,5,
+	//	2,6,3, 3,6,7,
+	//	4,5,7, 4,7,6,
+	//	0,4,2, 2,4,6,
+	//	0,1,4, 1,5,4
+	//};
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> indexBuffer;
 	D3D11_BUFFER_DESC ibd = {};
@@ -184,7 +184,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	ibd.Usage = D3D11_USAGE_DEFAULT;
 	ibd.CPUAccessFlags = 0;
 	ibd.MiscFlags = 0;
-	ibd.ByteWidth = sizeof(indices);
+	ibd.ByteWidth = 72;
 	ibd.StructureByteStride = sizeof(unsigned short);
 	D3D11_SUBRESOURCE_DATA isd = {};
 	isd.pSysMem = indices;
@@ -292,10 +292,10 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y) {
 	m_Context->IASetInputLayout(input_layout.Get());
 
 	//Set primitive topology
-	m_Context->IASetPrimitiveTopology(D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	//Draw
-	m_Context->DrawIndexed((UINT)std::size(indices), 0, 0);
+	m_Context->DrawIndexed(36, 0, 0);
 }
 
 void Graphics::DrawIndexed(UINT a_Count) noexcept {
