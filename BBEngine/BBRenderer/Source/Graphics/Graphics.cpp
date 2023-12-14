@@ -158,7 +158,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y, Vertex* ver, un
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
-	desc.ByteWidth = 432;
+	desc.ByteWidth = 11112;
 	desc.StructureByteStride = sizeof(Vertex);
 	D3D11_SUBRESOURCE_DATA source = {};
 	source.pSysMem = ver;
@@ -184,7 +184,7 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y, Vertex* ver, un
 	ibd.Usage = D3D11_USAGE_DEFAULT;
 	ibd.CPUAccessFlags = 0;
 	ibd.MiscFlags = 0;
-	ibd.ByteWidth = 72;
+	ibd.ByteWidth = 5232;
 	ibd.StructureByteStride = sizeof(unsigned short);
 	D3D11_SUBRESOURCE_DATA isd = {};
 	isd.pSysMem = indices;

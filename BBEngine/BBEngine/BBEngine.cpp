@@ -79,12 +79,14 @@ namespace BBE {
     void BBEngine::TestCode()
     {
         GLTFParser parser;
-        file = parser.Parse("Assets/Models/Cube/glTF/Cube.gltf");
+        file = parser.Parse("Assets/Models/Lantern/glTF/Lantern.gltf");
     }
 
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    float angleTime = 0;
 
     void BBEngine::Update()
     {
@@ -96,7 +98,9 @@ namespace BBE {
         //    m_Boxes[i]->Draw(m_Window.GetGraphics());
         //}
 
-        m_Window.GetGraphics().DrawTestTriangle(0, 0, 0, reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
+        angleTime += time;
+
+        m_Window.GetGraphics().DrawTestTriangle(angleTime, 0, 0, reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
 
         ImGui::ShowDemoWindow(&show_demo_window);
 

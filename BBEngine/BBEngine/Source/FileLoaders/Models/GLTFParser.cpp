@@ -20,7 +20,7 @@ namespace BBE {
 		GLTFFile* file = reinterpret_cast<GLTFFile*>(malloc(sizeof(GLTFFile)));
 
 		JsonParser parser(a_GLTFPath.c_str());
-		std::string binPath = "Assets/Models/Cube/glTF/";
+		std::string binPath = "Assets/Models/Lantern/glTF/";
 		binPath.append(parser.GetRootNode()["buffers"]->GetListBB()[0]->GetObjectBB()["uri"]->GetStringBB());
 		m_BinFile = BBSystem::OpenFileReadBB(binPath);
 		
