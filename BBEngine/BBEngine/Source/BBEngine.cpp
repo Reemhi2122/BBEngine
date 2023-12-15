@@ -68,7 +68,6 @@ namespace BBE
         GLTFParser parser;
         file = parser.Parse("Assets/Models/Cube/glTF/", "Cube.gltf");
 
-        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
 
         std::mt19937 rng(std::random_device{}());
         std::uniform_real_distribution<float> adist(0.0f, 3.1415926f * 2.0f);
@@ -77,6 +76,8 @@ namespace BBE
         std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+
+        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
 
         for (size_t i = 0; i < 80; i++)
         {
@@ -96,6 +97,7 @@ namespace BBE
         //    m_Boxes[i]->Draw(m_Window.GetGraphics());
         //}
 
+        m_Model->Update(time);
         m_Model->Draw(m_Window.GetGraphics());
 
         ImGui::ShowDemoWindow(&show_demo_window);

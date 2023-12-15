@@ -39,6 +39,9 @@ Model::Model(Graphics& a_Gfx, Vertex* ver, unsigned short* indices)
 
 	m_Topology = new Topology(a_Gfx, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(m_Topology);
+
+	m_TransformBuf = new TransformBuf(a_Gfx, *this);
+	AddBind(m_TransformBuf);
 }
 
 void Model::Update(float a_DeltaTime) noexcept
@@ -48,10 +51,9 @@ void Model::Update(float a_DeltaTime) noexcept
 
 DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 {
-	return DirectX::XMMatrixTranspose(
-		DirectX::XMMatrixRotationZ(m_Angle) *
+	return
 		DirectX::XMMatrixRotationY(m_Angle) *
-		DirectX::XMMatrixTranslation(0, 0, 5.0f) *
-		DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 10.0f)
-	);
+		DirectX::XMMatrixRotationZ(m_Angle) *
+		DirectX::XMMatrixTranslation(0.0f, 0.0f, 5.0f);
+
 }
