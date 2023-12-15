@@ -77,7 +77,7 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 
-        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
+        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[0].vertices), file->meshes[0].indices);
 
         for (size_t i = 0; i < 80; i++)
         {

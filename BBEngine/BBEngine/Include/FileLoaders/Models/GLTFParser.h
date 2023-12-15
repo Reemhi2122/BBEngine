@@ -3,10 +3,16 @@
 
 namespace BBE {
 
+	struct Mesh
+	{
+		const char* name;
+		Vector3* vertices;
+		unsigned short* indices;
+	};
+
 	struct GLTFFile
 	{
-		Vector3* Vertices;
-		unsigned short* Indices;
+		Mesh* meshes;
 	};
 
 	class GLTFParser {
