@@ -5,7 +5,7 @@ cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
 add_library (BBEngine 
-"BBEngine.cpp" 
+"Source/BBEngine.cpp"
 "Source/Timer/BBTimer.cpp"
 "Source/Logger/logger.cpp" 
 "Source/Thread/ThreadPool.cpp"

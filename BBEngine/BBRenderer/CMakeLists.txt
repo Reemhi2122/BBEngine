@@ -17,7 +17,8 @@ add_library (Renderer STATIC
 "Source/Bindable/InputLayout.cpp"
 "Source/Drawable/Drawable.cpp"
 "Source/Bindable/TransformBuf.cpp"
-"Source/Drawable/Box.cpp")
+"Source/Drawable/Box.cpp"
+"Source/Drawable/Model.cpp")
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")
 

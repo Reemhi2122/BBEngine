@@ -1,11 +1,9 @@
-#pragma once
 #include "BBEngine.h"
 #include "Matrix4x4.h"
 #include "Logger/Logger.h"
 
 #include "Utility/BBMemory.h"
 #include "Thread/ThreadPool.h"
-
 #include "FileLoaders/Models/GLTFParser.h"
 
 #include <chrono>
@@ -16,13 +14,9 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
-#pragma region TempIncludes
-#pragma endregion
-
-namespace BBE {
-
+namespace BBE
+{
     TaskDesc* testdesc = nullptr;
-
     GLTFFile* file;
 
     BBEngine::BBEngine()
@@ -32,18 +26,6 @@ namespace BBE {
         m_ArenaAllocator.Init(BBE::PageSize);
         m_StackAllocator.Init(128 * BBE::MBSize);
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(8, 2);
-
-        std::mt19937 rng(std::random_device{}());
-        std::uniform_real_distribution<float> adist(0.0f, 3.1415926f * 2.0f);
-        std::uniform_real_distribution<float> ddist(0.0f, 3.1415926f * 2.0f);
-        std::uniform_real_distribution<float> odist(0.0f, 3.1415926f * 0.3f);
-        std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
-
-        m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
-
-        for (size_t i = 0; i < 80; i++) {
-            m_Boxes.push_back(BBNew(m_StackAllocator, Box)(m_Window.GetGraphics(), rng, adist, ddist, odist, rdist));
-        }
     }
 
     BBEngine::~BBEngine()
@@ -55,21 +37,26 @@ namespace BBE {
     {
         TestCode();
 
-        try {
-            for (;;) {
+        try
+        {
+            for (;;)
+            {
                 if (const auto ecode = BBWindow::ProcessMessages())
                     return *ecode;
 
                 Update();
             }
         }
-        catch (const BBException& e) {
+        catch (const BBException& e)
+        {
             MessageBox(nullptr, e.what(), e.GetType(), MB_OK | MB_ICONEXCLAMATION);
         }
-        catch (const std::exception& e) {
+        catch (const std::exception& e)
+        {
             MessageBox(nullptr, e.what(), "Standard Exception", MB_OK | MB_ICONEXCLAMATION);
         }
-        catch (...) {
+        catch (...)
+        {
             MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
         }
         return -1;
@@ -79,15 +66,26 @@ namespace BBE {
     void BBEngine::TestCode()
     {
         GLTFParser parser;
-        file = parser.Parse("Assets/Models/Lantern/glTF/Lantern.gltf");
+        file = parser.Parse("Assets/Models/Cube/glTF/", "Cube.gltf");
+
+        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
+
+        std::mt19937 rng(std::random_device{}());
+        std::uniform_real_distribution<float> adist(0.0f, 3.1415926f * 2.0f);
+        std::uniform_real_distribution<float> ddist(0.0f, 3.1415926f * 2.0f);
+        std::uniform_real_distribution<float> odist(0.0f, 3.1415926f * 0.3f);
+        std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
+
+        m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+
+        for (size_t i = 0; i < 80; i++)
+        {
+            m_Boxes.push_back(BBNew(m_StackAllocator, Box)(m_Window.GetGraphics(), rng, adist, ddist, odist, rdist));
+        }
+
     }
 
     bool show_demo_window = true;
-    bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-    float angleTime = 0;
-
     void BBEngine::Update()
     {
         float time = m_Timer.Stamp();
@@ -98,9 +96,7 @@ namespace BBE {
         //    m_Boxes[i]->Draw(m_Window.GetGraphics());
         //}
 
-        angleTime += time;
-
-        m_Window.GetGraphics().DrawTestTriangle(angleTime, 0, 0, reinterpret_cast<Vertex*>(file->Vertices), file->Indices);
+        m_Model->Draw(m_Window.GetGraphics());
 
         ImGui::ShowDemoWindow(&show_demo_window);
 

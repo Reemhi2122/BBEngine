@@ -20,7 +20,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 	m_Phi(adist(rng))
 {
 	if (!IsStaticInitialized()) {
-		const std::vector<Vertex> vertices = {
+		Vertex vertices[] = {
 			{ -1.0f, -1.0f, -1.0f},
 			{ 1.0f, -1.0f, -1.0f},
 			{ -1.0f, 1.0f, -1.0f},
@@ -31,7 +31,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 			{ 1.0f, 1.0f, 1.0f}
 		};
 
-		vBuffer = new VertexBuffer(a_Gfx, vertices);
+		vBuffer = new VertexBuffer(a_Gfx, vertices, 8);
 		AddStaticBind(vBuffer);
 
 		vShader = new VertexShader(a_Gfx, L"Assets/VertexShader.hlsl");
@@ -40,7 +40,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 		pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
 		AddStaticBind(pShader);
 
-		const std::vector<unsigned short> indices = {
+		unsigned short indices[] = {
 			0,2,1, 2,3,1,
 			1,3,5, 3,7,5,
 			2,6,3, 3,6,7,
@@ -49,7 +49,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 			0,1,4, 1,5,4
 		};
 
-		IBuffer = new IndexBuffer(a_Gfx, indices);
+		IBuffer = new IndexBuffer(a_Gfx, indices, 36);
 		AddStaticBindIndexBuffer(IBuffer);
 
 		const ConstantBufferColor cbc = {

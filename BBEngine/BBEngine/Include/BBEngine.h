@@ -6,6 +6,7 @@
 #include "Utility/BBMemory.h"
 
 #include "Drawable/Box.h"
+#include "Drawable/Model.h"
 
 namespace BBE {
 	
@@ -26,6 +27,7 @@ namespace BBE {
 		BBWinRenderer m_BBWinRenderer;
 
 		std::vector<Box*> m_Boxes;
+		Model* m_Model;
 
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;

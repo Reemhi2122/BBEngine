@@ -12,10 +12,10 @@ namespace BBE {
 	class GLTFParser {
 	public:
 		GLTFParser();
-		GLTFParser(std::string m_GLTFPath);
+		GLTFParser(char* m_GLTFPath, char* a_GLTFName);
 		~GLTFParser();
 
-		GLTFFile* Parse(std::string m_GLTFPath);
+		GLTFFile* Parse(char* m_GLTFPath, char* a_GLTFName);
 	
 	private:
 		BBSystem::BBFILE m_BinFile;

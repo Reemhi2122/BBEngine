@@ -10,7 +10,7 @@ struct Vertex {
 
 class VertexBuffer : public Bindable {
 public:
-	VertexBuffer(Graphics& a_Gfx, const std::vector<Vertex>& a_Vertices);
+	VertexBuffer(Graphics& a_Gfx, Vertex* a_Vertices, const uint32_t a_Count);
 	void Bind(Graphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 

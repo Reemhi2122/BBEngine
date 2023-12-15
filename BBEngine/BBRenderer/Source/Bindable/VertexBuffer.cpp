@@ -1,8 +1,8 @@
 #include "Bindable/VertexBuffer.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-VertexBuffer::VertexBuffer(Graphics& a_Gfx, const std::vector<Vertex>& a_Vertices)
-	: m_Count((UINT)a_Vertices.size())
+VertexBuffer::VertexBuffer(Graphics& a_Gfx, Vertex* a_Vertices, const uint32_t a_Count)
+	: m_Count(a_Count)
 {
 	INFOMAN(a_Gfx);
 
@@ -14,7 +14,7 @@ VertexBuffer::VertexBuffer(Graphics& a_Gfx, const std::vector<Vertex>& a_Vertice
 	desc.ByteWidth = m_Count * sizeof(Vertex);
 	desc.StructureByteStride = sizeof(Vertex);
 	D3D11_SUBRESOURCE_DATA source = {};
-	source.pSysMem = a_Vertices.data();
+	source.pSysMem = reinterpret_cast<void*>(a_Vertices);
 
 	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &vertex_buffer));
 }

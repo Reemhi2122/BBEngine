@@ -5,8 +5,8 @@ namespace BBE {
 
 	GLTFParser::GLTFParser() {}
 
-	GLTFParser::GLTFParser(std::string a_GLTFPath) {
-		Parse(a_GLTFPath);
+	GLTFParser::GLTFParser(char* m_GLTFPath, char* a_GLTFName) {
+		Parse(m_GLTFPath, a_GLTFName);
 	}
 
 	GLTFParser::~GLTFParser() {}
@@ -15,13 +15,18 @@ namespace BBE {
 	//				a path to a single file because it can contain
 	//				both a GLTF file and a .bin file.
 
-	GLTFFile* GLTFParser::Parse(std::string a_GLTFPath) {
+	GLTFFile* GLTFParser::Parse(char* a_GLTFPath, char* a_GLTFName) {
 		
 		GLTFFile* file = reinterpret_cast<GLTFFile*>(malloc(sizeof(GLTFFile)));
 
-		JsonParser parser(a_GLTFPath.c_str());
-		std::string binPath = "Assets/Models/Lantern/glTF/";
-		binPath.append(parser.GetRootNode()["buffers"]->GetListBB()[0]->GetObjectBB()["uri"]->GetStringBB());
+		char GLTFPath[64] = "";
+		strcat(GLTFPath, a_GLTFPath);
+		strcat(GLTFPath, a_GLTFName);
+		JsonParser parser(GLTFPath);
+		
+		char binPath[64] = "";
+		strcat(binPath, a_GLTFPath);
+		strcat(binPath, parser.GetRootNode()["buffers"]->GetListBB()[0]->GetObjectBB()["uri"]->GetStringBB().c_str());
 		m_BinFile = BBSystem::OpenFileReadBB(binPath);
 		
 		int accessorIndex = (int)parser.GetRootNode()["meshes"]->GetListBB()[0]->GetObjectBB()["primitives"]->GetListBB()[0]->GetObjectBB()["attributes"]->GetObjectBB()["POSITION"]->GetFloatBB();
