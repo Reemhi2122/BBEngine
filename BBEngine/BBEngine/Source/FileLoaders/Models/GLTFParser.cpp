@@ -42,6 +42,7 @@ namespace BBE {
 				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
 				JSONList& accessorsList = parser.GetRootNode()["accessors"]->GetListBB();
 				JSONList& bufferViews = parser.GetRootNode()["bufferViews"]->GetListBB();
+				
 				uint32_t accessorIndex;
 				uint32_t bufferViewIndex;
 				uint32_t bufferCount;
@@ -61,13 +62,12 @@ namespace BBE {
 					byteLength			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
 					byteOffset			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 					
-					gltfFile->meshes[meshIndex].vertices = reinterpret_cast<Vector3*>(malloc(bufferCount * sizeof(Vector3)));
-					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes->vertices), byteLength, byteOffset);
-
-
+					gltfFile->meshes[meshIndex].vertAmount = bufferCount;
+					gltfFile->meshes[meshIndex].vertices = reinterpret_cast<Vector3*>(malloc(byteLength));
+					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[meshIndex].vertices), byteLength, byteOffset);
 				}
 
-				//// Indices
+				//Indices
 				accessorIndex		= static_cast<int>(primitiveObj["indices"]->GetFloatBB());
 				bufferViewIndex		= static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
 				bufferCount			= static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
@@ -75,8 +75,9 @@ namespace BBE {
 				byteLength			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
 				byteOffset			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 
-				gltfFile->meshes[meshIndex].indices = reinterpret_cast<unsigned short*>(malloc(bufferCount * sizeof(unsigned short)));
-				BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes->indices), byteLength, byteOffset);
+				gltfFile->meshes[meshIndex].indicesAmount = bufferCount;
+				gltfFile->meshes[meshIndex].indices = reinterpret_cast<unsigned short*>(malloc(byteLength));
+				BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[meshIndex].indices), byteLength, byteOffset);
 
 				//Process material
 			}

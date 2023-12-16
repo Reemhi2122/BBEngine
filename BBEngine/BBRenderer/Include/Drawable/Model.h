@@ -17,7 +17,7 @@ class Model : public Drawable
 {
 public:
 	Model() = default;
-	Model(Graphics& a_Gfx, Vertex* ver, unsigned short* indices);
+	Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* indices, uint32_t indicesAmount);
 	
 	void Update(float a_DeltaTime) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;

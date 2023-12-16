@@ -1,19 +1,19 @@
 #include "System/FileHandler.h"
 #include "Vector3.h"
 
+struct Mesh {
+	const char* name;
+	Vector3* vertices;
+	uint32_t vertAmount;
+	unsigned short* indices;
+	uint32_t indicesAmount;
+};
+
+struct GLTFFile {
+	Mesh* meshes;
+};
+
 namespace BBE {
-
-	struct Mesh
-	{
-		const char* name;
-		Vector3* vertices;
-		unsigned short* indices;
-	};
-
-	struct GLTFFile
-	{
-		Mesh* meshes;
-	};
 
 	class GLTFParser {
 	public:
