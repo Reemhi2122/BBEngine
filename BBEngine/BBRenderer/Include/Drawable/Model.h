@@ -10,7 +10,7 @@ struct ConstantBufferColorModel
 		float g;
 		float b;
 		float a;
-	}face_colors[6];
+	}face_colors[1];
 };
 
 class Model : public Drawable

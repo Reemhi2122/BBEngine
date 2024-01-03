@@ -16,19 +16,14 @@ Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* 
 	IBuffer = new IndexBuffer(a_Gfx, indices, indicesAmount);
 	AddIndexBuffer(IBuffer);
 
-	//const ConstantBufferColorModel cbc = {
-	//{
-	//	{1.0f, 1.0f, 1.0f, 1.0f},
-	//	{1.0f, 1.0f, 1.0f, 1.0f},
-	//	{1.0f, 1.0f, 1.0f, 1.0f},
-	//	{1.0f, 1.0f, 1.0f, 1.0f},
-	//	{1.0f, 1.0f, 1.0f, 1.0f},
-	//	{1.0f, 1.0f, 1.0f, 1.0f},
-	//}
-	//};
+	const ConstantBufferColorModel cbc = {
+	{
+		{1.0f, 1.0f, 0.0f, 1.0f}
+	}
+	};
 
-	//cCB = new PixelConstantBuffer<ConstantBufferColorModel>(a_Gfx, cbc);
-	//AddBind(cCB);
+	cCB = new PixelConstantBuffer<ConstantBufferColorModel>(a_Gfx, cbc);
+	AddBind(cCB);
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 	{"Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}

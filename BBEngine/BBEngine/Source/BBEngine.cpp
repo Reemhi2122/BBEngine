@@ -76,9 +76,9 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 
-        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[0].vertices), file->meshes[0].vertAmount, file->meshes[0].indices, file->meshes[0].indicesAmount);
-        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[1].vertices), file->meshes[1].vertAmount, file->meshes[1].indices, file->meshes[1].indicesAmount);
-        m_Model = BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[2].vertices), file->meshes[2].vertAmount, file->meshes[2].indices, file->meshes[2].indicesAmount);
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[0].vertices), file->meshes[0].vertAmount, file->meshes[0].indices, file->meshes[0].indicesAmount));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[1].vertices), file->meshes[1].vertAmount, file->meshes[1].indices, file->meshes[1].indicesAmount));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[2].vertices), file->meshes[2].vertAmount, file->meshes[2].indices, file->meshes[2].indicesAmount));
 
         //for (size_t i = 0; i < 80; i++)
         //{
@@ -98,8 +98,11 @@ namespace BBE
         //    m_Boxes[i]->Draw(m_Window.GetGraphics());
         //}
 
-        m_Model->Update(time);
-        m_Model->Draw(m_Window.GetGraphics());
+        for (size_t i = 0; i < m_Model.size(); i++) {
+            m_Model[i]->Update(time);
+            m_Model[i]->Draw(m_Window.GetGraphics());
+        }
+
 
         ImGui::ShowDemoWindow(&show_demo_window);
 
