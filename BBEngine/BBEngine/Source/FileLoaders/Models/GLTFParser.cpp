@@ -27,22 +27,27 @@ namespace BBE {
 		strcat(binPath, a_GLTFPath);
 		strcat(binPath, parser.GetRootNode()["buffers"]->GetListBB()[0]->GetObjectBB()["uri"]->GetStringBB().c_str());
 		m_BinFile = BBSystem::OpenFileReadBB(binPath);
+		
+		//Currently only supports one scene
 
-		BBE::JSONList& MeshList = parser.GetRootNode()["meshes"]->GetListBB();
-		gltfFile->meshes = reinterpret_cast<Mesh*>(malloc(MeshList.size() * sizeof(Mesh)));
-		for (uint32_t meshIndex = 0; meshIndex < MeshList.size(); meshIndex++)
+		//Go through all nodes
+		BBE::JSONList& nodesList = parser.GetRootNode()["nodes"]->GetListBB();
+		for (size_t i = 0; i < nodesList.size(); i++)
 		{
+			uint32_t curMeshIndex = nodesList[i]->GetObjectBB()["mesh"]->GetFloatBB();
+			BBE::JSONObject& curMesh = parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
+
 			//Assign mesh name
-			gltfFile->meshes[meshIndex].name = MeshList[meshIndex]->GetObjectBB()["name"]->GetStringBB().c_str();
+			gltfFile->meshes[curMeshIndex].name = curMesh["name"]->GetStringBB().c_str();
 
 			//Go over all primitives
-			BBE::JSONList& primitiveList = MeshList[meshIndex]->GetObjectBB()["primitives"]->GetListBB();
+			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
 			for (uint32_t primitiveIndex = 0; primitiveIndex < primitiveList.size(); primitiveIndex++)
 			{
 				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
 				JSONList& accessorsList = parser.GetRootNode()["accessors"]->GetListBB();
 				JSONList& bufferViews = parser.GetRootNode()["bufferViews"]->GetListBB();
-				
+
 				uint32_t accessorIndex;
 				uint32_t bufferViewIndex;
 				uint32_t bufferCount;
@@ -52,32 +57,32 @@ namespace BBE {
 				if (primitiveObj.find("attributes") != primitiveObj.end())
 				{
 					//Note(Stan): Don't assume these are here..
-					
+
 					JSONObject& attributeObject = primitiveObj["attributes"]->GetObjectBB();
 
-					accessorIndex		= static_cast<int>(attributeObject["POSITION"]->GetFloatBB());
-					bufferViewIndex		= static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
-					bufferCount			= static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
+					accessorIndex = static_cast<int>(attributeObject["POSITION"]->GetFloatBB());
+					bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+					bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
 
-					byteLength			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
-					byteOffset			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
-					
-					gltfFile->meshes[meshIndex].vertAmount = bufferCount;
-					gltfFile->meshes[meshIndex].vertices = reinterpret_cast<Vector3*>(malloc(byteLength));
-					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[meshIndex].vertices), byteLength, byteOffset);
+					byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+					byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+
+					gltfFile->meshes[curMeshIndex].vertAmount = bufferCount;
+					gltfFile->meshes[curMeshIndex].vertices = reinterpret_cast<Vector3*>(malloc(byteLength));
+					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[curMeshIndex].vertices), byteLength, byteOffset);
 				}
 
 				//Indices
-				accessorIndex		= static_cast<int>(primitiveObj["indices"]->GetFloatBB());
-				bufferViewIndex		= static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
-				bufferCount			= static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
+				accessorIndex = static_cast<int>(primitiveObj["indices"]->GetFloatBB());
+				bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+				bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
 
-				byteLength			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
-				byteOffset			= static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+				byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+				byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 
-				gltfFile->meshes[meshIndex].indicesAmount = bufferCount;
-				gltfFile->meshes[meshIndex].indices = reinterpret_cast<unsigned short*>(malloc(byteLength));
-				BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[meshIndex].indices), byteLength, byteOffset);
+				gltfFile->meshes[curMeshIndex].indicesAmount = bufferCount;
+				gltfFile->meshes[curMeshIndex].indices = reinterpret_cast<unsigned short*>(malloc(byteLength));
+				BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[curMeshIndex].indices), byteLength, byteOffset);
 
 				//Process material
 			}
