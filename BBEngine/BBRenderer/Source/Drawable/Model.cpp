@@ -1,8 +1,7 @@
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-
-Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* indices, uint32_t indicesAmount)
+Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* indices, uint32_t indicesAmount, Vector3 a_Translation)
 {
 	vBuffer = new VertexBuffer(a_Gfx, ver, vertAmount);
 	AddBind(vBuffer);
@@ -37,6 +36,9 @@ Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* 
 
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);
+
+	//Testing
+	m_Translation = a_Translation;
 }
 
 void Model::Update(float a_DeltaTime) noexcept
@@ -49,7 +51,6 @@ DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 	return
 		//DirectX::XMMatrixRotationY(m_Angle) *
 		//DirectX::XMMatrixRotationZ(m_Angle) *
-		DirectX::XMMatrixScaling(0.3, 0.3, 0.3) *
-		DirectX::XMMatrixTranslation(0.0f, 0.0f, 5.0f);
-
+		DirectX::XMMatrixScaling(1, 1, 1) *
+		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y -15, 30);
 }

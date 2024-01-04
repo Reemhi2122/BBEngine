@@ -32,13 +32,22 @@ namespace BBE {
 
 		//Go through all nodes
 		BBE::JSONList& nodesList = parser.GetRootNode()["nodes"]->GetListBB();
-		for (size_t i = 0; i < nodesList.size(); i++)
+		gltfFile->nodes = reinterpret_cast<Node*>(malloc(nodesList.size() * sizeof(Node)));
+		//TODO(Stan):	Added -1 to this because there is a non node object
+		//				in the list. Look at this later.
+		for (size_t i = 0; i < nodesList.size() - 1; i++)
 		{
 			uint32_t curMeshIndex = nodesList[i]->GetObjectBB()["mesh"]->GetFloatBB();
-			BBE::JSONObject& curMesh = parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
+			BBE::JSONObject curMesh = parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
+
+			BBE::JSONList list = nodesList[i]->GetObjectBB()["translation"]->GetListBB();
+			gltfFile->nodes[i].translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
 
 			//Assign mesh name
-			gltfFile->meshes[curMeshIndex].name = curMesh["name"]->GetStringBB().c_str();
+			//Note(Stan):	This only works when doing it indirectly,
+			//				Look into a way of fixing this.
+			std::string test = curMesh["name"]->GetStringBB();
+			gltfFile->nodes[i].mesh.name = test.c_str();
 
 			//Go over all primitives
 			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
@@ -67,9 +76,9 @@ namespace BBE {
 					byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
 					byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 
-					gltfFile->meshes[curMeshIndex].vertAmount = bufferCount;
-					gltfFile->meshes[curMeshIndex].vertices = reinterpret_cast<Vector3*>(malloc(byteLength));
-					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[curMeshIndex].vertices), byteLength, byteOffset);
+					gltfFile->nodes[i].mesh.vertAmount = bufferCount;
+					gltfFile->nodes[i].mesh.vertices = reinterpret_cast<Vector3*>(malloc(byteLength));
+					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.vertices), byteLength, byteOffset);
 				}
 
 				//Indices
@@ -80,9 +89,9 @@ namespace BBE {
 				byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
 				byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 
-				gltfFile->meshes[curMeshIndex].indicesAmount = bufferCount;
-				gltfFile->meshes[curMeshIndex].indices = reinterpret_cast<unsigned short*>(malloc(byteLength));
-				BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->meshes[curMeshIndex].indices), byteLength, byteOffset);
+				gltfFile->nodes[i].mesh.indicesAmount = bufferCount;
+				gltfFile->nodes[i].mesh.indices = reinterpret_cast<unsigned short*>(malloc(byteLength));
+				BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.indices), byteLength, byteOffset);
 
 				//Process material
 			}

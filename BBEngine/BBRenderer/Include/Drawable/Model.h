@@ -1,5 +1,6 @@
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"
+#include "Vector3.h"
 
 //TODO(Stan): Probably need to remove or move this
 struct ConstantBufferColorModel
@@ -17,7 +18,7 @@ class Model : public Drawable
 {
 public:
 	Model() = default;
-	Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* indices, uint32_t indicesAmount);
+	Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* indices, uint32_t indicesAmount, Vector3 a_Translation);
 	
 	void Update(float a_DeltaTime) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
@@ -40,4 +41,5 @@ private:
 	PixelConstantBuffer<ConstantBufferColorModel>* cCB;
 
 	float m_Angle;
+	Vector3 m_Translation;
 };

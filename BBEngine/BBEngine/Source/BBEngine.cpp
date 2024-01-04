@@ -76,9 +76,9 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[0].vertices), file->meshes[0].vertAmount, file->meshes[0].indices, file->meshes[0].indicesAmount));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[1].vertices), file->meshes[1].vertAmount, file->meshes[1].indices, file->meshes[1].indicesAmount));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->meshes[2].vertices), file->meshes[2].vertAmount, file->meshes[2].indices, file->meshes[2].indicesAmount));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->nodes[0].mesh.vertices), file->nodes[0].mesh.vertAmount, file->nodes[0].mesh.indices, file->nodes[0].mesh.indicesAmount, file->nodes[0].translation));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->nodes[1].mesh.vertices), file->nodes[1].mesh.vertAmount, file->nodes[1].mesh.indices, file->nodes[1].mesh.indicesAmount, file->nodes[1].translation));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->nodes[2].mesh.vertices), file->nodes[2].mesh.vertAmount, file->nodes[2].mesh.indices, file->nodes[2].mesh.indicesAmount, file->nodes[2].translation));
 
         //for (size_t i = 0; i < 80; i++)
         //{

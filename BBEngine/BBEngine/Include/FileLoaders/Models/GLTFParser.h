@@ -9,8 +9,17 @@ struct Mesh {
 	uint32_t indicesAmount;
 };
 
+struct Node
+{
+	Mesh mesh;
+	Vector3 translation;
+	//quads
+	Vector3 Scale;
+	//Matrix
+};
+
 struct GLTFFile {
-	Mesh* meshes;
+	Node* nodes;
 };
 
 namespace BBE {
