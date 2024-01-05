@@ -15,18 +15,9 @@ Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* 
 	IBuffer = new IndexBuffer(a_Gfx, indices, indicesAmount);
 	AddIndexBuffer(IBuffer);
 
-	//const ConstantBufferColorModel cbc = {
-	//{
-	//	{1.0f, 1.0f, 0.0f, 1.0f}
-	//}
-	//};
-
-	//cCB = new PixelConstantBuffer<ConstantBufferColorModel>(a_Gfx, cbc);
-	//AddBind(cCB);
-
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
-		{ "Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD",0,DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());
@@ -55,3 +46,13 @@ DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 		DirectX::XMMatrixScaling(1, 1, 1) *
 		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y -15, 30);
 }
+
+
+//const ConstantBufferColorModel cbc = {
+//{
+//	{1.0f, 1.0f, 0.0f, 1.0f}
+//}
+//};
+
+//cCB = new PixelConstantBuffer<ConstantBufferColorModel>(a_Gfx, cbc);
+//AddBind(cCB);

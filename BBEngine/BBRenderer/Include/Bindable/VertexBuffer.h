@@ -1,12 +1,7 @@
 #pragma once
 #include "Bindable/Bindable.h"
 #include <vector>
-
-struct Vertex {
-	struct {
-		float x, y, z;
-	} pos;
-};
+#include "DataTypes/SharedRenderTypes.h"
 
 class VertexBuffer : public Bindable {
 public:

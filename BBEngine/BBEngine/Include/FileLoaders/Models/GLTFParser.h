@@ -1,9 +1,10 @@
 #include "System/FileHandler.h"
 #include "Vector3.h"
+#include "DataTypes/SharedRenderTypes.h"
 
 struct Mesh {
 	const char* name;
-	Vector3* vertices;
+	Vertex* vertices;
 	uint32_t vertAmount;
 	unsigned short* indices;
 	uint32_t indicesAmount;

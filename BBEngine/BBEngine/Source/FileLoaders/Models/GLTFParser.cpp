@@ -77,7 +77,16 @@ namespace BBE {
 					byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 
 					gltfFile->nodes[i].mesh.vertAmount = bufferCount;
-					gltfFile->nodes[i].mesh.vertices = reinterpret_cast<Vector3*>(malloc(byteLength));
+					gltfFile->nodes[i].mesh.vertices = reinterpret_cast<Vertex*>(malloc(byteLength));
+					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.vertices), byteLength, byteOffset);
+
+					accessorIndex = static_cast<int>(attributeObject["TEXCOORDS_0"]->GetFloatBB());
+					bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+					bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
+
+					byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+					byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+
 					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.vertices), byteLength, byteOffset);
 				}
 
