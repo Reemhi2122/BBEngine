@@ -20,7 +20,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 	m_Phi(adist(rng))
 {
 	if (!IsStaticInitialized()) {
-		Vertex vertices[] = {
+		BBE::Vertex vertices[] = {
 			{ -1.0f, -1.0f, -1.0f},
 			{ 1.0f, -1.0f, -1.0f},
 			{ -1.0f, 1.0f, -1.0f},

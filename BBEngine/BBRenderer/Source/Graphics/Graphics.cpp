@@ -159,12 +159,12 @@ void Graphics::DrawTestTriangle(float a_Angle, float x, float y, Vertex* ver, un
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
 	desc.ByteWidth = 11112;
-	desc.StructureByteStride = sizeof(Vertex);
+	desc.StructureByteStride = sizeof(BBE::Vertex);
 	D3D11_SUBRESOURCE_DATA source = {};
 	source.pSysMem = ver;
 	GFX_THROW_FAILED(m_Device->CreateBuffer(&desc, &source, &vertex_buffer));
 
-	const UINT stride = sizeof(Vertex);
+	const UINT stride = sizeof(BBE::Vertex);
 	const UINT offset = 0;
 	m_Context->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
 
