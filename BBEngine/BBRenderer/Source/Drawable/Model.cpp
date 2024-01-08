@@ -1,9 +1,11 @@
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* indices, uint32_t indicesAmount, Vector3 a_Translation)
+//Note(Stan):	Should probably change this later to
+//				to use the full GLTF file.
+Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 {
-	vBuffer = new VertexBuffer(a_Gfx, ver, vertAmount);
+	vBuffer = new VertexBuffer(a_Gfx, a_ModelFile.mesh.vertices, a_ModelFile.mesh.vertAmount);
 	AddBind(vBuffer);
 
 	vShader = new VertexShader(a_Gfx, L"Assets/VertexShader.hlsl");
@@ -12,7 +14,7 @@ Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* 
 	pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
 	AddBind(pShader);
 
-	IBuffer = new IndexBuffer(a_Gfx, indices, indicesAmount);
+	IBuffer = new IndexBuffer(a_Gfx, a_ModelFile.mesh.indices, a_ModelFile.mesh.indicesAmount);
 	AddIndexBuffer(IBuffer);
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
@@ -30,7 +32,7 @@ Model::Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* 
 	AddBind(m_TransformBuf);
 
 	//Testing
-	m_Translation = a_Translation;
+	m_Translation = a_ModelFile.translation;
 }
 
 void Model::Update(float a_DeltaTime) noexcept

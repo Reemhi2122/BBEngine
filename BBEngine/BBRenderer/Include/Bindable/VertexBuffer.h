@@ -5,7 +5,7 @@
 
 class VertexBuffer : public Bindable {
 public:
-	VertexBuffer(Graphics& a_Gfx, Vertex* a_Vertices, const uint32_t a_Count);
+	VertexBuffer(Graphics& a_Gfx, BBE::Vertex* a_Vertices, const uint32_t a_Count);
 	void Bind(Graphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 

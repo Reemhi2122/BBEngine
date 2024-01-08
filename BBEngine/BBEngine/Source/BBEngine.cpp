@@ -76,15 +76,9 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
 
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->nodes[0].mesh.vertices), file->nodes[0].mesh.vertAmount, file->nodes[0].mesh.indices, file->nodes[0].mesh.indicesAmount, file->nodes[0].translation));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->nodes[1].mesh.vertices), file->nodes[1].mesh.vertAmount, file->nodes[1].mesh.indices, file->nodes[1].mesh.indicesAmount, file->nodes[1].translation));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), reinterpret_cast<Vertex*>(file->nodes[2].mesh.vertices), file->nodes[2].mesh.vertAmount, file->nodes[2].mesh.indices, file->nodes[2].mesh.indicesAmount, file->nodes[2].translation));
-
-        //for (size_t i = 0; i < 80; i++)
-        //{
-        //    m_Boxes.push_back(BBNew(m_StackAllocator, Box)(m_Window.GetGraphics(), rng, adist, ddist, odist, rdist));
-        //}
-
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[0]));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[1]));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[2]));
     }
 
     bool show_demo_window = true;
@@ -93,19 +87,23 @@ namespace BBE
         float time = m_Timer.Stamp();
         m_Window.GetGraphics().ClearBuffer(0.07f, 0.0f, 0.012f);
 
-        //for (size_t i = 0; i < m_Boxes.size(); i++) {
-        //    m_Boxes[i]->Update(time);
-        //    m_Boxes[i]->Draw(m_Window.GetGraphics());
-        //}
-
         for (size_t i = 0; i < m_Model.size(); i++) {
             m_Model[i]->Update(time);
             m_Model[i]->Draw(m_Window.GetGraphics());
         }
-
 
         ImGui::ShowDemoWindow(&show_demo_window);
 
         m_Window.GetGraphics().EndFrame();
     }
 }
+
+//for (size_t i = 0; i < 80; i++)
+//{
+//    m_Boxes.push_back(BBNew(m_StackAllocator, Box)(m_Window.GetGraphics(), rng, adist, ddist, odist, rdist));
+//}
+
+//for (size_t i = 0; i < m_Boxes.size(); i++) {
+//    m_Boxes[i]->Update(time);
+//    m_Boxes[i]->Draw(m_Window.GetGraphics());
+//}

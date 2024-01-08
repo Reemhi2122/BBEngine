@@ -1,3 +1,4 @@
+#include "DataTypes/SharedRenderTypes.h"
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"
 #include "Vector3.h"
@@ -18,7 +19,7 @@ class Model : public Drawable
 {
 public:
 	Model() = default;
-	Model(Graphics& a_Gfx, Vertex* ver, uint32_t vertAmount, unsigned short* indices, uint32_t indicesAmount, Vector3 a_Translation);
+	Model(Graphics& a_Gfx, BBE::Node a_ModelFile);
 	
 	void Update(float a_DeltaTime) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
