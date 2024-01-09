@@ -22,10 +22,17 @@ namespace BBE {
 	//				be part of the normal engine as well..
 	struct Mesh {
 		const char* name;
-		Vertex* vertices;
+		
 		uint32_t vertAmount;
-		unsigned short* indices;
+
+		//Note(Stan):	
+		Vector3* vertices;
+		Vector3* texCoords;
+		Vector3* normals;
+		//Vertex* vertices;
+
 		uint32_t indicesAmount;
+		unsigned short* indices;
 	};
 
 	struct Node
