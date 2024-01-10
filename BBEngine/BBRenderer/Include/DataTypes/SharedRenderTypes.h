@@ -26,10 +26,10 @@ namespace BBE {
 		uint32_t vertAmount;
 
 		//Note(Stan):	
-		Vector3* vertices;
-		Vector3* texCoords;
-		Vector3* normals;
-		//Vertex* vertices;
+		//Vector3* vertices;
+		//Vector3* texCoords;
+		//Vector3* normals;
+		Vertex* vertices;
 
 		uint32_t indicesAmount;
 		unsigned short* indices;
