@@ -5,6 +5,15 @@
 //				to use the full GLTF file.
 Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 {
+	Vertex* vertices = reinterpret_cast<Vertex*>(malloc(a_ModelFile.mesh.vertAmount * sizeof(Vertex)));
+
+	for (size_t i = 0; i < a_ModelFile.mesh.vertAmount; i++)
+	{
+		vertices[i].pos	=		a_ModelFile.mesh.vertices[i];
+		vertices[i].texCoords = {0, 0};
+		vertices[i].normals =	{0, 0, 0};
+	}
+
 	vBuffer = new VertexBuffer(a_Gfx, a_ModelFile.mesh.vertices, a_ModelFile.mesh.vertAmount);
 	AddBind(vBuffer);
 

@@ -66,7 +66,6 @@ namespace BBE {
 				if (primitiveObj.find("attributes") != primitiveObj.end())
 				{
 					//Note(Stan): Don't assume these are here..
-
 					JSONObject& attributeObject = primitiveObj["attributes"]->GetObjectBB();
 
 					accessorIndex = static_cast<int>(attributeObject["POSITION"]->GetFloatBB());
@@ -77,21 +76,17 @@ namespace BBE {
 					byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 
 					gltfFile->nodes[i].mesh.vertAmount = bufferCount;
-					unsigned char* tempData = reinterpret_cast<unsigned char*>(malloc(byteLength));
-					BBSystem::ReadFileAtBB(m_BinFile, tempData, byteLength, byteOffset);
+					gltfFile->nodes[i].mesh.vertices = reinterpret_cast<Vector3*>(malloc(bufferCount * sizeof(Vector3)));
+					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.vertices), byteLength, byteOffset);
 
-					for (size_t i = 0; i < bufferCount; i++) {
+					//accessorIndex = static_cast<int>(attributeObject["TEXCOORDS_0"]->GetFloatBB());
+					//bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+					//bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
 
-					}
+					//byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+					//byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 
-					accessorIndex = static_cast<int>(attributeObject["TEXCOORDS_0"]->GetFloatBB());
-					bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
-					bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
-
-					byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
-					byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
-
-					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.texCoords), byteLength, byteOffset);
+					//BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.texCoords), byteLength, byteOffset);
 				}
 
 				//Indices
