@@ -10,7 +10,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 	for (size_t i = 0; i < a_ModelFile.mesh.vertAmount; i++)
 	{
 		vertices[i].pos	=		a_ModelFile.mesh.vertices[i];
-		vertices[i].texCoords = {0, 0};
+		vertices[i].texCoords = a_ModelFile.mesh.texCoords[i];
 		vertices[i].normals =	{0, 0, 0};
 	}
 

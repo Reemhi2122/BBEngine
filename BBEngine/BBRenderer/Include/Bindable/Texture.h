@@ -3,7 +3,8 @@
 class Texture : public Bindable
 {
 public:
-	Texture();
+	Texture(Graphics& a_Gfx);
+
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> CubesTexture;

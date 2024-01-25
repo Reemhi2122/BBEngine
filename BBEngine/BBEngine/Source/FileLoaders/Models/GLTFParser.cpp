@@ -79,14 +79,19 @@ namespace BBE {
 					gltfFile->nodes[i].mesh.vertices = reinterpret_cast<Vector3*>(malloc(bufferCount * sizeof(Vector3)));
 					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.vertices), byteLength, byteOffset);
 
-					//accessorIndex = static_cast<int>(attributeObject["TEXCOORDS_0"]->GetFloatBB());
-					//bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
-					//bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
+					accessorIndex = static_cast<int>(attributeObject["TEXCOORD_0"]->GetFloatBB());
+					bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+					bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
 
-					//byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
-					//byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+					byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+					
+					if (bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"])
+					{
+						byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+					}
 
-					//BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.texCoords), byteLength, byteOffset);
+					gltfFile->nodes[i].mesh.texCoords = reinterpret_cast<UV*>(malloc(bufferCount * sizeof(UV)));
+					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.texCoords), byteLength, byteOffset);
 				}
 
 				//Indices

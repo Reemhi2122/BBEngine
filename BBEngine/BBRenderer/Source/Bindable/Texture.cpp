@@ -1,7 +1,6 @@
 #include "Bindable/Texture.h"
 
-Texture::Texture()
+Texture::Texture(Graphics& a_Gfx)
 {
 	
-
 }
