@@ -5,7 +5,7 @@
 //				to use the full GLTF file.
 Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 {
-	Vertex* vertices = reinterpret_cast<Vertex*>(malloc(a_ModelFile.mesh.vertAmount * sizeof(Vertex)));
+	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.mesh.vertAmount * sizeof(BBE::Vertex)));
 
 	for (size_t i = 0; i < a_ModelFile.mesh.vertAmount; i++)
 	{
@@ -14,7 +14,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 		vertices[i].normals =	{0, 0, 0};
 	}
 
-	vBuffer = new VertexBuffer(a_Gfx, a_ModelFile.mesh.vertices, a_ModelFile.mesh.vertAmount);
+	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.mesh.vertAmount);
 	AddBind(vBuffer);
 
 	vShader = new VertexShader(a_Gfx, L"Assets/VertexShader.hlsl");
