@@ -7,6 +7,9 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 {
 	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.mesh.vertAmount * sizeof(BBE::Vertex)));
 
+	if (vertices == nullptr)
+		return;
+
 	for (size_t i = 0; i < a_ModelFile.mesh.vertAmount; i++)
 	{
 		vertices[i].pos	=		a_ModelFile.mesh.vertices[i];
@@ -39,6 +42,8 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);
+
+	m_Texture = new Texture(a_Gfx);
 
 	//Testing
 	m_Translation = a_ModelFile.translation;

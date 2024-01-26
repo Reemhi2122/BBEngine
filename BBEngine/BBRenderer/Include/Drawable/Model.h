@@ -40,6 +40,7 @@ private:
 	Topology* m_Topology;
 	TransformBuf* m_TransformBuf;
 	PixelConstantBuffer<ConstantBufferColorModel>* cCB;
+	Texture* m_Texture;
 
 	float m_Angle;
 	Vector3 m_Translation;

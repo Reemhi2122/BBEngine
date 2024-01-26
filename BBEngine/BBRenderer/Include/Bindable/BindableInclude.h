@@ -7,3 +7,4 @@
 #include "Bindable/VertexShader.h"
 #include "Bindable/Topology.h"
 #include "Bindable/InputLayout.h"
+#include "Bindable/Texture.h"
