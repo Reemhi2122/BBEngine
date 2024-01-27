@@ -13,7 +13,7 @@ namespace BBE {
 	{
 		Vector3 pos;
 		UV		texCoords;
-		Vector3 normals;
+		//Vector3 normals;
 	};
 
 	//Note(Stan):	Doubting if these are even supposed to be

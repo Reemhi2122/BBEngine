@@ -14,7 +14,6 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 	{
 		vertices[i].pos	=		a_ModelFile.mesh.vertices[i];
 		vertices[i].texCoords = a_ModelFile.mesh.texCoords[i];
-		vertices[i].normals =	{0, 0, 0};
 	}
 
 	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.mesh.vertAmount);
@@ -31,7 +30,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());

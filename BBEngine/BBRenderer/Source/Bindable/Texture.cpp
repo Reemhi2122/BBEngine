@@ -17,7 +17,11 @@ Texture::Texture(Graphics& a_Gfx)
 	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	desc.MiscFlags = 0;
 
-	a_Gfx.GetDevice()->CreateTexture2D(&desc, NULL, m_Texture.GetAddressOf());
+	D3D11_SUBRESOURCE_DATA image_subresource_data = {};
+	image_subresource_data.pSysMem = img;
+	image_subresource_data.SysMemPitch = sizeX * 4;
+
+	a_Gfx.GetDevice()->CreateTexture2D(&desc, &image_subresource_data, m_Texture.GetAddressOf());
 
 	a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture.Get(), nullptr, m_ShaderResourceView.GetAddressOf());
 
