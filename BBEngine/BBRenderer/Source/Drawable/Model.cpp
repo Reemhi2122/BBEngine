@@ -44,6 +44,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 	AddBind(m_TransformBuf);
 
 	m_Texture = new Texture(a_Gfx);
+	AddBind(m_Texture);
 
 	//Testing
 	m_Translation = a_ModelFile.translation;

@@ -19,9 +19,29 @@ Texture::Texture(Graphics& a_Gfx)
 
 	a_Gfx.GetDevice()->CreateTexture2D(&desc, NULL, m_Texture.GetAddressOf());
 
+	a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture.Get(), nullptr, m_ShaderResourceView.GetAddressOf());
+
+	D3D11_SAMPLER_DESC image_sampler_desc;
+	image_sampler_desc.Filter = D3D11_FILTER_MIN_LINEAR_MAG_MIP_POINT;
+	image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	image_sampler_desc.MipLODBias = 0.0f;
+	image_sampler_desc.MaxAnisotropy = 1;
+	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	image_sampler_desc.BorderColor[0] = 1.0f;
+	image_sampler_desc.BorderColor[1] = 1.0f;
+	image_sampler_desc.BorderColor[2] = 1.0f;
+	image_sampler_desc.BorderColor[3] = 1.0f;
+	image_sampler_desc.MinLOD = -FLT_MAX;
+	image_sampler_desc.MaxLOD = FLT_MAX;
+
+	a_Gfx.GetDevice()->CreateSamplerState(&image_sampler_desc, m_SamplerState.GetAddressOf());
+
 }
 
 void Texture::Bind(Graphics& a_Gfx) noexcept
 {
-	return;
+	a_Gfx.GetContext()->PSSetShaderResources(0, 1, m_ShaderResourceView.GetAddressOf());
+	a_Gfx.GetContext()->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
 }
