@@ -89,6 +89,9 @@ namespace BBE {
 					{
 						byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 					}
+					else {
+						byteOffset = 0;
+					}
 
 					gltfFile->nodes[i].mesh.texCoords = reinterpret_cast<UV*>(malloc(bufferCount * sizeof(UV)));
 					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.texCoords), byteLength, byteOffset);
