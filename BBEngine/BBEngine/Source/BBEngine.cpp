@@ -75,7 +75,7 @@ namespace BBE
         std::uniform_real_distribution<float> odist(0.0f, 3.1415926f * 0.3f);
         std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
 
-        m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 40.0f));
+        m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
         m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[0]));
         m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[1]));
@@ -87,6 +87,30 @@ namespace BBE
     {
         float time = m_Timer.Stamp();
         m_Window.GetGraphics().ClearBuffer(0.07f, 0.0f, 0.012f);
+
+        if (m_Window.m_Keyboard.KeyIsPressed('W')) {
+            m_Window.GetGraphics().SetProjection(
+                m_Window.GetGraphics().GetProjection() * DirectX::XMMatrixTranslation(0, 0, 0.01)
+            );
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed('S')) {
+            m_Window.GetGraphics().SetProjection(
+                m_Window.GetGraphics().GetProjection() * DirectX::XMMatrixTranslation(0, 0, -0.01)
+            );
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed('A')) {
+            m_Window.GetGraphics().SetProjection(
+                m_Window.GetGraphics().GetProjection() * DirectX::XMMatrixTranslation(-0.01, 0, 0)
+            );
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed('D')) {
+            m_Window.GetGraphics().SetProjection(
+                m_Window.GetGraphics().GetProjection() * DirectX::XMMatrixTranslation(0.01, 0, 0)
+            );
+        }
 
         for (size_t i = 0; i < m_Model.size(); i++) {
             m_Model[i]->Update(time);
