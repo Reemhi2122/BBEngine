@@ -41,6 +41,7 @@ private:
 	TransformBuf* m_TransformBuf;
 	PixelConstantBuffer<ConstantBufferColorModel>* cCB;
 	Texture* m_Texture;
+	Sampler* m_Sampler;
 
 	float m_Angle;
 	Vector3 m_Translation;

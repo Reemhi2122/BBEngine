@@ -35,18 +35,9 @@ Texture::Texture(Graphics& a_Gfx)
 	image_rsv_desc.Texture2D.MipLevels = 1;
 
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture.Get(), &image_rsv_desc, &m_ShaderResourceView);
-
-	D3D11_SAMPLER_DESC image_sampler_desc = {};
-	image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-	image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-	image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-	res = a_Gfx.GetDevice()->CreateSamplerState(&image_sampler_desc, &m_SamplerState);
 }
 
 void Texture::Bind(Graphics& a_Gfx) noexcept
 {
 	a_Gfx.GetContext()->PSSetShaderResources(0, 1, m_ShaderResourceView.GetAddressOf());
-	a_Gfx.GetContext()->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
 }
