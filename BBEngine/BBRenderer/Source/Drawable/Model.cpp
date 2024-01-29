@@ -5,12 +5,12 @@
 //				to use the full GLTF file.
 Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 {
-	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.mesh.vertAmount * sizeof(BBE::Vertex)));
+	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.mesh.counts.vertexCount * sizeof(BBE::Vertex)));
 
 	if (vertices == nullptr)
 		return;
 
-	for (size_t i = 0; i < a_ModelFile.mesh.vertAmount; i++)
+	for (size_t i = 0; i < a_ModelFile.mesh.counts.vertexCount; i++)
 	{
 		vertices[i].pos	=		a_ModelFile.mesh.attributes.vertices[i];
 		vertices[i].texCoords = a_ModelFile.mesh.attributes.texCoords[i];
@@ -19,7 +19,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 	m_Texture = new Texture(a_Gfx, ".\\Assets\\Models\\Lantern\\glTF\\Lantern_baseColor.png");
 	AddBind(m_Texture);
 
-	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.mesh.vertAmount);
+	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.mesh.counts.vertexCount);
 	AddBind(vBuffer);
 
 	m_Sampler = new Sampler(a_Gfx);

@@ -21,24 +21,31 @@ namespace BBE {
 	//				be part of the normal engine as well..
 	struct Mesh {
 		const char*		name;
-		uint32_t		vertAmount;
 		
 		union
 		{
 			void* data[4];
 			struct
 			{
-				Vector3* vertices;
-				UV* texCoords;
-				Vector3* normals;
-				Vector3* tangents; //vector4
+				Vector3*	vertices;
+				UV*			texCoords;
+				Vector3*	normals;
+				Vector3*	tangents; //vector4
 			};
 		} attributes;
 
-		//Vector3*		vertices;
-		//UV*				texCoords;
-		//Vector3*		normals;
-		
+		union
+		{
+			uint32_t data[4];
+			struct
+			{
+				uint32_t	vertexCount;
+				uint32_t	texCoordCount;
+				uint32_t	normalCount;
+				uint32_t	tangentCount;
+			};
+		} counts;
+
 		uint32_t		indicesAmount;
 		unsigned short* indices;
 	};

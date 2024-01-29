@@ -1,6 +1,7 @@
 #include "System/FileHandler.h"
 #include "Vector3.h"
 #include "DataTypes/SharedRenderTypes.h"
+#include "FileLoaders/Data/JsonParser.h"
 
 namespace BBE {
 
@@ -11,7 +12,8 @@ namespace BBE {
 		~GLTFParser();
 
 		GLTFFile* Parse(char* m_GLTFPath, char* a_GLTFName);
-	
+		uint32_t ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, JSONList& a_AccessorList, JSONList& a_BufferViews, const char* a_Attribute);
+
 	private:
 		BBSystem::BBFILE m_BinFile;
 	};
