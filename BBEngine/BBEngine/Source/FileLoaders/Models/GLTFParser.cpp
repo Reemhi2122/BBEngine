@@ -11,7 +11,6 @@ namespace BBE {
 
 	GLTFParser::~GLTFParser() {}
 
-
 	//TODO(Stan):	Convert this function to using custom allocation
 	//				and look into best way of giving the file
 	GLTFFile* GLTFParser::Parse(char* a_GLTFPath, char* a_GLTFName) {
@@ -57,6 +56,11 @@ namespace BBE {
 				JSONList& accessorsList = parser.GetRootNode()["accessors"]->GetListBB();
 				JSONList& bufferViews = parser.GetRootNode()["bufferViews"]->GetListBB();
 
+				gltfFile->nodes[i].mesh.vertAmount = 0;
+
+				constexpr int NumOfAttibutes = 4;
+				const char* attributes[NumOfAttibutes] = {{"POSITION"}, {"TEXCOORD_0"}, {"TANGENT"}, {"POSITION"}};
+
 				uint32_t accessorIndex;
 				uint32_t bufferViewIndex;
 				uint32_t bufferCount;
@@ -68,33 +72,57 @@ namespace BBE {
 					//Note(Stan): Don't assume these are here..
 					JSONObject& attributeObject = primitiveObj["attributes"]->GetObjectBB();
 
-					accessorIndex = static_cast<int>(attributeObject["POSITION"]->GetFloatBB());
-					bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
-					bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
-
-					byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
-					byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
-
-					gltfFile->nodes[i].mesh.vertAmount = bufferCount;
-					gltfFile->nodes[i].mesh.vertices = reinterpret_cast<Vector3*>(malloc(bufferCount * sizeof(Vector3)));
-					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.vertices), byteLength, byteOffset);
-
-					accessorIndex = static_cast<int>(attributeObject["TEXCOORD_0"]->GetFloatBB());
-					bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
-					bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
-
-					byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
-					
-					if (bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"])
+					for (size_t curAttibute = 0; curAttibute < NumOfAttibutes; curAttibute++)
 					{
-						byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
-					}
-					else {
+						accessorIndex = 0;
+						bufferViewIndex = 0;
+						bufferCount = 0;
+						byteLength = 0;
 						byteOffset = 0;
+
+						if (attributeObject[attributes[curAttibute]])
+						{
+							accessorIndex = static_cast<int>(attributeObject[attributes[curAttibute]]->GetFloatBB());
+							bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+							bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
+
+							byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+
+							if (bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"])
+							{
+								byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+							}
+
+							if (gltfFile->nodes[i].mesh.vertAmount == 0)
+							{
+								gltfFile->nodes[i].mesh.vertAmount = bufferCount;
+							}
+
+							gltfFile->nodes[i].mesh.attributes.data[curAttibute] = malloc(bufferCount * (byteLength / bufferCount));
+							BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.attributes.data[curAttibute]), byteLength, byteOffset);
+						}
 					}
 
-					gltfFile->nodes[i].mesh.texCoords = reinterpret_cast<UV*>(malloc(bufferCount * sizeof(UV)));
-					BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.texCoords), byteLength, byteOffset);
+					/*if (attributeObject["TEXCOORD_0"])
+					{
+						accessorIndex = static_cast<int>(attributeObject["TEXCOORD_0"]->GetFloatBB());
+						bufferViewIndex = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+						bufferCount = static_cast<int>(accessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
+
+						byteLength = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+
+						if (bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"])
+						{
+							byteOffset = static_cast<int>(bufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+						}
+						else
+						{
+							byteOffset = 0;
+						}
+					}*/
+
+					//gltfFile->nodes[i].mesh.texCoords = reinterpret_cast<UV*>(malloc(bufferCount * sizeof(UV)));
+					//BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(gltfFile->nodes[i].mesh.texCoords), byteLength, byteOffset);
 				}
 
 				//Indices

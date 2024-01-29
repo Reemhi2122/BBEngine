@@ -22,10 +22,22 @@ namespace BBE {
 	struct Mesh {
 		const char*		name;
 		uint32_t		vertAmount;
+		
+		union
+		{
+			void* data[4];
+			struct
+			{
+				Vector3* vertices;
+				UV* texCoords;
+				Vector3* normals;
+				Vector3* tangents; //vector4
+			};
+		} attributes;
 
-		Vector3*		vertices;
-		UV*				texCoords;
-		Vector3*		normals;
+		//Vector3*		vertices;
+		//UV*				texCoords;
+		//Vector3*		normals;
 		
 		uint32_t		indicesAmount;
 		unsigned short* indices;
