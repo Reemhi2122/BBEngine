@@ -2,10 +2,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Texture::Texture(Graphics& a_Gfx)
+Texture::Texture(Graphics& a_Gfx, const char* a_Path)
 {
 	int sizeX, sizeY, Channels;
-	unsigned char* img = stbi_load(".\\Assets\\Models\\Lantern\\glTF\\Lantern_baseColor.png", &sizeX, &sizeY, &Channels, 0);
+	unsigned char* img = stbi_load(a_Path, &sizeX, &sizeY, &Channels, 0);
 
 	HRESULT res;
 

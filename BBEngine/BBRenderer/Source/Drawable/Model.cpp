@@ -16,7 +16,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 		vertices[i].texCoords = a_ModelFile.mesh.texCoords[i];
 	}
 
-	m_Texture = new Texture(a_Gfx);
+	m_Texture = new Texture(a_Gfx, ".\\Assets\\Models\\Lantern\\glTF\\Lantern_baseColor.png");
 	AddBind(m_Texture);
 
 	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.mesh.vertAmount);

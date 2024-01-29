@@ -3,7 +3,7 @@
 class Texture : public Bindable
 {
 public:
-	Texture(Graphics& a_Gfx);
+	Texture(Graphics& a_Gfx, const char* a_Path);
 	void Bind(Graphics& a_Gfx) noexcept;
 
 private:
