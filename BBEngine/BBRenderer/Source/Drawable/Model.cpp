@@ -36,7 +36,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());
@@ -48,7 +48,6 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);
 
-	//Testing
 	m_Translation = a_ModelFile.translation;
 }
 
