@@ -20,7 +20,9 @@ add_library (Renderer STATIC
 "Source/Drawable/Box.cpp"
 "Source/Drawable/Model.cpp"
 "Source/Bindable/Texture.cpp"
-"Source/Bindable/Sampler.cpp")
+"Source/Bindable/Sampler.cpp"
+
+"Source/Camera.cpp")
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")
 

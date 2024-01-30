@@ -29,6 +29,7 @@ namespace BBE {
 		std::vector<Box*> m_Boxes;
 		std::vector<Model*> m_Model;
 
+
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;
 		class ThreadPool* m_ThreadPool;

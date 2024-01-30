@@ -8,6 +8,7 @@
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+#include "Camera.h"
 
 class Graphics {
 public:
@@ -26,9 +27,11 @@ public:
 
 	void SetProjection(DirectX::XMMATRIX a_Projections);
 	DirectX::XMMATRIX GetProjection() const noexcept;
+	Camera* GetCamera();
 
 private:
 	DirectX::XMMATRIX m_Projection;
+	Camera m_Camera;
 
 	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
 	Microsoft::WRL::ComPtr <IDXGISwapChain>			m_SwapChain;
@@ -43,4 +46,9 @@ inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {
 
 inline ID3D11Device* Graphics::GetDevice() const noexcept {
 	return m_Device.Get();
+}
+
+inline Camera* Graphics::GetCamera()
+{
+	return &m_Camera;
 }
