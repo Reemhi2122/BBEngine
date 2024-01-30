@@ -108,6 +108,16 @@ namespace BBE
             cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->right, 0.5f));
         }
 
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
+        {
+            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->up, -0.5f));
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_UP))
+        {
+            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->up, 0.5f));
+        }
+
         for (size_t i = 0; i < m_Model.size(); i++) {
             m_Model[i]->Update(time);
             m_Model[i]->Draw(m_Window.GetGraphics());
