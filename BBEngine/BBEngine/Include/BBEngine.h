@@ -20,6 +20,7 @@ namespace BBE {
 
 	private:
 		void Update();
+		void CheckInput();
 
 	private:
 		BBWindow m_Window;

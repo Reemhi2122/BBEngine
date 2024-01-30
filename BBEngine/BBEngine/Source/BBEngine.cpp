@@ -89,45 +89,53 @@ namespace BBE
     {
         float time = m_Timer.Stamp();
         m_Window.GetGraphics().ClearBuffer(0.07f, 0.0f, 0.012f);
+        CheckInput();
 
+        for (size_t i = 0; i < m_Model.size(); i++)
+        {
+            m_Model[i]->Update(time);
+            m_Model[i]->Draw(m_Window.GetGraphics());
+        }
+        
+        ImGui::ShowDemoWindow(&show_demo_window);
+        m_Window.GetGraphics().EndFrame();
+    }
+
+    void BBEngine::CheckInput()
+    {
         Camera* cam = m_Window.GetGraphics().GetCamera();
 
-        if (m_Window.m_Keyboard.KeyIsPressed('W')) {
-            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->forward, 0.5f));
+        if (m_Window.m_Keyboard.KeyIsPressed('W'))
+        {
+            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, 0.5f)));
         }
 
-        if (m_Window.m_Keyboard.KeyIsPressed('S')) {
-            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->forward, -0.5f));
+        if (m_Window.m_Keyboard.KeyIsPressed('S'))
+        {
+            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, -0.5f)));
         }
 
-        if (m_Window.m_Keyboard.KeyIsPressed('A')) {
-            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->right, -0.5f));
+        if (m_Window.m_Keyboard.KeyIsPressed('A'))
+        {
+            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, -0.5f)));
         }
 
-        if (m_Window.m_Keyboard.KeyIsPressed('D')) {
-            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->right, 0.5f));
+        if (m_Window.m_Keyboard.KeyIsPressed('D'))
+        {
+            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, 0.5f)));
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
         {
-            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->up, -0.5f));
+            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, -0.5f)));
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed(VK_UP))
         {
-            cam->position = DirectX::XMVectorAdd(cam->position, DirectX::XMVectorScale(cam->up, 0.5f));
+            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, 0.5f)));
         }
 
-        for (size_t i = 0; i < m_Model.size(); i++) {
-            m_Model[i]->Update(time);
-            m_Model[i]->Draw(m_Window.GetGraphics());
-        }
-
-        cam->SetPos(DirectX::XMMatrixLookToLH(cam->position, cam->forward, cam->up) * m_Window.GetGraphics().GetProjection());
-
-        ImGui::ShowDemoWindow(&show_demo_window);
-
-        m_Window.GetGraphics().EndFrame();
+        cam->SetViewMatrix(DirectX::XMMatrixLookToLH(cam->GetPosition(), cam->forward, cam->up) * m_Window.GetGraphics().GetProjection());
     }
 }
 
