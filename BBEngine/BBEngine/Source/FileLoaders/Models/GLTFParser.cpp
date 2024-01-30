@@ -49,6 +49,7 @@ namespace BBE {
 
 			JSONList& accessorsList = parser.GetRootNode()["accessors"]->GetListBB();
 			JSONList& bufferViews = parser.GetRootNode()["bufferViews"]->GetListBB();
+			JSONList& materials = parser.GetRootNode()["materials"]->GetListBB();
 
 			//Go over all primitives
 			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
@@ -59,7 +60,7 @@ namespace BBE {
 				constexpr int NumOfAttibutes = 4;
 				const char* attributes[NumOfAttibutes] = {{"POSITION"}, {"TEXCOORD_0"}, {"TANGENT"}, {"POSITION"}};
 
-				if (primitiveObj.find("attributes") != primitiveObj.end())
+				if (primitiveObj["attributes"])
 				{
 					//Note(Stan): Don't assume these are here..
 					JSONObject& attributeObject = primitiveObj["attributes"]->GetObjectBB();
@@ -70,6 +71,12 @@ namespace BBE {
 					}
 				}
 
+				if (primitiveObj["material"])
+				{
+					uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
+					materials[materialIndex] 
+				}
+
 				gltfFile->nodes[i].mesh.indicesAmount = ParseAttribute(reinterpret_cast<void**>(&gltfFile->nodes[i].mesh.indices), primitiveObj, accessorsList, bufferViews, "indices");
 			}
 
@@ -77,6 +84,8 @@ namespace BBE {
 		return gltfFile;
 	}
 
+	//TODO(Stan):	Currently, I am passing a lot of values as reference that could be
+	//				defined somewhere more global
 	uint32_t GLTFParser::ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, JSONList& a_AccessorList, JSONList& a_BufferViews, const char* a_Attribute)
 	{
 		uint32_t accessorIndex = 0;
