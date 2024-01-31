@@ -15,19 +15,21 @@ public:
 	void Update();
 
 public:
-	float camRoll = 0.0f;
+	float camYaw = 0.0f;
 	float camPitch = 0.0f;
 
 	float camForwardMove = 0.0f;
 	float camRightMove = 0.0f;
 
 private:
+	DirectX::XMVECTOR DefaultRight =	DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	DirectX::XMVECTOR DefaultForward =	DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
+
 	DirectX::XMVECTOR m_Right =		DirectX::XMVectorSet(1.f, 0.f, 0.f, 0.f);
 	DirectX::XMVECTOR m_Up =		DirectX::XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	DirectX::XMVECTOR m_Forward =	DirectX::XMVectorSet(0.f, 0.f, 1.f, 0.f);
 
 	DirectX::XMVECTOR m_Position =	DirectX::XMVectorSet(0.f, 0.f, -10.f, 0.f);
-
 	DirectX::XMMATRIX m_ViewMatrix = DirectX::XMMatrixIdentity();
 };
 

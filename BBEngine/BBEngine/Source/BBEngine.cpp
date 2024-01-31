@@ -146,25 +146,25 @@ namespace BBE
         if (m_Window.m_Keyboard.KeyIsPressed(VK_LEFT))
         {
             //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0, -0.005f, 0.0f)));
-            cam->camPitch += -0.005;
+            cam->camYaw += -0.005;
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed(VK_RIGHT))
         {
             //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0, 0.005f, 0.0f)));
-            cam->camPitch += 0.005;
+            cam->camYaw += 0.005;
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed(VK_UP))
         {
             //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(-0.005f, 0.f, 0.0f)));
-            cam->camRoll += -0.005;
+            cam->camPitch += -0.005;
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
         {
             //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0.005f, 0.f, 0.0f)));
-            cam->camRoll += 0.005;
+            cam->camPitch += 0.005;
         }
 
         cam->Update();
