@@ -14,7 +14,6 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
-#include <DirectXMath.h>
 #include "Camera.h"
 
 namespace BBE
@@ -112,34 +111,62 @@ namespace BBE
 
         if (m_Window.m_Keyboard.KeyIsPressed('W'))
         {
-            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, 0.5f)));
+            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, 0.5f)));
+            cam->camForwardMove += 0.5f;
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed('S'))
         {
-            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, -0.5f)));
+            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, -0.5f)));
+            cam->camForwardMove += -0.5f;
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed('A'))
         {
-            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, -0.5f)));
+            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, -0.5f)));
+            cam->camRightMove += -0.5f;
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed('D'))
         {
-            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, 0.5f)));
+            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, 0.5f)));
+            cam->camRightMove += 0.5f;
         }
 
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_SUBTRACT))
         {
-            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, -0.5f)));
+            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, -0.5f)));
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_ADD))
+        {
+            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, 0.5f)));
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_LEFT))
+        {
+            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0, -0.005f, 0.0f)));
+            cam->camPitch += -0.005;
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_RIGHT))
+        {
+            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0, 0.005f, 0.0f)));
+            cam->camPitch += 0.005;
         }
 
         if (m_Window.m_Keyboard.KeyIsPressed(VK_UP))
         {
-            cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, 0.5f)));
+            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(-0.005f, 0.f, 0.0f)));
+            cam->camRoll += -0.005;
         }
 
-        cam->SetViewMatrix(DirectX::XMMatrixLookToLH(cam->GetPosition(), cam->forward, cam->up) * m_Window.GetGraphics().GetProjection());
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
+        {
+            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0.005f, 0.f, 0.0f)));
+            cam->camRoll += 0.005;
+        }
+
+        cam->Update();
     }
 }
