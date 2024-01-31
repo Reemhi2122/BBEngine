@@ -32,21 +32,27 @@ namespace BBE {
 		//Go through all nodes
 		BBE::JSONList& nodesList = parser.GetRootNode()["nodes"]->GetListBB();
 		gltfFile->nodes = reinterpret_cast<Node*>(malloc(nodesList.size() * sizeof(Node)));
-		//TODO(Stan):	Added -1 to this because there is a non node object
-		//				in the list. Look at this later.
-		for (size_t i = 0; i < nodesList.size() - 1; i++)
+
+		for (size_t i = 0; i < nodesList.size(); i++)
 		{
 			uint32_t curMeshIndex = nodesList[i]->GetObjectBB()["mesh"]->GetFloatBB();
 			BBE::JSONObject curMesh = parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
 
-			BBE::JSONList list = nodesList[i]->GetObjectBB()["translation"]->GetListBB();
-			gltfFile->nodes[i].translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
+			gltfFile->nodes[i].translation = Vector3(0,0,0);
+			if (nodesList[i]->GetObjectBB()["translation"]) {
+				BBE::JSONList list = nodesList[i]->GetObjectBB()["translation"]->GetListBB();
+				gltfFile->nodes[i].translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
+			}
 
 			//Assign mesh name
 			//Note(Stan):	This only works when doing it indirectly,
 			//				Look into a way of fixing this.
-			std::string test = curMesh["name"]->GetStringBB();
-			gltfFile->nodes[i].mesh.name = test.c_str();
+			gltfFile->nodes[i].mesh.name = "";
+
+			if (curMesh["name"]) {
+				std::string test = curMesh["name"]->GetStringBB();
+				gltfFile->nodes[i].mesh.name = test.c_str();
+			}
 
 			JSONList& accessorsList = parser.GetRootNode()["accessors"]->GetListBB();
 			JSONList& bufferViews = parser.GetRootNode()["bufferViews"]->GetListBB();
@@ -114,7 +120,7 @@ namespace BBE {
 				byteOffset = static_cast<int>(a_BufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 			}
 
-			*a_Data = malloc(bufferCount * (byteLength / bufferCount));
+			*a_Data = malloc(byteLength);
 			BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(*a_Data), byteLength, byteOffset);
 		}
 

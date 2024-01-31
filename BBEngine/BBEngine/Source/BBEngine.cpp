@@ -69,7 +69,8 @@ namespace BBE
     void BBEngine::TestCode()
     {
         GLTFParser parser;
-        file = parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf");
+        //file = parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf");
+        file = parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf");
 
         std::mt19937 rng(std::random_device{}());
         std::uniform_real_distribution<float> adist(0.0f, 3.1415926f * 2.0f);
@@ -80,8 +81,8 @@ namespace BBE
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
         m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[0], file));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[1], file));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[2], file));
+        //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[1], file));
+        //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[2], file));
     }
 
     bool show_demo_window = true;
