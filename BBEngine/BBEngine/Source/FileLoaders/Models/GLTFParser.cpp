@@ -69,7 +69,7 @@ namespace BBE {
 				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
 
 				constexpr int NumOfAttibutes = 4;
-				const char* attributes[NumOfAttibutes] = {{"POSITION"}, {"TEXCOORD_0"}, {"TANGENT"}, {"POSITION"}};
+				const char* attributes[NumOfAttibutes] = {{"POSITION"}, {"TEXCOORD_0"}, {"NORMAL"}, {"TANGENT"}};
 
 				if (primitiveObj["attributes"])
 				{
@@ -104,6 +104,9 @@ namespace BBE {
 	uint32_t GLTFParser::ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, JSONList& a_AccessorList, JSONList& a_BufferViews, const char* a_Attribute)
 	{
 		uint32_t accessorIndex = 0;
+		uint32_t accessorByteOffset = 0;
+
+
 		uint32_t bufferViewIndex = 0;
 		uint32_t bufferCount = 0;
 		uint32_t byteLength = 0;
@@ -113,6 +116,8 @@ namespace BBE {
 		{
 			accessorIndex = static_cast<int>(a_AttributeObject[a_Attribute]->GetFloatBB());
 			bufferViewIndex = static_cast<int>(a_AccessorList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+			accessorByteOffset = static_cast<int>(a_AccessorList[accessorIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+
 			bufferCount = static_cast<int>(a_AccessorList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
 
 			byteLength = static_cast<int>(a_BufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
@@ -123,7 +128,7 @@ namespace BBE {
 			}
 
 			*a_Data = malloc(byteLength);
-			BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(*a_Data), byteLength, byteOffset);
+			BBSystem::ReadFileAtBB(m_BinFile, reinterpret_cast<unsigned char*>(*a_Data), byteLength, byteOffset + accessorByteOffset);
 		}
 
 		return bufferCount;
