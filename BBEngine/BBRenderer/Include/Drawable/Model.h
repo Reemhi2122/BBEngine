@@ -19,7 +19,7 @@ class Model : public Drawable
 {
 public:
 	Model() = default;
-	Model(Graphics& a_Gfx, BBE::Node a_ModelFile, BBE::GLTFFile* a_File);
+	Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a_File);
 	
 	void Update(float a_DeltaTime) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;

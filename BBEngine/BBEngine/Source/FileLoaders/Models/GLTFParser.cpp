@@ -32,8 +32,8 @@ namespace BBE {
 		//Go through all nodes
 		BBE::JSONList& nodesList = parser.GetRootNode()["nodes"]->GetListBB();
 		gltfFile->nodes = reinterpret_cast<Node*>(malloc(nodesList.size() * sizeof(Node)));
-
-		for (size_t i = 0; i < nodesList.size(); i++)
+		gltfFile->nodeAmount = nodesList.size();
+		for (size_t i = 0; i < gltfFile->nodeAmount; i++)
 		{
 			uint32_t curMeshIndex = nodesList[i]->GetObjectBB()["mesh"]->GetFloatBB();
 			BBE::JSONObject curMesh = parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
@@ -62,7 +62,9 @@ namespace BBE {
 
 			//Go over all primitives
 			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
-			for (uint32_t primitiveIndex = 0; primitiveIndex < primitiveList.size(); primitiveIndex++)
+			gltfFile->nodes[i].mesh.primitiveCount = primitiveList.size();
+			gltfFile->nodes[i].mesh.primative = reinterpret_cast<Mesh::Primative*>(malloc(gltfFile->nodes[i].mesh.primitiveCount * sizeof(Mesh::Primative)));
+			for (uint32_t primitiveIndex = 0; primitiveIndex < gltfFile->nodes[i].mesh.primitiveCount; primitiveIndex++)
 			{
 				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
 
@@ -76,7 +78,7 @@ namespace BBE {
 
 					for (size_t curAttibute = 0; curAttibute < NumOfAttibutes; curAttibute++)
 					{
-						gltfFile->nodes[i].mesh.counts.data[curAttibute] = ParseAttribute(&gltfFile->nodes[i].mesh.attributes.data[curAttibute], attributeObject, accessorsList, bufferViews, attributes[curAttibute]);
+						gltfFile->nodes[i].mesh.primative[primitiveIndex].counts.data[curAttibute] = ParseAttribute(&gltfFile->nodes[i].mesh.primative[primitiveIndex].attributes.data[curAttibute], attributeObject, accessorsList, bufferViews, attributes[curAttibute]);
 					}
 				}
 
@@ -86,11 +88,11 @@ namespace BBE {
 					uint32_t baseColorIndex = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB()["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
 					std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
 					
-					gltfFile->nodes[i].mesh.baseTexturePath = (char*)malloc(str.size());
-					strcpy(gltfFile->nodes[i].mesh.baseTexturePath, str.c_str());
+					gltfFile->nodes[i].mesh.primative[primitiveIndex].baseTexturePath = (char*)malloc(str.size());
+					strcpy(gltfFile->nodes[i].mesh.primative[primitiveIndex].baseTexturePath, str.c_str());
 				}
 
-				gltfFile->nodes[i].mesh.indicesAmount = ParseAttribute(reinterpret_cast<void**>(&gltfFile->nodes[i].mesh.indices), primitiveObj, accessorsList, bufferViews, "indices");
+				gltfFile->nodes[i].mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&gltfFile->nodes[i].mesh.primative[primitiveIndex].indices), primitiveObj, accessorsList, bufferViews, "indices");
 			}
 
 		}

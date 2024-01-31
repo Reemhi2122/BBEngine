@@ -80,9 +80,13 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[0], file));
-        //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[1], file));
-        //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[2], file));
+        for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
+        {
+            for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
+            {
+                m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[nodeIndex].mesh.primative[primitiveIndex], file));
+            }
+        }
     }
 
     bool show_demo_window = true;
@@ -139,13 +143,3 @@ namespace BBE
         cam->SetViewMatrix(DirectX::XMMatrixLookToLH(cam->GetPosition(), cam->forward, cam->up) * m_Window.GetGraphics().GetProjection());
     }
 }
-
-//for (size_t i = 0; i < 80; i++)
-//{
-//    m_Boxes.push_back(BBNew(m_StackAllocator, Box)(m_Window.GetGraphics(), rng, adist, ddist, odist, rdist));
-//}
-
-//for (size_t i = 0; i < m_Boxes.size(); i++) {
-//    m_Boxes[i]->Update(time);
-//    m_Boxes[i]->Draw(m_Window.GetGraphics());
-//}

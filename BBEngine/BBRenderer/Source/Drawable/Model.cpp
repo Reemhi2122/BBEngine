@@ -3,27 +3,27 @@
 
 //Note(Stan):	Should probably change this later to
 //				to use the full GLTF file.
-Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile, BBE::GLTFFile* a_File)
+Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a_File)
 {
-	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.mesh.counts.vertexCount * sizeof(BBE::Vertex)));
+	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.counts.vertexCount * sizeof(BBE::Vertex)));
 
 	if (vertices == nullptr)
 		return;
 
-	for (size_t i = 0; i < a_ModelFile.mesh.counts.vertexCount; i++)
+	for (size_t i = 0; i < a_ModelFile.counts.vertexCount; i++)
 	{
-		vertices[i].pos	=		a_ModelFile.mesh.attributes.vertices[i];
-		vertices[i].texCoords = a_ModelFile.mesh.attributes.texCoords[i];
+		vertices[i].pos	=		a_ModelFile.attributes.vertices[i];
+		vertices[i].texCoords = a_ModelFile.attributes.texCoords[i];
 	}
 
 	char texturePath[64] = "";
 	strcat(texturePath, a_File->gltfPath);
-	strcat(texturePath, a_ModelFile.mesh.baseTexturePath);
+	strcat(texturePath, a_ModelFile.baseTexturePath);
 	
 	m_Texture = new Texture(a_Gfx, texturePath);
 	AddBind(m_Texture);
 
-	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.mesh.counts.vertexCount);
+	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.counts.vertexCount);
 	AddBind(vBuffer);
 
 	m_Sampler = new Sampler(a_Gfx);
@@ -35,7 +35,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile, BBE::GLTFFile* a_File)
 	pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
 	AddBind(pShader);
 
-	IBuffer = new IndexBuffer(a_Gfx, a_ModelFile.mesh.indices, a_ModelFile.mesh.indicesAmount);
+	IBuffer = new IndexBuffer(a_Gfx, a_ModelFile.indices, a_ModelFile.indicesAmount);
 	AddIndexBuffer(IBuffer);
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
@@ -52,7 +52,7 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile, BBE::GLTFFile* a_File)
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);
 
-	m_Translation = a_ModelFile.translation;
+	//m_Translation = a_ModelFile.translation;
 }
 
 void Model::Update(float a_DeltaTime) noexcept
@@ -65,7 +65,7 @@ DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 	return
 		//DirectX::XMMatrixRotationY(m_Angle) *
 		//DirectX::XMMatrixRotationZ(m_Angle) *
-		DirectX::XMMatrixScaling(1, 1, 1) *
+		DirectX::XMMatrixScaling(0.00800000037997961f, 0.00800000037997961f, 0.00800000037997961f) *
 		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y -15, 30);
 }
 
