@@ -46,6 +46,8 @@ namespace BBE {
 			};
 		} counts;
 
+		char* baseTexturePath;
+
 		uint32_t		indicesAmount;
 		unsigned short* indices;
 	};
@@ -61,6 +63,7 @@ namespace BBE {
 
 	struct GLTFFile {
 		Node* nodes;
+		char* gltfPath;
 	};
 
 }

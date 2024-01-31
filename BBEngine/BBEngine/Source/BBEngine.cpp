@@ -79,9 +79,9 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[0]));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[1]));
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[2]));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[0], file));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[1], file));
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[2], file));
     }
 
     bool show_demo_window = true;

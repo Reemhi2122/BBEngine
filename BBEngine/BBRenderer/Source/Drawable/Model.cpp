@@ -3,7 +3,7 @@
 
 //Note(Stan):	Should probably change this later to
 //				to use the full GLTF file.
-Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
+Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile, BBE::GLTFFile* a_File)
 {
 	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.mesh.counts.vertexCount * sizeof(BBE::Vertex)));
 
@@ -16,7 +16,11 @@ Model::Model(Graphics& a_Gfx, BBE::Node a_ModelFile)
 		vertices[i].texCoords = a_ModelFile.mesh.attributes.texCoords[i];
 	}
 
-	m_Texture = new Texture(a_Gfx, ".\\Assets\\Models\\Lantern\\glTF\\Lantern_baseColor.png");
+	char texturePath[64] = "";
+	strcat(texturePath, a_File->gltfPath);
+	strcat(texturePath, a_ModelFile.mesh.baseTexturePath);
+	
+	m_Texture = new Texture(a_Gfx, texturePath);
 	AddBind(m_Texture);
 
 	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.mesh.counts.vertexCount);

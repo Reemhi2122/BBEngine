@@ -15,6 +15,7 @@ namespace BBE {
 	GLTFFile* GLTFParser::Parse(char* a_GLTFPath, char* a_GLTFName) {
 		
 		GLTFFile* gltfFile = reinterpret_cast<GLTFFile*>(malloc(sizeof(GLTFFile)));
+		gltfFile->gltfPath = a_GLTFPath;
 
 		char GLTFPath[64] = "";
 		strcat(GLTFPath, a_GLTFPath);
@@ -50,6 +51,8 @@ namespace BBE {
 			JSONList& accessorsList = parser.GetRootNode()["accessors"]->GetListBB();
 			JSONList& bufferViews = parser.GetRootNode()["bufferViews"]->GetListBB();
 			JSONList& materials = parser.GetRootNode()["materials"]->GetListBB();
+			JSONList& textures = parser.GetRootNode()["textures"]->GetListBB();
+			JSONList& images = parser.GetRootNode()["images"]->GetListBB();
 
 			//Go over all primitives
 			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
@@ -74,7 +77,11 @@ namespace BBE {
 				if (primitiveObj["material"])
 				{
 					uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
-					materials[materialIndex] 
+					uint32_t baseColorIndex = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB()["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
+					std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+					
+					gltfFile->nodes[i].mesh.baseTexturePath = (char*)malloc(str.size());
+					strcpy(gltfFile->nodes[i].mesh.baseTexturePath, str.c_str());
 				}
 
 				gltfFile->nodes[i].mesh.indicesAmount = ParseAttribute(reinterpret_cast<void**>(&gltfFile->nodes[i].mesh.indices), primitiveObj, accessorsList, bufferViews, "indices");
