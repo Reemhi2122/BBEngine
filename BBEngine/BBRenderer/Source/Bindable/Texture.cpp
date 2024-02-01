@@ -5,7 +5,7 @@
 Texture::Texture(Graphics& a_Gfx, const char* a_Path)
 {
 	int sizeX, sizeY, Channels;
-	unsigned char* img = stbi_load(a_Path, &sizeX, &sizeY, &Channels, 0);
+	unsigned char* img = stbi_load(a_Path, &sizeX, &sizeY, &Channels, 4);
 
 	HRESULT res;
 
