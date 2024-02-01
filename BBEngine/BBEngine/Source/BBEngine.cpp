@@ -111,60 +111,43 @@ namespace BBE
 
         if (m_Window.m_Keyboard.KeyIsPressed('W'))
         {
-            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, 0.5f)));
             cam->camForwardMove += 0.5f;
         }
-
         if (m_Window.m_Keyboard.KeyIsPressed('S'))
         {
-            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->forward, -0.5f)));
             cam->camForwardMove += -0.5f;
         }
-
         if (m_Window.m_Keyboard.KeyIsPressed('A'))
         {
-            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, -0.5f)));
             cam->camRightMove += -0.5f;
         }
-
         if (m_Window.m_Keyboard.KeyIsPressed('D'))
         {
-            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->right, 0.5f)));
             cam->camRightMove += 0.5f;
         }
-
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_SUBTRACT))
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_NUMPAD1))
         {
-            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, -0.5f)));
+            cam->camUpMove = 0.5f;
         }
-
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_ADD))
+        if (m_Window.m_Keyboard.KeyIsPressed(VK_NUMPAD0))
         {
-            //cam->SetPosition(DirectX::XMVectorAdd(cam->GetPosition(), DirectX::XMVectorScale(cam->up, 0.5f)));
+            cam->camUpMove = -0.5f;
         }
-
         if (m_Window.m_Keyboard.KeyIsPressed(VK_LEFT))
         {
-            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0, -0.005f, 0.0f)));
-            cam->camYaw += -0.005;
+            cam->camYaw += -0.01f;
         }
-
         if (m_Window.m_Keyboard.KeyIsPressed(VK_RIGHT))
         {
-            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0, 0.005f, 0.0f)));
-            cam->camYaw += 0.005;
+            cam->camYaw += 0.01f;
         }
-
         if (m_Window.m_Keyboard.KeyIsPressed(VK_UP))
         {
-            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(-0.005f, 0.f, 0.0f)));
-            cam->camPitch += -0.005;
+            cam->camPitch += -0.01f;
         }
-
         if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
         {
-            //cam->SetRotation(DirectX::XMMatrixMultiply(cam->GetRotation(), DirectX::XMMatrixRotationRollPitchYaw(0.005f, 0.f, 0.0f)));
-            cam->camPitch += 0.005;
+            cam->camPitch += 0.01f;
         }
 
         cam->Update();
