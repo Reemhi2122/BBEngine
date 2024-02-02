@@ -22,7 +22,7 @@ namespace BBE
     GLTFFile* file;
 
     BBEngine::BBEngine()
-        : m_Window(800, 600, "BBWindow test")
+        : m_Window(1600, 900, "BBWindow test")
     {
         BB_Log_Init("BBLogger", LOG_ALL, "logs/");
         m_ArenaAllocator.Init(BBE::PageSize);
@@ -111,27 +111,27 @@ namespace BBE
 
         if (m_Window.m_Keyboard.KeyIsPressed('W'))
         {
-            cam->camForwardMove += 0.5f;
+            cam->camForwardMove += 0.1f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed('S'))
         {
-            cam->camForwardMove += -0.5f;
+            cam->camForwardMove += -0.1f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed('A'))
         {
-            cam->camRightMove += -0.5f;
+            cam->camRightMove += -0.1f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed('D'))
         {
-            cam->camRightMove += 0.5f;
+            cam->camRightMove += 0.1f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed(VK_NUMPAD1))
         {
-            cam->camUpMove = 0.5f;
+            cam->camUpMove = 0.1f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed(VK_NUMPAD0))
         {
-            cam->camUpMove = -0.5f;
+            cam->camUpMove = -0.1f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed(VK_LEFT))
         {

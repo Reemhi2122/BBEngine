@@ -8,7 +8,6 @@ Texture::Texture(Graphics& a_Gfx, const char* a_Path)
 	unsigned char* img = stbi_load(a_Path, &sizeX, &sizeY, &Channels, 4);
 
 	HRESULT res;
-
 	D3D11_TEXTURE2D_DESC desc = {};
 	desc.Width = sizeX;
 	desc.Height = sizeY;
@@ -24,7 +23,7 @@ Texture::Texture(Graphics& a_Gfx, const char* a_Path)
 
 	D3D11_SUBRESOURCE_DATA image_subresource_data = {};
 	image_subresource_data.pSysMem = img;
-	image_subresource_data.SysMemPitch = sizeX * Channels;
+	image_subresource_data.SysMemPitch = sizeX * 4;
 
 	res = a_Gfx.GetDevice()->CreateTexture2D(&desc, &image_subresource_data, &m_Texture);
 

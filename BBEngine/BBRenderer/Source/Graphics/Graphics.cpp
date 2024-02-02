@@ -63,8 +63,8 @@ Graphics::Graphics(HWND a_HWnd)
 	// create depth stencil texture
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> depthStencil;
 	D3D11_TEXTURE2D_DESC descDepth = {};
-	descDepth.Width = 800u;
-	descDepth.Height = 600u;
+	descDepth.Width = 1600u;
+	descDepth.Height = 900u;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
 	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -96,8 +96,8 @@ Graphics::Graphics(HWND a_HWnd)
 
 	//Configure a viewport
 	D3D11_VIEWPORT viewport;
-	viewport.Width = 800;
-	viewport.Height = 600;
+	viewport.Width = 1600;
+	viewport.Height = 900;
 	viewport.MinDepth = 0;
 	viewport.MaxDepth = 1;
 	viewport.TopLeftX = 0;

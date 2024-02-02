@@ -1,7 +1,14 @@
 Texture2D tex;
 SamplerState splr;
 
-float4 main(float2 tc : TexCoord) : SV_Target
+struct VSOut
 {
-    return tex.Sample(splr, tc);
+    float4 pos : SV_Position;
+    float2 tex : TexCoord;
+};
+
+
+float4 main(VSOut psin) : SV_Target
+{
+    return tex.Sample(splr, psin.tex);
 }
