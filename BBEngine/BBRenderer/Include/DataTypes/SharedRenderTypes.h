@@ -1,5 +1,6 @@
 #pragma once
 #include "Vector3.h"
+#include "Vector4.h"
 #include <stdint.h>
 
 //Note(Stan):	Doubting if these are even supposed to be
@@ -32,7 +33,7 @@ namespace BBE {
 					Vector3*	vertices;
 					UV*			texCoords;
 					Vector3*	normals;
-					Vector3*	tangents; //vector4
+					Vector4*	tangents;
 				};
 			} attributes;
 

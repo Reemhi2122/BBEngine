@@ -38,3 +38,17 @@ Vector4& Vector4::operator=(const Vector4& a_Rhs)
 
 	return *this;
 }
+
+Vector4& Vector4::operator*(const Vector4& a_Rhs)
+{
+	if (this == &a_Rhs) {
+		return *this;
+	}
+
+	x *= a_Rhs.x;
+	y *= a_Rhs.y;
+	z *= a_Rhs.z;
+	w *= a_Rhs.w;
+
+	return *this;
+}
