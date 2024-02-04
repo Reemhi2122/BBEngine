@@ -7,10 +7,10 @@ Vector3::Vector3(float a_X, float a_Y, float a_Z) noexcept
 	this->z = a_Z;
 }
 
-Vector3& Vector3::operator+(const Vector3& other)
+Vector3& Vector3::operator+(const Vector3& a_Rhs)
 {
 	return Vector3(
-		this->x + other.x, 
-		this->y + other.x, 
-		this->z + other.z);
+		this->x + a_Rhs.x,
+		this->y + a_Rhs.x,
+		this->z + a_Rhs.z);
 }
