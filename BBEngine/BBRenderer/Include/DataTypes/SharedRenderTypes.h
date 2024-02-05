@@ -27,7 +27,7 @@ namespace BBE {
 		{
 			union
 			{
-				void* data[4];
+				void* attributeData[4];
 				struct
 				{
 					Vector3*	vertices;
@@ -35,11 +35,11 @@ namespace BBE {
 					Vector3*	normals;
 					Vector4*	tangents;
 				};
-			} attributes;
+			};
 
 			union
 			{
-				uint32_t data[4];
+				uint32_t countData[4];
 				struct
 				{
 					uint32_t	vertexCount;
@@ -47,10 +47,9 @@ namespace BBE {
 					uint32_t	normalCount;
 					uint32_t	tangentCount;
 				};
-			} counts;
+			};
 
 			char* baseTexturePath;
-
 			uint32_t		indicesAmount;
 			unsigned short* indices;
 		}* primative;

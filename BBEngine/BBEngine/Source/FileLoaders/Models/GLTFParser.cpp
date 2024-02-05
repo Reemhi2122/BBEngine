@@ -78,7 +78,7 @@ namespace BBE {
 
 					for (size_t curAttibute = 0; curAttibute < NumOfAttibutes; curAttibute++)
 					{
-						gltfFile->nodes[i].mesh.primative[primitiveIndex].counts.data[curAttibute] = ParseAttribute(&gltfFile->nodes[i].mesh.primative[primitiveIndex].attributes.data[curAttibute], attributeObject, accessorsList, bufferViews, attributes[curAttibute]);
+						gltfFile->nodes[i].mesh.primative[primitiveIndex].countData[curAttibute] = ParseAttribute(&gltfFile->nodes[i].mesh.primative[primitiveIndex].attributeData[curAttibute], attributeObject, accessorsList, bufferViews, attributes[curAttibute]);
 					}
 				}
 

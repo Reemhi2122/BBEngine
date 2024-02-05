@@ -5,15 +5,15 @@
 //				to use the full GLTF file.
 Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a_File)
 {
-	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.counts.vertexCount * sizeof(BBE::Vertex)));
+	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.vertexCount * sizeof(BBE::Vertex)));
 
 	if (vertices == nullptr)
 		return;
 
-	for (size_t i = 0; i < a_ModelFile.counts.vertexCount; i++)
+	for (size_t i = 0; i < a_ModelFile.vertexCount; i++)
 	{
-		vertices[i].pos	=		a_ModelFile.attributes.vertices[i];
-		vertices[i].texCoords = a_ModelFile.attributes.texCoords[i];
+		vertices[i].pos	=		a_ModelFile.vertices[i];
+		vertices[i].texCoords = a_ModelFile.texCoords[i];
 	}
 
 	char texturePath[64] = "";
@@ -23,7 +23,7 @@ Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a
 	m_Texture = new Texture(a_Gfx, texturePath);
 	AddBind(m_Texture);
 
-	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.counts.vertexCount);
+	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.vertexCount);
 	AddBind(vBuffer);
 
 	m_Sampler = new Sampler(a_Gfx);
@@ -68,13 +68,3 @@ DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 		DirectX::XMMatrixScaling(0.00800000037997961f, 0.00800000037997961f, 0.00800000037997961f) *
 		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y -15, 30);
 }
-
-
-//const ConstantBufferColorModel cbc = {
-//{
-//	{1.0f, 1.0f, 0.0f, 1.0f}
-//}
-//};
-
-//cCB = new PixelConstantBuffer<ConstantBufferColorModel>(a_Gfx, cbc);
-//AddBind(cCB);
