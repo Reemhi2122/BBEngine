@@ -85,11 +85,11 @@ namespace BBE {
 				if (primitiveObj["material"])
 				{
 					uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
-					uint32_t baseColorIndex = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB()["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
+					uint32_t baseColorIndex = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB()["baseColorTexturePath"]->GetObjectBB()["index"]->GetFloatBB();
 					std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
 					
-					gltfFile->nodes[i].mesh.primative[primitiveIndex].baseTexturePath = (char*)malloc(str.size());
-					strcpy(gltfFile->nodes[i].mesh.primative[primitiveIndex].baseTexturePath, str.c_str());
+					gltfFile->nodes[i].mesh.primative[primitiveIndex].TextureData.baseColorTexturePath = (char*)malloc(str.size());
+					strcpy(gltfFile->nodes[i].mesh.primative[primitiveIndex].TextureData.baseColorTexturePath, str.c_str());
 				}
 
 				gltfFile->nodes[i].mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&gltfFile->nodes[i].mesh.primative[primitiveIndex].indices), primitiveObj, accessorsList, bufferViews, "indices");

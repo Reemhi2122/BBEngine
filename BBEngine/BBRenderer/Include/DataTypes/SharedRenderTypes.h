@@ -25,6 +25,8 @@ namespace BBE {
 		uint32_t primitiveCount;
 		struct Primative
 		{
+			//Note(Stan):	In the attribute data, you can have multiple
+			//				texCoords for different textures.
 			union
 			{
 				void* attributeData[4];
@@ -49,7 +51,27 @@ namespace BBE {
 				};
 			};
 
-			char* baseTexturePath;
+			struct {
+				struct {
+					struct {
+						char* m_Path;
+						//TODO(Stan):	Add support for MIME type images
+					} image;
+
+					struct {
+						uint32_t magFilter;
+						uint32_t minFilter;
+						uint32_t wrapS;
+						uint32_t warpT;
+					} sampler;
+				}* texture;
+
+				uint32_t texCoordIndex;
+
+				char* baseColorTexturePath;
+
+			} Material;
+
 			uint32_t		indicesAmount;
 			unsigned short* indices;
 		}* primative;

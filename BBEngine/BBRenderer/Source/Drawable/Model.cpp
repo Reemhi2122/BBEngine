@@ -18,7 +18,7 @@ Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a
 
 	char texturePath[64] = "";
 	strcat(texturePath, a_File->gltfPath);
-	strcat(texturePath, a_ModelFile.baseTexturePath);
+	strcat(texturePath, a_ModelFile.TextureData.baseColorTexturePath);
 	
 	m_Texture = new Texture(a_Gfx, texturePath);
 	AddBind(m_Texture);
