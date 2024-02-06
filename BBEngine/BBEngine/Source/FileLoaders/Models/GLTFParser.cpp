@@ -85,11 +85,26 @@ namespace BBE {
 				if (primitiveObj["material"])
 				{
 					uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
-					uint32_t baseColorIndex = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB()["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
-					std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-					
-					gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = (char*)malloc(str.size());
-					strcpy(gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path, str.c_str());
+
+					if (materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]) 
+					{
+						uint32_t baseColorIndex = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB()["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
+						std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+						char* charPointer = (char*)malloc(str.size());
+						strcpy(charPointer, str.c_str());
+						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = charPointer;
+					}
+
+					if (materials[materialIndex]->GetObjectBB()["normalTexture"]) 
+					{
+						uint32_t normalTextureIndex = materials[materialIndex]->GetObjectBB()["normalTexture"]->GetObjectBB()["index"]->GetFloatBB();
+						std::string str = images[(uint32_t)textures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+						
+						char* charPointer = (char*)malloc(str.size());
+						strcpy(charPointer, str.c_str());
+						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.normalTexture.image.m_Path = charPointer;
+					}
 				}
 
 				gltfFile->nodes[i].mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&gltfFile->nodes[i].mesh.primative[primitiveIndex].indices), primitiveObj, accessorsList, bufferViews, "indices");
