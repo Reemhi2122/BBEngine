@@ -20,10 +20,10 @@ namespace BBE {
 		//Vector3 normals;
 	};
 
+	//TODO(Stan):	Add support for MIME type images
 	struct Texture {
 		struct {
 			char* m_Path;
-			//TODO(Stan):	Add support for MIME type images
 		} image;
 
 		float scale;
@@ -35,7 +35,7 @@ namespace BBE {
 		const char*	name;
 		uint32_t primitiveCount;
 		
-		struct
+		struct Primative
 		{
 			//Note(Stan):	In the attribute data, you can have multiple
 			//				texCoords for different textures.
@@ -64,9 +64,8 @@ namespace BBE {
 			};
 
 			struct {
-
+				
 				struct {
-
 					Vector3 baseColorFactor;
 					Texture baseColorTexture;
 					Texture metallicRoughnessTexture;
