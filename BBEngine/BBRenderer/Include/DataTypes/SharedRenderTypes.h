@@ -20,10 +20,22 @@ namespace BBE {
 		//Vector3 normals;
 	};
 
+	struct Texture {
+		struct {
+			char* m_Path;
+			//TODO(Stan):	Add support for MIME type images
+		} image;
+
+		float scale;
+		float strenght;
+		uint32_t texCoordIndex;
+	};
+
 	struct Mesh {
 		const char*	name;
 		uint32_t primitiveCount;
-		struct Primative
+		
+		struct
 		{
 			//Note(Stan):	In the attribute data, you can have multiple
 			//				texCoords for different textures.
@@ -52,23 +64,15 @@ namespace BBE {
 			};
 
 			struct {
+
 				struct {
-					struct {
-						char* m_Path;
-						//TODO(Stan):	Add support for MIME type images
-					} image;
 
-					struct {
-						uint32_t magFilter;
-						uint32_t minFilter;
-						uint32_t wrapS;
-						uint32_t warpT;
-					} sampler;
-				}* texture;
+					Vector3 baseColorFactor;
+					Texture baseColorTexture;
+					Texture metallicRoughnessTexture;
+				} pbrMetallicRoughness ;
 
-				uint32_t texCoordIndex;
-
-				char* baseColorTexturePath;
+				Texture normalTexture;
 
 			} Material;
 
@@ -76,6 +80,16 @@ namespace BBE {
 			unsigned short* indices;
 		}* primative;
 	};
+
+	//Removed sampler for simplicty rn
+	//struct {
+	//	uint32_t magFilter;
+	//	uint32_t minFilter;
+	//	uint32_t wrapS;
+	//	uint32_t warpT;
+	//} sampler;
+
+
 
 	struct Node
 	{
