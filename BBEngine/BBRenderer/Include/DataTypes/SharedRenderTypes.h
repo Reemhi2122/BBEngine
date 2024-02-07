@@ -66,12 +66,17 @@ namespace BBE {
 			struct {
 				
 				struct {
-					Vector3 baseColorFactor;
 					Texture baseColorTexture;
+					Vector3 baseColorFactor;
 					Texture metallicRoughnessTexture;
+					Vector3 metallicFactor;
+					Vector3 roughnessFactor;
 				} pbrMetallicRoughness ;
 
 				Texture normalTexture;
+				Texture occlusionTexture;
+				Texture emissiveTexture;
+				Vector3 emissiveFactor;
 
 			} Material;
 

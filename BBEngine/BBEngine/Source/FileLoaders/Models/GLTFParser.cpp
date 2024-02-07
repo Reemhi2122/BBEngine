@@ -105,6 +105,38 @@ namespace BBE {
 						strcpy(charPointer, str.c_str());
 						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.normalTexture.image.m_Path = charPointer;
 					}
+
+					if (materials[materialIndex]->GetObjectBB()["occlusionTexture"])
+					{
+						uint32_t occlusionTexture = materials[materialIndex]->GetObjectBB()["occlusionTexture"]->GetObjectBB()["index"]->GetFloatBB();
+						std::string str = images[(uint32_t)textures[occlusionTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+						char* charPointer = (char*)malloc(str.size());
+						strcpy(charPointer, str.c_str());
+						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
+					}
+
+					if (materials[materialIndex]->GetObjectBB()["emissiveTexture"])
+					{
+						uint32_t emissiveTexture = materials[materialIndex]->GetObjectBB()["emissiveTexture"]->GetObjectBB()["index"]->GetFloatBB();
+						std::string str = images[(uint32_t)textures[emissiveTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+						char* charPointer = (char*)malloc(str.size());
+						strcpy(charPointer, str.c_str());
+						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
+					}
+
+					if (materials[materialIndex]->GetObjectBB()["emissiveFactor"])
+					{
+						JSONList normalTextureIndex = materials[materialIndex]->GetObjectBB()["emissiveFactor"]->GetListBB();
+
+						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.emissiveFactor = 
+							Vector3(
+								normalTextureIndex[0]->GetFloatBB(), 
+								normalTextureIndex[1]->GetFloatBB(), 
+								normalTextureIndex[2]->GetFloatBB()
+							);
+					}
 				}
 
 				gltfFile->nodes[i].mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&gltfFile->nodes[i].mesh.primative[primitiveIndex].indices), primitiveObj, accessorsList, bufferViews, "indices");
