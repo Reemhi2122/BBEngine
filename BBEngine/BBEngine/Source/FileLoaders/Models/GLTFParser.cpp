@@ -88,12 +88,50 @@ namespace BBE {
 
 					if (materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]) 
 					{
-						uint32_t baseColorIndex = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB()["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
-						std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+						JSONObject pbrMetallicRoughnessObj = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB();
 
-						char* charPointer = (char*)malloc(str.size());
-						strcpy(charPointer, str.c_str());
-						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = charPointer;
+						if (pbrMetallicRoughnessObj["baseColorFactor"])
+						{
+							JSONList baseColorFactor = pbrMetallicRoughnessObj["baseColorFactor"]->GetListBB();
+							gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorFactor =
+								Vector3(
+									baseColorFactor[0]->GetFloatBB(),
+									baseColorFactor[1]->GetFloatBB(),
+									baseColorFactor[2]->GetFloatBB()
+								);
+						}
+
+						if (pbrMetallicRoughnessObj["baseColorTexture"])
+						{
+							uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
+							std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+							char* charPointer = (char*)malloc(str.size());
+							strcpy(charPointer, str.c_str());
+							gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = charPointer;
+						}
+
+						if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
+						{
+							uint32_t metallicRoughnessTexture = pbrMetallicRoughnessObj["metallicRoughnessTexture"]->GetObjectBB()["index"]->GetFloatBB();
+							std::string str = images[(uint32_t)textures[metallicRoughnessTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+							char* charPointer = (char*)malloc(str.size());
+							strcpy(charPointer, str.c_str());
+							gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.image.m_Path = charPointer;
+						}
+
+						if (pbrMetallicRoughnessObj["metallicFactor"])
+						{
+							gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicFactor = 
+								static_cast<uint32_t>(pbrMetallicRoughnessObj["metallicFactor"]->GetFloatBB());
+						}
+
+						if (pbrMetallicRoughnessObj["roughnessFactor"])
+						{
+							gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.roughnessFactor = 
+								static_cast<uint32_t>(pbrMetallicRoughnessObj["roughnessFactor"]->GetFloatBB());
+						}
 					}
 
 					if (materials[materialIndex]->GetObjectBB()["normalTexture"]) 
@@ -128,13 +166,12 @@ namespace BBE {
 
 					if (materials[materialIndex]->GetObjectBB()["emissiveFactor"])
 					{
-						JSONList normalTextureIndex = materials[materialIndex]->GetObjectBB()["emissiveFactor"]->GetListBB();
-
+						JSONList emissiveFactor = materials[materialIndex]->GetObjectBB()["emissiveFactor"]->GetListBB();
 						gltfFile->nodes[i].mesh.primative[primitiveIndex].Material.emissiveFactor = 
 							Vector3(
-								normalTextureIndex[0]->GetFloatBB(), 
-								normalTextureIndex[1]->GetFloatBB(), 
-								normalTextureIndex[2]->GetFloatBB()
+								emissiveFactor[0]->GetFloatBB(),
+								emissiveFactor[1]->GetFloatBB(),
+								emissiveFactor[2]->GetFloatBB()
 							);
 					}
 				}

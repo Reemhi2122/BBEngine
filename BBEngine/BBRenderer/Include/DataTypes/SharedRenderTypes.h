@@ -69,8 +69,8 @@ namespace BBE {
 					Texture baseColorTexture;
 					Vector3 baseColorFactor;
 					Texture metallicRoughnessTexture;
-					Vector3 metallicFactor;
-					Vector3 roughnessFactor;
+					uint32_t metallicFactor;
+					uint32_t roughnessFactor;
 				} pbrMetallicRoughness ;
 
 				Texture normalTexture;
