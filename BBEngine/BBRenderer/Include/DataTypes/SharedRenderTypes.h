@@ -17,7 +17,7 @@ namespace BBE {
 	{
 		Vector3 pos;
 		UV		texCoords;
-		//Vector3 normals;
+		Vector3 normals;
 	};
 
 	//TODO(Stan):	Add support for MIME type images

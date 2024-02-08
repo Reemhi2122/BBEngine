@@ -14,6 +14,7 @@ Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a
 	{
 		vertices[i].pos	=		a_ModelFile.vertices[i];
 		vertices[i].texCoords = a_ModelFile.texCoords[i];
+		vertices[i].normals =	a_ModelFile.normals[i];
 	}
 
 	char texturePath[64] = "";
@@ -40,7 +41,8 @@ Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());
