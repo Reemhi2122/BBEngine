@@ -8,8 +8,8 @@ public:
 	~DirectionalLight();
 
 private:
-	DirectX::XMFLOAT3 m_Dir;
-	DirectX::XMFLOAT4 m_Ambient;
-	DirectX::XMFLOAT4 m_Diffuse;
+	DirectX::XMFLOAT3 dir;
+	DirectX::XMFLOAT4 ambient;
+	DirectX::XMFLOAT4 diffuse;
 	float pad;
 };

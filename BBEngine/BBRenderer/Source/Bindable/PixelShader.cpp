@@ -1,8 +1,6 @@
 #include "Bindable/PixelShader.h"
 #include <d3dcompiler.h>
 
-//L"Assets/PixelShader.hlsl"
-
 PixelShader::PixelShader(Graphics& a_Gfx, const std::wstring& a_Path)
 {
 	Microsoft::WRL::ComPtr<ID3DBlob> blob;
