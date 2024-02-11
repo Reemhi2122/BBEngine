@@ -5,6 +5,7 @@
 #include "Utility/BBMemory.h"
 #include "Thread/ThreadPool.h"
 #include "FileLoaders/Models/GLTFParser.h"
+#include "Vector4.h"
 
 #include <chrono>
 #include <iostream>
@@ -37,7 +38,7 @@ namespace BBE
 
     int BBEngine::StartBBEngine()
     {
-        TestCode();
+        Start();
 
         try
         {
@@ -65,25 +66,25 @@ namespace BBE
 
     }
 
-    void BBEngine::TestCode()
+    void BBEngine::Start()
     {
         GLTFParser parser;
-        //file = parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf");
         file = parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf");
 
-        std::mt19937 rng(std::random_device{}());
-        std::uniform_real_distribution<float> adist(0.0f, 3.1415926f * 2.0f);
-        std::uniform_real_distribution<float> ddist(0.0f, 3.1415926f * 2.0f);
-        std::uniform_real_distribution<float> odist(0.0f, 3.1415926f * 0.3f);
-        std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
-
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
+
+        m_DirectionalLight = DirectionalLight(Vector3(0.25f, 0.5f, -1.0f), Vector4(0.2f, 0.2f, 0.2f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
+        
+        m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Window.GetGraphics());
+
+        m_VertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VertexShader.hlsl");
+        m_PixelShader = PixelShader(m_Window.GetGraphics(), L"Assets/PixelShader.hlsl");
 
         for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
         {
             for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
             {
-                m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[nodeIndex].mesh.primative[primitiveIndex], file));
+                m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
             }
         }
     }
@@ -93,14 +94,23 @@ namespace BBE
     {
         float time = m_Timer.Stamp();
         m_Window.GetGraphics().ClearBuffer(0.07f, 0.0f, 0.012f);
+        
         CheckInput();
 
         for (size_t i = 0; i < m_Model.size(); i++)
         {
             m_Model[i]->Update(time);
+        }
+
+        cbPerFrame test = { m_DirectionalLight };
+        m_PerFrameBuffer.Update(m_Window.GetGraphics(), test);
+        m_PerFrameBuffer.Bind(m_Window.GetGraphics());
+
+        for (size_t i = 0; i < m_Model.size(); i++)
+        {
             m_Model[i]->Draw(m_Window.GetGraphics());
         }
-        
+
         ImGui::ShowDemoWindow(&show_demo_window);
         m_Window.GetGraphics().EndFrame();
     }

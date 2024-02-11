@@ -3,6 +3,7 @@
 
 class VertexShader : public Bindable {
 public:
+	VertexShader() = default;
 	VertexShader(Graphics& a_Gfx, std::wstring a_Path);
 	void Bind(Graphics& a_Gfx) noexcept override;
 	ID3DBlob* GetByteCode() const noexcept;

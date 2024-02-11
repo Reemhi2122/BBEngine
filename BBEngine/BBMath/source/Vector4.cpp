@@ -8,9 +8,6 @@ Vector4::Vector4(float a_X, float a_Y, float a_Z, float a_W)
 	: x(a_X), y(a_Y), z(a_Z), w(a_W)
 {}
 
-Vector4::~Vector4()
-{}
-
 Vector4& Vector4::operator+(const Vector4& a_Rhs) 
 {	
 	if (this == &a_Rhs) {

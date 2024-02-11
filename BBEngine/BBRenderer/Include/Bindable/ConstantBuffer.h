@@ -6,6 +6,8 @@ template<typename T>
 class ConstantBuffer : public Bindable
 {
 public:
+	ConstantBuffer() = default;
+
 	ConstantBuffer(Graphics& a_Gfx) {
 		INFOMAN(a_Gfx);
 

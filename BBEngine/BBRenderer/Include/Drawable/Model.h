@@ -2,24 +2,13 @@
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"
 #include "Vector3.h"
-
-//TODO(Stan): Probably need to remove or move this
-struct ConstantBufferColorModel
-{
-	struct
-	{
-		float r;
-		float g;
-		float b;
-		float a;
-	}face_colors[1];
-};
+#include "DirectionalLight.h"
 
 class Model : public Drawable
 {
 public:
 	Model() = default;
-	Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a_File);
+	Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader);
 	
 	void Update(float a_DeltaTime) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
@@ -34,12 +23,11 @@ private:
 
 	VertexBuffer* vBuffer;
 	IndexBuffer* IBuffer;
-	VertexShader* vShader;
-	PixelShader* pShader;
+	//VertexShader* vShader;
+	//PixelShader* pShader;
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
 	TransformBuf* m_TransformBuf;
-	PixelConstantBuffer<ConstantBufferColorModel>* cCB;
 	Texture* m_Texture;
 	Sampler* m_Sampler;
 

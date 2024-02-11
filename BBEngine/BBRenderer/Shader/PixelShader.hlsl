@@ -29,6 +29,7 @@ float4 main(VSOut psin) : SV_Target
     float3 finalColor;
 
     finalColor = diffuse * light.ambient;
+
     finalColor += saturate(dot(light.dir, psin.normal) * light.diffuse * diffuse);
 
     return float4(finalColor, diffuse.a);

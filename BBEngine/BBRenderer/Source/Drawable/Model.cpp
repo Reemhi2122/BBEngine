@@ -1,9 +1,7 @@
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-//Note(Stan):	Should probably change this later to
-//				to use the full GLTF file.
-Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a_File)
+Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader)
 {
 	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_ModelFile.vertexCount * sizeof(BBE::Vertex)));
 
@@ -30,11 +28,9 @@ Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a
 	m_Sampler = new Sampler(a_Gfx);
 	AddBind(m_Sampler);
 
-	vShader = new VertexShader(a_Gfx, L"Assets/VertexShader.hlsl");
-	AddBind(vShader);
+	AddBind(a_VertexShader);
 
-	pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
-	AddBind(pShader);
+	AddBind(a_PixelShader);
 
 	IBuffer = new IndexBuffer(a_Gfx, a_ModelFile.indices, a_ModelFile.indicesAmount);
 	AddIndexBuffer(IBuffer);
@@ -45,7 +41,7 @@ Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a
 		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
-	m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());
+	m_InputLayout = new InputLayout(a_Gfx, ied, a_VertexShader->GetByteCode());
 	AddBind(m_InputLayout);
 
 	m_Topology = new Topology(a_Gfx, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -53,8 +49,6 @@ Model::Model(Graphics& a_Gfx, BBE::Mesh::Primative a_ModelFile, BBE::GLTFFile* a
 
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);
-
-	//m_Translation = a_ModelFile.translation;
 }
 
 void Model::Update(float a_DeltaTime) noexcept

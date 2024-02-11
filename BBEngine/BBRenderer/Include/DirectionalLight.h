@@ -1,15 +1,17 @@
 #pragma once
-#include <DirectXMath.h>
+#include "Vector3.h"
+#include "Vector4.h"
 
 class DirectionalLight
 {
 public:
 	DirectionalLight();
+	DirectionalLight(Vector3 a_Direction, Vector4 a_Ambient, Vector4 a_Diffuse, float a_Pad);
 	~DirectionalLight();
 
 private:
-	DirectX::XMFLOAT3 dir;
-	DirectX::XMFLOAT4 ambient;
-	DirectX::XMFLOAT4 diffuse;
+	Vector3 direction;
+	Vector4 ambient;
+	Vector4 diffuse;
 	float pad;
 };
