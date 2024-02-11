@@ -3,6 +3,11 @@
 #include "Drawable/Drawable.h"
 #include <DirectXMath.h>
 
+struct perObjectBuffer {
+	DirectX::XMMATRIX mvp;
+	DirectX::XMMATRIX world;
+};
+
 class TransformBuf : public Bindable {
 public:
 	TransformBuf(Graphics& a_Gfx, const Drawable& a_Parent);
@@ -10,6 +15,6 @@ public:
 	void Bind(Graphics& a_Gfx) noexcept;
 	
 private:
-	static VertexConstantBuffer<DirectX::XMMATRIX>* m_VCB;
+	static VertexConstantBuffer<perObjectBuffer>* m_VCB;
 	const Drawable& m_Parent;
 };

@@ -73,7 +73,7 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
-        m_DirectionalLight = DirectionalLight(Vector3(0.25f, 0.5f, -1.0f), Vector4(0.2f, 0.2f, 0.2f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
+        m_DirectionalLight = DirectionalLight(Vector3(0.25f, 0.5f, -1.0f), Vector4(1.f, 1.f, 1.f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Window.GetGraphics());
 
