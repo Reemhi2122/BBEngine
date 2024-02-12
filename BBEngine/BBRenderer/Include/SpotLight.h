@@ -14,4 +14,5 @@ private:
 	Vector4 diffuse;
 
 	float range;
+	float pad;
 };

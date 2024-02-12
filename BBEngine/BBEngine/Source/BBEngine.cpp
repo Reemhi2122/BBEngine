@@ -78,7 +78,7 @@ namespace BBE
         m_SpotLight = SpotLight(
             Vector3(0.0f, 0.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.3f, 0.3f, 0.3f, 1.0f),
+            Vector4(0.0f, 0.0f, 0.0f, 0.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
             100.f
         );
@@ -110,7 +110,7 @@ namespace BBE
             m_Model[i]->Update(time);
         }
 
-        cbPerFrame test = { m_DirectionalLight };
+        cbPerFrame test = { m_DirectionalLight, m_SpotLight };
         m_PerFrameBuffer.Update(m_Window.GetGraphics(), test);
         m_PerFrameBuffer.Bind(m_Window.GetGraphics());
 

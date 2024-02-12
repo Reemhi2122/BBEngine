@@ -11,7 +11,8 @@
 #include "SpotLight.h"
 
 struct cbPerFrame {
-	struct DirectionalLight Light;
+	DirectionalLight directionallight;
+	SpotLight spotlight;
 };
 
 namespace BBE {
