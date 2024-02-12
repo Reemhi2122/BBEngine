@@ -23,6 +23,7 @@ add_library (Renderer STATIC
 "Source/Bindable/Sampler.cpp"
 
 "Source/DirectionalLight.cpp"
+"Source/SpotLight.cpp"
 
 "Source/Camera.cpp")
 
