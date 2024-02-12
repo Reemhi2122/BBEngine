@@ -4,17 +4,17 @@
 
 #include "Utility/BBTimer.h"
 #include "Utility/BBMemory.h"
-
+#pragma once
 #include "Drawable/Box.h"
 #include "Drawable/Model.h"
 #include "DirectionalLight.h"
+#include "SpotLight.h"
+
+struct cbPerFrame {
+	struct DirectionalLight Light;
+};
 
 namespace BBE {
-	
-	struct cbPerFrame {
-		DirectionalLight Light;
-	};
-
 	class BBEngine {
 	public:
 		BBEngine();
@@ -41,6 +41,7 @@ namespace BBE {
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 
 		DirectionalLight m_DirectionalLight;
+		SpotLight m_SpotLight;
 
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;
