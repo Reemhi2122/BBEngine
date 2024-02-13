@@ -73,17 +73,18 @@ namespace BBE
 
         m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
-        m_DirectionalLight = DirectionalLight(Vector3(0.25f, 0.5f, -1.0f), Vector4(1.f, 1.f, 1.f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), 0.0f);
+        m_DirectionalLight = DirectionalLight(Vector3(0.25f, 0.5f, -1.0f), Vector4(1.f, 1.f, 1.f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 
         m_SpotLight = SpotLight(
             Vector3(0.0f, 0.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.0f, 0.0f, 0.0f, 0.0f),
-            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+            Vector4(0.0f, 0.0f, 1.0f, 1.0f),
+            Vector4(0.0f, 1.0f, 1.0f, 1.0f),
             100.f
         );
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Window.GetGraphics());
+        m_PerFrameBuffer.Bind(m_Window.GetGraphics());
 
         m_VertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VertexShader.hlsl");
         m_PixelShader = PixelShader(m_Window.GetGraphics(), L"Assets/PixelShader.hlsl");
@@ -110,9 +111,8 @@ namespace BBE
             m_Model[i]->Update(time);
         }
 
-        cbPerFrame test = { m_DirectionalLight, m_SpotLight };
+        cbPerFrame test = { m_DirectionalLight, m_SpotLight};
         m_PerFrameBuffer.Update(m_Window.GetGraphics(), test);
-        m_PerFrameBuffer.Bind(m_Window.GetGraphics());
 
         for (size_t i = 0; i < m_Model.size(); i++)
         {

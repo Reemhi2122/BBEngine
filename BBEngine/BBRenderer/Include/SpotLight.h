@@ -9,10 +9,9 @@ public:
 
 private:
 	Vector3 position;
+	float pad0;
 	Vector3 attenuation;
+	float range;
 	Vector4 ambient;
 	Vector4 diffuse;
-
-	float range;
-	float pad;
 };

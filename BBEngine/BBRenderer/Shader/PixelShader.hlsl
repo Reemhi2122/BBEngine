@@ -1,3 +1,5 @@
+Texture2D tex;
+SamplerState splr;
 
 struct DirectionalLight
 {
@@ -10,18 +12,15 @@ struct SpotLight
 {
     float3 position;
     float3 attenuation;
+    float range;
     float4 ambient;
     float4 diffuse;
-    float range;
 };
 
 cbuffer cbPerFrame {
     DirectionalLight directionalLight;
     SpotLight spotLight;
 };
-
-Texture2D tex;
-SamplerState splr;
 
 struct VSOut
 {
@@ -43,6 +42,8 @@ float4 CalculateDirectionalLight(VSOut psin, float4 diffuse) {
 }
 
 float4 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
+
+    return spotLight.ambient;
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
     float3 lightToPixelVec = spotLight.position - psin.worldPos;

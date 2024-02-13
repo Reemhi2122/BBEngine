@@ -6,12 +6,12 @@ class DirectionalLight
 {
 public:
 	DirectionalLight();
-	DirectionalLight(Vector3 a_Direction, Vector4 a_Ambient, Vector4 a_Diffuse, float a_Pad);
+	DirectionalLight(Vector3 a_Direction, Vector4 a_Ambient, Vector4 a_Diffuse);
 	~DirectionalLight();
 
 private:
 	Vector3 direction;
+	float pad0;
 	Vector4 ambient;
 	Vector4 diffuse;
-	float pad;
 };
