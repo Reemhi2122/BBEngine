@@ -30,7 +30,7 @@ struct VSOut
     float3 normal : Normal;
 };
 
-float4 CalculateDirectionalLight(VSOut psin, float4 diffuse) {
+float3 CalculateDirectionalLight(VSOut psin, float4 diffuse) {
     
     float3 finalColor;
 
@@ -38,10 +38,10 @@ float4 CalculateDirectionalLight(VSOut psin, float4 diffuse) {
 
     finalColor += saturate(dot(directionalLight.dir, psin.normal) * directionalLight.diffuse * diffuse);
 
-    return float4(finalColor, diffuse.a);
+    return finalColor;
 }
 
-float4 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
+float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
 
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
@@ -52,7 +52,7 @@ float4 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
     float3 finalAmbient = dirlightcolor * spotLight.ambient;
 
     if (d > spotLight.range)
-        return float4(finalAmbient, dirlightcolor.a);
+        return finalAmbient;
 
     lightToPixelVec /= d;
 
@@ -66,7 +66,7 @@ float4 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
 
     finalColor = saturate(finalColor + finalAmbient);
 
-    return float4(finalColor, dirlightcolor.a);
+    return finalColor;
 }
 
 float4 main(VSOut psin) : SV_Target
@@ -74,10 +74,10 @@ float4 main(VSOut psin) : SV_Target
     psin.normal = normalize(psin.normal);
 
     float4 diffuse = tex.Sample(splr, psin.tex);
-
-    float4 dirlightcolor = CalculateDirectionalLight(psin, diffuse);
     
-    float4 spotlightcolor = CalculateSpotLight(psin, dirlightcolor);
-
-    return spotlightcolor;
+    float4 finalColor = float4(0, 0, 0, 1);
+        
+    finalColor += float4(CalculateDirectionalLight(psin, diffuse), diffuse.a);
+    finalColor += float4(CalculateSpotLight(psin, diffuse), diffuse.a);
+    return finalColor;
 };
