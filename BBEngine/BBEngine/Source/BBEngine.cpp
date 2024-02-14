@@ -76,10 +76,10 @@ namespace BBE
         m_DirectionalLight = DirectionalLight(Vector3(0.25f, 0.5f, -1.0f), Vector4(1.f, 1.f, 1.f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f));
 
         m_SpotLight = SpotLight(
-            Vector3(0.0f, 0.0f, 0.0f),
+            Vector3(0.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.0f, 0.0f, 1.0f, 1.0f),
-            Vector4(0.0f, 1.0f, 1.0f, 1.0f),
+            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
             100.f
         );
         

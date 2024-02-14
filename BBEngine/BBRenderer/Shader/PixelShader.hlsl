@@ -43,7 +43,6 @@ float4 CalculateDirectionalLight(VSOut psin, float4 diffuse) {
 
 float4 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
 
-    return spotLight.ambient;
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
     float3 lightToPixelVec = spotLight.position - psin.worldPos;
@@ -76,9 +75,9 @@ float4 main(VSOut psin) : SV_Target
 
     float4 diffuse = tex.Sample(splr, psin.tex);
 
-    //float4 dirlightcolor = CalculateDirectionalLight(psin, diffuse);
+    float4 dirlightcolor = CalculateDirectionalLight(psin, diffuse);
     
-    float4 spotlightcolor = CalculateSpotLight(psin, diffuse);
+    float4 spotlightcolor = CalculateSpotLight(psin, dirlightcolor);
 
     return spotlightcolor;
 };
