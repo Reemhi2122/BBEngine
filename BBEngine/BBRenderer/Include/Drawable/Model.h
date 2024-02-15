@@ -23,8 +23,6 @@ private:
 
 	VertexBuffer* vBuffer;
 	IndexBuffer* IBuffer;
-	//VertexShader* vShader;
-	//PixelShader* pShader;
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
 	TransformBuf* m_TransformBuf;

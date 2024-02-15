@@ -16,6 +16,7 @@ add_library (Renderer STATIC
 "Source/Bindable/VertexShader.cpp"
 "Source/Bindable/InputLayout.cpp"
 "Source/Drawable/Drawable.cpp"
+"Source/Drawable/DrawToTexture.cpp"
 "Source/Bindable/TransformBuf.cpp"
 "Source/Drawable/Box.cpp"
 "Source/Drawable/Model.cpp"
@@ -25,7 +26,8 @@ add_library (Renderer STATIC
 "Source/DirectionalLight.cpp"
 "Source/SpotLight.cpp"
 
-"Source/Camera.cpp")
+"Source/Camera.cpp" 
+)
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")
 
