@@ -4,6 +4,7 @@ DrawToTexture::DrawToTexture(void* BitmapBuffer, VertexShader* a_VertexShader, P
 {
 
 	
-
+	AddBind(a_VertexShader);
+	AddBind(a_PixelShader);
 
 }

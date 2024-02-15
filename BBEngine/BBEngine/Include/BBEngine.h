@@ -31,7 +31,6 @@ namespace BBE {
 	private:
 		BBWindow m_Window;
 		BBTimer m_Timer;
-		BBWinRenderer m_BBWinRenderer;
 
 		std::vector<Box*> m_Boxes;
 		std::vector<Model*> m_Model;
