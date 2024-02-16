@@ -1,5 +1,4 @@
 #pragma once
-#include "BBRenderer.h"
 #include "BBWindow.h"
 
 #include "Utility/BBTimer.h"
@@ -7,6 +6,7 @@
 #pragma once
 #include "Drawable/Box.h"
 #include "Drawable/Model.h"
+#include "Drawable/DrawToTexture.h"
 #include "DirectionalLight.h"
 #include "SpotLight.h"
 
@@ -37,6 +37,9 @@ namespace BBE {
 
 		VertexShader m_VertexShader;
 		PixelShader m_PixelShader;
+
+		VertexShader m_RTTVertexShader;
+		PixelShader m_RTTPixelShader;
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 
