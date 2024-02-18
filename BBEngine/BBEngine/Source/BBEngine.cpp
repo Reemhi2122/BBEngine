@@ -94,7 +94,7 @@ namespace BBE
         m_VertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VertexShader.hlsl");
         m_PixelShader = PixelShader(m_Window.GetGraphics(), L"Assets/PixelShader.hlsl");
 
-        m_VertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VSDrawToTexture.hlsl");
+        m_RTTVertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Window.GetGraphics(), L"Assets/PSDrawToTexture.hlsl");
 
         ID3D11Texture2D* texture;
@@ -129,7 +129,9 @@ namespace BBE
         float test = 1.f;
         m_Window.GetGraphics().GetContext()->ClearRenderTargetView(renderTarget, &test);
 
-        m_Window.GetGraphics().GetContext()->DrawIndexed(3, 0, 0);
+        m_Window.GetGraphics().GetContext()->DrawIndexed(0, 0, 0);
+
+        m_Window.GetGraphics().ResetRenderTarget();
 
         for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
         {

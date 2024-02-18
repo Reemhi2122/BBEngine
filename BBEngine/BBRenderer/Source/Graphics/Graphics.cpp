@@ -309,3 +309,7 @@ void Graphics::SetProjection(DirectX::XMMATRIX a_Projections) {
 DirectX::XMMATRIX Graphics::GetProjection() const noexcept {
 	return m_Projection;
 }
+
+void Graphics::ResetRenderTarget() {
+	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());
+}

@@ -29,6 +29,8 @@ public:
 	DirectX::XMMATRIX GetProjection() const noexcept;
 	Camera* GetCamera();
 
+	void ResetRenderTarget();
+
 private:
 	DirectX::XMMATRIX m_Projection;
 	Camera m_Camera;
