@@ -115,6 +115,19 @@ namespace BBE
 
         m_Graphics.GetDevice()->CreateTexture2D(&tex_desc, nullptr, &texture);
 
+        ID3D11RenderTargetView* renderTarget;
+        D3D11_RENDER_TARGET_VIEW_DESC render_desc = {};
+        render_desc.Format = DXGI_FORMAT_A8_UNORM;
+        render_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+        render_desc.Texture2D.MipSlice = 0;
+
+        m_Graphics.GetDevice()->CreateRenderTargetView(texture, &render_desc, &renderTarget);
+
+        m_Graphics.GetContext()->OMSetRenderTargets(1, &renderTarget, nullptr);
+
+        const float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        m_Graphics.GetContext()->ClearRenderTargetView(renderTarget, color);
+
         for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
         {
             for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
@@ -122,6 +135,18 @@ namespace BBE
                 m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
             }
         }
+
+        for (size_t i = 0; i < m_Model.size(); i++)
+        {
+            m_Model[i]->Update(0.0f);
+        }
+
+        for (size_t i = 0; i < m_Model.size(); i++)
+        {
+            m_Model[i]->Draw(m_Graphics);
+        }
+
+        m_Graphics.ResetRenderTarget();
     }
 
     bool show_demo_window = true;
