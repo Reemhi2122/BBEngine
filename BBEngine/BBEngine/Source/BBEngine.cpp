@@ -72,7 +72,7 @@ namespace BBE
         GLTFParser parser;
         file = parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf");
 
-        m_Window.GetGraphics().SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
+        m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
         m_DirectionalLight = DirectionalLight(
             Vector3(0.25f, 0.5f, -1.0f), 
@@ -88,20 +88,38 @@ namespace BBE
             100.f
         );
         
-        m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Window.GetGraphics());
-        m_PerFrameBuffer.Bind(m_Window.GetGraphics());
+        m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
+        m_PerFrameBuffer.Bind(m_Graphics);
 
-        m_VertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VertexShader.hlsl");
-        m_PixelShader = PixelShader(m_Window.GetGraphics(), L"Assets/PixelShader.hlsl");
+        m_VertexShader = VertexShader(m_Graphics, L"Assets/VertexShader.hlsl");
+        m_PixelShader = PixelShader(m_Graphics, L"Assets/PixelShader.hlsl");
 
-        m_RTTVertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VSDrawToTexture.hlsl");
-        m_RTTPixelShader = PixelShader(m_Window.GetGraphics(), L"Assets/PSDrawToTexture.hlsl");
+        m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
+        m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
+
+        m_DrawToTexture = BBNew(m_StackAllocator, DrawToTexture)(m_Graphics, &m_RTTVertexShader, &m_RTTPixelShader);
+
+        ID3D11Texture2D* texture;
+        D3D11_TEXTURE2D_DESC tex_desc;
+        tex_desc.Format = DXGI_FORMAT_A8_UNORM;
+        tex_desc.Width = 1024;
+        tex_desc.Height = 1024;
+        tex_desc.MipLevels = 1;
+        tex_desc.ArraySize = 1;
+        tex_desc.SampleDesc.Count = 1;
+        tex_desc.SampleDesc.Quality = 0;
+        tex_desc.Usage = D3D11_USAGE_DEFAULT;
+        tex_desc.BindFlags = D3D11_BIND_RENDER_TARGET;
+        tex_desc.CPUAccessFlags = 0;
+        tex_desc.MiscFlags = 0;
+
+        m_Graphics.GetDevice()->CreateTexture2D(&tex_desc, nullptr, &texture);
 
         for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
         {
             for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
             {
-                m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Window.GetGraphics(), file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
+                m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
             }
         }
     }
@@ -110,7 +128,7 @@ namespace BBE
     void BBEngine::Update()
     {
         float time = m_Timer.Stamp();
-        m_Window.GetGraphics().ClearBuffer(0.07f, 0.0f, 0.012f);
+        m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
         
         CheckInput();
 
@@ -120,20 +138,20 @@ namespace BBE
         }
 
         cbPerFrame test = { m_DirectionalLight, m_SpotLight};
-        m_PerFrameBuffer.Update(m_Window.GetGraphics(), test);
+        m_PerFrameBuffer.Update(m_Graphics, test);
 
         for (size_t i = 0; i < m_Model.size(); i++)
         {
-            m_Model[i]->Draw(m_Window.GetGraphics());
+            m_Model[i]->Draw(m_Graphics);
         }
 
         ImGui::ShowDemoWindow(&show_demo_window);
-        m_Window.GetGraphics().EndFrame();
+        m_Graphics.EndFrame();
     }
 
     void BBEngine::CheckInput()
     {
-        Camera* cam = m_Window.GetGraphics().GetCamera();
+        Camera* cam = m_Graphics.GetCamera();
 
         if (m_Window.m_Keyboard.KeyIsPressed('W'))
         {
