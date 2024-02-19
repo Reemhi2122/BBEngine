@@ -97,42 +97,6 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Window.GetGraphics(), L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Window.GetGraphics(), L"Assets/PSDrawToTexture.hlsl");
 
-        ID3D11Texture2D* texture;
-        D3D11_TEXTURE2D_DESC tex_desc;
-        tex_desc.Format = DXGI_FORMAT_A8_UNORM;
-        tex_desc.Width = 1024;
-        tex_desc.Height = 1024;
-        tex_desc.MipLevels = 1;
-        tex_desc.ArraySize = 1;
-        tex_desc.SampleDesc.Count = 1;
-        tex_desc.SampleDesc.Quality = 0;
-        tex_desc.Usage = D3D11_USAGE_DEFAULT;
-        tex_desc.BindFlags = D3D11_BIND_RENDER_TARGET;
-        tex_desc.CPUAccessFlags = 0;
-        tex_desc.MiscFlags = 0;
-        
-        m_Window.GetGraphics().GetDevice()->CreateTexture2D(&tex_desc, nullptr, &texture);
-
-        ID3D11RenderTargetView* renderTarget;
-        D3D11_RENDER_TARGET_VIEW_DESC render_desc = {};
-        render_desc.Format = DXGI_FORMAT_A8_UNORM;
-        render_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-        render_desc.Texture2D.MipSlice = 0;
-
-        m_Window.GetGraphics().GetDevice()->CreateRenderTargetView(texture, &render_desc, &renderTarget);
-
-        m_RTTVertexShader.Bind(m_Window.GetGraphics());
-        m_RTTPixelShader.Bind(m_Window.GetGraphics());
-
-        m_Window.GetGraphics().GetContext()->OMSetRenderTargets(1, &renderTarget, nullptr);
-
-        float test = 1.f;
-        m_Window.GetGraphics().GetContext()->ClearRenderTargetView(renderTarget, &test);
-
-        m_Window.GetGraphics().GetContext()->DrawIndexed(0, 0, 0);
-
-        m_Window.GetGraphics().ResetRenderTarget();
-
         for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
         {
             for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
