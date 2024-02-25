@@ -108,6 +108,8 @@ namespace BBE {
 		Node* nodes;
 		uint32_t nodeAmount;
 		char* gltfPath;
+		
+		uint32_t totalVertexCount;
 	};
 
 }

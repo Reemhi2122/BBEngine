@@ -96,13 +96,15 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
-        for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
-        {
-            for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
-            {
-                m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
-            }
-        }
+        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
+
+        //for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
+        //{
+        //    for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
+        //    {
+        //        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
+        //    }
+        //}
     }
 
     bool show_demo_window = true;

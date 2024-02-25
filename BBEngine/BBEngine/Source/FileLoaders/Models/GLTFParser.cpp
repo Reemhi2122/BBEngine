@@ -80,6 +80,8 @@ namespace BBE {
 					{
 						gltfFile->nodes[i].mesh.primative[primitiveIndex].countData[curAttibute] = ParseAttribute(&gltfFile->nodes[i].mesh.primative[primitiveIndex].attributeData[curAttibute], attributeObject, accessorsList, bufferViews, attributes[curAttibute]);
 					}
+
+					gltfFile->totalVertexCount += gltfFile->nodes[i].mesh.primative[primitiveIndex].vertexCount;
 				}
 
 				if (primitiveObj["material"])
