@@ -28,6 +28,9 @@ namespace BBE {
 		void Update();
 		void CheckInput();
 
+		//Note(Stan):	This should be temp
+		void RenderToTexture();
+
 	private:
 		BBWindow m_Window;
 		BBTimer m_Timer;

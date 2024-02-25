@@ -64,7 +64,6 @@ namespace BBE
             MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
         }
         return -1;
-
     }
 
     void BBEngine::Start()
@@ -97,37 +96,6 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
-        m_DrawToTexture = BBNew(m_StackAllocator, DrawToTexture)(m_Graphics, &m_RTTVertexShader, &m_RTTPixelShader);
-
-        ID3D11Texture2D* texture;
-        D3D11_TEXTURE2D_DESC tex_desc;
-        tex_desc.Format = DXGI_FORMAT_A8_UNORM;
-        tex_desc.Width = 1024;
-        tex_desc.Height = 1024;
-        tex_desc.MipLevels = 1;
-        tex_desc.ArraySize = 1;
-        tex_desc.SampleDesc.Count = 1;
-        tex_desc.SampleDesc.Quality = 0;
-        tex_desc.Usage = D3D11_USAGE_DEFAULT;
-        tex_desc.BindFlags = D3D11_BIND_RENDER_TARGET;
-        tex_desc.CPUAccessFlags = 0;
-        tex_desc.MiscFlags = 0;
-
-        m_Graphics.GetDevice()->CreateTexture2D(&tex_desc, nullptr, &texture);
-
-        ID3D11RenderTargetView* renderTarget;
-        D3D11_RENDER_TARGET_VIEW_DESC render_desc = {};
-        render_desc.Format = DXGI_FORMAT_A8_UNORM;
-        render_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-        render_desc.Texture2D.MipSlice = 0;
-
-        m_Graphics.GetDevice()->CreateRenderTargetView(texture, &render_desc, &renderTarget);
-
-        m_Graphics.GetContext()->OMSetRenderTargets(1, &renderTarget, nullptr);
-
-        const float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-        m_Graphics.GetContext()->ClearRenderTargetView(renderTarget, color);
-
         for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
         {
             for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
@@ -135,18 +103,6 @@ namespace BBE
                 m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
             }
         }
-
-        for (size_t i = 0; i < m_Model.size(); i++)
-        {
-            m_Model[i]->Update(0.0f);
-        }
-
-        for (size_t i = 0; i < m_Model.size(); i++)
-        {
-            m_Model[i]->Draw(m_Graphics);
-        }
-
-        m_Graphics.ResetRenderTarget();
     }
 
     bool show_demo_window = true;
@@ -220,5 +176,51 @@ namespace BBE
         }
 
         cam->Update();
+    }
+
+    void BBEngine::RenderToTexture() {
+        m_DrawToTexture = BBNew(m_StackAllocator, DrawToTexture)(m_Graphics, &m_RTTVertexShader, &m_RTTPixelShader);
+
+        ID3D11Texture2D* texture;
+        D3D11_TEXTURE2D_DESC tex_desc;
+        tex_desc.Format = DXGI_FORMAT_A8_UNORM;
+        tex_desc.Width = 1024;
+        tex_desc.Height = 1024;
+        tex_desc.MipLevels = 1;
+        tex_desc.ArraySize = 1;
+        tex_desc.SampleDesc.Count = 1;
+        tex_desc.SampleDesc.Quality = 0;
+        tex_desc.Usage = D3D11_USAGE_DEFAULT;
+        tex_desc.BindFlags = D3D11_BIND_RENDER_TARGET;
+        tex_desc.CPUAccessFlags = 0;
+        tex_desc.MiscFlags = 0;
+
+        m_Graphics.GetDevice()->CreateTexture2D(&tex_desc, nullptr, &texture);
+
+        ID3D11RenderTargetView* renderTarget;
+        D3D11_RENDER_TARGET_VIEW_DESC render_desc = {};
+        render_desc.Format = DXGI_FORMAT_A8_UNORM;
+        render_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+        render_desc.Texture2D.MipSlice = 0;
+
+        m_Graphics.GetDevice()->CreateRenderTargetView(texture, &render_desc, &renderTarget);
+
+        m_Graphics.GetContext()->OMSetRenderTargets(1, &renderTarget, nullptr);
+
+        const float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+        m_Graphics.GetContext()->ClearRenderTargetView(renderTarget, color);
+
+
+        for (size_t i = 0; i < m_Model.size(); i++)
+        {
+            m_Model[i]->Update(0.0f);
+        }
+
+        for (size_t i = 0; i < m_Model.size(); i++)
+        {
+            m_Model[i]->Draw(m_Graphics);
+        }
+
+        m_Graphics.ResetRenderTarget();
     }
 }
