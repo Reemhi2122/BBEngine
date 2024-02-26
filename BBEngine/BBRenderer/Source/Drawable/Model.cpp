@@ -53,44 +53,45 @@
 
 Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader)
 {
-	BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(a_File->totalVertexCount * sizeof(BBE::Vertex)));
-
-	if (vertices == nullptr)
-		return;
-
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
 		for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
 		{
 			BBE::Mesh::Primative& curPrim = a_File->nodes[nodeIndex].mesh.primative[primitiveIndex];
+			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
+
+			if (vertices == nullptr)
+				return;
+
 			for (size_t i = 0; i < curPrim.vertexCount; i++)
 			{
 				vertices[i].pos = curPrim.vertices[i];
 				vertices[i].texCoords = curPrim.texCoords[i];
 				vertices[i].normals = curPrim.normals[i];
 			}
+
+			char texturePath[64] = "";
+			strcat(texturePath, a_File->gltfPath);
+			strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
+
+			ModelPrimitive prim;
+
+			prim.m_Texture = new Texture(a_Gfx, texturePath);
+			//AddBind(m_Texture);
+			
+			prim.vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
+			//AddBind(vBuffer);
+
+			prim.m_Sampler = new Sampler(a_Gfx);
+			//AddBind(m_Sampler);
+
+			prim.m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
+			//AddIndexBuffer(m_IndexBuffer);
 		}
 	}
 
-	char texturePath[64] = "";
-	strcat(texturePath, a_File->gltfPath);
-	strcat(texturePath, a_ModelFile.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
-
-	m_Texture = new Texture(a_Gfx, texturePath);
-	AddBind(m_Texture);
-
-	vBuffer = new VertexBuffer(a_Gfx, vertices, a_ModelFile.vertexCount);
-	AddBind(vBuffer);
-
-	m_Sampler = new Sampler(a_Gfx);
-	AddBind(m_Sampler);
-
 	AddBind(a_VertexShader);
-
 	AddBind(a_PixelShader);
-
-	IBuffer = new IndexBuffer(a_Gfx, a_ModelFile.indices, a_ModelFile.indicesAmount);
-	AddIndexBuffer(IBuffer);
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },

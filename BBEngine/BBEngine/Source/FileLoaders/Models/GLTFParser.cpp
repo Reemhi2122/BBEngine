@@ -67,6 +67,7 @@ namespace BBE {
 			for (uint32_t primitiveIndex = 0; primitiveIndex < gltfFile->nodes[i].mesh.primitiveCount; primitiveIndex++)
 			{
 				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
+				gltfFile->PrimitiveCount++;
 
 				constexpr int NumOfAttibutes = 4;
 				const char* attributes[NumOfAttibutes] = {{"POSITION"}, {"TEXCOORD_0"}, {"NORMAL"}, {"TANGENT"}};

@@ -110,6 +110,7 @@ namespace BBE {
 		char* gltfPath;
 		
 		uint32_t totalVertexCount;
+		uint32_t PrimitiveCount;
 	};
 
 }

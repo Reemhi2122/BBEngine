@@ -21,13 +21,18 @@ public:
 private:
 	Graphics* m_Graphics;
 
-	VertexBuffer* vBuffer;
-	IndexBuffer* IBuffer;
+	struct ModelPrimitive {
+	
+		VertexBuffer* vBuffer;
+		Texture* m_Texture;
+		Sampler* m_Sampler;
+		IndexBuffer* m_IndexBuffer;
+
+	}* m_Primitives;
+
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
 	TransformBuf* m_TransformBuf;
-	Texture* m_Texture;
-	Sampler* m_Sampler;
 
 	float m_Angle;
 	Vector3 m_Translation;
