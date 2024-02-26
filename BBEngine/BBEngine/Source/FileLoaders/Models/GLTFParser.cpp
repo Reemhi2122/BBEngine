@@ -30,6 +30,7 @@ namespace BBE {
 		//Currently only supports one scene
 
 		//Go through all nodes
+		gltfFile->PrimitiveCount = 0;
 		BBE::JSONList& nodesList = parser.GetRootNode()["nodes"]->GetListBB();
 		gltfFile->nodes = reinterpret_cast<Node*>(malloc(nodesList.size() * sizeof(Node)));
 		gltfFile->nodeAmount = nodesList.size();

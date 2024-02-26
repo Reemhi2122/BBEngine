@@ -10,6 +10,8 @@ public:
 	Model() = default;
 	Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader);
 	
+	void Draw(Graphics& a_Gfx) noexcept override;
+
 	void Update(float a_DeltaTime) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
@@ -36,4 +38,6 @@ private:
 
 	float m_Angle;
 	Vector3 m_Translation;
+
+	uint32_t m_PrimitiveCount;
 };

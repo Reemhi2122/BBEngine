@@ -53,9 +53,12 @@
 
 Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader)
 {
+	m_Primitives = reinterpret_cast<ModelPrimitive*>(malloc(a_File->PrimitiveCount * sizeof(ModelPrimitive)));
+
+	uint32_t curPrimitiveCount = 0;
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
-		for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
+		for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++, curPrimitiveCount++)
 		{
 			BBE::Mesh::Primative& curPrim = a_File->nodes[nodeIndex].mesh.primative[primitiveIndex];
 			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
@@ -74,21 +77,21 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 			strcat(texturePath, a_File->gltfPath);
 			strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
 
-			ModelPrimitive prim;
-
-			prim.m_Texture = new Texture(a_Gfx, texturePath);
+			m_Primitives[curPrimitiveCount].m_Texture = new Texture(a_Gfx, texturePath);
 			//AddBind(m_Texture);
 			
-			prim.vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
+			m_Primitives[curPrimitiveCount].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
 			//AddBind(vBuffer);
 
-			prim.m_Sampler = new Sampler(a_Gfx);
+			m_Primitives[curPrimitiveCount].m_Sampler = new Sampler(a_Gfx);
 			//AddBind(m_Sampler);
 
-			prim.m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
+			m_Primitives[curPrimitiveCount].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
 			//AddIndexBuffer(m_IndexBuffer);
 		}
 	}
+
+	m_PrimitiveCount = curPrimitiveCount;
 
 	AddBind(a_VertexShader);
 	AddBind(a_PixelShader);
@@ -107,6 +110,20 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 
 	m_TransformBuf = new TransformBuf(a_Gfx, *this);
 	AddBind(m_TransformBuf);
+}
+
+void Model::Draw(Graphics& a_Gfx) noexcept
+{
+	for (size_t i = 0; i < m_PrimitiveCount; i++) 
+	{
+		m_Primitives[i].vBuffer->Bind(a_Gfx);
+		m_Primitives[i].m_Texture->Bind(a_Gfx);
+		m_Primitives[i].m_Sampler->Bind(a_Gfx);
+		m_Primitives[i].m_IndexBuffer->Bind(a_Gfx);
+
+		SetIndexBuffer(m_Primitives[i].m_IndexBuffer);
+		Drawable::Draw(a_Gfx);
+	}
 }
 
 void Model::Update(float a_DeltaTime) noexcept

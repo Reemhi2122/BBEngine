@@ -13,7 +13,7 @@ public:
 	virtual ~Drawable() = default;
 
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
-	void Draw(Graphics& a_Gfx) const noexcept;
+	virtual void Draw(Graphics& a_Gfx) noexcept;
 	virtual void Update(float dt) noexcept = 0;
 	
 	void AddBind(Bindable* a_Bind) noexcept;
@@ -22,8 +22,8 @@ public:
 	virtual const std::vector<Bindable*>& GetStaticBinds() const noexcept = 0;
 
 protected:
-	void SetIndexBuffer(IndexBuffer* a_Buffer);
 	IndexBuffer* GetIndexBuffer() const;
+	void SetIndexBuffer(IndexBuffer* a_Buffer);
 
 private:
 	IndexBuffer* m_IndexBuffer = nullptr;
