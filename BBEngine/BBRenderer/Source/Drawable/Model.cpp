@@ -78,16 +78,9 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 			strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
 
 			m_Primitives[curPrimitiveCount].m_Texture = new Texture(a_Gfx, texturePath);
-			//AddBind(m_Texture);
-			
 			m_Primitives[curPrimitiveCount].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
-			//AddBind(vBuffer);
-
 			m_Primitives[curPrimitiveCount].m_Sampler = new Sampler(a_Gfx);
-			//AddBind(m_Sampler);
-
 			m_Primitives[curPrimitiveCount].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
-			//AddIndexBuffer(m_IndexBuffer);
 		}
 	}
 
@@ -138,4 +131,9 @@ DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 		//DirectX::XMMatrixRotationZ(m_Angle) *
 		DirectX::XMMatrixScaling(0.00800000037997961f, 0.00800000037997961f, 0.00800000037997961f) *
 		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y -15, 30);
+}
+
+void Model::SetPosition(Vector3 a_Position)
+{
+	m_Translation = a_Position;
 }

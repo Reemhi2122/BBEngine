@@ -27,8 +27,6 @@ namespace BBE {
 		strcat(binPath, parser.GetRootNode()["buffers"]->GetListBB()[0]->GetObjectBB()["uri"]->GetStringBB().c_str());
 		m_BinFile = BBSystem::OpenFileReadBB(binPath);
 		
-		//Currently only supports one scene
-
 		//Go through all nodes
 		gltfFile->PrimitiveCount = 0;
 		BBE::JSONList& nodesList = parser.GetRootNode()["nodes"]->GetListBB();

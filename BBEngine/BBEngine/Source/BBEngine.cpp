@@ -96,15 +96,17 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
-        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
+        for (size_t i = 0; i < 10; i++) {
+            for (size_t y = 0; y < 10; y++) {
+                m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
+                m_Model[i * 50 + y]->SetPosition(Vector3(i * 50, y * 50, 0));
+            }
+        }
 
-        //for (size_t nodeIndex = 0; nodeIndex < file->nodeAmount; nodeIndex++)
-        //{
-        //    for (size_t primitiveIndex = 0; primitiveIndex < file->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
-        //    {
-        //        m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file->nodes[nodeIndex].mesh.primative[primitiveIndex], file, &m_VertexShader, &m_PixelShader));
-        //    }
-        //}
+        //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
+        //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
+
+        m_Model[1]->SetPosition(Vector3(50, 0, 0));
     }
 
     bool show_demo_window = true;

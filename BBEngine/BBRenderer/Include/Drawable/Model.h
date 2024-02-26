@@ -15,6 +15,8 @@ public:
 	void Update(float a_DeltaTime) noexcept override;
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
+	void SetPosition(Vector3 a_Position);
+
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	{
 		return std::vector<Bindable*>();
