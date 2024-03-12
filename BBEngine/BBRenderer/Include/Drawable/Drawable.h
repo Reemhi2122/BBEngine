@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include <DirectXMath.h>
 #include <vector>
+#include "BBMath.h"
 
 class Bindable;
 class IndexBuffer;
@@ -13,11 +14,14 @@ public:
 	virtual ~Drawable() = default;
 
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
+	virtual Vector3 GetPosition() const { return Vector3(); };
+	
 	virtual void Draw(Graphics& a_Gfx) noexcept;
 	virtual void Update(float dt) noexcept = 0;
 	
 	void AddBind(Bindable* a_Bind) noexcept;
 	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
+
 
 	virtual const std::vector<Bindable*>& GetStaticBinds() const noexcept = 0;
 

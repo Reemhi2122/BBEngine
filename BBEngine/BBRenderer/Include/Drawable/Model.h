@@ -16,6 +16,7 @@ public:
 	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
 	void SetPosition(Vector3 a_Position);
+	Vector3 GetPosition() const;
 
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	{

@@ -130,10 +130,15 @@ DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 		//DirectX::XMMatrixRotationY(m_Angle) *
 		//DirectX::XMMatrixRotationZ(m_Angle) *
 		DirectX::XMMatrixScaling(0.00800000037997961f, 0.00800000037997961f, 0.00800000037997961f) *
-		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y -15, 30);
+		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y - 15, m_Translation.z);
 }
 
 void Model::SetPosition(Vector3 a_Position)
 {
 	m_Translation = a_Position;
+}
+
+Vector3 Model::GetPosition() const
+{
+	return m_Translation;
 }

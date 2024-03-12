@@ -96,17 +96,16 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
-        for (size_t i = 0; i < 10; i++) {
-            for (size_t y = 0; y < 10; y++) {
+
+        int XSize = 2, YSize = 2;
+        for (size_t i = 0; i < XSize; i++) {
+            for (size_t y = 0; y < YSize; y++) {
                 m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
-                m_Model[i * 50 + y]->SetPosition(Vector3(i * 50, y * 50, 0));
+                m_Model[i * YSize + y]->SetPosition(Vector3(i * 50, 0, y * 50));
             }
         }
 
         //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
-        //m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
-
-        m_Model[1]->SetPosition(Vector3(50, 0, 0));
     }
 
     bool show_demo_window = true;
