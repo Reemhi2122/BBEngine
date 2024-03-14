@@ -80,11 +80,11 @@ namespace BBE
         );
 
         m_SpotLight = SpotLight(
-            Vector3(0.0f, 2.0f, 0.0f),
+            Vector3(0.0f, 0.000001f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-            100.f
+            10.0f
         );
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
@@ -97,7 +97,7 @@ namespace BBE
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
 
-        int XSize = 2, YSize = 2;
+        int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 m_Model.push_back(BBNew(m_StackAllocator, Model)(m_Graphics, file, &m_VertexShader, &m_PixelShader));
