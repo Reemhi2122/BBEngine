@@ -38,9 +38,12 @@ namespace BBE {
 		for (uint32_t curScene = 0; curScene < 1; curScene++)
 		{
 			BBE::JSONList& sceneNodesList = sceneList[curScene]->GetObjectBB()["nodes"]->GetListBB();
-			for (uint32_t sceneHeadNodes = 0; sceneHeadNodes < sceneNodesList.size(); sceneHeadNodes++)
+			for (uint32_t sceneHeadNodeIndex = 0; sceneHeadNodeIndex < sceneNodesList.size(); sceneHeadNodeIndex++)
 			{
+				uint32_t curIndex = sceneNodesList[sceneHeadNodeIndex]->GetFloatBB();
+				BBE::Node* curNode = &gltfFile->nodes[curIndex];
 
+				CalculateNode(curNode);
 			}
 
 			//Go through all nodes in scene
@@ -198,6 +201,24 @@ namespace BBE {
 		}
 
 		return gltfFile;
+	}
+
+
+	void CalculateNode(BBE::Node* a_CurNode, BBE::JSONList* a_AllNodes)
+	{
+		//Do this node?
+
+		//Have child nodes
+		if (a_AllNodes[sceneNodesList[sceneHeadNodeIndex]->GetFloatBB()]->GetObjectBB()["children"])
+		{
+			BBE::JSONList childNodes = a_AllNodes[sceneNodesList[sceneHeadNodeIndex]->GetFloatBB()]->GetObjectBB()["children"]->GetListBB();
+
+			for (size_t childNodeIndex = 0; childNodeIndex < childNodes.size(); childNodeIndex++)
+			{
+
+				CalculateNode(a_AllNodes[childNodeIndex]);
+			}
+		}
 	}
 
 	//TODO(Stan):	Currently, I am passing a lot of values as reference that could be
