@@ -93,15 +93,13 @@ namespace BBE {
 	//	uint32_t warpT;
 	//} sampler;
 
-
-
 	struct Node
 	{
+		Node* Children;
 		Mesh mesh;
 		Vector3 translation;
-		//quads
+		Vector4 rotation;
 		Vector3 Scale;
-		//Matrix
 	};
 
 	struct GLTFFile {

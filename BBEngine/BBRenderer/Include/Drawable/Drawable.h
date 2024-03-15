@@ -14,6 +14,8 @@ public:
 	virtual ~Drawable() = default;
 
 	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
+
+	void SetPosition(Vector3 a_Position) { };
 	virtual Vector3 GetPosition() const { return Vector3(); };
 	
 	virtual void Draw(Graphics& a_Gfx) noexcept;
@@ -21,7 +23,6 @@ public:
 	
 	void AddBind(Bindable* a_Bind) noexcept;
 	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
-
 
 	virtual const std::vector<Bindable*>& GetStaticBinds() const noexcept = 0;
 

@@ -35,8 +35,7 @@ namespace BBE {
 		BBWindow m_Window;
 		BBTimer m_Timer;
 
-		std::vector<Box*> m_Boxes;
-		std::vector<Model*> m_Model;
+		std::vector<Drawable*> m_Model;
 		DrawToTexture* m_DrawToTexture;
 
 		VertexShader m_VertexShader;
