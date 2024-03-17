@@ -12,6 +12,7 @@ namespace BBE {
 		~GLTFParser();
 
 		GLTFFile* Parse(char* m_GLTFPath, char* a_GLTFName);
+		void CalculateNode(BBE::Node* a_CurNode, BBE::JSONList& a_AllNodes, uint32_t a_CurNodeIndex, BBE::GLTFFile* a_GLTFFile, JsonParser* a_Parser);
 		uint32_t ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, JSONList& a_AccessorList, JSONList& a_BufferViews, const char* a_Attribute);
 
 	private:
