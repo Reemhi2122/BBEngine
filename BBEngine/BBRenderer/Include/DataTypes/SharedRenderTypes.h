@@ -95,6 +95,7 @@ namespace BBE {
 
 	struct Node
 	{
+		bool ShouldRender;
 		Node* Children;
 		Mesh mesh;
 		Vector3 translation;

@@ -107,9 +107,9 @@ namespace BBE
             }
         }
 
-        //Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, LanternGLTFFile, &m_VertexShader, &m_PixelShader);
-        //lantern->SetPosition(Vector3(0, 0, -20));
-        //m_Model.push_back(lantern);
+        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, LanternGLTFFile, &m_VertexShader, &m_PixelShader);
+        lantern->SetPosition(Vector3(0, 0, -20));
+        m_Model.push_back(lantern);
     }
 
     bool show_demo_window = true;

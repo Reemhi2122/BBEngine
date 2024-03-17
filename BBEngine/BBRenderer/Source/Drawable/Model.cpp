@@ -8,29 +8,31 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 	uint32_t curPrimitiveCount = 0;
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
-		for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++, curPrimitiveCount++)
-		{
-			BBE::Mesh::Primative& curPrim = a_File->nodes[nodeIndex].mesh.primative[primitiveIndex];
-			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
-
-			if (vertices == nullptr)
-				return;
-
-			for (size_t i = 0; i < curPrim.vertexCount; i++)
+		if (a_File->nodes[nodeIndex].ShouldRender) {
+			for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++, curPrimitiveCount++)
 			{
-				vertices[i].pos = curPrim.vertices[i];
-				vertices[i].texCoords = curPrim.texCoords[i];
-				vertices[i].normals = curPrim.normals[i];
+				BBE::Mesh::Primative& curPrim = a_File->nodes[nodeIndex].mesh.primative[primitiveIndex];
+				BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
+
+				if (vertices == nullptr)
+					return;
+
+				for (size_t i = 0; i < curPrim.vertexCount; i++)
+				{
+					vertices[i].pos = curPrim.vertices[i];
+					vertices[i].texCoords = curPrim.texCoords[i];
+					vertices[i].normals = curPrim.normals[i];
+				}
+
+				char texturePath[64] = "";
+				strcat(texturePath, a_File->gltfPath);
+				strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
+
+				m_Primitives[curPrimitiveCount].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
+				m_Primitives[curPrimitiveCount].m_Texture = new Texture(a_Gfx, texturePath);
+				m_Primitives[curPrimitiveCount].m_Sampler = new Sampler(a_Gfx);
+				m_Primitives[curPrimitiveCount].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
 			}
-
-			char texturePath[64] = "";
-			strcat(texturePath, a_File->gltfPath);
-			strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
-
-			m_Primitives[curPrimitiveCount].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
-			m_Primitives[curPrimitiveCount].m_Texture = new Texture(a_Gfx, texturePath);
-			m_Primitives[curPrimitiveCount].m_Sampler = new Sampler(a_Gfx);
-			m_Primitives[curPrimitiveCount].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
 		}
 	}
 

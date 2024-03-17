@@ -53,153 +53,160 @@ namespace BBE {
 
 	void GLTFParser::CalculateNode(BBE::Node* a_CurNode, BBE::JSONList& a_AllNodes, uint32_t a_CurNodeIndex, BBE::GLTFFile* a_GLTFFile, JsonParser* a_Parser)
 	{
-		uint32_t curMeshIndex = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
-		BBE::JSONObject curMesh = a_Parser->GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
+		if (a_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]) {
+			a_CurNode->ShouldRender = true;
 
-		a_CurNode->translation = Vector3(0, 0, 0);
-		if (a_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
-		{
-			BBE::JSONList list = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
-			a_CurNode->translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
-		}
+			uint32_t curMeshIndex = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
+			BBE::JSONObject curMesh = a_Parser->GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
 
-		//Assign mesh name
-		//Note(Stan):	This only works when doing it indirectly,
-		//				Look into a way of fixing this.
-		a_CurNode->mesh.name = "";
-
-		if (curMesh["name"])
-		{
-			std::string test = curMesh["name"]->GetStringBB();
-			a_CurNode->mesh.name = test.c_str();
-		}
-
-		JSONList& accessorsList = a_Parser->GetRootNode()["accessors"]->GetListBB();
-		JSONList& bufferViews = a_Parser->GetRootNode()["bufferViews"]->GetListBB();
-		JSONList& materials = a_Parser->GetRootNode()["materials"]->GetListBB();
-		JSONList& textures = a_Parser->GetRootNode()["textures"]->GetListBB();
-		JSONList& images = a_Parser->GetRootNode()["images"]->GetListBB();
-
-		//Go over all primitives
-		BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
-		a_CurNode->mesh.primitiveCount = primitiveList.size();
-		a_CurNode->mesh.primative = reinterpret_cast<Mesh::Primative*>(malloc(a_CurNode->mesh.primitiveCount * sizeof(Mesh::Primative)));
-		for (uint32_t primitiveIndex = 0; primitiveIndex < a_CurNode->mesh.primitiveCount; primitiveIndex++)
-		{
-			JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
-			a_GLTFFile->PrimitiveCount++;
-
-			constexpr int NumOfAttibutes = 4;
-			const char* attributes[NumOfAttibutes] = { {"POSITION"}, {"TEXCOORD_0"}, {"NORMAL"}, {"TANGENT"} };
-
-			if (primitiveObj["attributes"])
+			a_CurNode->translation = Vector3(0, 0, 0);
+			if (a_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
 			{
-				//Note(Stan): Don't assume these are here..
-				JSONObject& attributeObject = primitiveObj["attributes"]->GetObjectBB();
-
-				for (size_t curAttibute = 0; curAttibute < NumOfAttibutes; curAttibute++)
-				{
-					a_CurNode->mesh.primative[primitiveIndex].countData[curAttibute] = ParseAttribute(&a_CurNode->mesh.primative[primitiveIndex].attributeData[curAttibute], attributeObject, accessorsList, bufferViews, attributes[curAttibute]);
-				}
-
-				a_GLTFFile->totalVertexCount += a_CurNode->mesh.primative[primitiveIndex].vertexCount;
+				BBE::JSONList list = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
+				a_CurNode->translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
 			}
 
-			if (primitiveObj["material"])
+			//Assign mesh name
+			//Note(Stan):	This only works when doing it indirectly,
+			//				Look into a way of fixing this.
+			a_CurNode->mesh.name = "";
+
+			if (curMesh["name"])
 			{
-				uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
+				std::string test = curMesh["name"]->GetStringBB();
+				a_CurNode->mesh.name = test.c_str();
+			}
 
-				if (materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"])
+			JSONList& accessorsList = a_Parser->GetRootNode()["accessors"]->GetListBB();
+			JSONList& bufferViews = a_Parser->GetRootNode()["bufferViews"]->GetListBB();
+			JSONList& materials = a_Parser->GetRootNode()["materials"]->GetListBB();
+			JSONList& textures = a_Parser->GetRootNode()["textures"]->GetListBB();
+			JSONList& images = a_Parser->GetRootNode()["images"]->GetListBB();
+
+			//Go over all primitives
+			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
+			a_CurNode->mesh.primitiveCount = primitiveList.size();
+			a_CurNode->mesh.primative = reinterpret_cast<Mesh::Primative*>(malloc(a_CurNode->mesh.primitiveCount * sizeof(Mesh::Primative)));
+			for (uint32_t primitiveIndex = 0; primitiveIndex < a_CurNode->mesh.primitiveCount; primitiveIndex++)
+			{
+				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
+				a_GLTFFile->PrimitiveCount++;
+
+				constexpr int NumOfAttibutes = 4;
+				const char* attributes[NumOfAttibutes] = { {"POSITION"}, {"TEXCOORD_0"}, {"NORMAL"}, {"TANGENT"} };
+
+				if (primitiveObj["attributes"])
 				{
-					JSONObject pbrMetallicRoughnessObj = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB();
+					//Note(Stan): Don't assume these are here..
+					JSONObject& attributeObject = primitiveObj["attributes"]->GetObjectBB();
 
-					if (pbrMetallicRoughnessObj["baseColorFactor"])
+					for (size_t curAttibute = 0; curAttibute < NumOfAttibutes; curAttibute++)
 					{
-						JSONList baseColorFactor = pbrMetallicRoughnessObj["baseColorFactor"]->GetListBB();
-						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorFactor =
+						a_CurNode->mesh.primative[primitiveIndex].countData[curAttibute] = ParseAttribute(&a_CurNode->mesh.primative[primitiveIndex].attributeData[curAttibute], attributeObject, accessorsList, bufferViews, attributes[curAttibute]);
+					}
+
+					a_GLTFFile->totalVertexCount += a_CurNode->mesh.primative[primitiveIndex].vertexCount;
+				}
+
+				if (primitiveObj["material"])
+				{
+					uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
+
+					if (materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"])
+					{
+						JSONObject pbrMetallicRoughnessObj = materials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB();
+
+						if (pbrMetallicRoughnessObj["baseColorFactor"])
+						{
+							JSONList baseColorFactor = pbrMetallicRoughnessObj["baseColorFactor"]->GetListBB();
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorFactor =
+								Vector3(
+									baseColorFactor[0]->GetFloatBB(),
+									baseColorFactor[1]->GetFloatBB(),
+									baseColorFactor[2]->GetFloatBB()
+								);
+						}
+
+						if (pbrMetallicRoughnessObj["baseColorTexture"])
+						{
+							uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
+							std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+							char* charPointer = (char*)malloc(str.size());
+							strcpy(charPointer, str.c_str());
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = charPointer;
+						}
+
+						if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
+						{
+							uint32_t metallicRoughnessTexture = pbrMetallicRoughnessObj["metallicRoughnessTexture"]->GetObjectBB()["index"]->GetFloatBB();
+							std::string str = images[(uint32_t)textures[metallicRoughnessTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+							char* charPointer = (char*)malloc(str.size());
+							strcpy(charPointer, str.c_str());
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.image.m_Path = charPointer;
+						}
+
+						if (pbrMetallicRoughnessObj["metallicFactor"])
+						{
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicFactor =
+								static_cast<uint32_t>(pbrMetallicRoughnessObj["metallicFactor"]->GetFloatBB());
+						}
+
+						if (pbrMetallicRoughnessObj["roughnessFactor"])
+						{
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.roughnessFactor =
+								static_cast<uint32_t>(pbrMetallicRoughnessObj["roughnessFactor"]->GetFloatBB());
+						}
+					}
+
+					if (materials[materialIndex]->GetObjectBB()["normalTexture"])
+					{
+						uint32_t normalTextureIndex = materials[materialIndex]->GetObjectBB()["normalTexture"]->GetObjectBB()["index"]->GetFloatBB();
+						std::string str = images[(uint32_t)textures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+						char* charPointer = (char*)malloc(str.size());
+						strcpy(charPointer, str.c_str());
+						a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.image.m_Path = charPointer;
+					}
+
+					if (materials[materialIndex]->GetObjectBB()["occlusionTexture"])
+					{
+						uint32_t occlusionTexture = materials[materialIndex]->GetObjectBB()["occlusionTexture"]->GetObjectBB()["index"]->GetFloatBB();
+						std::string str = images[(uint32_t)textures[occlusionTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+						char* charPointer = (char*)malloc(str.size());
+						strcpy(charPointer, str.c_str());
+						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
+					}
+
+					if (materials[materialIndex]->GetObjectBB()["emissiveTexture"])
+					{
+						uint32_t emissiveTexture = materials[materialIndex]->GetObjectBB()["emissiveTexture"]->GetObjectBB()["index"]->GetFloatBB();
+						std::string str = images[(uint32_t)textures[emissiveTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+						char* charPointer = (char*)malloc(str.size());
+						strcpy(charPointer, str.c_str());
+						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
+					}
+
+					if (materials[materialIndex]->GetObjectBB()["emissiveFactor"])
+					{
+						JSONList emissiveFactor = materials[materialIndex]->GetObjectBB()["emissiveFactor"]->GetListBB();
+						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveFactor =
 							Vector3(
-								baseColorFactor[0]->GetFloatBB(),
-								baseColorFactor[1]->GetFloatBB(),
-								baseColorFactor[2]->GetFloatBB()
+								emissiveFactor[0]->GetFloatBB(),
+								emissiveFactor[1]->GetFloatBB(),
+								emissiveFactor[2]->GetFloatBB()
 							);
 					}
-
-					if (pbrMetallicRoughnessObj["baseColorTexture"])
-					{
-						uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
-						std::string str = images[(uint32_t)textures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-						char* charPointer = (char*)malloc(str.size());
-						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = charPointer;
-					}
-
-					if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
-					{
-						uint32_t metallicRoughnessTexture = pbrMetallicRoughnessObj["metallicRoughnessTexture"]->GetObjectBB()["index"]->GetFloatBB();
-						std::string str = images[(uint32_t)textures[metallicRoughnessTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-						char* charPointer = (char*)malloc(str.size());
-						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.image.m_Path = charPointer;
-					}
-
-					if (pbrMetallicRoughnessObj["metallicFactor"])
-					{
-						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicFactor =
-							static_cast<uint32_t>(pbrMetallicRoughnessObj["metallicFactor"]->GetFloatBB());
-					}
-
-					if (pbrMetallicRoughnessObj["roughnessFactor"])
-					{
-						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.roughnessFactor =
-							static_cast<uint32_t>(pbrMetallicRoughnessObj["roughnessFactor"]->GetFloatBB());
-					}
 				}
 
-				if (materials[materialIndex]->GetObjectBB()["normalTexture"])
-				{
-					uint32_t normalTextureIndex = materials[materialIndex]->GetObjectBB()["normalTexture"]->GetObjectBB()["index"]->GetFloatBB();
-					std::string str = images[(uint32_t)textures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-					char* charPointer = (char*)malloc(str.size());
-					strcpy(charPointer, str.c_str());
-					a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.image.m_Path = charPointer;
-				}
-
-				if (materials[materialIndex]->GetObjectBB()["occlusionTexture"])
-				{
-					uint32_t occlusionTexture = materials[materialIndex]->GetObjectBB()["occlusionTexture"]->GetObjectBB()["index"]->GetFloatBB();
-					std::string str = images[(uint32_t)textures[occlusionTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-					char* charPointer = (char*)malloc(str.size());
-					strcpy(charPointer, str.c_str());
-					a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
-				}
-
-				if (materials[materialIndex]->GetObjectBB()["emissiveTexture"])
-				{
-					uint32_t emissiveTexture = materials[materialIndex]->GetObjectBB()["emissiveTexture"]->GetObjectBB()["index"]->GetFloatBB();
-					std::string str = images[(uint32_t)textures[emissiveTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-					char* charPointer = (char*)malloc(str.size());
-					strcpy(charPointer, str.c_str());
-					a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
-				}
-
-				if (materials[materialIndex]->GetObjectBB()["emissiveFactor"])
-				{
-					JSONList emissiveFactor = materials[materialIndex]->GetObjectBB()["emissiveFactor"]->GetListBB();
-					a_CurNode->mesh.primative[primitiveIndex].Material.emissiveFactor =
-						Vector3(
-							emissiveFactor[0]->GetFloatBB(),
-							emissiveFactor[1]->GetFloatBB(),
-							emissiveFactor[2]->GetFloatBB()
-						);
-				}
+				a_CurNode->mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&a_CurNode->mesh.primative[primitiveIndex].indices), primitiveObj, accessorsList, bufferViews, "indices");
 			}
-
-			a_CurNode->mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&a_CurNode->mesh.primative[primitiveIndex].indices), primitiveObj, accessorsList, bufferViews, "indices");
+		}
+		else {
+			a_CurNode->ShouldRender = false;
 		}
 
 		if (a_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"])
@@ -207,8 +214,8 @@ namespace BBE {
 			BBE::JSONList childNodes = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"]->GetListBB();
 			for (size_t childNodeIndex = 0; childNodeIndex < childNodes.size(); childNodeIndex++)
 			{
-				uint32_t index = childNodes[childNodeIndex]->GetFloatBB();
-				BBE::Node* node = &a_GLTFFile->nodes[index];
+				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
+				BBE::Node* node = &a_GLTFFile->nodes[a_CurNodeIndex];
 				CalculateNode(node, a_AllNodes, a_CurNodeIndex, a_GLTFFile, a_Parser);
 			}
 		}
@@ -221,7 +228,6 @@ namespace BBE {
 		uint32_t accessorIndex = 0;
 		uint32_t accessorByteOffset = 0;
 
-
 		uint32_t bufferViewIndex = 0;
 		uint32_t bufferCount = 0;
 		uint32_t byteLength = 0;
@@ -231,7 +237,10 @@ namespace BBE {
 		{
 			accessorIndex = static_cast<int>(a_AttributeObject[a_Attribute]->GetFloatBB());
 			bufferViewIndex = static_cast<int>(a_AccessorList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
-			accessorByteOffset = static_cast<int>(a_AccessorList[accessorIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+
+			if (a_AccessorList[accessorIndex]->GetObjectBB()["byteOffset"]) {
+				accessorByteOffset = static_cast<int>(a_AccessorList[accessorIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+			}
 
 			bufferCount = static_cast<int>(a_AccessorList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
 
