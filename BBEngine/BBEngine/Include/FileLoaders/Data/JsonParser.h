@@ -69,6 +69,8 @@ namespace BBE {
 		JsonParser(const char* a_FilePath);
 		~JsonParser();
 
+		void Clear();
+
 		void Parse(const char* a_FilePath);
 		void WriteJson(const char* a_FilePath);
 		JSONObject GetRootNode() const noexcept;

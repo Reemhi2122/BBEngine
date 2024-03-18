@@ -46,6 +46,9 @@ namespace BBE {
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 
+		GLTFFile m_SponzaFile;
+		GLTFFile m_LanternFile;
+
 		DirectionalLight m_DirectionalLight;
 		SpotLight m_SpotLight;
 

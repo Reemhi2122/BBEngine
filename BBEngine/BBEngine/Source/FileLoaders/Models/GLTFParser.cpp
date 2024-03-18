@@ -3,26 +3,22 @@
 namespace BBE {
 
 	GLTFParser::GLTFParser() {}
-
-	GLTFParser::GLTFParser(char* m_GLTFPath, char* a_GLTFName) {
-		Parse(m_GLTFPath, a_GLTFName);
-	}
-
 	GLTFParser::~GLTFParser() {}
 
 	//TODO(Stan):	Convert this function to using custom allocation
 	//				and look into best way of giving the file
-	GLTFFile* GLTFParser::Parse(char* a_GLTFPath, char* a_GLTFName) {
+	bool GLTFParser::Parse(char* a_GLTFPath, char* a_GLTFName, GLTFFile* a_GLTFFile) 
+	{
+		if (a_GLTFFile == nullptr)
+			return false;
 
-		GLTFFile* gltfFile = reinterpret_cast<GLTFFile*>(malloc(sizeof(GLTFFile)));
-		if (gltfFile == nullptr)
-			return nullptr;
-
-		gltfFile->gltfPath = a_GLTFPath;
+		m_GLTFFile = a_GLTFFile;
+		m_GLTFFile->gltfPath = a_GLTFPath;
 
 		char GLTFPath[64] = "";
 		strcat(GLTFPath, a_GLTFPath);
 		strcat(GLTFPath, a_GLTFName);
+		m_Parser.Clear();
 		m_Parser.Parse(GLTFPath);
 
 		char binPath[64] = "";
@@ -30,13 +26,13 @@ namespace BBE {
 		strcat(binPath, m_Parser.GetRootNode()["buffers"]->GetListBB()[0]->GetObjectBB()["uri"]->GetStringBB().c_str());
 		m_BinFile = BBSystem::OpenFileReadBB(binPath);
 
-		BBE::JSONList& AllNodes = m_Parser.GetRootNode()["nodes"]->GetListBB();
-		gltfFile->nodes = reinterpret_cast<Node*>(malloc(AllNodes.size() * sizeof(Node)));
-		gltfFile->nodeAmount = AllNodes.size();
-		gltfFile->PrimitiveCount = 0;
+		m_AllNodes = m_Parser.GetRootNode()["nodes"]->GetListBB();
+		m_GLTFFile->nodes = reinterpret_cast<Node*>(malloc(m_AllNodes.size() * sizeof(Node)));
+		m_GLTFFile->nodeAmount = m_AllNodes.size();
+		m_GLTFFile->PrimitiveCount = 0;
 
-		if (gltfFile->nodes == nullptr)
-			return nullptr;
+		if (m_GLTFFile->nodes == nullptr)
+			return false;
 
 		m_CurAccessorsList = m_Parser.GetRootNode()["accessors"]->GetListBB();
 		m_CurBufferViews = m_Parser.GetRootNode()["bufferViews"]->GetListBB();
@@ -44,36 +40,34 @@ namespace BBE {
 		m_CurTextures = m_Parser.GetRootNode()["textures"]->GetListBB();
 		m_CurImages = m_Parser.GetRootNode()["images"]->GetListBB();
 
-		//Note(Stan):	Currently only supporting one scene
-		//				But this should be scalable
 		BBE::JSONList& sceneList = m_Parser.GetRootNode()["scenes"]->GetListBB();
-		for (uint32_t curScene = 0; curScene < 1; curScene++)
+		for (uint32_t curScene = 0; curScene < sceneList.size(); curScene++)
 		{
 			BBE::JSONList& sceneNodesList = sceneList[curScene]->GetObjectBB()["nodes"]->GetListBB();
 			for (uint32_t sceneHeadNodeIndex = 0; sceneHeadNodeIndex < sceneNodesList.size(); sceneHeadNodeIndex++)
 			{
 				uint32_t curIndex = sceneNodesList[sceneHeadNodeIndex]->GetFloatBB();
-				BBE::Node* curNode = &gltfFile->nodes[curIndex];
+				BBE::Node* curNode = &m_GLTFFile->nodes[curIndex];
 
-				CalculateNode(curNode, AllNodes, curIndex, gltfFile);
+				CalculateNode(curNode, curIndex);
 			}
 		}
 
-		return gltfFile;
+		return true;
 	}
 
-	void GLTFParser::CalculateNode(BBE::Node* a_CurNode, BBE::JSONList& a_AllNodes, uint32_t a_CurNodeIndex, BBE::GLTFFile* a_GLTFFile)
+	void GLTFParser::CalculateNode(BBE::Node* a_CurNode, uint32_t a_CurNodeIndex)
 	{
-		if (a_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]) {
+		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]) {
 			a_CurNode->ShouldRender = true;
 
-			uint32_t curMeshIndex = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
+			uint32_t curMeshIndex = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
 			BBE::JSONObject curMesh = m_Parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
 
 			a_CurNode->translation = Vector3(0, 0, 0);
-			if (a_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
+			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
 			{
-				BBE::JSONList list = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
+				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
 				a_CurNode->translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
 			}
 
@@ -94,14 +88,13 @@ namespace BBE {
 			for (uint32_t primitiveIndex = 0; primitiveIndex < a_CurNode->mesh.primitiveCount; primitiveIndex++)
 			{
 				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
-				a_GLTFFile->PrimitiveCount++;
+				m_GLTFFile->PrimitiveCount++;
 
 				constexpr int NumOfAttibutes = 4;
 				const char* attributes[NumOfAttibutes] = { {"POSITION"}, {"TEXCOORD_0"}, {"NORMAL"}, {"TANGENT"} };
 
 				if (primitiveObj["attributes"])
 				{
-					//Note(Stan): Don't assume these are here..
 					JSONObject& attributeObject = primitiveObj["attributes"]->GetObjectBB();
 
 					for (size_t curAttibute = 0; curAttibute < NumOfAttibutes; curAttibute++)
@@ -109,7 +102,7 @@ namespace BBE {
 						a_CurNode->mesh.primative[primitiveIndex].countData[curAttibute] = ParseAttribute(&a_CurNode->mesh.primative[primitiveIndex].attributeData[curAttibute], attributeObject, attributes[curAttibute]);
 					}
 
-					a_GLTFFile->totalVertexCount += a_CurNode->mesh.primative[primitiveIndex].vertexCount;
+					m_GLTFFile->totalVertexCount += a_CurNode->mesh.primative[primitiveIndex].vertexCount;
 				}
 
 				if (primitiveObj["material"])
@@ -213,20 +206,18 @@ namespace BBE {
 			a_CurNode->ShouldRender = false;
 		}
 
-		if (a_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"])
+		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"])
 		{
-			BBE::JSONList childNodes = a_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"]->GetListBB();
+			BBE::JSONList childNodes = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"]->GetListBB();
 			for (size_t childNodeIndex = 0; childNodeIndex < childNodes.size(); childNodeIndex++)
 			{
 				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
-				BBE::Node* node = &a_GLTFFile->nodes[a_CurNodeIndex];
-				CalculateNode(node, a_AllNodes, a_CurNodeIndex, a_GLTFFile);
+				BBE::Node* node = &m_GLTFFile->nodes[a_CurNodeIndex];
+				CalculateNode(node, a_CurNodeIndex);
 			}
 		}
 	}
 
-	//TODO(Stan):	Currently, I am passing a lot of values as reference that could be
-	//				defined somewhere more global
 	uint32_t GLTFParser::ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute)
 	{
 		uint32_t accessorIndex = 0;

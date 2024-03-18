@@ -21,8 +21,6 @@
 namespace BBE
 {
     TaskDesc* testdesc = nullptr;
-    GLTFFile* SponzaGLTFFile;
-    GLTFFile* LanternGLTFFile;
 
     BBEngine::BBEngine()
         : m_Window(1600, 900, "BBWindow test")
@@ -70,8 +68,8 @@ namespace BBE
     void BBEngine::Start()
     {
         GLTFParser parser;
-        SponzaGLTFFile = parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf");
-        LanternGLTFFile = parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf");
+        parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
+        parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
@@ -82,7 +80,7 @@ namespace BBE
         );
 
         m_SpotLight = SpotLight(
-            Vector3(0.0f, 0.000001f, 0.0f),
+            Vector3(0.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -101,13 +99,13 @@ namespace BBE
         int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
-                Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, SponzaGLTFFile, &m_VertexShader, &m_PixelShader);
+                Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
                 Sponza->SetPosition(Vector3(i * 50, 0, y * 50));
                 m_Model.push_back(Sponza);
             }
         }
 
-        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, LanternGLTFFile, &m_VertexShader, &m_PixelShader);
+        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
         lantern->SetPosition(Vector3(0, 0, -20));
         m_Model.push_back(lantern);
     }

@@ -91,7 +91,15 @@ namespace BBE {
 
 	JsonParser::~JsonParser()
 	{
+		Clear();
+	}
+
+	void JsonParser::Clear()
+	{
+		m_Root = nullptr;
+		m_PrevPos = 0;
 		m_JsonAlloc.Clear();
+		m_FStream.Reset();
 	}
 
 	void JsonParser::Parse(const char* a_FilePath)

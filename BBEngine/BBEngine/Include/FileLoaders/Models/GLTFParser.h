@@ -8,19 +8,19 @@ namespace BBE {
 	class GLTFParser {
 	public:
 		GLTFParser();
-		GLTFParser(char* m_GLTFPath, char* a_GLTFName);
 		~GLTFParser();
 
-		GLTFFile* Parse(char* m_GLTFPath, char* a_GLTFName);
-		void CalculateNode(BBE::Node* a_CurNode, BBE::JSONList& a_AllNodes, uint32_t a_CurNodeIndex, BBE::GLTFFile* a_GLTFFile);
+		bool Parse(char* m_GLTFPath, char* a_GLTFName, GLTFFile* a_GLTFFile);
+		void CalculateNode(BBE::Node* a_CurNode, uint32_t a_CurNodeIndex);
 		uint32_t ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute);
 
 	private:
 		BBSystem::BBFILE m_BinFile;
 	
 		JsonParser m_Parser;
-		GLTFFile m_GLTFFile;
+		GLTFFile* m_GLTFFile;
 
+		JSONList m_AllNodes;
 		JSONList m_CurAccessorsList;
 		JSONList m_CurBufferViews;
 		JSONList m_CurMaterials;

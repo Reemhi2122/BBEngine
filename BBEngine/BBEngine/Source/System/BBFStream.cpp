@@ -25,6 +25,13 @@ namespace BBE {
 			m_BufferAlloc.Clear();
 		}
 
+		void BBFStream::Reset()
+		{
+			m_BufferPos = 0;
+			m_File = NULL;
+			m_BufferAlloc.Clear();
+		}
+
 		void BBFStream::LoadFile(const char* a_FilePath)
 		{
 			m_File = OpenFileReadBB(a_FilePath);

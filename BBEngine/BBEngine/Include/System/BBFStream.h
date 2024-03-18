@@ -29,6 +29,7 @@ namespace BBE {
 			BBFStream(const char* a_FilePath);
 			~BBFStream();
 
+			void Reset();
 			void LoadFile(const char* a_FilePath);
 
 			BB_BOOL Get(char& c);
