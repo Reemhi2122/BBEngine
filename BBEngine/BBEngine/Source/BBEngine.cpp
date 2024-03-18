@@ -70,6 +70,8 @@ namespace BBE
         GLTFParser parser;
         parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
         parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
+        parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
+        parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
@@ -106,8 +108,19 @@ namespace BBE
         }
 
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
-        lantern->SetPosition(Vector3(0, 0, -20));
+        lantern->SetPosition(Vector3(3, 0, 0));
+        lantern->SetScale(Vector3(0.2f, 0.2f, 0.2f));
         m_Model.push_back(lantern);
+
+        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
+        car->SetPosition(Vector3(0, 2, 0));
+        car->SetRotation(Vector3(3.1415f / 2.f, 0, 0));
+        car->SetScale(Vector3(10, 10, 10));
+        m_Model.push_back(car);
+
+        //Model* fox = BBNew(m_StackAllocator, Model)(m_Graphics, &m_FoxFile, &m_VertexShader, &m_PixelShader);
+        //fox->SetPosition(Vector3(-3, 2, 0));
+        //m_Model.push_back(fox);
     }
 
     bool show_demo_window = true;
@@ -165,19 +178,19 @@ namespace BBE
         }
         if (m_Window.m_Keyboard.KeyIsPressed(VK_LEFT))
         {
-            cam->camYaw += -0.01f;
+            cam->camYaw += -0.025f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed(VK_RIGHT))
         {
-            cam->camYaw += 0.01f;
+            cam->camYaw += 0.025f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed(VK_UP))
         {
-            cam->camPitch += -0.01f;
+            cam->camPitch += -0.025f;
         }
         if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
         {
-            cam->camPitch += 0.01f;
+            cam->camPitch += 0.025f;
         }
 
         cam->Update();

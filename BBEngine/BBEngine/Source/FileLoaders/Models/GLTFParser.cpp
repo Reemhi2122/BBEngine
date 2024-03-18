@@ -18,6 +18,7 @@ namespace BBE {
 		char GLTFPath[64] = "";
 		strcat(GLTFPath, a_GLTFPath);
 		strcat(GLTFPath, a_GLTFName);
+		
 		m_Parser.Clear();
 		m_Parser.Parse(GLTFPath);
 
@@ -28,6 +29,7 @@ namespace BBE {
 
 		m_AllNodes = m_Parser.GetRootNode()["nodes"]->GetListBB();
 		m_GLTFFile->nodes = reinterpret_cast<Node*>(malloc(m_AllNodes.size() * sizeof(Node)));
+		memset(m_GLTFFile->nodes, 0, m_AllNodes.size() * sizeof(Node));
 		m_GLTFFile->nodeAmount = m_AllNodes.size();
 		m_GLTFFile->PrimitiveCount = 0;
 
@@ -59,19 +61,23 @@ namespace BBE {
 	void GLTFParser::CalculateNode(BBE::Node* a_CurNode, uint32_t a_CurNodeIndex)
 	{
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]) {
-			a_CurNode->ShouldRender = true;
-
 			uint32_t curMeshIndex = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
 			BBE::JSONObject curMesh = m_Parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
 
-			a_CurNode->translation = Vector3(0, 0, 0);
+			a_CurNode->translation = Vector3(0.0f, 0.0f, 0.0f);
 			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
 			{
 				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
 				a_CurNode->translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
 			}
 
-			//Assign mesh name
+			a_CurNode->scale = Vector3(1.0f, 1.0f, 1.0f);
+			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"])
+			{
+				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"]->GetListBB();
+				a_CurNode->scale = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
+			}
+
 			//Note(Stan):	This only works when doing it indirectly,
 			//				Look into a way of fixing this.
 			a_CurNode->mesh.name = "Unnamed";
@@ -124,6 +130,7 @@ namespace BBE {
 								);
 						}
 
+						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.enabled = false;
 						if (pbrMetallicRoughnessObj["baseColorTexture"])
 						{
 							uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
@@ -132,6 +139,7 @@ namespace BBE {
 							char* charPointer = (char*)malloc(str.size());
 							strcpy(charPointer, str.c_str());
 							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = charPointer;
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.enabled = true;
 						}
 
 						if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
@@ -201,9 +209,6 @@ namespace BBE {
 
 				a_CurNode->mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&a_CurNode->mesh.primative[primitiveIndex].indices), primitiveObj, "indices");
 			}
-		}
-		else {
-			a_CurNode->ShouldRender = false;
 		}
 
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"])

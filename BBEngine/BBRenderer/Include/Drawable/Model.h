@@ -18,6 +18,12 @@ public:
 	void SetPosition(Vector3 a_Position);
 	Vector3 GetPosition() const;
 
+	void SetRotation(Vector3 a_Position);
+	Vector3 GetRotation() const;
+
+	void SetScale(Vector3 a_Position);
+	Vector3 GetScale() const;
+
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	{
 		return std::vector<Bindable*>();
@@ -26,21 +32,29 @@ public:
 private:
 	Graphics* m_Graphics;
 
-	struct ModelPrimitive {
-	
-		VertexBuffer* vBuffer;
-		Texture* m_Texture;
-		Sampler* m_Sampler;
-		IndexBuffer* m_IndexBuffer;
+	struct ModelNodes
+	{
+		uint32_t primitiveCount = 0;
+		TransformBuf* transformBuf = nullptr;
+		
+		struct ModelPrimitive
+		{
+			VertexBuffer* vBuffer;
+			Texture* m_Texture;
+			Sampler* m_Sampler;
+			IndexBuffer* m_IndexBuffer;
 
-	}* m_Primitives;
+		}* primitives = nullptr;
+
+	}* m_Nodes = nullptr;
 
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
-	TransformBuf* m_TransformBuf;
 
-	float m_Angle;
-	Vector3 m_Translation;
+	Vector3 m_Scale = Vector3(1, 1, 1);
+	Vector3 m_Rotation = Vector3(0, 0, 0);
+	Vector3 m_Translation = Vector3(0, 0, 0);
 
-	uint32_t m_PrimitiveCount;
+	uint32_t m_nodeCount;
 };
+

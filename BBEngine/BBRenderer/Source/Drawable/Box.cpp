@@ -81,7 +81,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 		AddIndexFromStatic();
 	}
 
-	m_TransformBuf = new TransformBuf(a_Gfx, *this);
+	m_TransformBuf = new TransformBuf(a_Gfx, *this, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0));
 	AddBind(m_TransformBuf);
 }
 

@@ -26,6 +26,7 @@ namespace BBE {
 			char* m_Path;
 		} image;
 
+		bool enabled = false;
 		float scale;
 		float strenght;
 		uint32_t texCoordIndex;
@@ -95,12 +96,11 @@ namespace BBE {
 
 	struct Node
 	{
-		bool ShouldRender;
 		Node* Children;
 		Mesh mesh;
-		Vector3 translation;
-		Vector4 rotation;
-		Vector3 Scale;
+		Vector3 translation = Vector3(0.0, 0.0, 0.0);
+		Vector3 rotation = Vector3(0.0, 0.0, 0.0);
+		Vector3 scale = Vector3(1.0, 1.0, 1.0);
 	};
 
 	struct GLTFFile {

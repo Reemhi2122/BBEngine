@@ -48,6 +48,8 @@ namespace BBE {
 
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;
+		GLTFFile m_CarFile;
+		GLTFFile m_FoxFile;
 
 		DirectionalLight m_DirectionalLight;
 		SpotLight m_SpotLight;

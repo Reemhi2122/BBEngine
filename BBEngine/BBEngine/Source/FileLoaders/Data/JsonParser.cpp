@@ -91,7 +91,6 @@ namespace BBE {
 
 	JsonParser::~JsonParser()
 	{
-		Clear();
 	}
 
 	void JsonParser::Clear()

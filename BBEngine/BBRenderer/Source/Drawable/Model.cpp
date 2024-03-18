@@ -3,40 +3,54 @@
 
 Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader)
 {
-	m_Primitives = reinterpret_cast<ModelPrimitive*>(malloc(a_File->PrimitiveCount * sizeof(ModelPrimitive)));
+	m_Nodes = reinterpret_cast<ModelNodes*>(malloc(a_File->nodeAmount * sizeof(ModelNodes)));
+	memset(m_Nodes, 0, a_File->nodeAmount * sizeof(ModelNodes));
 
-	uint32_t curPrimitiveCount = 0;
+	m_nodeCount = a_File->nodeAmount;
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
-		if (a_File->nodes[nodeIndex].ShouldRender) {
-			for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++, curPrimitiveCount++)
+		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, *this, 
+			a_File->nodes[nodeIndex].translation, 
+			a_File->nodes[nodeIndex].rotation, 
+			a_File->nodes[nodeIndex].scale);
+
+		m_Nodes[nodeIndex].primitiveCount = a_File->nodes[nodeIndex].mesh.primitiveCount;
+		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNodes::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNodes::ModelPrimitive)));
+			
+		for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
+		{
+			BBE::Mesh::Primative& curPrim = a_File->nodes[nodeIndex].mesh.primative[primitiveIndex];
+			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
+
+			if (vertices == nullptr)
+				return;
+
+			for (size_t i = 0; i < curPrim.vertexCount; i++)
 			{
-				BBE::Mesh::Primative& curPrim = a_File->nodes[nodeIndex].mesh.primative[primitiveIndex];
-				BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
+				vertices[i].pos = curPrim.vertices[i];
+				vertices[i].texCoords = curPrim.texCoords[i];
+				vertices[i].normals = curPrim.normals[i];
+			}
 
-				if (vertices == nullptr)
-					return;
-
-				for (size_t i = 0; i < curPrim.vertexCount; i++)
-				{
-					vertices[i].pos = curPrim.vertices[i];
-					vertices[i].texCoords = curPrim.texCoords[i];
-					vertices[i].normals = curPrim.normals[i];
-				}
-
+			if (curPrim.Material.pbrMetallicRoughness.baseColorTexture.enabled)
+			{
 				char texturePath[64] = "";
 				strcat(texturePath, a_File->gltfPath);
 				strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
 
-				m_Primitives[curPrimitiveCount].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
-				m_Primitives[curPrimitiveCount].m_Texture = new Texture(a_Gfx, texturePath);
-				m_Primitives[curPrimitiveCount].m_Sampler = new Sampler(a_Gfx);
-				m_Primitives[curPrimitiveCount].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Texture = new Texture(a_Gfx, texturePath);
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = new Sampler(a_Gfx);
 			}
+			else
+			{
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Texture = nullptr;
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = nullptr;
+			}
+		
+			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
+			m_Nodes[nodeIndex].primitives[primitiveIndex].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount);
 		}
 	}
-
-	m_PrimitiveCount = curPrimitiveCount;
 
 	AddBind(a_VertexShader);
 	AddBind(a_PixelShader);
@@ -53,34 +67,40 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 	m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(m_Topology);
 
-	m_TransformBuf = new TransformBuf(a_Gfx, *this);
-	AddBind(m_TransformBuf);
 }
 
 void Model::Draw(Graphics& a_Gfx) noexcept
 {
-	for (size_t i = 0; i < m_PrimitiveCount; i++) 
+	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
-		m_Primitives[i].vBuffer->Bind(a_Gfx);
-		m_Primitives[i].m_Texture->Bind(a_Gfx);
-		m_Primitives[i].m_Sampler->Bind(a_Gfx);
-		m_Primitives[i].m_IndexBuffer->Bind(a_Gfx);
+		m_Nodes[curNode].transformBuf->Bind(a_Gfx);
+		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
+		{
+			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
+			{
+				m_Nodes[curNode].primitives[i].m_Texture->Bind(a_Gfx);
+				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
+			}
 
-		SetIndexBuffer(m_Primitives[i].m_IndexBuffer);
-		Drawable::Draw(a_Gfx);
+			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
+			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
+
+			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
+			Drawable::Draw(a_Gfx);
+		}
 	}
 }
 
 void Model::Update(float a_DeltaTime) noexcept
 {
-	//m_Angle += a_DeltaTime;
+	//m_Rotation.x += a_DeltaTime;
 }
 
 DirectX::XMMATRIX Model::GetTransformXM() const noexcept
 {
 	return
-		DirectX::XMMatrixRotationY(m_Angle) *
-		DirectX::XMMatrixScaling(0.00800000037997961f, 0.00800000037997961f, 0.00800000037997961f) *
+		DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
+		DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) *
 		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y, m_Translation.z);
 }
 
@@ -92,4 +112,24 @@ void Model::SetPosition(Vector3 a_Position)
 Vector3 Model::GetPosition() const
 {
 	return m_Translation;
+}
+
+void Model::SetRotation(Vector3 a_Position)
+{
+	m_Rotation = a_Position;
+}
+
+Vector3 Model::GetRotation() const
+{
+	return m_Rotation;
+}
+
+void Model::SetScale(Vector3 a_Position)
+{
+	m_Scale = a_Position;
+}
+
+Vector3 Model::GetScale() const
+{
+	return m_Scale;
 }
