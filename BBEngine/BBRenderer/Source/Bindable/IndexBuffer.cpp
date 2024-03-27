@@ -21,7 +21,7 @@ IndexBuffer::IndexBuffer(Graphics& a_Gfx, uint32_t* a_Indices, const uint32_t a_
 
 void IndexBuffer::Bind(Graphics& a_Gfx) noexcept
 {
-	a_Gfx.GetContext()->IASetIndexBuffer(m_CPIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
+	a_Gfx.GetContext()->IASetIndexBuffer(m_CPIndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
 }
 
 UINT IndexBuffer::GetCount() const noexcept
