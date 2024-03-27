@@ -82,7 +82,7 @@ namespace BBE {
 			} Material;
 
 			uint32_t		indicesAmount;
-			unsigned short* indices;
+			uint32_t*		indices;
 		}* primative;
 	};
 

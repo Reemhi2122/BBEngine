@@ -40,7 +40,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 		pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
 		AddStaticBind(pShader);
 
-		unsigned short indices[] = {
+		uint32_t indices[] = {
 			0,2,1, 2,3,1,
 			1,3,5, 3,7,5,
 			2,6,3, 3,6,7,

@@ -68,10 +68,10 @@ namespace BBE
     void BBEngine::Start()
     {
         GLTFParser parser;
+        parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
         parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
-        parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
-        parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
+        //parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
@@ -98,19 +98,19 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
-        int XSize = 1, YSize = 1;
-        for (size_t i = 0; i < XSize; i++) {
-            for (size_t y = 0; y < YSize; y++) {
-                Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
-                Sponza->SetPosition(Vector3(i * 50, 0, y * 50));
-                m_Model.push_back(Sponza);
-            }
-        }
+        //int XSize = 1, YSize = 1;
+        //for (size_t i = 0; i < XSize; i++) {
+        //    for (size_t y = 0; y < YSize; y++) {
+        //        Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
+        //        Sponza->SetPosition(Vector3(i * 50, 0, y * 50));
+        //        m_Model.push_back(Sponza);
+        //    }
+        //}
 
-        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
-        lantern->SetPosition(Vector3(3, 0, 0));
-        lantern->SetScale(Vector3(0.2f, 0.2f, 0.2f));
-        m_Model.push_back(lantern);
+        //Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
+        //lantern->SetPosition(Vector3(3, 0, 0));
+        //lantern->SetScale(Vector3(0.2f, 0.2f, 0.2f));
+        //m_Model.push_back(lantern);
 
         Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
         car->SetPosition(Vector3(0, 2, 0));

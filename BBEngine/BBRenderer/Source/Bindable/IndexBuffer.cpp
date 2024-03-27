@@ -1,7 +1,7 @@
 #include "Bindable/IndexBuffer.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-IndexBuffer::IndexBuffer(Graphics& a_Gfx, unsigned short* a_Indices, const uint32_t a_Count)
+IndexBuffer::IndexBuffer(Graphics& a_Gfx, uint32_t* a_Indices, const uint32_t a_Count)
 	: m_Count(a_Count)
 {
 	INFOMAN(a_Gfx);
@@ -11,8 +11,8 @@ IndexBuffer::IndexBuffer(Graphics& a_Gfx, unsigned short* a_Indices, const uint3
 	ibd.Usage = D3D11_USAGE_DEFAULT;
 	ibd.CPUAccessFlags = 0u;
 	ibd.MiscFlags = 0u;
-	ibd.ByteWidth = m_Count * sizeof(unsigned short);
-	ibd.StructureByteStride = sizeof(unsigned short);
+	ibd.ByteWidth = m_Count * sizeof(uint32_t);
+	ibd.StructureByteStride = sizeof(uint32_t);
 	D3D11_SUBRESOURCE_DATA isd = {};
 	isd.pSysMem = a_Indices;
 
