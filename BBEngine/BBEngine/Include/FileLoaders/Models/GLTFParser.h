@@ -12,7 +12,7 @@ namespace BBE {
 
 		bool Parse(char* m_GLTFPath, char* a_GLTFName, GLTFFile* a_GLTFFile);
 		void CalculateNode(BBE::Node* a_CurNode, uint32_t a_CurNodeIndex);
-		uint32_t ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute);
+		uint32_t ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute, uint8_t* a_DataSize = NULL);
 
 	private:
 		BBSystem::BBFILE m_BinFile;

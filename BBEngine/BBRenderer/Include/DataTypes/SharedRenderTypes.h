@@ -82,7 +82,8 @@ namespace BBE {
 			} Material;
 
 			uint32_t		indicesAmount;
-			uint32_t*		indices;
+			uint8_t			indicesDataSize;
+			uint8_t*		indices;
 		}* primative;
 	};
 

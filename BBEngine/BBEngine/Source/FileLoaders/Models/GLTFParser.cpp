@@ -207,7 +207,12 @@ namespace BBE {
 					}
 				}
 
-				a_CurNode->mesh.primative[primitiveIndex].indicesAmount = ParseAttribute(reinterpret_cast<void**>(&a_CurNode->mesh.primative[primitiveIndex].indices), primitiveObj, "indices");
+				a_CurNode->mesh.primative[primitiveIndex].indicesAmount = 
+					ParseAttribute(
+						reinterpret_cast<void**>(&a_CurNode->mesh.primative[primitiveIndex].indices), 
+						primitiveObj, 
+						"indices", 
+						&a_CurNode->mesh.primative[primitiveIndex].indicesDataSize);
 			}
 		}
 
@@ -223,7 +228,28 @@ namespace BBE {
 		}
 	}
 
-	uint32_t GLTFParser::ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute)
+	static uint8_t GetElementSize(uint32_t a_ComponentType)
+	{
+		switch (a_ComponentType)
+		{
+		case 5120:
+		case 5121:
+			return 1;
+			break;
+		case 5122:
+		case 5123:
+			return 2;
+			break;
+		case 5125:
+		case 5126:
+			return 4;
+			break;
+		default:
+			break;
+		}
+	}
+
+	uint32_t GLTFParser::ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute, uint8_t* a_DataSize)
 	{
 		uint32_t accessorIndex = 0;
 		uint32_t accessorByteOffset = 0;
@@ -237,6 +263,11 @@ namespace BBE {
 		{
 			accessorIndex = static_cast<int>(a_AttributeObject[a_Attribute]->GetFloatBB());
 			bufferViewIndex = static_cast<int>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+
+			if (a_DataSize)
+			{
+				*a_DataSize = GetElementSize(m_CurAccessorsList[accessorIndex]->GetObjectBB()["componentType"]->GetFloatBB());
+			}
 
 			if (m_CurAccessorsList[accessorIndex]->GetObjectBB()["byteOffset"]) {
 				accessorByteOffset = static_cast<int>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());

@@ -40,7 +40,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 		pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
 		AddStaticBind(pShader);
 
-		uint32_t indices[] = {
+		uint8_t indices[] = {
 			0,2,1, 2,3,1,
 			1,3,5, 3,7,5,
 			2,6,3, 3,6,7,
@@ -49,7 +49,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 			0,1,4, 1,5,4
 		};
 
-		IBuffer = new IndexBuffer(a_Gfx, indices, 36);
+		IBuffer = new IndexBuffer(a_Gfx, indices, 36, 4);
 		AddStaticBindIndexBuffer(IBuffer);
 
 		const ConstantBufferColor cbc = {
