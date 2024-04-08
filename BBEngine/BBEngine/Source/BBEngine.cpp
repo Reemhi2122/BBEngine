@@ -98,25 +98,27 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
+        Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
+        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
+        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
+
         int XSize = 2, YSize = 2;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
-                Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
-                Sponza->SetPosition(Vector3(i * 50, 0, y * 50));
-                m_Model.push_back(Sponza);
+                GameObject* obj = BBNew(m_StackAllocator, GameObject)(Sponza);
+                //obj->SetPosition(Vector3(i * 50, 0, y * 50));
+                m_Model.push_back(obj);
             }
         }
 
-        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
-        lantern->SetPosition(Vector3(3, 0, 0));
-        lantern->SetScale(Vector3(0.2f, 0.2f, 0.2f));
-        m_Model.push_back(lantern);
+        //lantern->SetPosition(Vector3(3, 0, 0));
+        //lantern->SetScale(Vector3(0.2f, 0.2f, 0.2f));
+        //m_Model.push_back(lantern);
 
-        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
-        car->SetPosition(Vector3(0, 2, 0));
-        car->SetRotation(Vector3(3.1415f / 2.f, 0, 0));
-        car->SetScale(Vector3(10, 10, 10));
-        m_Model.push_back(car);
+        //car->SetPosition(Vector3(0, 2, 0));
+        //car->SetRotation(Vector3(3.1415f / 2.f, 0, 0));
+        //car->SetScale(Vector3(10, 10, 10));
+        //m_Model.push_back(car);
 
         //Model* fox = BBNew(m_StackAllocator, Model)(m_Graphics, &m_FoxFile, &m_VertexShader, &m_PixelShader);
         //fox->SetPosition(Vector3(-3, 2, 0));
@@ -133,16 +135,16 @@ namespace BBE
 
         for (size_t i = 0; i < m_Model.size(); i++)
         {
-            m_Model[i]->Update(time);
+            m_Model[i]->Update(m_Graphics);
         }
 
-        cbPerFrame test = { m_DirectionalLight, m_SpotLight};
-        m_PerFrameBuffer.Update(m_Graphics, test);
+        //cbPerFrame test = { m_DirectionalLight, m_SpotLight};
+        //m_PerFrameBuffer.Update(m_Graphics, test);
 
-        for (size_t i = 0; i < m_Model.size(); i++)
-        {
-            m_Model[i]->Draw(m_Graphics);
-        }
+        //for (size_t i = 0; i < m_Model.size(); i++)
+        //{
+        //    m_Model[i]->Draw(m_Graphics);
+        //}
 
         ImGui::ShowDemoWindow(&show_demo_window);
         m_Graphics.EndFrame();

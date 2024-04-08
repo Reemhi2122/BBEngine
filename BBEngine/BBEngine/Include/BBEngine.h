@@ -9,6 +9,7 @@
 #include "Drawable/DrawToTexture.h"
 #include "DirectionalLight.h"
 #include "SpotLight.h"
+#include "GameLib/GameObject.h"
 
 struct cbPerFrame {
 	DirectionalLight directionallight;
@@ -35,7 +36,7 @@ namespace BBE {
 		BBWindow m_Window;
 		BBTimer m_Timer;
 
-		std::vector<Drawable*> m_Model;
+		std::vector<GameObject*> m_Model;
 		DrawToTexture* m_DrawToTexture;
 
 		VertexShader m_VertexShader;
