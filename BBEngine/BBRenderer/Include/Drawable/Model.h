@@ -1,3 +1,4 @@
+#pragma once
 #include "DataTypes/SharedRenderTypes.h"
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"

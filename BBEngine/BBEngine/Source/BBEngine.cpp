@@ -102,7 +102,7 @@ namespace BBE
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
         Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
 
-        int XSize = 2, YSize = 2;
+        int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 GameObject* obj = BBNew(m_StackAllocator, GameObject)(Sponza);
@@ -231,15 +231,15 @@ namespace BBE
         m_Graphics.GetContext()->ClearRenderTargetView(renderTarget, color);
 
 
-        for (size_t i = 0; i < m_Model.size(); i++)
-        {
-            m_Model[i]->Update(0.0f);
-        }
+        //for (size_t i = 0; i < m_Model.size(); i++)
+        //{
+        //    m_Model[i]->Update(0.0f);
+        //}
 
-        for (size_t i = 0; i < m_Model.size(); i++)
-        {
-            m_Model[i]->Draw(m_Graphics);
-        }
+        //for (size_t i = 0; i < m_Model.size(); i++)
+        //{
+        //    m_Model[i]->Draw(m_Graphics);
+        //}
 
         m_Graphics.ResetRenderTarget();
     }
