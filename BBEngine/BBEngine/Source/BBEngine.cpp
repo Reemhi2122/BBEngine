@@ -102,23 +102,19 @@ namespace BBE
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
         Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
 
-        int XSize = 1, YSize = 1;
+        int XSize = 5, YSize = 5;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
-                GameObject* obj = BBNew(m_StackAllocator, GameObject)(Sponza);
-                //obj->SetPosition(Vector3(i * 50, 0, y * 50));
-                m_Model.push_back(obj);
+                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(Sponza, Vector3(i * 50, 0, y * 50));
+                m_Model.push_back(sponzaObj);
             }
         }
 
-        //lantern->SetPosition(Vector3(3, 0, 0));
-        //lantern->SetScale(Vector3(0.2f, 0.2f, 0.2f));
-        //m_Model.push_back(lantern);
+        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        m_Model.push_back(lanternObj);
 
-        //car->SetPosition(Vector3(0, 2, 0));
-        //car->SetRotation(Vector3(3.1415f / 2.f, 0, 0));
-        //car->SetScale(Vector3(10, 10, 10));
-        //m_Model.push_back(car);
+        GameObject* carObj = BBNew(m_StackAllocator, GameObject)(car, Vector3(0, 2, 0), Vector3(3.1415f / 2.f, 0, 0), Vector3(10, 10, 10));
+        m_Model.push_back(carObj);
 
         //Model* fox = BBNew(m_StackAllocator, Model)(m_Graphics, &m_FoxFile, &m_VertexShader, &m_PixelShader);
         //fox->SetPosition(Vector3(-3, 2, 0));
@@ -133,18 +129,13 @@ namespace BBE
         
         CheckInput();
 
+        cbPerFrame test = { m_DirectionalLight, m_SpotLight };
+        m_PerFrameBuffer.Update(m_Graphics, test);
+
         for (size_t i = 0; i < m_Model.size(); i++)
         {
             m_Model[i]->Update(m_Graphics);
         }
-
-        //cbPerFrame test = { m_DirectionalLight, m_SpotLight};
-        //m_PerFrameBuffer.Update(m_Graphics, test);
-
-        //for (size_t i = 0; i < m_Model.size(); i++)
-        //{
-        //    m_Model[i]->Draw(m_Graphics);
-        //}
 
         ImGui::ShowDemoWindow(&show_demo_window);
         m_Graphics.EndFrame();
