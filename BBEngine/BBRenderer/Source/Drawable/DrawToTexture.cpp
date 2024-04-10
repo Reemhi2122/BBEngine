@@ -43,8 +43,3 @@ void DrawToTexture::Update(float a_DeltaTime) noexcept
 {
 
 }
-
-DirectX::XMMATRIX DrawToTexture::GetTransformXM() const noexcept
-{
-	return DirectX::XMMatrixIdentity();
-}

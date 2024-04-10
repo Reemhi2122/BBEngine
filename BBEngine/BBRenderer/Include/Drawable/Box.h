@@ -22,7 +22,6 @@ public:
 		std::uniform_real_distribution<float>& rdist);
 
 	void Update(float a_DeltaTime) noexcept override;
-	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
 private:
 	VertexBuffer*	vBuffer;

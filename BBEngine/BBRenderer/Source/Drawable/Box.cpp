@@ -81,7 +81,7 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 		AddIndexFromStatic();
 	}
 
-	m_TransformBuf = new TransformBuf(a_Gfx, *this, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0));
+	//m_TransformBuf = new TransformBuf(a_Gfx, *this, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0));
 	AddBind(m_TransformBuf);
 }
 
@@ -95,10 +95,10 @@ void Box::Update(float a_DeltaTime) noexcept
 	m_Chi += m_DChi * a_DeltaTime;
 }
 
-DirectX::XMMATRIX Box::GetTransformXM() const noexcept
-{
-	return	DirectX::XMMatrixRotationRollPitchYaw(m_Pitch, m_Yaw, m_Roll) *
-			DirectX::XMMatrixTranslation(m_R, 0.0f, 0.0f) *
-			DirectX::XMMatrixRotationRollPitchYaw(m_Theta, m_Phi, m_Chi) *
-			DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
-}
+//DirectX::XMMATRIX Box::GetTransformXM() const noexcept
+//{
+//	return	DirectX::XMMatrixRotationRollPitchYaw(m_Pitch, m_Yaw, m_Roll) *
+//			DirectX::XMMatrixTranslation(m_R, 0.0f, 0.0f) *
+//			DirectX::XMMatrixRotationRollPitchYaw(m_Theta, m_Phi, m_Chi) *
+//			DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+//}

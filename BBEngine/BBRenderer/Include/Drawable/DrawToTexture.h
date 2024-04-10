@@ -10,7 +10,6 @@ public:
 	~DrawToTexture() = default;
 
 	void Update(float a_DeltaTime) noexcept override;
-	DirectX::XMMATRIX GetTransformXM() const noexcept override;
 
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	{

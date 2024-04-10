@@ -73,6 +73,7 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 {
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
+		m_Nodes[curNode].transformBuf->SetCurrentParentTransform(m_ParentTransform);
 		m_Nodes[curNode].transformBuf->Bind(a_Gfx);
 		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
 		{
@@ -91,45 +92,4 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 	}
 }
 
-void Model::Update(float a_DeltaTime) noexcept
-{
-	//m_Rotation.x += a_DeltaTime;
-}
-
-DirectX::XMMATRIX Model::GetTransformXM() const noexcept
-{
-	return
-		DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
-		DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) *
-		DirectX::XMMatrixTranslation(m_Translation.x, m_Translation.y, m_Translation.z);
-}
-
-void Model::SetPosition(Vector3 a_Position)
-{
-	m_Translation = a_Position;
-}
-
-Vector3 Model::GetPosition() const
-{
-	return m_Translation;
-}
-
-void Model::SetRotation(Vector3 a_Position)
-{
-	m_Rotation = a_Position;
-}
-
-Vector3 Model::GetRotation() const
-{
-	return m_Rotation;
-}
-
-void Model::SetScale(Vector3 a_Position)
-{
-	m_Scale = a_Position;
-}
-
-Vector3 Model::GetScale() const
-{
-	return m_Scale;
-}
+void Model::Update(float a_DeltaTime) noexcept {}

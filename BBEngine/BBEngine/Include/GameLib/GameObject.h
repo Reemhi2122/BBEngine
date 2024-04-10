@@ -13,6 +13,15 @@ namespace BBE
 
 		DirectX::XMMATRIX GetTransformXM() const noexcept;
 	
+		void SetPosition(Vector3 a_Position);
+		Vector3 GetPosition() const;
+
+		void SetRotation(Vector3 a_Position);
+		Vector3 GetRotation() const;
+
+		void SetScale(Vector3 a_Position);
+		Vector3 GetScale() const;
+
 	private:
 		Model* m_Model;
 

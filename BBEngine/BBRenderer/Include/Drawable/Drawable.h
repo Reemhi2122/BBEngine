@@ -13,8 +13,6 @@ public:
 	Drawable(const Drawable&) = delete;
 	virtual ~Drawable() = default;
 
-	virtual DirectX::XMMATRIX GetTransformXM() const noexcept = 0;
-
 	void SetPosition(Vector3 a_Position) { };
 	virtual Vector3 GetPosition() const { return Vector3(); };
 	
