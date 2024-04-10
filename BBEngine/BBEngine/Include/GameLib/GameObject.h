@@ -11,6 +11,8 @@ namespace BBE
 
 		virtual void Update(Graphics& a_Graphics);
 
+		DirectX::XMMATRIX GetTransformXM() const noexcept;
+	
 	private:
 		Model* m_Model;
 

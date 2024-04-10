@@ -1,7 +1,6 @@
 #include "Bindable/TransformBuf.h"
 
-TransformBuf::TransformBuf(Graphics& a_Gfx, const Drawable& a_Parent, Vector3 a_LocalTranslation, Vector3 a_LocalRotation, Vector3 a_LocalScale) :
-	m_Parent(a_Parent)
+TransformBuf::TransformBuf(Graphics& a_Gfx, Vector3 a_LocalTranslation, Vector3 a_LocalRotation, Vector3 a_LocalScale)
 {
 	m_LocalMatrix = 
 		DirectX::XMMatrixScaling(a_LocalScale.x, a_LocalScale.y, a_LocalScale.z) *
@@ -18,11 +17,16 @@ TransformBuf::~TransformBuf() {
 	delete(m_VCB);
 }
 
+void TransformBuf::SetCurrentParentTransform(DirectX::XMMATRIX a_ParentTransform) 
+{
+	m_ParentTransform = a_ParentTransform;
+}
+
 void TransformBuf::Bind(Graphics& a_Gfx) noexcept
 {
 	perObjectBuffer buf = {
-		DirectX::XMMatrixTranspose((m_LocalMatrix * m_Parent.GetTransformXM()) * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
-		DirectX::XMMatrixTranspose((m_LocalMatrix * m_Parent.GetTransformXM()))
+		DirectX::XMMatrixTranspose((m_LocalMatrix * m_ParentTransform) * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
+		DirectX::XMMatrixTranspose((m_LocalMatrix * m_ParentTransform))
 	};
 
 	m_VCB->Update(a_Gfx, buf);

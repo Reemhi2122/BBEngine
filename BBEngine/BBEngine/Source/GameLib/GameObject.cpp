@@ -12,10 +12,15 @@ namespace BBE
 
 	void GameObject::Update(Graphics& a_Graphics) 
 	{
-		m_Model->SetPosition(m_Position);
-		m_Model->SetRotation(m_Rotation);
-		m_Model->SetScale(m_Scale);
 		m_Model->Update(0.0f);
 		m_Model->Draw(a_Graphics);
+	}
+
+	DirectX::XMMATRIX GameObject::GetTransformXM() const noexcept
+	{
+		return
+			DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
+			DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) *
+			DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 	}
 }

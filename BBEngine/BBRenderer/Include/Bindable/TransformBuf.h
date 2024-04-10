@@ -10,12 +10,14 @@ struct perObjectBuffer {
 
 class TransformBuf : public Bindable {
 public:
-	TransformBuf(Graphics& a_Gfx, const Drawable& a_Parent, Vector3 a_LocalTranslation, Vector3 a_LocalRotation, Vector3 a_LocalScale);
+	TransformBuf(Graphics& a_Gfx, Vector3 a_LocalTranslation, Vector3 a_LocalRotation, Vector3 a_LocalScale);
 	~TransformBuf();
 	void Bind(Graphics& a_Gfx) noexcept;
-	
+	 
+	void SetCurrentParentTransform(DirectX::XMMATRIX a_ParentTransform);
+
 private:
 	static VertexConstantBuffer<perObjectBuffer>* m_VCB;
-	const Drawable& m_Parent;
 	DirectX::XMMATRIX m_LocalMatrix;
+	DirectX::XMMATRIX m_ParentTransform;
 };

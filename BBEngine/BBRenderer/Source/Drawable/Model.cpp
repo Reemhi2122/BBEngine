@@ -9,7 +9,7 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 	m_nodeCount = a_File->nodeAmount;
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
-		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, *this, 
+		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
 			a_File->nodes[nodeIndex].translation, 
 			a_File->nodes[nodeIndex].rotation, 
 			a_File->nodes[nodeIndex].scale);
