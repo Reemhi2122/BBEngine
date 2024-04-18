@@ -23,11 +23,11 @@ add_library (Renderer STATIC
 "Source/Bindable/Texture.cpp"
 "Source/Bindable/Sampler.cpp"
 
+
 "Source/DirectionalLight.cpp"
 "Source/SpotLight.cpp"
 
-"Source/Camera.cpp" 
-)
+"Source/Camera.cpp")
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")
 

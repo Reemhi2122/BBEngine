@@ -9,7 +9,13 @@ public:
 	void Bind(Graphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 
+	void CreateInstanceBuffer(Graphics& a_Gfx, const void* a_InstanceData, const uint32_t a_DataSize, const uint32_t a_Count);
+
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_InstanceBuffer;
 	UINT m_Count;
+	uint32_t m_InstanceDataSize;
+
+	bool m_HasInstanceBuffer = false;
 };
