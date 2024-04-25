@@ -10,9 +10,17 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
 		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
-			a_File->nodes[nodeIndex].translation, 
-			a_File->nodes[nodeIndex].rotation, 
+			a_File->nodes[nodeIndex].translation,
+			a_File->nodes[nodeIndex].rotation,
 			a_File->nodes[nodeIndex].scale);
+
+		if (a_File->nodes[nodeIndex].Parent != NULL) {
+			m_Nodes[nodeIndex].transformBuf->SetParentTransform(
+				a_File->nodes[nodeIndex].Parent->translation,
+				a_File->nodes[nodeIndex].Parent->rotation,
+				a_File->nodes[nodeIndex].Parent->scale
+			);
+		}
 
 		m_Nodes[nodeIndex].primitiveCount = a_File->nodes[nodeIndex].mesh.primitiveCount;
 		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNodes::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNodes::ModelPrimitive)));
@@ -75,7 +83,7 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 {
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
-		m_Nodes[curNode].transformBuf->SetCurrentParentTransform(m_ParentTransform);
+		m_Nodes[curNode].transformBuf->SetCurrentObjTransform(m_GameObjTransform);
 		m_Nodes[curNode].transformBuf->Bind(a_Gfx);
 		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
 		{

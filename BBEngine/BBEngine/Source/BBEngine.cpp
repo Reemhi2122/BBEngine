@@ -72,6 +72,7 @@ namespace BBE
         parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
+        parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
@@ -101,6 +102,7 @@ namespace BBE
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
         Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
+        Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, &m_VertexShader, &m_PixelShader);
 
         int XSize = 5, YSize = 5;
         for (size_t i = 0; i < XSize; i++) {
@@ -115,6 +117,9 @@ namespace BBE
 
         GameObject* carObj = BBNew(m_StackAllocator, GameObject)(car, Vector3(0, 2, 0), Vector3(3.1415f / 2.f, 0, 0), Vector3(10, 10, 10));
         m_Model.push_back(carObj);
+
+        GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        m_Model.push_back(beautifulGameObj);
 
         //Model* fox = BBNew(m_StackAllocator, Model)(m_Graphics, &m_FoxFile, &m_VertexShader, &m_PixelShader);
         //fox->SetPosition(Vector3(-3, 2, 0));

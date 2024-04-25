@@ -30,6 +30,7 @@ namespace BBE {
 		m_AllNodes = m_Parser.GetRootNode()["nodes"]->GetListBB();
 		m_GLTFFile->nodes = reinterpret_cast<Node*>(malloc(m_AllNodes.size() * sizeof(Node)));
 		memset(m_GLTFFile->nodes, 0, m_AllNodes.size() * sizeof(Node));
+
 		m_GLTFFile->nodeAmount = m_AllNodes.size();
 		m_GLTFFile->PrimitiveCount = 0;
 
@@ -60,18 +61,26 @@ namespace BBE {
 
 	void GLTFParser::CalculateNode(BBE::Node* a_CurNode, uint32_t a_CurNodeIndex)
 	{
+		a_CurNode->translation = Vector3(0.0, 0.0, 0.0);
+		a_CurNode->rotation = Vector3(0.0, 0.0, 0.0);
+		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
+
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]) {
 			uint32_t curMeshIndex = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
 			BBE::JSONObject curMesh = m_Parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
 
-			a_CurNode->translation = Vector3(0.0f, 0.0f, 0.0f);
 			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
 			{
 				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
 				a_CurNode->translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
 			}
 
-			a_CurNode->scale = Vector3(1.0f, 1.0f, 1.0f);
+			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["rotation"])
+			{
+				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["rotation"]->GetListBB();
+				a_CurNode->rotation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
+			}
+
 			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"])
 			{
 				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"]->GetListBB();
@@ -223,6 +232,7 @@ namespace BBE {
 			{
 				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
 				BBE::Node* node = &m_GLTFFile->nodes[a_CurNodeIndex];
+				node->Parent = a_CurNode;
 				CalculateNode(node, a_CurNodeIndex);
 			}
 		}

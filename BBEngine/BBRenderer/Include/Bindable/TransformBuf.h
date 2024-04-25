@@ -14,10 +14,12 @@ public:
 	~TransformBuf();
 	void Bind(Graphics& a_Gfx) noexcept;
 	 
-	void SetCurrentParentTransform(DirectX::XMMATRIX a_ParentTransform);
+	void SetCurrentObjTransform(DirectX::XMMATRIX a_ObjTransform);
+	void SetParentTransform(Vector3 a_LocalTranslation, Vector3 a_LocalRotation, Vector3 a_LocalScale);
 
 private:
 	static VertexConstantBuffer<perObjectBuffer>* m_VCB;
-	DirectX::XMMATRIX m_LocalMatrix;
-	DirectX::XMMATRIX m_ParentTransform;
+	DirectX::XMMATRIX m_LocalMatrix = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX m_ObjTransform = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX m_ParentTransform = DirectX::XMMatrixIdentity();
 };

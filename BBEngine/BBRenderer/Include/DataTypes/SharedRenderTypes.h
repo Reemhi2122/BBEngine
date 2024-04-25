@@ -98,10 +98,11 @@ namespace BBE {
 	struct Node
 	{
 		Node* Children;
+		Node* Parent;
 		Mesh mesh;
-		Vector3 translation = Vector3(0.0, 0.0, 0.0);
-		Vector3 rotation = Vector3(0.0, 0.0, 0.0);
-		Vector3 scale = Vector3(1.0, 1.0, 1.0);
+		Vector3 translation;
+		Vector3 rotation;
+		Vector3 scale;
 	};
 
 	struct GLTFFile {

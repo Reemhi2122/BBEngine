@@ -17,16 +17,26 @@ TransformBuf::~TransformBuf() {
 	delete(m_VCB);
 }
 
-void TransformBuf::SetCurrentParentTransform(DirectX::XMMATRIX a_ParentTransform) 
+void TransformBuf::SetCurrentObjTransform(DirectX::XMMATRIX a_ObjTransform)
 {
-	m_ParentTransform = a_ParentTransform;
+	m_ObjTransform = a_ObjTransform;
+}
+
+void TransformBuf::SetParentTransform(Vector3 a_ParentTranslation, Vector3 a_ParentRotation, Vector3 a_ParentScale)
+{
+	m_ParentTransform =
+		DirectX::XMMatrixScaling(a_ParentScale.x, a_ParentScale.y, a_ParentScale.z) *
+		DirectX::XMMatrixRotationRollPitchYaw(a_ParentRotation.x, a_ParentRotation.y, a_ParentRotation.z) *
+		DirectX::XMMatrixTranslation(a_ParentTranslation.x, a_ParentTranslation.y, a_ParentTranslation.z);
 }
 
 void TransformBuf::Bind(Graphics& a_Gfx) noexcept
 {
+	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * m_ParentTransform * m_ObjTransform;
+
 	perObjectBuffer buf = {
-		DirectX::XMMatrixTranspose((m_LocalMatrix * m_ParentTransform) * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
-		DirectX::XMMatrixTranspose((m_LocalMatrix * m_ParentTransform))
+		DirectX::XMMatrixTranspose(finalMatrix * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
+		DirectX::XMMatrixTranspose(finalMatrix)
 	};
 
 	m_VCB->Update(a_Gfx, buf);
