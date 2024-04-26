@@ -62,30 +62,30 @@ namespace BBE {
 	void GLTFParser::CalculateNode(BBE::Node* a_CurNode, uint32_t a_CurNodeIndex)
 	{
 		a_CurNode->translation = Vector3(0.0, 0.0, 0.0);
-		a_CurNode->rotation = Vector3(0.0, 0.0, 0.0);
+		a_CurNode->rotation = Vector4(0.0, 0.0, 0.0, 1.0);
 		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
+
+		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
+		{
+			BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
+			a_CurNode->translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
+		}
+
+		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["rotation"])
+		{
+			BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["rotation"]->GetListBB();
+			a_CurNode->rotation = Vector4(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB(), list[3]->GetFloatBB());
+		}
+
+		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"])
+		{
+			BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"]->GetListBB();
+			a_CurNode->scale = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
+		}
 
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]) {
 			uint32_t curMeshIndex = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
 			BBE::JSONObject curMesh = m_Parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
-
-			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
-			{
-				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
-				a_CurNode->translation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
-			}
-
-			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["rotation"])
-			{
-				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["rotation"]->GetListBB();
-				a_CurNode->rotation = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
-			}
-
-			if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"])
-			{
-				BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["scale"]->GetListBB();
-				a_CurNode->scale = Vector3(list[0]->GetFloatBB(), list[1]->GetFloatBB(), list[2]->GetFloatBB());
-			}
 
 			//Note(Stan):	This only works when doing it indirectly,
 			//				Look into a way of fixing this.

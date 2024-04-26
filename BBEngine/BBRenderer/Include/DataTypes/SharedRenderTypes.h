@@ -101,7 +101,7 @@ namespace BBE {
 		Node* Parent;
 		Mesh mesh;
 		Vector3 translation;
-		Vector3 rotation;
+		Vector4 rotation;
 		Vector3 scale;
 	};
 

@@ -321,7 +321,7 @@ namespace BBE {
 			tkn.value += c;
 
 			uint32_t prevCharPos;
-			while (c == '-' || c == '.' || c >= '0' && c <= '9') {
+			while (c == '-' || c == '.' || c == 'e' || c >= '0' && c <= '9') {
 				prevCharPos = m_FStream.GetPos();
 				m_FStream.Get(c);
 
@@ -329,7 +329,7 @@ namespace BBE {
 					break;
 				}
 				
-				if (c == '-' || c == '.' || c >= '0' && c <= '9') {
+				if (c == '-' || c == '.' || c == 'e' || c >= '0' && c <= '9') {
 					tkn.value += c;
 				}
 				else {

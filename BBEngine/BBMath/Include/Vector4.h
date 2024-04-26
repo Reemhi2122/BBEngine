@@ -10,7 +10,7 @@ public:
 	Vector4& operator=(const Vector4& a_Rhs);
 	Vector4& operator*(const Vector4& a_Rhs);
 
-private:
+public:
 	float x, y, z, w;
 
 };

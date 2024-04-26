@@ -115,7 +115,7 @@ namespace BBE
         GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         m_Model.push_back(lanternObj);
 
-        GameObject* carObj = BBNew(m_StackAllocator, GameObject)(car, Vector3(0, 2, 0), Vector3(3.1415f / 2.f, 0, 0), Vector3(10, 10, 10));
+        GameObject* carObj = BBNew(m_StackAllocator, GameObject)(car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         m_Model.push_back(carObj);
 
         GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
@@ -136,6 +136,8 @@ namespace BBE
 
         cbPerFrame test = { m_DirectionalLight, m_SpotLight };
         m_PerFrameBuffer.Update(m_Graphics, test);
+
+        //m_Model[0]->SetRotation(m_Model[0]->GetRotation() + Vector3(0.001f, 0.001f, 0.001f));
 
         for (size_t i = 0; i < m_Model.size(); i++)
         {

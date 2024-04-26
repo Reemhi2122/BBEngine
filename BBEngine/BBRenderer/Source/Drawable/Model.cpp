@@ -9,25 +9,27 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 	m_nodeCount = a_File->nodeAmount;
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
-		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
-			a_File->nodes[nodeIndex].translation,
-			a_File->nodes[nodeIndex].rotation,
-			a_File->nodes[nodeIndex].scale);
+		BBE::Node& curNode = a_File->nodes[nodeIndex];
 
-		if (a_File->nodes[nodeIndex].Parent != NULL) {
+		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
+			curNode.translation,
+			curNode.rotation,
+			curNode.scale);
+
+		if (curNode.Parent) {
 			m_Nodes[nodeIndex].transformBuf->SetParentTransform(
-				a_File->nodes[nodeIndex].Parent->translation,
-				a_File->nodes[nodeIndex].Parent->rotation,
-				a_File->nodes[nodeIndex].Parent->scale
+				curNode.Parent->translation,
+				curNode.Parent->rotation,
+				curNode.Parent->scale
 			);
 		}
 
-		m_Nodes[nodeIndex].primitiveCount = a_File->nodes[nodeIndex].mesh.primitiveCount;
+		m_Nodes[nodeIndex].primitiveCount = curNode.mesh.primitiveCount;
 		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNodes::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNodes::ModelPrimitive)));
 			
-		for (size_t primitiveIndex = 0; primitiveIndex < a_File->nodes[nodeIndex].mesh.primitiveCount; primitiveIndex++)
+		for (size_t primitiveIndex = 0; primitiveIndex < curNode.mesh.primitiveCount; primitiveIndex++)
 		{
-			BBE::Mesh::Primative& curPrim = a_File->nodes[nodeIndex].mesh.primative[primitiveIndex];
+			BBE::Mesh::Primative& curPrim = curNode.mesh.primative[primitiveIndex];
 			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
 
 			if (vertices == nullptr)
