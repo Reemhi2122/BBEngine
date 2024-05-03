@@ -100,30 +100,34 @@ namespace BBE
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
+        m_Models.push_back(Sponza);
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
+        m_Models.push_back(lantern);
         Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
+        m_Models.push_back(car);
         Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, &m_VertexShader, &m_PixelShader);
+        m_Models.push_back(aBeautifulGame);
 
         int XSize = 5, YSize = 5;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(Sponza, Vector3(i * 50, 0, y * 50));
-                m_Model.push_back(sponzaObj);
+                m_GameObjects.push_back(sponzaObj);
             }
         }
 
         GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        m_Model.push_back(lanternObj);
+        m_GameObjects.push_back(lanternObj);
 
         GameObject* carObj = BBNew(m_StackAllocator, GameObject)(car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        m_Model.push_back(carObj);
+        m_GameObjects.push_back(carObj);
 
         GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        m_Model.push_back(beautifulGameObj);
+        m_GameObjects.push_back(beautifulGameObj);
 
         //Model* fox = BBNew(m_StackAllocator, Model)(m_Graphics, &m_FoxFile, &m_VertexShader, &m_PixelShader);
         //fox->SetPosition(Vector3(-3, 2, 0));
-        //m_Model.push_back(fox);
+        //m_GameObjects.push_back(fox);
     }
 
     bool show_demo_window = true;
@@ -137,11 +141,15 @@ namespace BBE
         cbPerFrame test = { m_DirectionalLight, m_SpotLight };
         m_PerFrameBuffer.Update(m_Graphics, test);
 
-        //m_Model[0]->SetRotation(m_Model[0]->GetRotation() + Vector3(0.001f, 0.001f, 0.001f));
+        //m_GameObjects[0]->SetRotation(m_GameObjects[0]->GetRotation() + Vector3(0.001f, 0.001f, 0.001f));
 
-        for (size_t i = 0; i < m_Model.size(); i++)
+        for (size_t i = 0; i < m_GameObjects.size(); i++)
         {
-            m_Model[i]->Update(m_Graphics);
+            m_GameObjects[i]->Update(m_Graphics);
+        }
+
+        for (size_t i = 0; i < m_Models.size(); i++) {
+            m_Models[i]->Draw(m_Graphics);
         }
 
         ImGui::ShowDemoWindow(&show_demo_window);

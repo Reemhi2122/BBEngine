@@ -302,6 +302,10 @@ void Graphics::DrawIndexed(UINT a_Count) noexcept {
 	m_Context->DrawIndexed(a_Count, 0, 0);
 }
 
+void Graphics::DrawIndexedInstanced(UINT a_IndexCount, UINT a_InstanceCount) noexcept {
+	m_Context->DrawIndexedInstanced(a_IndexCount, a_InstanceCount, 0, 0, 0);
+}
+
 void Graphics::SetProjection(DirectX::XMMATRIX a_Projections) {
 	m_Projection = a_Projections;
 }

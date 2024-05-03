@@ -14,7 +14,6 @@ public:
 	~TransformBuf();
 	void Bind(Graphics& a_Gfx) noexcept;
 	 
-	void SetCurrentObjTransform(DirectX::XMMATRIX a_ObjTransform);
 	void SetParentTransform(Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
 
 private:

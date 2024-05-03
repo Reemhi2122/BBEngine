@@ -13,8 +13,7 @@ namespace BBE
 	void GameObject::Update(Graphics& a_Graphics) 
 	{
 		m_Model->Update(0.0f);
-		m_Model->SetObjTransform(GetTransformXM());
-		m_Model->Draw(a_Graphics);
+		m_Model->AddToDraw(GetTransformXM());
 	}
 
 	DirectX::XMMATRIX GameObject::GetTransformXM() const noexcept

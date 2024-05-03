@@ -27,7 +27,7 @@ void VertexBuffer::CreateInstanceBuffer(Graphics& a_Gfx, const void* a_InstanceD
 
 	D3D11_BUFFER_DESC desc = {};
 	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.ByteWidth = sizeof(m_InstanceDataSize) * a_Count;
+	desc.ByteWidth = m_InstanceDataSize * a_Count;
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
@@ -42,10 +42,10 @@ void VertexBuffer::Bind(Graphics& a_Gfx) noexcept
 {
 	if (m_HasInstanceBuffer)
 	{
-		const UINT stride = sizeof(BBE::Vertex) + m_InstanceDataSize;
-		const UINT offset = 0;
+		const UINT stride[2] = { sizeof(BBE::Vertex), m_InstanceDataSize };
+		const UINT offset[2] = {0, 0};
 		ID3D11Buffer* vertInstBuffers[2] = { *vertex_buffer.GetAddressOf(), *m_InstanceBuffer.GetAddressOf() };
-		a_Gfx.GetContext()->IASetVertexBuffers(0, 2, vertInstBuffers, &stride, offset);
+		a_Gfx.GetContext()->IASetVertexBuffers(0, 2, vertInstBuffers, stride, offset);
 	}
 	else
 	{

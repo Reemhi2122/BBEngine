@@ -17,11 +17,6 @@ TransformBuf::~TransformBuf() {
 	delete(m_VCB);
 }
 
-void TransformBuf::SetCurrentObjTransform(DirectX::XMMATRIX a_ObjTransform)
-{
-	m_ObjTransform = a_ObjTransform;
-}
-
 void TransformBuf::SetParentTransform(Vector3 a_ParentTranslation, Vector4 a_ParentRotation, Vector3 a_ParentScale)
 {
 	m_ParentTransform =

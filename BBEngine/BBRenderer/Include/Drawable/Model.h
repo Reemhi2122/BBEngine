@@ -11,8 +11,7 @@ public:
 	Model() = default;
 	Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader);
 	
-	void SetObjTransform(DirectX::XMMATRIX a_Transform);
-
+	void AddToDraw(DirectX::XMMATRIX a_Transform);
 	void Draw(Graphics& a_Gfx) noexcept override;
 	void Update(float a_DeltaTime) noexcept override;
 
@@ -23,6 +22,12 @@ public:
 
 private:
 	Graphics* m_Graphics;
+
+	struct InstanceBuffer {
+		DirectX::XMMATRIX m_GameObjTransform;
+	};
+
+	std::vector<InstanceBuffer> m_InstanceBuffer;
 
 	struct ModelNodes
 	{
@@ -40,15 +45,8 @@ private:
 
 	}* m_Nodes = nullptr;
 
-	DirectX::XMMATRIX m_GameObjTransform;
-
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
 
 	uint32_t m_nodeCount;
 };
-
-inline void Model::SetObjTransform(DirectX::XMMATRIX a_Transform)
-{
-	m_GameObjTransform = a_Transform;
-}
