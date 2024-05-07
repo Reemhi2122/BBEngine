@@ -8,12 +8,13 @@ namespace BBE
 		m_Position = a_Position;
 		m_Rotation = a_Rotation;
 		m_Scale = a_Scale;
+
+		m_Model->AddToDraw(GetTransformXM());
 	}
 
 	void GameObject::Update(Graphics& a_Graphics) 
 	{
 		m_Model->Update(0.0f);
-		m_Model->AddToDraw(GetTransformXM());
 	}
 
 	DirectX::XMMATRIX GameObject::GetTransformXM() const noexcept

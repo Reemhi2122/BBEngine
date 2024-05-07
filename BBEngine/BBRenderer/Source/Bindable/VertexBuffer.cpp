@@ -19,36 +19,51 @@ VertexBuffer::VertexBuffer(Graphics& a_Gfx, BBE::Vertex* a_Vertices, const uint3
 	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &vertex_buffer));
 }
 
-void VertexBuffer::CreateInstanceBuffer(Graphics& a_Gfx, const void* a_InstanceData, const uint32_t a_DataSize, const uint32_t a_Count) 
+void VertexBuffer::CreateInstanceBuffer(Graphics& a_Gfx, const uint32_t a_DataSize) 
 {
 	INFOMAN(a_Gfx);
 	m_HasInstanceBuffer = true;
 	m_InstanceDataSize = a_DataSize;
 
 	D3D11_BUFFER_DESC desc = {};
-	desc.Usage = D3D11_USAGE_DEFAULT;
-	desc.ByteWidth = m_InstanceDataSize * a_Count;
+	desc.Usage = D3D11_USAGE_DYNAMIC;
+	desc.ByteWidth = m_InstanceDataSize * 25;
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	desc.CPUAccessFlags = 0;
+	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	desc.MiscFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA source = {};
-	source.pSysMem = a_InstanceData;
+	//D3D11_SUBRESOURCE_DATA source = {};
+	//source.pSysMem = a_InstanceData;
 	
-	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &m_InstanceBuffer));
+	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, nullptr, &m_InstanceBuffer));
+}
+
+void VertexBuffer::UpdateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count) {
+	INFOMAN(a_Gfx);
+
+	D3D11_MAPPED_SUBRESOURCE msr;
+	GFX_THROW_FAILED(
+		a_Gfx.GetContext()->Map(
+			m_InstanceBuffer.Get(),
+			0u,
+			D3D11_MAP_WRITE_DISCARD,
+			0u,
+			&msr
+		)
+	);
+	memcpy(msr.pData, &a_Consts, (a_DataSize * a_Count));
+	a_Gfx.GetContext()->Unmap(m_InstanceBuffer.Get(), 0u);
 }
 
 void VertexBuffer::Bind(Graphics& a_Gfx) noexcept
 {
-	if (m_HasInstanceBuffer)
-	{
+	if (m_HasInstanceBuffer) {
 		const UINT stride[2] = { sizeof(BBE::Vertex), m_InstanceDataSize };
-		const UINT offset[2] = {0, 0};
-		ID3D11Buffer* vertInstBuffers[2] = { *vertex_buffer.GetAddressOf(), *m_InstanceBuffer.GetAddressOf() };
+		const UINT offset[2] = { 0, 0 };
+		ID3D11Buffer* vertInstBuffers[2] = { *vertex_buffer.GetAddressOf(), *m_InstanceBuffer.GetAddressOf()};
 		a_Gfx.GetContext()->IASetVertexBuffers(0, 2, vertInstBuffers, stride, offset);
 	}
-	else
-	{
+	else {
 		const UINT stride = sizeof(BBE::Vertex);
 		const UINT offset = 0;
 		a_Gfx.GetContext()->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);

@@ -58,6 +58,7 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 			}
 		
 			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
+			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer->CreateInstanceBuffer(a_Gfx, sizeof(InstanceBuffer));
 			m_Nodes[nodeIndex].primitives[primitiveIndex].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount, curPrim.indicesDataSize);
 		}
 	}
@@ -70,10 +71,10 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-		{ "InstanceTransform", 0u, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, 0,							D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{ "InstanceTransform", 1u, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{ "InstanceTransform", 2u, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{ "InstanceTransform", 3u, DXGI_FORMAT_R16G16B16A16_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
+		{ "InstanceTransform", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,							D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "InstanceTransform", 1u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "InstanceTransform", 2u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "InstanceTransform", 3u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 	};
 
 	m_InputLayout = new InputLayout(a_Gfx, ied, a_VertexShader->GetByteCode());
@@ -102,8 +103,8 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
 			}
 
+			m_Nodes[curNode].primitives[i].vBuffer->UpdateInstanceBuffer(a_Gfx, &m_InstanceBuffer, sizeof(InstanceBuffer), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
-			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, &m_InstanceBuffer, sizeof(DirectX::XMMATRIX), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
 
 			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
