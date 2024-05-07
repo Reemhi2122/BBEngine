@@ -58,7 +58,6 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 			}
 		
 			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
-			//m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer->CreateInstanceBuffer(a_Gfx, sizeof(InstanceBuffer));
 			m_Nodes[nodeIndex].primitives[primitiveIndex].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount, curPrim.indicesDataSize);
 		}
 	}
@@ -102,7 +101,6 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
 			}
 
-			//m_Nodes[curNode].primitives[i].vBuffer->UpdateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(InstanceBuffer), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(InstanceBuffer), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
@@ -112,28 +110,5 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 		}
 	}
 }
-
-//void Model::Draw(Graphics& a_Gfx) noexcept
-//{
-//	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
-//	{
-//		m_Nodes[curNode].transformBuf->SetCurrentObjTransform(m_GameObjTransform);
-//		m_Nodes[curNode].transformBuf->Bind(a_Gfx);
-//		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
-//		{
-//			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
-//			{
-//				m_Nodes[curNode].primitives[i].m_Texture->Bind(a_Gfx);
-//				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
-//			}
-//
-//			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
-//			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
-//
-//			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
-//			Drawable::Draw(a_Gfx);
-//		}
-//	}
-//}
 
 void Model::Update(float a_DeltaTime) noexcept {}

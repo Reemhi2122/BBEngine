@@ -236,17 +236,6 @@ namespace BBE
         const float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         m_Graphics.GetContext()->ClearRenderTargetView(renderTarget, color);
 
-
-        //for (size_t i = 0; i < m_Model.size(); i++)
-        //{
-        //    m_Model[i]->Update(0.0f);
-        //}
-
-        //for (size_t i = 0; i < m_Model.size(); i++)
-        //{
-        //    m_Model[i]->Draw(m_Graphics);
-        //}
-
         m_Graphics.ResetRenderTarget();
     }
 }

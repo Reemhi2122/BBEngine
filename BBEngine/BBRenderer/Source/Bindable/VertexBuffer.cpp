@@ -38,24 +38,6 @@ void VertexBuffer::CreateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, c
 	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &m_InstanceBuffer));
 }
 
-void VertexBuffer::UpdateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count) {
-	INFOMAN(a_Gfx);
-
-	D3D11_MAPPED_SUBRESOURCE msr;
-	GFX_THROW_FAILED(
-		a_Gfx.GetContext()->Map(
-			m_InstanceBuffer.Get(),
-			0u,
-			D3D11_MAP_WRITE_DISCARD,
-			0u,
-			&msr
-		)
-	);
-
-	memcpy(msr.pData, a_Consts, a_DataSize * a_Count);
-	a_Gfx.GetContext()->Unmap(m_InstanceBuffer.Get(), 0u);
-}
-
 void VertexBuffer::Bind(Graphics& a_Gfx) noexcept
 {
 	if (m_HasInstanceBuffer) {

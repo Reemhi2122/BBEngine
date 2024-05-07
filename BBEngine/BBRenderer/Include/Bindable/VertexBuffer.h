@@ -12,7 +12,6 @@ public:
 	UINT GetCount() const noexcept;
 
 	void CreateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count);
-	void UpdateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count);
 
 private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
