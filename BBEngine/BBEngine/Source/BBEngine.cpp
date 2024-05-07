@@ -108,21 +108,21 @@ namespace BBE
         Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, &m_VertexShader, &m_PixelShader);
         m_Models.push_back(aBeautifulGame);
 
-        int XSize = 5, YSize = 5;
+        int XSize = 10, YSize = 10;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
-                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(Sponza, Vector3(i * 50, 0, y * 50));
+                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
                 m_GameObjects.push_back(sponzaObj);
             }
         }
 
-        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         m_GameObjects.push_back(lanternObj);
 
-        GameObject* carObj = BBNew(m_StackAllocator, GameObject)(car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         m_GameObjects.push_back(carObj);
 
-        GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
         m_GameObjects.push_back(beautifulGameObj);
 
         //Model* fox = BBNew(m_StackAllocator, Model)(m_Graphics, &m_FoxFile, &m_VertexShader, &m_PixelShader);

@@ -1,6 +1,12 @@
-cbuffer CBuf {
-	matrix transform;
-    matrix world;
+//cbuffer CBuf {
+//	matrix transform;
+//    matrix world;
+//};
+
+cbuffer CBuf
+{
+    matrix WVP;
+    matrix transform;
 };
 
 struct VSOut
@@ -14,9 +20,13 @@ struct VSOut
 VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal, matrix instanceTransform : InstanceTransform)
 {
     VSOut vso;
-    vso.pos = mul(float4(pos, 1.0f), transform);
-    vso.worldPos = mul(float4(pos, 1.0f), world);
+    
+    matrix finalTransfom = mul(transform, instanceTransform);
+    matrix MVP = mul(finalTransfom, WVP);
+    
+    vso.pos = mul(float4(pos, 1.0f), MVP);
+    vso.worldPos = mul(float4(pos, 1.0f), finalTransfom);
     vso.tex = tex;
-    vso.normal = mul(normal, world);
+    vso.normal = mul(normal, finalTransfom);
     return vso;
 }

@@ -27,10 +27,10 @@ void TransformBuf::SetParentTransform(Vector3 a_ParentTranslation, Vector4 a_Par
 
 void TransformBuf::Bind(Graphics& a_Gfx) noexcept
 {
-	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * m_ParentTransform * m_ObjTransform; 
+	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * m_ParentTransform; 
 
 	perObjectBuffer buf = {
-		DirectX::XMMatrixTranspose(finalMatrix * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
+		DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
 		DirectX::XMMatrixTranspose(finalMatrix)
 	};
 

@@ -19,23 +19,23 @@ VertexBuffer::VertexBuffer(Graphics& a_Gfx, BBE::Vertex* a_Vertices, const uint3
 	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &vertex_buffer));
 }
 
-void VertexBuffer::CreateInstanceBuffer(Graphics& a_Gfx, const uint32_t a_DataSize) 
+void VertexBuffer::CreateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count)
 {
 	INFOMAN(a_Gfx);
 	m_HasInstanceBuffer = true;
 	m_InstanceDataSize = a_DataSize;
 
 	D3D11_BUFFER_DESC desc = {};
-	desc.Usage = D3D11_USAGE_DYNAMIC;
-	desc.ByteWidth = m_InstanceDataSize * 25;
+	desc.Usage = D3D11_USAGE_DEFAULT;
+	desc.ByteWidth = m_InstanceDataSize * a_Count;
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
 
-	//D3D11_SUBRESOURCE_DATA source = {};
-	//source.pSysMem = a_InstanceData;
+	D3D11_SUBRESOURCE_DATA source = {};
+	source.pSysMem = a_Consts;
 	
-	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, nullptr, &m_InstanceBuffer));
+	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &m_InstanceBuffer));
 }
 
 void VertexBuffer::UpdateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count) {
@@ -51,7 +51,8 @@ void VertexBuffer::UpdateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, c
 			&msr
 		)
 	);
-	memcpy(msr.pData, &a_Consts, (a_DataSize * a_Count));
+
+	memcpy(msr.pData, a_Consts, a_DataSize * a_Count);
 	a_Gfx.GetContext()->Unmap(m_InstanceBuffer.Get(), 0u);
 }
 

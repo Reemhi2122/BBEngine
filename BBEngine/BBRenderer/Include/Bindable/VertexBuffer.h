@@ -11,7 +11,7 @@ public:
 	void Bind(Graphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 
-	void CreateInstanceBuffer(Graphics& a_Gfx, const uint32_t a_DataSize);
+	void CreateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count);
 	void UpdateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count);
 
 private:

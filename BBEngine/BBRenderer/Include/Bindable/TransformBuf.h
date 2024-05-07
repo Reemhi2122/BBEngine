@@ -4,8 +4,8 @@
 #include <DirectXMath.h>
 
 struct perObjectBuffer {
-	DirectX::XMMATRIX mvp;
-	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX WVP;
+	DirectX::XMMATRIX transform;
 };
 
 class TransformBuf : public Bindable {
