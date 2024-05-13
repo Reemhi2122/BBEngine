@@ -28,13 +28,15 @@ public:
 
 	void SetProjection(DirectX::XMMATRIX a_Projections);
 	DirectX::XMMATRIX GetProjection() const noexcept;
+	
 	Camera* GetCamera();
+	void SetCamera(Camera* a_Camera);
 
 	void ResetRenderTarget();
 
 private:
 	DirectX::XMMATRIX m_Projection;
-	Camera m_Camera;
+	Camera* m_Camera;
 
 	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
 	Microsoft::WRL::ComPtr <IDXGISwapChain>			m_SwapChain;
@@ -53,5 +55,9 @@ inline ID3D11Device* Graphics::GetDevice() const noexcept {
 
 inline Camera* Graphics::GetCamera()
 {
-	return &m_Camera;
+	return m_Camera;
+}
+
+inline void Graphics::SetCamera(Camera* a_Camera) {
+	m_Camera = a_Camera;
 }

@@ -103,6 +103,8 @@ Graphics::Graphics(HWND a_HWnd)
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	m_Context->RSSetViewports(1, &viewport);
+
+	m_Camera = new Camera();
 }
 
 Graphics::~Graphics() {

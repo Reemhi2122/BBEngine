@@ -60,6 +60,9 @@ namespace BBE {
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();
 
+		Camera m_Cam1;
+		Camera m_Cam2;
+
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;
 		class ThreadPool* m_ThreadPool;

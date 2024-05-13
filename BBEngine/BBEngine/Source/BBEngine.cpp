@@ -71,8 +71,9 @@ namespace BBE
         parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
         parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
-        parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
+
+        //parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
 
@@ -108,7 +109,7 @@ namespace BBE
         Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, &m_VertexShader, &m_PixelShader);
         m_Models.push_back(aBeautifulGame);
 
-        int XSize = 10, YSize = 10;
+        int XSize = 3, YSize = 3;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
@@ -125,9 +126,10 @@ namespace BBE
         GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
         m_GameObjects.push_back(beautifulGameObj);
 
-        //Model* fox = BBNew(m_StackAllocator, Model)(m_Graphics, &m_FoxFile, &m_VertexShader, &m_PixelShader);
-        //fox->SetPosition(Vector3(-3, 2, 0));
-        //m_GameObjects.push_back(fox);
+        //Cameras
+        m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+        m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+        m_Graphics.SetCamera(&m_Cam1);
     }
 
     bool show_demo_window = true;
@@ -140,8 +142,6 @@ namespace BBE
 
         cbPerFrame test = { m_DirectionalLight, m_SpotLight };
         m_PerFrameBuffer.Update(m_Graphics, test);
-
-        //m_GameObjects[0]->SetRotation(m_GameObjects[0]->GetRotation() + Vector3(0.001f, 0.001f, 0.001f));
 
         for (size_t i = 0; i < m_GameObjects.size(); i++)
         {
@@ -199,6 +199,14 @@ namespace BBE
         if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
         {
             cam->camPitch += 0.025f;
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed('1')) {
+            m_Graphics.SetCamera(&m_Cam1);
+        }
+
+        if (m_Window.m_Keyboard.KeyIsPressed('2')) {
+            m_Graphics.SetCamera(&m_Cam2);
         }
 
         cam->Update();
