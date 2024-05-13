@@ -7,13 +7,16 @@
 #include "Drawable/Box.h"
 #include "Drawable/Model.h"
 #include "Drawable/DrawToTexture.h"
-#include "Lights/DirectionalLight.h"
-#include "Lights/PointLight.h"
 #include "GameLib/GameObject.h"
 
+#include "Lights/PointLight.h"
+#include "Lights/SpotLight.h"
+#include "Lights/DirectionalLight.h"
+
 struct cbPerFrame {
-	DirectionalLight directionallight;
-	PointLight spotlight;
+	DirectionalLight directionalLight;
+	PointLight pointLight;
+	SpotLight spotLight;
 };
 
 namespace BBE {
@@ -55,6 +58,7 @@ namespace BBE {
 		GLTFFile m_ABeautifulGameFile;
 
 		DirectionalLight m_DirectionalLight;
+		SpotLight m_SpotLight;
 		PointLight m_PointLight;
 
 		//Note(Stan):	I hate this but it should work

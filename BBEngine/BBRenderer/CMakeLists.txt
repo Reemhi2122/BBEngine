@@ -26,7 +26,7 @@ add_library (Renderer STATIC
 "Source/Lights/DirectionalLight.cpp"
 "Source/Lights/SpotLight.cpp"
 
-"Source/Camera.cpp" "Source/Lights/PointLight.cpp")
+"Source/Camera.cpp" "Source/Lights/PointLight.cpp" "Shader/Lights.h")
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")
 

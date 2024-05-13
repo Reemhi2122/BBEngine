@@ -90,6 +90,16 @@ namespace BBE
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
             15.0f
         );
+
+        m_SpotLight = SpotLight(
+            Vector3(8.0f, 2.0f, 0.0f),
+            Vector3(0.0f, -1.0f, 0.0f),
+            20.f,
+            Vector3(0.4f, 0.2f, 0.0f),
+            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+            1000.0f
+        );
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
@@ -140,7 +150,7 @@ namespace BBE
         
         CheckInput();
 
-        cbPerFrame test = { m_DirectionalLight, m_PointLight };
+        cbPerFrame test = { m_DirectionalLight, m_PointLight, m_SpotLight };
         m_PerFrameBuffer.Update(m_Graphics, test);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++)

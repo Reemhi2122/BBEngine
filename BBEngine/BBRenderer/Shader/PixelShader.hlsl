@@ -10,16 +10,28 @@ struct DirectionalLight
 
 struct PointLight
 {
-    float3 position;
-    float3 attenuation;
-    float range;
-    float4 ambient;
-    float4 diffuse;
+    float3  position;
+    float3  attenuation;
+    float   range;
+    float4  ambient;
+    float4  diffuse;
+};
+
+struct SpotLight
+{
+    float3  position;
+    float3  direction;
+    float   cone;
+    float3  attenuation;
+    float   range;
+    float4  ambient;
+    float4  diffuse;
 };
 
 cbuffer cbPerFrame {
     DirectionalLight directionalLight;
     PointLight pointlight;
+    SpotLight spotlight;
 };
 
 struct VSOut
@@ -69,6 +81,35 @@ float3 CalculatePointLight(VSOut psin, float4 dirlightcolor) {
     return finalColor;
 }
 
+float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
+
+    float3 finalColor = float3(0.0f, 0.0f, 0.0f);
+
+    float3 lightToPixelVec = spotlight.position - psin.worldPos;
+
+    float d = length(lightToPixelVec);
+  
+    float3 finalAmbient = dirlightcolor * spotlight.ambient;
+
+    if (d > spotlight.range)
+        return finalAmbient;
+
+    lightToPixelVec /= d;
+
+    float howMuchLight = dot(lightToPixelVec, psin.normal);
+
+    if (howMuchLight > 0.0f)
+    {
+        finalColor += dirlightcolor * spotlight.diffuse;
+        finalColor /= (spotlight.attenuation[0] + (spotlight.attenuation[1] * d)) + (spotlight.attenuation[2] * (d * d));
+        finalColor *= pow(max(dot(-lightToPixelVec, spotlight.direction), 0.0f), spotlight.cone);
+    }
+
+    finalColor = saturate(finalColor + finalAmbient);
+
+    return finalColor;
+}
+
 float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
@@ -79,5 +120,7 @@ float4 main(VSOut psin) : SV_Target
         
     finalColor += float4(CalculateDirectionalLight(psin, diffuse), diffuse.a);
     finalColor += float4(CalculatePointLight(psin, diffuse), diffuse.a);
+    finalColor += float4(CalculateSpotLight(psin, diffuse), diffuse.a);
+
     return finalColor;
 };
