@@ -7,13 +7,13 @@
 #include "Drawable/Box.h"
 #include "Drawable/Model.h"
 #include "Drawable/DrawToTexture.h"
-#include "DirectionalLight.h"
-#include "SpotLight.h"
+#include "Lights/DirectionalLight.h"
+#include "Lights/PointLight.h"
 #include "GameLib/GameObject.h"
 
 struct cbPerFrame {
 	DirectionalLight directionallight;
-	SpotLight spotlight;
+	PointLight spotlight;
 };
 
 namespace BBE {
@@ -55,7 +55,7 @@ namespace BBE {
 		GLTFFile m_ABeautifulGameFile;
 
 		DirectionalLight m_DirectionalLight;
-		SpotLight m_SpotLight;
+		PointLight m_PointLight;
 
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();

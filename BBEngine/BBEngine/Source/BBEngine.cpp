@@ -83,7 +83,7 @@ namespace BBE
             Vector4(0.5f, 0.5f, 0.5f, 1.0f)
         );
 
-        m_SpotLight = SpotLight(
+        m_PointLight = PointLight(
             Vector3(0.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
@@ -140,7 +140,7 @@ namespace BBE
         
         CheckInput();
 
-        cbPerFrame test = { m_DirectionalLight, m_SpotLight };
+        cbPerFrame test = { m_DirectionalLight, m_PointLight };
         m_PerFrameBuffer.Update(m_Graphics, test);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++)
@@ -213,7 +213,7 @@ namespace BBE
     }
 
     void BBEngine::RenderToTexture() {
-        m_DrawToTexture = BBNew(m_StackAllocator, DrawToTexture)(m_Graphics, &m_RTTVertexShader, &m_RTTPixelShader);
+        //m_DrawToTexture = BBNew(m_StackAllocator, DrawToTexture)(m_Graphics, &m_RTTVertexShader, &m_RTTPixelShader);
 
         ID3D11Texture2D* texture;
         D3D11_TEXTURE2D_DESC tex_desc;

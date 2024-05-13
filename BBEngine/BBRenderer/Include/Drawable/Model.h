@@ -3,7 +3,6 @@
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"
 #include "Vector3.h"
-#include "DirectionalLight.h"
 
 class Model : public Drawable
 {
