@@ -1,8 +1,3 @@
-//cbuffer CBuf {
-//	matrix transform;
-//    matrix world;
-//};
-
 cbuffer CBuf
 {
     matrix WVP;

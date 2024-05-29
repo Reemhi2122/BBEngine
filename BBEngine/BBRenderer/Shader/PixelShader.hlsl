@@ -29,9 +29,9 @@ struct SpotLight
 };
 
 cbuffer cbPerFrame {
-    DirectionalLight directionalLight;
-    PointLight pointlight;
-    SpotLight spotlight;
+    DirectionalLight directionalLight[50];
+    PointLight pointlight[50];
+    SpotLight spotlight[50];
 };
 
 struct VSOut
