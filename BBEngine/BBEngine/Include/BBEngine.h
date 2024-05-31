@@ -14,9 +14,13 @@
 #include "Lights/DirectionalLight.h"
 
 struct cbPerFrame {
-	DirectionalLight directionalLight[50];
-	PointLight pointLight[50];
-	SpotLight spotLight[50];
+	DirectionalLight directionalLights[50];
+	PointLight pointLights[50];
+	SpotLight spotLights[50];
+	float directionalLightsSize;
+	float pointLightsSize;
+	float spotLightsSize;
+	float padding0;
 };
 
 namespace BBE {
@@ -61,10 +65,9 @@ namespace BBE {
 		SpotLight m_SpotLight;
 		PointLight m_PointLight;
 
-		std::vector<DirectionalLight> m_DirectionLights;
-		std::vector<SpotLight> m_SpotLights;
-		std::vector<PointLight> m_PointLights;
-
+		DirectionalLight m_DirectionLights[50];
+		SpotLight m_SpotLights[50];
+		PointLight m_PointLights[50];
 
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();

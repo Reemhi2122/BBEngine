@@ -76,10 +76,6 @@ namespace BBE
         //parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 1000.0f));
-
-        m_DirectionLights.reserve(50);
-        m_SpotLights.reserve(50);
-        m_PointLights.reserve(50);
        
         m_DirectionalLight = DirectionalLight(
             Vector3(0.25f, 0.5f, -1.0f),
@@ -104,10 +100,6 @@ namespace BBE
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
             1000.0f
         );
-
-        m_DirectionLights.push_back(m_DirectionalLight);
-        m_SpotLights.push_back(m_SpotLight);
-        m_PointLights.push_back(m_PointLight);
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
@@ -158,11 +150,13 @@ namespace BBE
         
         CheckInput();
 
-        cbPerFrame test = { 
-            m_DirectionLights.data(),
-            m_PointLight, 
-            m_SpotLight 
-        };
+        cbPerFrame test;
+        test.directionalLights[0] = m_DirectionalLight;
+        test.directionalLightsSize = 1;
+        test.spotLights[0] = m_SpotLight;
+        test.spotLightsSize = 1;
+        test.pointLights[0] = m_PointLight;
+        test.pointLightsSize = 1;
 
         m_PerFrameBuffer.Update(m_Graphics, test);
 

@@ -29,9 +29,13 @@ struct SpotLight
 };
 
 cbuffer cbPerFrame {
-    DirectionalLight directionalLight[50];
-    PointLight pointlight[50];
-    SpotLight spotlight[50];
+    DirectionalLight directionalLights[50];
+    PointLight pointlights[50];
+    SpotLight spotlights[50];
+	float directionalLightsSize;
+	float pointLightsSize;
+	float spotLightsSize;
+	float padding0;
 };
 
 struct VSOut
@@ -42,7 +46,7 @@ struct VSOut
     float3 normal : Normal;
 };
 
-float3 CalculateDirectionalLight(VSOut psin, float4 diffuse) {
+float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight directionalLight) {
     
     float3 finalColor;
 
@@ -53,7 +57,7 @@ float3 CalculateDirectionalLight(VSOut psin, float4 diffuse) {
     return finalColor;
 }
 
-float3 CalculatePointLight(VSOut psin, float4 dirlightcolor) {
+float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlight) {
 
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
@@ -81,7 +85,7 @@ float3 CalculatePointLight(VSOut psin, float4 dirlightcolor) {
     return finalColor;
 }
 
-float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor) {
+float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight) {
 
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
@@ -117,10 +121,18 @@ float4 main(VSOut psin) : SV_Target
     float4 diffuse = tex.Sample(splr, psin.tex);
     
     float4 finalColor = float4(0, 0, 0, 1);
-        
-    finalColor += float4(CalculateDirectionalLight(psin, diffuse), diffuse.a);
-    finalColor += float4(CalculatePointLight(psin, diffuse), diffuse.a);
-    finalColor += float4(CalculateSpotLight(psin, diffuse), diffuse.a);
+    
+    for(int i = 0; i < directionalLightsSize; i++) {
+        finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLights[i]), diffuse.a);       
+    }
+
+    for(int i = 0; i < pointLightsSize; i++) {
+        finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i]), diffuse.a);       
+    }
+
+    for(int i = 0; i < spotLightsSize; i++) {
+        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i]), diffuse.a);       
+    }
 
     return finalColor;
 };
