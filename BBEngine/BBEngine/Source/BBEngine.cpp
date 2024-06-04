@@ -83,18 +83,18 @@ namespace BBE
             Vector4(0.5f, 0.5f, 0.5f, 1.0f)
         );
 
-        m_PointLights.Push_Back(PointLight(
-            Vector3(0.0f, 2.0f, 0.0f),
-            Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-            15.0f
-        ));
+        //m_PointLights.Push_Back(PointLight(
+        //    Vector3(0.0f, 2.0f, 0.0f),
+        //    Vector3(0.0f, 0.2f, 0.0f),
+        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+        //    15.0f
+        //));
 
         m_SpotLights.Push_Back(SpotLight(
             Vector3(8.0f, 2.0f, 0.0f),
             Vector3(0.0f, -1.0f, 0.0f),
-            20.f,
+            5.f,
             Vector3(0.4f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -157,7 +157,7 @@ namespace BBE
             test.spotlights[i] = m_SpotLights[i];
         }
         
-        for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
+        for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
             test.pointlights[i] = m_PointLights[i];
         }
 
