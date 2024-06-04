@@ -1,42 +1,7 @@
+#include "Lights.h"
+
 Texture2D tex;
 SamplerState splr;
-
-struct DirectionalLight
-{
-    float3 dir;
-    float4 ambient;
-    float4 diffuse;
-};
-
-struct PointLight
-{
-    float3  position;
-    float3  attenuation;
-    float   range;
-    float4  ambient;
-    float4  diffuse;
-};
-
-struct SpotLight
-{
-    float3  position;
-    float3  direction;
-    float   cone;
-    float3  attenuation;
-    float   range;
-    float4  ambient;
-    float4  diffuse;
-};
-
-cbuffer cbPerFrame {
-    DirectionalLight directionalLights[50];
-    PointLight pointlights[50];
-    SpotLight spotlights[50];
-	float directionalLightsSize;
-	float pointLightsSize;
-	float spotLightsSize;
-	float padding0;
-};
 
 struct VSOut
 {
@@ -122,15 +87,13 @@ float4 main(VSOut psin) : SV_Target
     
     float4 finalColor = float4(0, 0, 0, 1);
     
-    for(int i = 0; i < directionalLightsSize; i++) {
-        finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLights[i]), diffuse.a);       
-    }
+    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
 
-    for(int i = 0; i < pointLightsSize; i++) {
+    for(int i = 0; i < MAXLIGHTS; i++) {
         finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i]), diffuse.a);       
     }
 
-    for(int i = 0; i < spotLightsSize; i++) {
+    for(int i = 0; i < MAXLIGHTS; i++) {
         finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i]), diffuse.a);       
     }
 

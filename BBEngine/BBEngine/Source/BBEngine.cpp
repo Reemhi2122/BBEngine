@@ -151,12 +151,9 @@ namespace BBE
         CheckInput();
 
         cbPerFrame test;
-        test.directionalLights[0] = m_DirectionalLight;
-        test.directionalLightsSize = 1;
-        test.spotLights[0] = m_SpotLight;
-        test.spotLightsSize = 1;
-        test.pointLights[0] = m_PointLight;
-        test.pointLightsSize = 1;
+        test.directionalLight = m_DirectionalLight;
+        test.spotlights[0] = m_SpotLight;
+        test.pointlights[0] = m_PointLight;
 
         m_PerFrameBuffer.Update(m_Graphics, test);
 

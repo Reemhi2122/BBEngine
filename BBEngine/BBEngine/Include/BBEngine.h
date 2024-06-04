@@ -13,15 +13,8 @@
 #include "Lights/SpotLight.h"
 #include "Lights/DirectionalLight.h"
 
-struct cbPerFrame {
-	DirectionalLight directionalLights[50];
-	PointLight pointLights[50];
-	SpotLight spotLights[50];
-	float directionalLightsSize;
-	float pointLightsSize;
-	float spotLightsSize;
-	float padding0;
-};
+#include "Containers/FixedArray.h"
+#include "Lights.h"
 
 namespace BBE {
 	class BBEngine {
@@ -64,10 +57,6 @@ namespace BBE {
 		DirectionalLight m_DirectionalLight;
 		SpotLight m_SpotLight;
 		PointLight m_PointLight;
-
-		DirectionalLight m_DirectionLights[50];
-		SpotLight m_SpotLights[50];
-		PointLight m_PointLights[50];
 
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();

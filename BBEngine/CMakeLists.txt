@@ -9,6 +9,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project ("BBEngine")
 
+add_compile_definitions(ENGINE)
+
 # Include sub-projects.
 add_subdirectory ("BBRenderer")
 add_subdirectory ("BBEngine")
