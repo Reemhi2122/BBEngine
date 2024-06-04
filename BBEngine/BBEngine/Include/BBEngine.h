@@ -3,7 +3,6 @@
 
 #include "Utility/BBTimer.h"
 #include "Utility/BBMemory.h"
-#pragma once
 #include "Drawable/Box.h"
 #include "Drawable/Model.h"
 #include "Drawable/DrawToTexture.h"
@@ -15,6 +14,8 @@
 
 #include "Containers/FixedArray.h"
 #include "Lights.h"
+
+#include "Containers/Vector.h"
 
 namespace BBE {
 	class BBEngine {
@@ -55,8 +56,8 @@ namespace BBE {
 		GLTFFile m_ABeautifulGameFile;
 
 		DirectionalLight m_DirectionalLight;
-		SpotLight m_SpotLight;
-		PointLight m_PointLight;
+		Vector<SpotLight> m_SpotLights;
+		Vector<PointLight> m_PointLights;
 
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();

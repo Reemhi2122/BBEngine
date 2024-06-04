@@ -22,6 +22,8 @@ namespace BBE {
 		void Remove(uint32_t a_Index, uint32_t a_Length = 1);
 		void Insert(uint32_t a_Index, T a_Element);
 
+		uint32_t Size();
+
 	private:
 		void Resize();
 
@@ -126,6 +128,11 @@ namespace BBE {
 		BBFreeArr(m_Alloc, m_Data);
 		m_Data = temp;
 		m_CurPos++;
+	}
+
+	template<typename T>
+	uint32_t Vector<T>::Size() {
+		return m_CurPos;
 	}
 
 	template<typename T>
