@@ -11,6 +11,14 @@ Vector3& Vector3::operator+(const Vector3& a_Rhs)
 {
 	return Vector3(
 		this->x + a_Rhs.x,
-		this->y + a_Rhs.x,
+		this->y + a_Rhs.y,
 		this->z + a_Rhs.z);
+}
+
+Vector3& Vector3::operator-(const Vector3& a_Rhs)
+{
+	return Vector3(
+		this->x - a_Rhs.x,
+		this->y - a_Rhs.y,
+		this->z - a_Rhs.z);
 }

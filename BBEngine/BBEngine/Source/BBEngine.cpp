@@ -93,7 +93,7 @@ namespace BBE
 
         m_SpotLights.Push_Back(SpotLight(
             Vector3(8.0f, 2.0f, 0.0f),
-            Vector3(0.0f, -1.0f, 0.0f),
+            Vector3(-1.0f, 0.0f, 0.0f),
             5.f,
             Vector3(0.4f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
@@ -145,10 +145,14 @@ namespace BBE
     void BBEngine::CalculateLightShadowMap() {
         m_Graphics.SetDepthStencilTarget();
 
+        Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
+
         m_Cam2.m_ViewMatrix = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-            DirectX::XMVectorSet((m_SpotLights[0].position.x - m_SpotLights[0].direction.x), (m_SpotLights[0].position.y - m_SpotLights[0].direction.y), (m_SpotLights[0].position.z - m_SpotLights[0].direction.z), 0),
-            DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0));
+            DirectX::XMVectorSet(focusPoint.x + 0.00001f, focusPoint.y, focusPoint.z, 1.0f),
+            DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+        );
+        
         m_Graphics.SetCamera(&m_Cam2);
 
         for (size_t i = 0; i < m_Models.size(); i++) {
@@ -157,7 +161,7 @@ namespace BBE
 
         m_Graphics.ResetRenderTarget();
         
-        //m_Graphics.SetCamera(&m_Cam1);
+        m_Graphics.SetCamera(&m_Cam1);
     }
 
     bool show_demo_window = true;

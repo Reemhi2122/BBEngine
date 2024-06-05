@@ -8,6 +8,7 @@ public:
 	~Vector3() noexcept = default;
 
 	Vector3& operator+(const Vector3& a_Rhs);
+	Vector3& operator-(const Vector3& a_Rhs);
 
 public:
 	float 
