@@ -3,7 +3,7 @@
 void Camera::Update()
 {
     DirectX::XMMATRIX rotation = DirectX::XMMatrixIdentity();
-    rotation = DirectX::XMMatrixRotationRollPitchYaw(camPitch, camYaw, 0.f);
+    rotation = m_BaseRotation * DirectX::XMMatrixRotationRollPitchYaw(camPitch, camYaw, 0.f);
     DirectX::XMVECTOR camTarget = DirectX::XMVector3TransformCoord(DefaultForward, rotation);
     camTarget = DirectX::XMVector3Normalize(camTarget);
     

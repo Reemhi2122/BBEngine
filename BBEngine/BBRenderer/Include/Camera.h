@@ -22,7 +22,7 @@ public:
 	float camRightMove = 0.0f;
 	float camUpMove = 0.0f;
 
-private:
+public:
 	DirectX::XMVECTOR DefaultRight =	DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR DefaultForward =	DirectX::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
@@ -31,6 +31,7 @@ private:
 	DirectX::XMVECTOR m_Forward =	DirectX::XMVectorSet(0.f, 0.f, 1.f, 0.f);
 
 	DirectX::XMVECTOR m_Position =	DirectX::XMVectorSet(0.f, 0.f, -10.f, 0.f);
+	DirectX::XMMATRIX m_BaseRotation = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX m_ViewMatrix = DirectX::XMMatrixIdentity();
 };
 
@@ -54,3 +55,10 @@ inline void Camera::SetPosition(DirectX::XMVECTOR& a_Position)
 	m_Position = a_Position;
 }
 
+inline DirectX::XMMATRIX Camera::GetRotation() const {
+	return m_BaseRotation;
+}
+
+inline void Camera::SetRotation(DirectX::XMMATRIX& a_Rotation) {
+	m_BaseRotation = a_Rotation;
+}

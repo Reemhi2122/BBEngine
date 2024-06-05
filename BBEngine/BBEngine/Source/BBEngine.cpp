@@ -142,14 +142,31 @@ namespace BBE
         m_Graphics.SetCamera(&m_Cam1);
     }
 
+    void BBEngine::CalculateLightShadowMap() {
+        m_Graphics.SetDepthStencilTarget();
+
+        m_Cam2.m_ViewMatrix = DirectX::XMMatrixLookAtLH(
+            DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
+            DirectX::XMVectorSet((m_SpotLights[0].position.x - m_SpotLights[0].direction.x), (m_SpotLights[0].position.y - m_SpotLights[0].direction.y), (m_SpotLights[0].position.z - m_SpotLights[0].direction.z), 0),
+            DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0));
+        m_Graphics.SetCamera(&m_Cam2);
+
+        for (size_t i = 0; i < m_Models.size(); i++) {
+            m_Models[i]->Draw(m_Graphics);
+        }
+
+        m_Graphics.ResetRenderTarget();
+        
+        //m_Graphics.SetCamera(&m_Cam1);
+    }
+
     bool show_demo_window = true;
     void BBEngine::Update()
     {
         float time = m_Timer.Stamp();
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
         
-        m_Graphics.SetGameViewRenderTarget();
-
+        //m_Graphics.SetGameViewRenderTarget();
         CheckInput();
 
         cbPerFrame test;
@@ -169,6 +186,8 @@ namespace BBE
         {
             m_GameObjects[i]->Update(m_Graphics);
         }
+
+        CalculateLightShadowMap();
 
         for (size_t i = 0; i < m_Models.size(); i++) {
             m_Models[i]->Draw(m_Graphics);

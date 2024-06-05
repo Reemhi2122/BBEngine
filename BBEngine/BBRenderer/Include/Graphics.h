@@ -35,6 +35,7 @@ public:
 	void ResetRenderTarget();
 
 	void SetGameViewRenderTarget();
+	void SetDepthStencilTarget();
 
 private:
 	DirectX::XMMATRIX m_Projection;
@@ -46,9 +47,13 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_Target;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_DepthStencilView;
 
-	ID3D11Texture2D* m_TextureTarget;
-	ID3D11RenderTargetView* m_RenderTargetView;
-	ID3D11ShaderResourceView* m_ShaderResourceView;
+	ID3D11Texture2D* m_TextureTarget = nullptr;
+	ID3D11RenderTargetView* m_TextureRenderTargetView = nullptr;
+	ID3D11ShaderResourceView* m_TextureShaderResourceView = nullptr;
+
+	ID3D11Texture2D* m_TextureDepthTarget = nullptr;
+	ID3D11DepthStencilView* m_TextureDepthStencilView = nullptr;
+	ID3D11ShaderResourceView* m_TextureDepthShaderResourceView = nullptr;
 };
 
 inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {

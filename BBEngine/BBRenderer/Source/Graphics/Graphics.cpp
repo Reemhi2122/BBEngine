@@ -49,8 +49,8 @@ Graphics::Graphics(HWND a_HWnd)
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
 
-	//// TEMP // TEMP //
 
+#if 0
 	D3D11_TEXTURE2D_DESC tex_desc;
 	ZeroMemory(&tex_desc, sizeof(tex_desc));
 
@@ -74,16 +74,71 @@ Graphics::Graphics(HWND a_HWnd)
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	m_Device->CreateRenderTargetView(m_TextureTarget, &renderTargetViewDesc, &m_RenderTargetView);
+	m_Device->CreateRenderTargetView(m_TextureTarget, &renderTargetViewDesc, &m_TextureRenderTargetView);
 
 	shaderResourceViewDesc.Format = tex_desc.Format;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	m_Device->CreateShaderResourceView(m_TextureTarget, &shaderResourceViewDesc, &m_ShaderResourceView);
+	m_Device->CreateShaderResourceView(m_TextureTarget, &shaderResourceViewDesc, &m_TextureShaderResourceView);
+#endif
 
-	//// TEMP // TEMP //
+#if 1
+	D3D11_TEXTURE2D_DESC tex_desc{};
+	tex_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	tex_desc.Width = 1600u;
+	tex_desc.Height = 900u;
+	tex_desc.MipLevels = 1u;
+	tex_desc.ArraySize = 1u;
+	tex_desc.SampleDesc.Count = 1u;
+	tex_desc.SampleDesc.Quality = 0u;
+	tex_desc.Usage = D3D11_USAGE_DEFAULT;
+	tex_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	tex_desc.CPUAccessFlags = 0;
+	tex_desc.MiscFlags = 0;
+
+	HRESULT res = m_Device->CreateTexture2D(&tex_desc, nullptr, &m_TextureDepthTarget);
+
+	//D3D11_DEPTH_STENCIL_DESC  textureDepthStencilState;
+	//ZeroMemory(&textureDepthStencilState, sizeof(textureDepthStencilState));
+
+	//textureDepthStencilState.DepthEnable = true;
+	//textureDepthStencilState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	//textureDepthStencilState.DepthFunc = D3D11_COMPARISON_LESS;
+
+	//textureDepthStencilState.StencilEnable = true;
+	//textureDepthStencilState.StencilReadMask = 0xFF;
+	//textureDepthStencilState.StencilWriteMask = 0xFF;
+
+	//textureDepthStencilState.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	//textureDepthStencilState.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
+	//textureDepthStencilState.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	//textureDepthStencilState.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	//textureDepthStencilState.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	//textureDepthStencilState.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
+	//textureDepthStencilState.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	//textureDepthStencilState.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
+	TextureDepthStencilDesc.Flags = 0;
+	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	TextureDepthStencilDesc.Texture2D.MipSlice = 0;
+
+	res = m_Device->CreateDepthStencilView(m_TextureDepthTarget, &TextureDepthStencilDesc, &m_TextureDepthStencilView);
+
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC TextureDepthShaderResourceViewDesc{};
+	TextureDepthShaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	TextureDepthShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	TextureDepthShaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	TextureDepthShaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	res = m_Device->CreateShaderResourceView(m_TextureDepthTarget, &TextureDepthShaderResourceViewDesc, &m_TextureDepthShaderResourceView);
+
+#endif
 
 	//Create depth stencil
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
@@ -150,21 +205,26 @@ Graphics::~Graphics() {
 }
 
 void Graphics::SetGameViewRenderTarget() {
-	m_Context->OMSetRenderTargets(1u, &m_RenderTargetView, m_DepthStencilView.Get());
+	m_Context->OMSetRenderTargets(1u, &m_TextureRenderTargetView, m_DepthStencilView.Get());
 	const float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	m_Context->ClearRenderTargetView(m_RenderTargetView, color);
+	m_Context->ClearRenderTargetView(m_TextureRenderTargetView, color);
 	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+}
+
+void Graphics::SetDepthStencilTarget() {
+	m_Context->OMSetRenderTargets(0u, 0, m_TextureDepthStencilView);
+	m_Context->ClearDepthStencilView(m_TextureDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Graphics::EndFrame()
 {
 	ImGui::Begin("GameWindow");
 	{
-		ImGui::Image((void*)m_ShaderResourceView, ImVec2(1600, 900));
+		if (m_TextureDepthShaderResourceView) {
+			ImGui::Image((void*)m_TextureDepthShaderResourceView, ImVec2(400, 225));
+		}
 	}
 	ImGui::End();
-
-	ResetRenderTarget();
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());

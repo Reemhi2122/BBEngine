@@ -32,6 +32,7 @@ namespace BBE {
 
 		//Note(Stan):	This should be temp
 		void RenderToTexture();
+		void CalculateLightShadowMap();
 
 	private:
 		BBWindow m_Window;
