@@ -148,6 +148,8 @@ namespace BBE
         float time = m_Timer.Stamp();
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
         
+        m_Graphics.SetGameViewRenderTarget();
+
         CheckInput();
 
         cbPerFrame test;
@@ -173,6 +175,7 @@ namespace BBE
         }
 
         ImGui::ShowDemoWindow(&show_demo_window);
+
         m_Graphics.EndFrame();
     }
 

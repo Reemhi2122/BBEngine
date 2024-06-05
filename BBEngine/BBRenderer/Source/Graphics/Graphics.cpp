@@ -49,6 +49,42 @@ Graphics::Graphics(HWND a_HWnd)
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
 
+	//// TEMP // TEMP //
+
+	D3D11_TEXTURE2D_DESC tex_desc;
+	ZeroMemory(&tex_desc, sizeof(tex_desc));
+
+	tex_desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	tex_desc.Width = 1600u;
+	tex_desc.Height = 900u;
+	tex_desc.MipLevels = 1u;
+	tex_desc.ArraySize = 1u;
+	tex_desc.SampleDesc.Count = 1u;
+	tex_desc.Usage = D3D11_USAGE_DEFAULT;
+	tex_desc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+	tex_desc.CPUAccessFlags = 0u;
+	tex_desc.MiscFlags = 0u;
+
+	HRESULT res = m_Device->CreateTexture2D(&tex_desc, nullptr, &m_TextureTarget);
+
+	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
+
+	renderTargetViewDesc.Format = tex_desc.Format;
+	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	renderTargetViewDesc.Texture2D.MipSlice = 0;
+
+	m_Device->CreateRenderTargetView(m_TextureTarget, &renderTargetViewDesc, &m_RenderTargetView);
+
+	shaderResourceViewDesc.Format = tex_desc.Format;
+	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	shaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	m_Device->CreateShaderResourceView(m_TextureTarget, &shaderResourceViewDesc, &m_ShaderResourceView);
+
+	//// TEMP // TEMP //
+
 	//Create depth stencil
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
 	dsDesc.DepthEnable = TRUE;
@@ -113,8 +149,23 @@ Graphics::~Graphics() {
 	ImGui::DestroyContext();
 }
 
+void Graphics::SetGameViewRenderTarget() {
+	m_Context->OMSetRenderTargets(1u, &m_RenderTargetView, m_DepthStencilView.Get());
+	const float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	m_Context->ClearRenderTargetView(m_RenderTargetView, color);
+	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+}
+
 void Graphics::EndFrame()
 {
+	ImGui::Begin("GameWindow");
+	{
+		ImGui::Image((void*)m_ShaderResourceView, ImVec2(1600, 900));
+	}
+	ImGui::End();
+
+	ResetRenderTarget();
+
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	HRESULT hr;

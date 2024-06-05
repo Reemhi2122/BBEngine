@@ -34,15 +34,21 @@ public:
 
 	void ResetRenderTarget();
 
+	void SetGameViewRenderTarget();
+
 private:
 	DirectX::XMMATRIX m_Projection;
 	Camera* m_Camera;
 
 	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
-	Microsoft::WRL::ComPtr <IDXGISwapChain>			m_SwapChain;
-	Microsoft::WRL::ComPtr <ID3D11DeviceContext>	m_Context;
-	Microsoft::WRL::ComPtr <ID3D11RenderTargetView> m_Target;
-	Microsoft::WRL::ComPtr <ID3D11DepthStencilView> m_DepthStencilView;
+	Microsoft::WRL::ComPtr<IDXGISwapChain>			m_SwapChain;
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext>		m_Context;
+	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_Target;
+	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_DepthStencilView;
+
+	ID3D11Texture2D* m_TextureTarget;
+	ID3D11RenderTargetView* m_RenderTargetView;
+	ID3D11ShaderResourceView* m_ShaderResourceView;
 };
 
 inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {
