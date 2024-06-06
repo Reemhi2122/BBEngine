@@ -152,7 +152,7 @@ namespace BBE
             DirectX::XMVectorSet(focusPoint.x + 0.00001f, focusPoint.y, focusPoint.z, 1.0f),
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
-        
+
         m_Graphics.SetCamera(&m_Cam2);
 
         for (size_t i = 0; i < m_Models.size(); i++) {

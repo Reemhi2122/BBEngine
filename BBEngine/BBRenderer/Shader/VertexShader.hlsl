@@ -4,6 +4,8 @@ cbuffer CBuf
     matrix transform;
 };
 
+matrix LightMatrix;
+
 struct VSOut
 {
     float4 pos : SV_Position;
