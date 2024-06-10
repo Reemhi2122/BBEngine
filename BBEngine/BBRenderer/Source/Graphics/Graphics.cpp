@@ -217,6 +217,7 @@ void Graphics::SetDepthStencilTarget() {
 }
 
 void Graphics::BindDepthTexture() {
+
 	//D3D11_SHADER_RESOURCE_VIEW_DESC image_rsv_desc = {};
 	//image_rsv_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	//image_rsv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;

@@ -8,7 +8,9 @@ class ConstantBuffer : public Bindable
 public:
 	ConstantBuffer() = default;
 
-	ConstantBuffer(Graphics& a_Gfx) {
+	ConstantBuffer(Graphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
+		: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
+	{
 		INFOMAN(a_Gfx);
 
 		D3D11_BUFFER_DESC cbd;
@@ -21,7 +23,9 @@ public:
 		GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
 	}
 
-	ConstantBuffer(Graphics& a_Gfx, const T& a_Consts) {
+	ConstantBuffer(Graphics& a_Gfx, const T& a_Consts, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
+		: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
+	{
 		INFOMAN(a_Gfx);
 
 		D3D11_BUFFER_DESC cbd;
@@ -57,6 +61,9 @@ public:
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer;
+
+	uint32_t m_StartSlot;
+	uint32_t m_NumBuffers;
 };
 
 template<typename T>
@@ -66,7 +73,7 @@ public:
 	using ConstantBuffer<T>::ConstantBuffer;
 	void Bind(Graphics& a_Gfx) noexcept override
 	{
-		a_Gfx.GetContext()->VSSetConstantBuffers(0u, 1u, m_ConstantBuffer.GetAddressOf());
+		a_Gfx.GetContext()->VSSetConstantBuffers(m_StartSlot, m_NumBuffers, m_ConstantBuffer.GetAddressOf());
 	}
 };
 
@@ -77,6 +84,6 @@ public:
 	using ConstantBuffer<T>::ConstantBuffer;
 	void Bind(Graphics& a_Gfx) noexcept override
 	{
-		a_Gfx.GetContext()->PSSetConstantBuffers(0u, 1u, m_ConstantBuffer.GetAddressOf());
+		a_Gfx.GetContext()->PSSetConstantBuffers(m_StartSlot, m_NumBuffers, m_ConstantBuffer.GetAddressOf());
 	}
 };
