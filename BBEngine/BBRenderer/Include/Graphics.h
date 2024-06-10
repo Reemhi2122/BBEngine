@@ -55,6 +55,7 @@ private:
 	ID3D11Texture2D* m_TextureDepthTarget = nullptr;
 	ID3D11DepthStencilView* m_TextureDepthStencilView = nullptr;
 	ID3D11ShaderResourceView* m_TextureDepthShaderResourceView = nullptr;
+
 };
 
 inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {

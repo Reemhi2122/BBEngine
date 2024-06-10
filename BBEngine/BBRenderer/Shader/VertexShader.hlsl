@@ -1,10 +1,10 @@
+#include "ShaderDefines.h"
+
 cbuffer CBuf
 {
     matrix WVP;
     matrix transform;
 };
-
-matrix LightMatrix;
 
 struct VSOut
 {

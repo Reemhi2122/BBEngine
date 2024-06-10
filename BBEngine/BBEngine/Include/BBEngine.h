@@ -14,6 +14,7 @@
 
 #include "Containers/FixedArray.h"
 #include "Lights.h"
+#include "Vertexconstant.h"
 
 #include "Containers/Vector.h"
 
@@ -49,8 +50,7 @@ namespace BBE {
 		PixelShader m_RTTPixelShader;
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
-
-		VertexConstantBuffer<Matrix3x3> m_VertexConstBuffer;
+		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;
