@@ -3,7 +3,7 @@
 
 VertexShader::VertexShader(Graphics& a_Gfx, std::wstring a_Path)
 {
-	D3DCompileFromFile(a_Path.c_str(), nullptr, nullptr, "main", "vs_5_0", 0, 0, &m_ByteCodeBlob, nullptr);
+	D3DCompileFromFile(a_Path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 0, 0, &m_ByteCodeBlob, nullptr);
 	a_Gfx.GetDevice()->CreateVertexShader(m_ByteCodeBlob->GetBufferPointer(), m_ByteCodeBlob->GetBufferSize(), nullptr, &m_VertexShader);
 }
 

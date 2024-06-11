@@ -1,6 +1,8 @@
 #include "Lights.h"
 
-Texture2D tex;
+Texture2D tex           : register(ps, t0);
+Texture2D depthBuffer   : register(ps, t1);
+
 SamplerState splr;
 
 struct VSOut
@@ -9,6 +11,7 @@ struct VSOut
     float4 worldPos : POSITION;
     float2 tex : TexCoord;
     float3 normal : Normal;
+    float4 FragPosLightSpace : FragPos;
 };
 
 float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight directionalLight) {

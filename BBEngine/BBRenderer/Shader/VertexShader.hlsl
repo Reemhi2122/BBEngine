@@ -1,4 +1,4 @@
-#include "ShaderDefines.h"
+#include "Vertexconstant.h"
 
 cbuffer CBuf
 {
@@ -12,6 +12,7 @@ struct VSOut
     float4 worldPos : POSITION;
     float2 tex : TexCoord;
     float3 normal : Normal;
+    float4 FragPosLightSpace : FragPos;
 };
 
 VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal, matrix instanceTransform : InstanceTransform)
@@ -25,5 +26,6 @@ VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal,
     vso.worldPos = mul(float4(pos, 1.0f), finalTransfom);
     vso.tex = tex;
     vso.normal = mul(normal, finalTransfom);
+    vso.FragPosLightSpace = float4(1.f, 1.f, 1.f, 1.f);
     return vso;
 }

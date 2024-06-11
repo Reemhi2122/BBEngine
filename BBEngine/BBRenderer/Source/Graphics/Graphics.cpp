@@ -218,16 +218,13 @@ void Graphics::SetDepthStencilTarget() {
 
 void Graphics::BindDepthTexture() {
 
+	D3D11_SHADER_RESOURCE_VIEW_DESC image_rsv_desc = {};
+	image_rsv_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	image_rsv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	image_rsv_desc.Texture2D.MostDetailedMip = 0;
+	image_rsv_desc.Texture2D.MipLevels = 1;
 
-
-	//D3D11_SHADER_RESOURCE_VIEW_DESC image_rsv_desc = {};
-	//image_rsv_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-	//image_rsv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	//image_rsv_desc.Texture2D.MostDetailedMip = 0;
-	//image_rsv_desc.Texture2D.MipLevels = 1;
-
-	//a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture.Get(), &image_rsv_desc, &m_ShaderResourceView);
-	//a_Gfx.GetContext()->PSSetShaderResources(0, 1, m_ShaderResourceView.GetAddressOf());
+	m_Context->PSSetShaderResources(1, 1, &m_TextureShaderResourceView);
 }
 
 void Graphics::EndFrame()
