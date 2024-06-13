@@ -160,7 +160,8 @@ namespace BBE
         }
 
         m_Graphics.ResetRenderTarget();
-        
+        m_Graphics.BindDepthTexture();
+
         vcbPerFrame buf;
         buf.lightMatrix = m_Cam2.m_ViewMatrix;
         m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
