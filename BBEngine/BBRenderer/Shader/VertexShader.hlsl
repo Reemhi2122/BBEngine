@@ -1,6 +1,6 @@
 #include "Vertexconstant.h"
 
-cbuffer CBuf
+cbuffer CBuf : register(b0)
 {
     matrix WVP;
     matrix transform;
@@ -26,6 +26,6 @@ VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal,
     vso.worldPos = mul(float4(pos, 1.0f), finalTransfom);
     vso.tex = tex;
     vso.normal = mul(normal, finalTransfom);
-    vso.FragPosLightSpace = float4(1.f, 1.f, 1.f, 1.f);
+    vso.FragPosLightSpace = mul(lightMatrix, mul(transform, float4(pos, 1.0f)));
     return vso;
 }

@@ -92,6 +92,8 @@ float ShadowCalculation(float4 fragPosLigthSpace)
     
     float currentDepth = projCoords.z;
     
+    return closestDepth;
+    
     if (currentDepth > closestDepth)
     {
         return 1.0;

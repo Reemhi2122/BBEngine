@@ -155,17 +155,17 @@ namespace BBE
 
         m_Graphics.SetCamera(&m_Cam2);
 
+        vcbPerFrame buf;
+        buf.lightMatrix = m_Cam2.m_ViewMatrix;
+        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
+        m_LightMatrix.Bind(m_Graphics);
+
         for (size_t i = 0; i < m_Models.size(); i++) {
             m_Models[i]->Draw(m_Graphics);
         }
 
         m_Graphics.ResetRenderTarget();
         m_Graphics.BindDepthTexture();
-
-        vcbPerFrame buf;
-        buf.lightMatrix = m_Cam2.m_ViewMatrix;
-        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
-        m_LightMatrix.Bind(m_Graphics);
 
         m_Graphics.SetCamera(&m_Cam1);
     }
