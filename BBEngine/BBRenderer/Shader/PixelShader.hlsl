@@ -91,15 +91,8 @@ float ShadowCalculation(float4 fragPosLigthSpace)
     float closestDepth = depthBuffer.Sample(splr, projCoords.xy).r;
     
     float currentDepth = projCoords.z;
-    
-    return closestDepth;
-    
-    if (currentDepth > closestDepth)
-    {
-        return 1.0;
-    }
-    
-    return 0.0;
+
+    return currentDepth > closestDepth ? 1.0 : 0.0;;
 }
 
 float4 main(VSOut psin) : SV_Target

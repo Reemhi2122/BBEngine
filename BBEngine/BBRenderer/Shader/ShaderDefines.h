@@ -10,4 +10,8 @@
 #define float4 Vector4
 #define cbuffer struct
 #define matrix DirectX::XMMATRIX
+
+#define CBRegister1
+#else
+#define CBRegister1 : register(b1)
 #endif

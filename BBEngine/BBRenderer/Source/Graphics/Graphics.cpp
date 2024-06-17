@@ -100,27 +100,6 @@ Graphics::Graphics(HWND a_HWnd)
 
 	HRESULT res = m_Device->CreateTexture2D(&tex_desc, nullptr, &m_TextureDepthTarget);
 
-	//D3D11_DEPTH_STENCIL_DESC  textureDepthStencilState;
-	//ZeroMemory(&textureDepthStencilState, sizeof(textureDepthStencilState));
-
-	//textureDepthStencilState.DepthEnable = true;
-	//textureDepthStencilState.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	//textureDepthStencilState.DepthFunc = D3D11_COMPARISON_LESS;
-
-	//textureDepthStencilState.StencilEnable = true;
-	//textureDepthStencilState.StencilReadMask = 0xFF;
-	//textureDepthStencilState.StencilWriteMask = 0xFF;
-
-	//textureDepthStencilState.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	//textureDepthStencilState.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-	//textureDepthStencilState.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	//textureDepthStencilState.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-	//textureDepthStencilState.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-	//textureDepthStencilState.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-	//textureDepthStencilState.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-	//textureDepthStencilState.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
 	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
 	TextureDepthStencilDesc.Flags = 0;
 	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -217,7 +196,8 @@ void Graphics::SetDepthStencilTarget() {
 }
 
 void Graphics::BindDepthTexture() {
-	m_Context->PSSetShaderResources(1, 1, &m_TextureShaderResourceView);
+
+	m_Context->PSSetShaderResources(1, 1, &m_TextureDepthShaderResourceView);
 }
 
 void Graphics::EndFrame()

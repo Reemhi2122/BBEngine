@@ -1,6 +1,6 @@
 #pragma once
 #include "ShaderDefines.h"
 
-cbuffer vcbPerFrame{
+cbuffer vcbPerFrame CBRegister1 {
 	matrix lightMatrix;
 };
