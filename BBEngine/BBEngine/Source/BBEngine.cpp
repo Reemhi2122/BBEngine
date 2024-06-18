@@ -153,10 +153,9 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(16.0f, 9.0f, 1.0f, 7.5f);
+        DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(16.0, 9.0, 1.0f, 7.5f);
 
         m_Cam2.m_ViewMatrix = lightView * lightProjection;
-
         m_Graphics.SetCamera(&m_Cam2);
 
         vcbPerFrame buf;
@@ -169,7 +168,6 @@ namespace BBE
         }
 
         m_Graphics.ResetRenderTarget();
-
         m_Graphics.SetCamera(&m_Cam1);
     }
 
