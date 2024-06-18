@@ -137,7 +137,7 @@ Graphics::Graphics(HWND a_HWnd)
 	descDepth.Height = 900u;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
-	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
+	descDepth.Format = DXGI_FORMAT_R24G8_TYPELESS;
 	descDepth.SampleDesc.Count = 1u;
 	descDepth.SampleDesc.Quality = 0u;
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
@@ -146,7 +146,7 @@ Graphics::Graphics(HWND a_HWnd)
 	GFX_THROW_FAILED(m_Device->CreateTexture2D(&descDepth, nullptr, &depthStencil));
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
-	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
+	descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0u;
 	m_Device->CreateDepthStencilView(depthStencil.Get(), &descDSV, &m_DepthStencilView);

@@ -147,16 +147,20 @@ namespace BBE
 
         Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
 
-        m_Cam2.m_ViewMatrix = DirectX::XMMatrixLookAtLH(
+        DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
             DirectX::XMVectorSet(focusPoint.x + 0.001f, focusPoint.y, focusPoint.z, 1.0f),
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
+        DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(16.0f, 9.0f, 1.0f, 7.5f);
+
+        m_Cam2.m_ViewMatrix = lightView * lightProjection;
+
         m_Graphics.SetCamera(&m_Cam2);
 
         vcbPerFrame buf;
-        buf.lightMatrix = m_Cam2.m_ViewMatrix;
+        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * lightProjection);
         m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
         m_LightMatrix.Bind(m_Graphics);
 

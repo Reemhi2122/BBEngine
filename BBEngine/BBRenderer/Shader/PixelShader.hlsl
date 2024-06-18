@@ -81,27 +81,18 @@ float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight)
 
     return finalColor;
 }
-
+    
 float ShadowCalculation(float4 fragPosLigthSpace)
 {
     float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
     
-    projCoords = ((projCoords * 0.5) + 0.5);
+    projCoords = projCoords * 0.5 + 0.5;
 
     float closestDepth = depthBuffer.Sample(splr, projCoords.xy).r;
     
     float currentDepth = projCoords.z;
-
-    if(projCoords.x > 0)
-    {
-        return 1.0;
-    }
-    else
-    {
-        return 0.0;
-    }
-
-    return currentDepth > closestDepth ? 1.0 : 0.0;;
+    
+    return currentDepth > closestDepth ? 1.0 : 0.0;
 }
 
 float4 main(VSOut psin) : SV_Target
@@ -124,7 +115,7 @@ float4 main(VSOut psin) : SV_Target
 
     float shadow = ShadowCalculation(psin.FragPosLightSpace);
     
-    finalColor = finalColor * shadow;
+    finalColor = finalColor * (shadow);
     
     return finalColor;
 };
