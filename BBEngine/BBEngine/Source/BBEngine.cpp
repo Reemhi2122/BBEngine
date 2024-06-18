@@ -149,7 +149,7 @@ namespace BBE
 
         m_Cam2.m_ViewMatrix = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-            DirectX::XMVectorSet(focusPoint.x + 0.00001f, focusPoint.y, focusPoint.z, 1.0f),
+            DirectX::XMVectorSet(focusPoint.x + 0.001f, focusPoint.y, focusPoint.z, 1.0f),
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
@@ -165,7 +165,6 @@ namespace BBE
         }
 
         m_Graphics.ResetRenderTarget();
-        m_Graphics.BindDepthTexture();
 
         m_Graphics.SetCamera(&m_Cam1);
     }
@@ -200,6 +199,7 @@ namespace BBE
         CalculateLightShadowMap();
 
         for (size_t i = 0; i < m_Models.size(); i++) {
+            m_Graphics.BindDepthTexture();
             m_Models[i]->Draw(m_Graphics);
         }
 
