@@ -47,5 +47,8 @@ private:
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
 
+	VertexShader m_VertexShader;
+	PixelShader m_PixelShader;
+
 	uint32_t m_nodeCount;
 };
