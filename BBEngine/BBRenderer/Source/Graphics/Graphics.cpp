@@ -117,6 +117,21 @@ Graphics::Graphics(HWND a_HWnd)
 
 	res = m_Device->CreateShaderResourceView(m_TextureDepthTarget, &TextureDepthShaderResourceViewDesc, &m_TextureDepthShaderResourceView);
 
+	D3D11_SAMPLER_DESC image_sampler_desc = {};
+	image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
+	image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
+	image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
+	image_sampler_desc.MaxAnisotropy = 1;
+	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	image_sampler_desc.BorderColor[0] = 1.0f;
+	image_sampler_desc.BorderColor[1] = 1.0f;
+	image_sampler_desc.BorderColor[2] = 1.0f;
+	image_sampler_desc.BorderColor[3] = 1.0f;
+	image_sampler_desc.MinLOD = -FLT_MAX;
+	image_sampler_desc.MaxLOD = FLT_MAX;
+
+	m_Device->CreateSamplerState(&image_sampler_desc, &m_DepthTextureSampler);
 #endif
 
 	//Create depth stencil
@@ -137,7 +152,7 @@ Graphics::Graphics(HWND a_HWnd)
 	descDepth.Height = 900u;
 	descDepth.MipLevels = 1u;
 	descDepth.ArraySize = 1u;
-	descDepth.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	descDepth.Format = DXGI_FORMAT_D32_FLOAT;
 	descDepth.SampleDesc.Count = 1u;
 	descDepth.SampleDesc.Quality = 0u;
 	descDepth.Usage = D3D11_USAGE_DEFAULT;
@@ -146,7 +161,7 @@ Graphics::Graphics(HWND a_HWnd)
 	GFX_THROW_FAILED(m_Device->CreateTexture2D(&descDepth, nullptr, &depthStencil));
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC descDSV = {};
-	descDSV.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	descDSV.Format = DXGI_FORMAT_D32_FLOAT;
 	descDSV.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	descDSV.Texture2D.MipSlice = 0u;
 	m_Device->CreateDepthStencilView(depthStencil.Get(), &descDSV, &m_DepthStencilView);
@@ -198,6 +213,7 @@ void Graphics::SetDepthStencilTarget() {
 void Graphics::BindDepthTexture() {
 
 	m_Context->PSSetShaderResources(1, 1, &m_TextureDepthShaderResourceView);
+	m_Context->PSSetSamplers(1, 1, &m_DepthTextureSampler);
 }
 
 void Graphics::EndFrame()

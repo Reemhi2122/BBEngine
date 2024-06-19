@@ -49,6 +49,9 @@ namespace BBE {
 		VertexShader m_RTTVertexShader;
 		PixelShader m_RTTPixelShader;
 
+		VertexShader m_VSShadowMapShader;
+		PixelShader m_PSShadowMapShader;
+
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 

@@ -4,7 +4,7 @@ Sampler::Sampler(Graphics& a_Gfx)
 {
 	D3D11_SAMPLER_DESC image_sampler_desc = {};
 	image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-	image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP; 
 	image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
 	image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 	image_sampler_desc.MaxAnisotropy = 1;

@@ -110,6 +110,9 @@ namespace BBE
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
+        m_VSShadowMapShader = VertexShader(m_Graphics, L"Assets/VSShadowMap.hlsl");
+        m_PSShadowMapShader = PixelShader(m_Graphics, L"Assets/PSShadowMap.hlsl");
+
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
         m_Models.push_back(Sponza);
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
@@ -155,13 +158,8 @@ namespace BBE
 
         DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(16.0, 9.0, 1.0f, 7.5f);
 
-        m_Cam2.m_ViewMatrix = lightView * lightProjection;
+        m_Cam2.m_ViewMatrix = lightView;
         m_Graphics.SetCamera(&m_Cam2);
-
-        vcbPerFrame buf;
-        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * lightProjection);
-        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
-        m_LightMatrix.Bind(m_Graphics);
 
         for (size_t i = 0; i < m_Models.size(); i++) {
             m_Models[i]->Draw(m_Graphics);
@@ -169,6 +167,11 @@ namespace BBE
 
         m_Graphics.ResetRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
+
+        vcbPerFrame buf;
+        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * lightProjection);
+        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
+        m_LightMatrix.Bind(m_Graphics);
     }
 
     bool show_demo_window = true;

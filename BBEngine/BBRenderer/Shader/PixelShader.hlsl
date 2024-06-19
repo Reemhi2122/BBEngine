@@ -3,7 +3,8 @@
 Texture2D tex           : register(ps, t0);
 Texture2D depthBuffer   : register(ps, t1);
 
-SamplerState splr;
+SamplerState splr           : register(ps, s0);
+SamplerState depthSampler   : register(ps, s1);
 
 struct VSOut
 {
@@ -86,13 +87,13 @@ float ShadowCalculation(float4 fragPosLigthSpace)
 {
     float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
     
-    projCoords = projCoords * 0.5 + 0.5;
+    projCoords = (projCoords * 0.5) + 0.5;
 
-    float closestDepth = depthBuffer.Sample(splr, projCoords.xy).r;
+    float closestDepth = depthBuffer.Sample(depthSampler, projCoords.xy).r;
     
     float currentDepth = projCoords.z;
     
-    return closestDepth;
+    return currentDepth;
     
     return currentDepth > closestDepth ? 1.0 : 0.0;
 }
