@@ -10,9 +10,13 @@ public:
 	Model() = default;
 	Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader);
 	
+	void SetCurrentShader(VertexShader* a_VertexShader, PixelShader* a_PixelShader);
+	void ResetShaders();
 	void AddToDraw(DirectX::XMMATRIX a_Transform);
+	
 	void Draw(Graphics& a_Gfx) noexcept override;
 	void Update(float a_DeltaTime) noexcept override;
+
 
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	{
@@ -47,8 +51,11 @@ private:
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
 
-	VertexShader m_VertexShader;
-	PixelShader m_PixelShader;
+	VertexShader* m_VertexShader;
+	PixelShader* m_PixelShader;
+
+	VertexShader* m_CurVertexShader;
+	PixelShader* m_CurPixelShader;
 
 	uint32_t m_nodeCount;
 };

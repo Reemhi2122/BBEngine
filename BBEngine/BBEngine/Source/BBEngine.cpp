@@ -122,7 +122,7 @@ namespace BBE
         Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, &m_VertexShader, &m_PixelShader);
         m_Models.push_back(aBeautifulGame);
 
-        int XSize = 3, YSize = 3;
+        int XSize = 2, YSize = 2;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
@@ -203,10 +203,10 @@ namespace BBE
 
         CalculateLightShadowMap();
 
-        for (size_t i = 0; i < m_Models.size(); i++) {
-            m_Graphics.BindDepthTexture();
-            m_Models[i]->Draw(m_Graphics);
-        }
+        //for (size_t i = 0; i < m_Models.size(); i++) {
+        //    m_Graphics.BindDepthTexture();
+        //    m_Models[i]->Draw(m_Graphics);
+        //}
 
         ImGui::ShowDemoWindow(&show_demo_window);
 

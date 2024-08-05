@@ -11,7 +11,7 @@ struct VSOut
     float4 pos : SV_Position;
 };
 
-VSOut main(float3 pos : Position, matrix instanceTransform : InstanceTransform)
+VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal, matrix instanceTransform : InstanceTransform)
 {
     matrix finalTransfom = mul(transform, instanceTransform);
 

@@ -62,8 +62,12 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 		}
 	}
 
-	AddBind(a_VertexShader);
-	AddBind(a_PixelShader);
+	m_CurVertexShader = m_VertexShader = a_VertexShader;
+	m_CurPixelShader = m_PixelShader = a_PixelShader;
+
+	// Removed for now to do - per draw shaders
+	//AddBind(m_CurVertexShader);
+	//AddBind(m_CurPixelShader);
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -76,11 +80,22 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 		{ "InstanceTransform", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 	};
 
-	m_InputLayout = new InputLayout(a_Gfx, ied, a_VertexShader->GetByteCode());
+	m_InputLayout = new InputLayout(a_Gfx, ied, m_CurVertexShader->GetByteCode());
 	AddBind(m_InputLayout);
 
 	m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(m_Topology);
+}
+
+void Model::SetCurrentShader(VertexShader* a_VertexShader, PixelShader* a_PixelShader)
+{
+	m_CurVertexShader = a_VertexShader;
+	m_CurPixelShader = a_PixelShader;
+}
+
+void Model::ResetShaders() {
+	m_VertexShader = m_VertexShader;
+	m_CurPixelShader = m_PixelShader;
 }
 
 void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
@@ -100,6 +115,9 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 				m_Nodes[curNode].primitives[i].m_Texture->Bind(a_Gfx);
 				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
 			}
+
+			m_CurVertexShader->Bind(a_Gfx);
+			m_CurPixelShader->Bind(a_Gfx);
 
 			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(InstanceBuffer), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
