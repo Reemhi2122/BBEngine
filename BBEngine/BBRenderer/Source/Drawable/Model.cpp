@@ -62,8 +62,8 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 		}
 	}
 
-	m_CurVertexShader = m_VertexShader = a_VertexShader;
-	m_CurPixelShader = m_PixelShader = a_PixelShader;
+	m_VertexShader = m_CurVertexShader = a_VertexShader; 
+	m_PixelShader = m_CurPixelShader = a_PixelShader;
 
 	// Removed for now to do - per draw shaders
 	//AddBind(m_CurVertexShader);
@@ -94,7 +94,7 @@ void Model::SetCurrentShader(VertexShader* a_VertexShader, PixelShader* a_PixelS
 }
 
 void Model::ResetShaders() {
-	m_VertexShader = m_VertexShader;
+	m_CurVertexShader = m_VertexShader;
 	m_CurPixelShader = m_PixelShader;
 }
 

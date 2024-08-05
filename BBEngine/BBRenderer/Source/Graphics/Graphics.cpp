@@ -123,7 +123,7 @@ Graphics::Graphics(HWND a_HWnd)
 	image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 	image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 	image_sampler_desc.MaxAnisotropy = 1;
-	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_LESS;
 	image_sampler_desc.BorderColor[0] = 1.0f;
 	image_sampler_desc.BorderColor[1] = 1.0f;
 	image_sampler_desc.BorderColor[2] = 1.0f;

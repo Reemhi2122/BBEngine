@@ -14,8 +14,9 @@ struct VSOut
 VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal, matrix instanceTransform : InstanceTransform)
 {
     matrix finalTransfom = mul(transform, instanceTransform);
+    matrix MVP = mul(finalTransfom, WVP);
 
     VSOut vso;
-    vso.pos = mul(mul(float4(pos, 1.0), finalTransfom), lightMatrix);
+    vso.pos = mul(float4(pos, 1.0), MVP);
     return vso;
 }

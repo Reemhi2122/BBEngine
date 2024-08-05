@@ -93,7 +93,7 @@ float ShadowCalculation(float4 fragPosLigthSpace)
     
     float currentDepth = projCoords.z;
     
-    return currentDepth;
+    return closestDepth;
     
     return currentDepth > closestDepth ? 1.0 : 0.0;
 }
@@ -118,7 +118,7 @@ float4 main(VSOut psin) : SV_Target
 
     float shadow = ShadowCalculation(psin.FragPosLightSpace);
     
-    finalColor = finalColor * (shadow);
+    finalColor = finalColor * (1.0 - shadow);
     
     return finalColor;
 };
