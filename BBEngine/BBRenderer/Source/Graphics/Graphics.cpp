@@ -123,7 +123,7 @@ Graphics::Graphics(HWND a_HWnd)
 	image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 	image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 	image_sampler_desc.MaxAnisotropy = 1;
-	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_LESS;
+	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
 	image_sampler_desc.BorderColor[0] = 1.0f;
 	image_sampler_desc.BorderColor[1] = 1.0f;
 	image_sampler_desc.BorderColor[2] = 1.0f;
@@ -138,7 +138,7 @@ Graphics::Graphics(HWND a_HWnd)
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
 	dsDesc.DepthEnable = TRUE;
 	dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	dsDesc.DepthFunc = D3D11_COMPARISON_LESS;
+	dsDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilState> dsState;
 	GFX_THROW_FAILED(m_Device->CreateDepthStencilState(&dsDesc, &dsState));
 

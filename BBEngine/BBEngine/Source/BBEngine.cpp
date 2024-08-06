@@ -75,7 +75,7 @@ namespace BBE
 
         //parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
 
-        m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.0f));
+        m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
        
         m_DirectionalLight = DirectionalLight(
             Vector3(0.25f, 0.5f, -1.0f),
@@ -156,11 +156,9 @@ namespace BBE
 
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-            DirectX::XMVectorSet(focusPoint.x + 0.001f, focusPoint.y, focusPoint.z, 1.0f),
+            DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
-
-        DirectX::XMMATRIX lightProjection = DirectX::XMMatrixOrthographicLH(1.0f, 3.0f / 4.0f, 0.5f, 100.0f);
 
         m_Cam2.m_ViewMatrix = lightView;
         m_Graphics.SetCamera(&m_Cam2);
@@ -177,7 +175,7 @@ namespace BBE
         }
         
         vcbPerFrame buf;
-        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
+        buf.lightMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * lightView * m_Graphics.GetProjection());
         m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
         m_LightMatrix.Bind(m_Graphics);
     }
@@ -211,8 +209,8 @@ namespace BBE
 
         CalculateLightShadowMap();
 
+        m_Graphics.BindDepthTexture();
         for (size_t i = 0; i < m_Models.size(); i++) {
-            m_Graphics.BindDepthTexture();
             m_Models[i]->Draw(m_Graphics);
         }
 

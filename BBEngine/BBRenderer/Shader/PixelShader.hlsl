@@ -54,8 +54,23 @@ float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlig
     return finalColor;
 }
 
-float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight) {
+float ShadowCalculation(float4 fragPosLigthSpace)
+{
+    float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
+    
+    projCoords = (projCoords * 0.5f) + 0.5f;
 
+    float closestDepth = depthBuffer.Sample(depthSampler, projCoords.xy).r;
+    
+    float currentDepth = projCoords.z;
+    
+    return closestDepth;
+    
+    return currentDepth > closestDepth ? 1.0 : 0.0;
+}
+
+float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight, float4 fragPosLigthSpace)
+{
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
     float3 lightToPixelVec = spotlight.position - psin.worldPos;
@@ -80,22 +95,11 @@ float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight)
 
     finalColor = saturate(finalColor + finalAmbient);
 
+    float shadow = ShadowCalculation(fragPosLigthSpace);
+    
+    finalColor = finalColor * (1.0 - shadow);
+    
     return finalColor;
-}
-    
-float ShadowCalculation(float4 fragPosLigthSpace)
-{
-    float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
-    
-    projCoords = (projCoords * 0.5) + 0.5;
-
-    float closestDepth = depthBuffer.Sample(depthSampler, projCoords.xy).r;
-    
-    float currentDepth = projCoords.z;
-    
-    return closestDepth;
-    
-    return currentDepth > closestDepth ? 1.0 : 0.0;
 }
 
 float4 main(VSOut psin) : SV_Target
@@ -113,12 +117,8 @@ float4 main(VSOut psin) : SV_Target
     }
 
     for(int i = 0; i < MAXLIGHTS; i++) {
-        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i]), diffuse.a);       
+        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], psin.FragPosLightSpace), diffuse.a);
     }
-
-    float shadow = ShadowCalculation(psin.FragPosLightSpace);
-    
-    finalColor = finalColor * (1.0 - shadow);
     
     return finalColor;
 };
