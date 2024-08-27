@@ -174,10 +174,17 @@ namespace BBE
             m_Models[i]->ResetShaders();
         }
         
+        //DirectX::XMMATRIX lightTransform =
+        //    DirectX::XMMatrixScaling(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z) *
+        //    DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(m_SpotLights[0].direction.x, m_SpotLights[0].direction.y, m_SpotLights[0].direction.z, m_SpotLights[0].direction.w)) *
+        //    DirectX::XMMatrixTranslation(a_LocalTranslation.x, a_LocalTranslation.y, a_LocalTranslation.z);
+
         vcbPerFrame buf;
-        buf.lightMatrix = DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * lightView * m_Graphics.GetProjection());
+        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
         m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
         m_LightMatrix.Bind(m_Graphics);
+
+        m_Cam2.SetViewMatrix(buf.lightMatrix);
     }
 
     bool show_demo_window = true;

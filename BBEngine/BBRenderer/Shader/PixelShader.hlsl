@@ -96,8 +96,10 @@ float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight,
     finalColor = saturate(finalColor + finalAmbient);
 
     float shadow = ShadowCalculation(fragPosLigthSpace);
+
+    return shadow;
     
-    finalColor = finalColor * (1.0 - shadow);
+    finalColor = finalColor * (shadow);
     
     return finalColor;
 }
@@ -110,7 +112,7 @@ float4 main(VSOut psin) : SV_Target
     
     float4 finalColor = float4(0, 0, 0, 1);
     
-    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
+    //finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
 
     for(int i = 0; i < MAXLIGHTS; i++) {
         finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i]), diffuse.a);       
