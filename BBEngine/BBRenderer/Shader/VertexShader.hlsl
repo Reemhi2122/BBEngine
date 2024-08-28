@@ -26,6 +26,7 @@ VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal,
     vso.worldPos = mul(float4(pos, 1.0f), finalTransfom);
     vso.tex = tex;
     vso.normal = mul(normal, finalTransfom);
-    vso.FragPosLightSpace = mul(vso.worldPos, lightMatrix);
+    const float4 test = mul(vso.worldPos, lightMatrix);
+    vso.FragPosLightSpace = test * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * test.w);
     return vso;
 }
