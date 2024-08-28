@@ -62,9 +62,9 @@ float ShadowCalculation(float4 fragPosLigthSpace)
     
     float currentDepth = projCoords.z;
     
-    //return closestDepth;
+    float bias = 0.005f;
     
-    return currentDepth > closestDepth ? 1.0 : 0.0;
+    return (currentDepth - bias) > closestDepth ? 1.0 : 0.0;
 }
 
 float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight, float4 fragPosLigthSpace)
@@ -94,11 +94,7 @@ float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight,
     finalColor = saturate(finalColor + finalAmbient);
 
     float shadow = ShadowCalculation(fragPosLigthSpace);
-
-    return shadow;
-    
-    finalColor = finalColor * (shadow);
-    
+    finalColor = finalColor * (1.0 - shadow);
     return finalColor;
 }
 
