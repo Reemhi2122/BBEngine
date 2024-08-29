@@ -56,6 +56,9 @@ private:
 	ID3D11DepthStencilView* m_TextureDepthStencilView = nullptr;
 	ID3D11ShaderResourceView* m_TextureDepthShaderResourceView = nullptr;
 
+	ID3D11Texture2D* m_TextureCubeMap = nullptr;
+
+
 	ID3D11SamplerState* m_DepthTextureSampler;
 
 };

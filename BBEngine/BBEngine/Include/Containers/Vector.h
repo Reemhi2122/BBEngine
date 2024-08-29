@@ -13,7 +13,7 @@ namespace BBE {
 		~Vector();
 
 		Vector<T>& operator=(const Vector<T>& a_Rhs);
-		T operator[](uint32_t a_Index);
+		T& operator[](uint32_t a_Index);
 
 		void Push_Back(T a_Element);
 		T Pop_Back();
@@ -62,7 +62,7 @@ namespace BBE {
 	}
 
 	template<typename T>
-	T Vector<T>::operator[](uint32_t a_Index)
+	T& Vector<T>::operator[](uint32_t a_Index)
 	{
 		BB_Assert((a_Index < m_CurPos), "Trying to access data outside of vector range!");
 		return m_Data[a_Index];

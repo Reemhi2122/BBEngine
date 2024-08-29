@@ -106,7 +106,7 @@ float4 main(VSOut psin) : SV_Target
     
     float4 finalColor = float4(0, 0, 0, 1);
     
-    //finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
+    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
 
     for(int i = 0; i < MAXLIGHTS; i++) {
         finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i]), diffuse.a);       
