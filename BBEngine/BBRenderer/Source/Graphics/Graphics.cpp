@@ -136,17 +136,7 @@ Graphics::Graphics(HWND a_HWnd)
 
 #pragma region CUBEMAP
 
-	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
-	textureCubeMapDesc.Width = 640;
-	textureCubeMapDesc.Height = 640;
-	textureCubeMapDesc.MipLevels = 1;
-	textureCubeMapDesc.ArraySize = 6;
-	textureCubeMapDesc.SampleDesc.Count = 1u;
-	textureCubeMapDesc.SampleDesc.Quality = 0u;
-	textureCubeMapDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureCubeMapDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	textureCubeMapDesc.CPUAccessFlags = 0;
-	textureCubeMapDesc.MiscFlags = 0;
+
 
 #pragma endregion
 
