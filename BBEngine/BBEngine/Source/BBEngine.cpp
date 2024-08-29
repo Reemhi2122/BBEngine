@@ -73,8 +73,6 @@ namespace BBE
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
 
-        //parser.Parse("Assets/Models/Fox/glTF/", "Fox.gltf", &m_FoxFile);
-
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
        
         m_DirectionalLight = DirectionalLight(
@@ -189,23 +187,22 @@ namespace BBE
         float time = m_Timer.Stamp();
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
         
-        //m_Graphics.SetGameViewRenderTarget();
         CheckInput();
 
-        cbPerFrame test;
-        test.directionalLight = m_DirectionalLight;
+        cbPerFrame FrameConstantBuffer;
+        FrameConstantBuffer.directionalLight = m_DirectionalLight;
 
         m_SpotLights[0].position.z = sin(incr += 0.01);
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
-            test.spotlights[i] = m_SpotLights[i];
+            FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
         }
         
         for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
-            test.pointlights[i] = m_PointLights[i];
+            FrameConstantBuffer.pointlights[i] = m_PointLights[i];
         }
 
-        m_PerFrameBuffer.Update(m_Graphics, test);
+        m_PerFrameBuffer.Update(m_Graphics, FrameConstantBuffer);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++)
         {
@@ -281,8 +278,6 @@ namespace BBE
     }
 
     void BBEngine::RenderToTexture() {
-        //m_DrawToTexture = BBNew(m_StackAllocator, DrawToTexture)(m_Graphics, &m_RTTVertexShader, &m_RTTPixelShader);
-
         ID3D11Texture2D* texture;
         D3D11_TEXTURE2D_DESC tex_desc;
         tex_desc.Format = DXGI_FORMAT_A8_UNORM;

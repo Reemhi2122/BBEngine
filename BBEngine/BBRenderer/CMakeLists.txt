@@ -27,7 +27,7 @@ add_library (Renderer STATIC
 "Source/Lights/SpotLight.cpp"
 "Source/Lights/PointLight.cpp"
 
-"Source/Camera.cpp")
+"Source/Camera.cpp" "Include/Bindable/CubeMap.h" "Source/Bindable/CubeMap.cpp")
 
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")

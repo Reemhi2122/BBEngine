@@ -58,9 +58,7 @@ private:
 
 	ID3D11Texture2D* m_TextureCubeMap = nullptr;
 
-
-	ID3D11SamplerState* m_DepthTextureSampler;
-
+	ID3D11SamplerState* m_DepthTextureSampler = nullptr;
 };
 
 inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {
