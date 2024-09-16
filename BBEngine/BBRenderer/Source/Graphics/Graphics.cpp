@@ -198,28 +198,37 @@ Graphics::Graphics(HWND a_HWnd)
 	m_Camera = new Camera();
 }
 
-Graphics::~Graphics() {
+Graphics::~Graphics() 
+{
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
 }
 
-void Graphics::SetGameViewRenderTarget() {
+void Graphics::SetGameViewRenderTarget() 
+{
 	m_Context->OMSetRenderTargets(1u, &m_TextureRenderTargetView, m_DepthStencilView.Get());
 	const float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 	m_Context->ClearRenderTargetView(m_TextureRenderTargetView, color);
 	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Graphics::SetDepthStencilTarget() {
+void Graphics::SetDepthStencilTarget() 
+{
 	m_Context->OMSetRenderTargets(0u, 0, m_TextureDepthStencilView);
 	m_Context->ClearDepthStencilView(m_TextureDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Graphics::BindDepthTexture() {
-
+void Graphics::BindDepthTexture() 
+{
 	m_Context->PSSetShaderResources(1, 1, &m_TextureDepthShaderResourceView);
 	m_Context->PSSetSamplers(1, 1, &m_DepthTextureSampler);
+}
+
+void Graphics::UnbindSRV(uint32_t a_Slot) 
+{
+	ID3D11ShaderResourceView* nullSRV[1u] = { nullptr };
+	m_Context->PSSetShaderResources(a_Slot, 1u, nullSRV);
 }
 
 void Graphics::EndFrame()
@@ -256,23 +265,28 @@ void Graphics::ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept
 	ImGui::NewFrame();
 }
 
-void Graphics::DrawIndexed(UINT a_Count) noexcept {
+void Graphics::DrawIndexed(UINT a_Count) noexcept 
+{
 	m_Context->DrawIndexed(a_Count, 0, 0);
 }
 
-void Graphics::DrawIndexedInstanced(UINT a_IndexCount, UINT a_InstanceCount) noexcept {
+void Graphics::DrawIndexedInstanced(UINT a_IndexCount, UINT a_InstanceCount) noexcept 
+{
 	m_Context->DrawIndexedInstanced(a_IndexCount, a_InstanceCount, 0, 0, 0);
 }
 
-void Graphics::SetProjection(DirectX::XMMATRIX a_Projections) {
+void Graphics::SetProjection(DirectX::XMMATRIX a_Projections) 
+{
 	m_Projection = a_Projections;
 }
 
-DirectX::XMMATRIX Graphics::GetProjection() const noexcept {
+DirectX::XMMATRIX Graphics::GetProjection() const noexcept 
+{
 	return m_Projection;
 }
 
-void Graphics::ResetRenderTarget() {
+void Graphics::ResetRenderTarget() 
+{
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());
 }
 
@@ -281,7 +295,8 @@ void Graphics::ResetRenderTarget() {
 //	Old Code
 //////////////////////////////
 
-void Graphics::DrawTestTriangle(float a_Angle, float x, float y, Vertex* ver, unsigned short* indices) {
+void Graphics::DrawTestTriangle(float a_Angle, float x, float y, Vertex* ver, unsigned short* indices) 
+{
 
 	HRESULT hr;
 

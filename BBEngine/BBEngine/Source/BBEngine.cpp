@@ -184,7 +184,6 @@ namespace BBE
     float incr = 0;
     void BBEngine::Update()
     {
-        float time = m_Timer.Stamp();
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
         
         CheckInput();
@@ -215,6 +214,8 @@ namespace BBE
         for (size_t i = 0; i < m_Models.size(); i++) {
             m_Models[i]->Draw(m_Graphics);
         }
+
+        m_Graphics.UnbindDepthTexture();
 
         ImGui::ShowDemoWindow(&show_demo_window);
 

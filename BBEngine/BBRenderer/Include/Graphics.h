@@ -36,7 +36,9 @@ public:
 
 	void SetGameViewRenderTarget();
 	void SetDepthStencilTarget();
+	
 	void BindDepthTexture();
+	void UnbindSRV(uint32_t a_Slot);
 
 private:
 	DirectX::XMMATRIX m_Projection;
