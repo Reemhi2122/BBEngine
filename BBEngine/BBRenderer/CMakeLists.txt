@@ -22,12 +22,16 @@ add_library (Renderer STATIC
 "Source/Drawable/Model.cpp"
 "Source/Bindable/Texture.cpp"
 "Source/Bindable/Sampler.cpp"
+"Source/Bindable/CubeMap.cpp"
 
 "Source/Lights/DirectionalLight.cpp"
 "Source/Lights/SpotLight.cpp"
 "Source/Lights/PointLight.cpp"
 
-"Source/Camera.cpp" "Include/Bindable/CubeMap.h" "Source/Bindable/CubeMap.cpp")
+"Source/Camera.cpp"
+
+"../BBEngine/Include/Containers/FixedArray.h"
+)
 
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")

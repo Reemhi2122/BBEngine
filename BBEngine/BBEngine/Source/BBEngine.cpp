@@ -103,8 +103,8 @@ namespace BBE
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
 
-        m_VertexShader = VertexShader(m_Graphics, L"Assets/VertexShader.hlsl");
-        m_PixelShader = PixelShader(m_Graphics, L"Assets/PixelShader.hlsl");
+        uint32_t m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VertexShader.hlsl");
+        uint32_t m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PixelShader.hlsl");
 
         m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
@@ -144,44 +144,6 @@ namespace BBE
         m_Graphics.SetCamera(&m_Cam1);
     }
 
-    void BBEngine::CalculateLightShadowMap() 
-    {
-        m_Graphics.SetDepthStencilTarget();
-
-        for (size_t i = 0; i < m_Models.size(); i++) {
-            m_Models[i]->SetCurrentShader(&m_VSShadowMapShader, &m_PSShadowMapShader);
-        }
-
-        Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
-
-        DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
-            DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-            DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
-            DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-        );
-
-        m_Cam2.m_ViewMatrix = lightView;
-        m_Graphics.SetCamera(&m_Cam2);
-
-        for (size_t i = 0; i < m_Models.size(); i++) {
-            m_Models[i]->Draw(m_Graphics);
-        }
-
-        m_Graphics.ResetRenderTarget();
-        m_Graphics.SetCamera(&m_Cam1);
-
-        for (size_t i = 0; i < m_Models.size(); i++) {
-            m_Models[i]->ResetShaders();
-        }
-        
-        vcbPerFrame buf;
-        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
-        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
-        m_LightMatrix.Bind(m_Graphics);
-
-        m_Cam2.SetViewMatrix(buf.lightMatrix);
-    }
-
     bool show_demo_window = true;
     float incr = 0;
     void BBEngine::Update()
@@ -210,7 +172,7 @@ namespace BBE
             m_GameObjects[i]->Update(m_Graphics);
         }
 
-        CalculateLightShadowMap();
+        m_Graphics.CalculateLightShadowMap();
 
         m_Graphics.BindDepthTexture();
 

@@ -10,6 +10,18 @@
 #include "imgui_impl_win32.h"
 #include "Camera.h"
 
+typedef uint32_t TMPHANDLE;
+
+enum class ShaderType
+{
+	VertexShader,
+	PixelShader,
+	GeometryShader,
+	ComputeShader,
+	HullShader
+	//TODO: Add all shader types, not really using something else then PS and VS right now
+};
+
 class Graphics {
 public:
 	ID3D11DeviceContext* GetContext() const noexcept;
@@ -33,12 +45,15 @@ public:
 	void SetCamera(Camera* a_Camera);
 
 	void ResetRenderTarget();
+	void CalculateLightShadowMap();
 
 	void SetGameViewRenderTarget();
 	void SetDepthStencilTarget();
 	
 	void BindDepthTexture();
 	void UnbindSRV(uint32_t a_Slot);
+
+	TMPHANDLE CreateShader(ShaderType a_Type, std::wstring a_Path);
 
 private:
 	DirectX::XMMATRIX m_Projection;
@@ -59,8 +74,12 @@ private:
 	ID3D11ShaderResourceView* m_TextureDepthShaderResourceView = nullptr;
 
 	ID3D11Texture2D* m_TextureCubeMap = nullptr;
-
 	ID3D11SamplerState* m_DepthTextureSampler = nullptr;
+
+	uint32_t		m_VertexIndex = 0u;
+	VertexShader	m_VertexShaders[100u];
+	uint32_t		m_PixelIndex = 0u;
+	PixelShader		m_PixelShaders[100u];
 };
 
 inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {

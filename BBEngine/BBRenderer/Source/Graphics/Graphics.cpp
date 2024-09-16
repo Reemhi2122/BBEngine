@@ -198,6 +198,73 @@ Graphics::Graphics(HWND a_HWnd)
 	m_Camera = new Camera();
 }
 
+TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::wstring a_Path)
+{
+	TMPHANDLE handle = -1;
+
+	switch (a_Type)
+	{
+	case ShaderType::VertexShader:
+		m_VertexShaders[m_VertexIndex] = VertexShader(*this, a_Path);
+		handle = m_VertexIndex++;
+		break;
+	case ShaderType::PixelShader:
+		m_VertexShaders[m_VertexIndex] = PixelShader(*this, a_Path);
+		handle = m_PixelIndex++;
+		break;
+	case ShaderType::GeometryShader:
+		break;
+	case ShaderType::ComputeShader:
+		break;
+	case ShaderType::HullShader:
+		break;
+	default:
+		break;
+	}
+
+	return handle;
+}
+
+void Graphics::CalculateLightShadowMap()
+{/*
+	SetDepthStencilTarget();
+
+	for (size_t i = 0; i < m_Models.size(); i++)
+	{
+		m_Models[i]->SetCurrentShader(&m_VSShadowMapShader, &m_PSShadowMapShader);
+	}
+
+	Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
+	DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
+		DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
+		DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
+		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	);
+
+	m_Cam2.m_ViewMatrix = lightView;
+	SetCamera(&m_Cam2);
+
+	for (size_t i = 0; i < m_Models.size(); i++)
+	{
+		m_Models[i]->Draw(m_Graphics);
+	}
+
+	m_Graphics.ResetRenderTarget();
+	m_Graphics.SetCamera(&m_Cam1);
+
+	for (size_t i = 0; i < m_Models.size(); i++)
+	{
+		m_Models[i]->ResetShaders();
+	}
+
+	vcbPerFrame buf;
+	buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
+	m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
+	m_LightMatrix.Bind(m_Graphics);
+
+	m_Cam2.SetViewMatrix(buf.lightMatrix);*/
+}
+
 Graphics::~Graphics() 
 {
 	ImGui_ImplDX11_Shutdown();
