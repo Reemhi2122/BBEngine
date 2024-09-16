@@ -60,7 +60,6 @@ void Keyboard::EnableAutorepeat() noexcept
 
 void Keyboard::DisableAutorepeat() noexcept
 {
-
 	m_AutoRepeatEnabled = false;
 }
 

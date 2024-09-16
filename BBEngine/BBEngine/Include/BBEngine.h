@@ -25,7 +25,7 @@ namespace BBE {
 		~BBEngine();
 
 		int StartBBEngine();
-		void Start();
+		void Initialize();
 
 	private:
 		void Update();

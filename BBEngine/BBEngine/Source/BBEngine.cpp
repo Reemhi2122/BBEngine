@@ -38,7 +38,7 @@ namespace BBE
 
     int BBEngine::StartBBEngine()
     {
-        Start();
+        Initialize();
 
         try
         {
@@ -65,7 +65,7 @@ namespace BBE
         return -1;
     }
 
-    void BBEngine::Start()
+    void BBEngine::Initialize()
     {
         GLTFParser parser;
         parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
@@ -74,6 +74,7 @@ namespace BBE
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
+        m_Window.m_Keyboard.EnableAutorepeat();
        
         m_DirectionalLight = DirectionalLight(
             Vector3(0.25f, 0.5f, -1.0f),
@@ -143,7 +144,8 @@ namespace BBE
         m_Graphics.SetCamera(&m_Cam1);
     }
 
-    void BBEngine::CalculateLightShadowMap() {
+    void BBEngine::CalculateLightShadowMap() 
+    {
         m_Graphics.SetDepthStencilTarget();
 
         for (size_t i = 0; i < m_Models.size(); i++) {
@@ -211,11 +213,12 @@ namespace BBE
         CalculateLightShadowMap();
 
         m_Graphics.BindDepthTexture();
+
         for (size_t i = 0; i < m_Models.size(); i++) {
             m_Models[i]->Draw(m_Graphics);
         }
 
-        m_Graphics.UnbindDepthTexture();
+        m_Graphics.UnbindSRV(1);
 
         ImGui::ShowDemoWindow(&show_demo_window);
 
@@ -225,53 +228,101 @@ namespace BBE
     void BBEngine::CheckInput()
     {
         Camera* cam = m_Graphics.GetCamera();
+        Keyboard& kBoard = m_Window.m_Keyboard;
 
-        if (m_Window.m_Keyboard.KeyIsPressed('W'))
+        //while (!kBoard.KeyIsEmpty())
+        //{
+        //    Keyboard::Event kEvent = kBoard.ReadKey();
+        //    switch (kEvent.GetCode())
+        //    {
+        //    case 'W':
+        //        cam->camForwardMove += 0.1f;
+        //        break;
+        //    case 'S':
+        //        cam->camForwardMove += -0.1f;
+        //        break;
+        //    case 'A':
+        //        cam->camRightMove += -0.1f;
+        //        break;
+        //    case 'D':
+        //        cam->camRightMove += 0.1f;
+        //        break;
+        //    case VK_NUMPAD1:
+        //        cam->camUpMove = 0.1f;
+        //        break;
+        //    case VK_NUMPAD0:
+        //        cam->camUpMove = -0.1f;
+        //        break;
+        //    case VK_LEFT:
+        //        cam->camYaw += -0.025f;
+        //        break;
+        //    case VK_RIGHT:
+        //        cam->camYaw += 0.025f;
+        //        break;
+        //    case VK_UP:
+        //        cam->camPitch += -0.025f;
+        //        break;
+        //    case VK_DOWN:
+        //        cam->camPitch += 0.025f;
+        //        break;
+        //    case '1':
+        //         m_Graphics.SetCamera(&m_Cam1);
+        //        break;
+        //    case '2':
+        //         m_Graphics.SetCamera(&m_Cam2);
+        //         break;
+        //    default:
+        //        break;
+        //    }
+        //}
+
+
+        if (kBoard.KeyIsPressed('W'))
         {
             cam->camForwardMove += 0.1f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed('S'))
+        if (kBoard.KeyIsPressed('S'))
         {
             cam->camForwardMove += -0.1f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed('A'))
+        if (kBoard.KeyIsPressed('A'))
         {
             cam->camRightMove += -0.1f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed('D'))
+        if (kBoard.KeyIsPressed('D'))
         {
             cam->camRightMove += 0.1f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_NUMPAD1))
+        if (kBoard.KeyIsPressed(VK_NUMPAD1))
         {
             cam->camUpMove = 0.1f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_NUMPAD0))
+        if (kBoard.KeyIsPressed(VK_NUMPAD0))
         {
             cam->camUpMove = -0.1f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_LEFT))
+        if (kBoard.KeyIsPressed(VK_LEFT))
         {
             cam->camYaw += -0.025f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_RIGHT))
+        if (kBoard.KeyIsPressed(VK_RIGHT))
         {
             cam->camYaw += 0.025f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_UP))
+        if (kBoard.KeyIsPressed(VK_UP))
         {
             cam->camPitch += -0.025f;
         }
-        if (m_Window.m_Keyboard.KeyIsPressed(VK_DOWN))
+        if (kBoard.KeyIsPressed(VK_DOWN))
         {
             cam->camPitch += 0.025f;
         }
 
-        if (m_Window.m_Keyboard.KeyIsPressed('1')) {
+        if (kBoard.KeyIsPressed('1')) {
             m_Graphics.SetCamera(&m_Cam1);
         }
 
-        if (m_Window.m_Keyboard.KeyIsPressed('2')) {
+        if (kBoard.KeyIsPressed('2')) {
             m_Graphics.SetCamera(&m_Cam2);
         }
 
