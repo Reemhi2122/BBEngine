@@ -8,9 +8,9 @@ class Model : public Drawable
 {
 public:
 	Model() = default;
-	Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader);
+	Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader);
 	
-	void SetCurrentShader(VertexShader* a_VertexShader, PixelShader* a_PixelShader);
+	void SetCurrentShader(uint32_t a_VertexShader, uint32_t a_PixelShader);
 	void ResetShaders();
 	void AddToDraw(DirectX::XMMATRIX a_Transform);
 	
@@ -24,7 +24,6 @@ public:
 	}
 
 private:
-	Graphics* m_Graphics;
 
 	struct InstanceBuffer {
 		DirectX::XMMATRIX m_GameObjTransform;
@@ -51,11 +50,11 @@ private:
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;
 
-	VertexShader* m_VertexShader;
-	PixelShader* m_PixelShader;
+	uint32_t m_VertexShader;
+	uint32_t m_PixelShader;
 
-	VertexShader* m_CurVertexShader;
-	PixelShader* m_CurPixelShader;
+	uint32_t m_CurVertexShader;
+	uint32_t m_CurPixelShader;
 
 	uint32_t m_nodeCount;
 };

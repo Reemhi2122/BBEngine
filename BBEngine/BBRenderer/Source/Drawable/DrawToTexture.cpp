@@ -1,6 +1,6 @@
 #include "Drawable/DrawToTexture.h"
 
-DrawToTexture::DrawToTexture(Graphics& a_Graphics, VertexShader* a_VertexShader, PixelShader* a_PixelShader)
+DrawToTexture::DrawToTexture(Graphics& a_Graphics, uint32_t a_VertexShader, uint32_t a_PixelShader)
 {
     //ID3D11Texture2D* texture;
     //D3D11_TEXTURE2D_DESC tex_desc;

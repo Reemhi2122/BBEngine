@@ -201,15 +201,19 @@ Graphics::Graphics(HWND a_HWnd)
 TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::wstring a_Path)
 {
 	TMPHANDLE handle = -1;
+	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 
 	switch (a_Type)
 	{
 	case ShaderType::VertexShader:
-		m_VertexShaders[m_VertexIndex] = VertexShader(*this, a_Path);
+	{
+		D3DCompileFromFile(a_Path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 0, 0, &m_VertexShaders[m_VertexIndex].m_ByteCodeBlob, nullptr);
+		m_Device->CreateVertexShader(m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferPointer(), m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferSize(), nullptr, &m_VertexShaders[m_VertexIndex].m_VertexShader);
 		handle = m_VertexIndex++;
-		break;
+	} break;
 	case ShaderType::PixelShader:
-		m_VertexShaders[m_VertexIndex] = PixelShader(*this, a_Path);
+		D3DCompileFromFile(a_Path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
+		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PixelShaders[m_VertexIndex]);
 		handle = m_PixelIndex++;
 		break;
 	case ShaderType::GeometryShader:
@@ -225,8 +229,35 @@ TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::wstring a_Path)
 	return handle;
 }
 
+void Graphics::BindShader(ShaderType a_Type, TMPHANDLE a_Shader)
+{
+	switch (a_Type)
+	{
+	case ShaderType::VertexShader:
+		m_Context->VSSetShader(m_VertexShaders[a_Shader].m_VertexShader.Get(), nullptr, 0);
+		break;
+	case ShaderType::PixelShader:
+		m_Context->PSSetShader(m_PixelShaders[a_Shader].Get(), nullptr, 0);
+		break;
+	case ShaderType::GeometryShader:
+		break;
+	case ShaderType::ComputeShader:
+		break;
+	case ShaderType::HullShader:
+		break;
+	default:
+		break;
+	}
+}
+
+ID3DBlob* Graphics::GetVertexShaderByteCode(TMPHANDLE a_Shader) const
+{
+	return m_VertexShaders[a_Shader].m_ByteCodeBlob;
+}
+
 void Graphics::CalculateLightShadowMap()
-{/*
+{
+	/*
 	SetDepthStencilTarget();
 
 	for (size_t i = 0; i < m_Models.size(); i++)
@@ -262,7 +293,8 @@ void Graphics::CalculateLightShadowMap()
 	m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
 	m_LightMatrix.Bind(m_Graphics);
 
-	m_Cam2.SetViewMatrix(buf.lightMatrix);*/
+	m_Cam2.SetViewMatrix(buf.lightMatrix);
+	*/
 }
 
 Graphics::~Graphics() 

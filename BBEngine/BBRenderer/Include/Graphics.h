@@ -22,6 +22,12 @@ enum class ShaderType
 	//TODO: Add all shader types, not really using something else then PS and VS right now
 };
 
+struct VertexShader
+{
+	Microsoft::WRL::ComPtr <ID3D11VertexShader>	m_VertexShader;
+	ID3DBlob*			m_ByteCodeBlob;
+};
+
 class Graphics {
 public:
 	ID3D11DeviceContext* GetContext() const noexcept;
@@ -54,6 +60,8 @@ public:
 	void UnbindSRV(uint32_t a_Slot);
 
 	TMPHANDLE CreateShader(ShaderType a_Type, std::wstring a_Path);
+	void BindShader(ShaderType a_Type, TMPHANDLE a_Shader);
+	ID3DBlob* GetVertexShaderByteCode(TMPHANDLE a_Shader) const;
 
 private:
 	DirectX::XMMATRIX m_Projection;
@@ -65,21 +73,21 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_Target;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_DepthStencilView;
 
-	ID3D11Texture2D* m_TextureTarget = nullptr;
-	ID3D11RenderTargetView* m_TextureRenderTargetView = nullptr;
-	ID3D11ShaderResourceView* m_TextureShaderResourceView = nullptr;
+	ID3D11Texture2D*			m_TextureTarget = nullptr;
+	ID3D11RenderTargetView*		m_TextureRenderTargetView = nullptr;
+	ID3D11ShaderResourceView*	m_TextureShaderResourceView = nullptr;
 
-	ID3D11Texture2D* m_TextureDepthTarget = nullptr;
-	ID3D11DepthStencilView* m_TextureDepthStencilView = nullptr;
-	ID3D11ShaderResourceView* m_TextureDepthShaderResourceView = nullptr;
+	ID3D11Texture2D*			m_TextureDepthTarget = nullptr;
+	ID3D11DepthStencilView*		m_TextureDepthStencilView = nullptr;
+	ID3D11ShaderResourceView*	m_TextureDepthShaderResourceView = nullptr;
 
-	ID3D11Texture2D* m_TextureCubeMap = nullptr;
+	ID3D11Texture2D*	m_TextureCubeMap = nullptr;
 	ID3D11SamplerState* m_DepthTextureSampler = nullptr;
 
-	uint32_t		m_VertexIndex = 0u;
-	VertexShader	m_VertexShaders[100u];
-	uint32_t		m_PixelIndex = 0u;
-	PixelShader		m_PixelShaders[100u];
+	uint32_t			m_VertexIndex = 0u;
+	VertexShader		m_VertexShaders[100u];
+	uint32_t			m_PixelIndex = 0u;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PixelShaders[100u];
 };
 
 inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {

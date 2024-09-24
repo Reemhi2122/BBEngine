@@ -103,22 +103,31 @@ namespace BBE
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
 
-        uint32_t m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VertexShader.hlsl");
-        uint32_t m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PixelShader.hlsl");
+        //m_VertexShader = VertexShader(m_Graphics, L"Assets/VertexShader.hlsl");
+        //m_PixelShader = PixelShader(m_Graphics, L"Assets/PixelShader.hlsl");
 
-        m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
-        m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
+        m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VertexShader.hlsl");
+        m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PixelShader.hlsl");
 
-        m_VSShadowMapShader = VertexShader(m_Graphics, L"Assets/VSShadowMap.hlsl");
-        m_PSShadowMapShader = PixelShader(m_Graphics, L"Assets/PSShadowMap.hlsl");
+        //m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
+        //m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
 
-        Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, &m_VertexShader, &m_PixelShader);
+        m_RTTVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VSDrawToTexture.hlsl");
+        m_RTTPixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PSDrawToTexture.hlsl");
+
+        //m_VSShadowMapShader = VertexShader(m_Graphics, L"Assets/VSShadowMap.hlsl");
+        //m_PSShadowMapShader = PixelShader(m_Graphics, L"Assets/PSShadowMap.hlsl");
+
+        m_VSShadowMapShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VSShadowMap.hlsl");
+        m_PSShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PSShadowMap.hlsl");
+
+        Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
-        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, &m_VertexShader, &m_PixelShader);
+        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(lantern);
-        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, &m_VertexShader, &m_PixelShader);
+        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(car);
-        Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, &m_VertexShader, &m_PixelShader);
+        Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(aBeautifulGame);
 
         int XSize = 2, YSize = 2;

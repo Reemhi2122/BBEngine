@@ -42,14 +42,14 @@ namespace BBE {
 		std::vector<Model*> m_Models;
 		DrawToTexture* m_DrawToTexture;
 
-		VertexShader m_VertexShader;
-		PixelShader m_PixelShader;
+		uint32_t m_VertexShader;
+		uint32_t m_PixelShader;
 
-		VertexShader m_RTTVertexShader;
-		PixelShader m_RTTPixelShader;
+		uint32_t m_RTTVertexShader;
+		uint32_t m_RTTPixelShader;
 
-		VertexShader m_VSShadowMapShader;
-		PixelShader m_PSShadowMapShader;
+		uint32_t m_VSShadowMapShader;
+		uint32_t m_PSShadowMapShader;
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;

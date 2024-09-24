@@ -29,12 +29,9 @@ add_library (Renderer STATIC
 "Source/Lights/PointLight.cpp"
 
 "Source/Camera.cpp"
-
-"../BBEngine/Include/Containers/FixedArray.h"
 )
 
-
-set_target_properties(Renderer PROPERTIES PREFIX "BBRenderr")
+set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 
 target_include_directories(Renderer PUBLIC
 "Include/"

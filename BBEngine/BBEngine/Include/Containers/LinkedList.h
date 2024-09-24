@@ -2,8 +2,8 @@
 #include "Utility/BBMemory.h"
 #include "Logger/Logger.h"
 
-namespace BBE {
-
+namespace BBE 
+{
 	template<typename T>
 	struct LinkedListElement {
 		LinkedListElement<T>* next;

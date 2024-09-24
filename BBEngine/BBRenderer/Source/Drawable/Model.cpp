@@ -1,7 +1,7 @@
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShader, PixelShader* a_PixelShader)
+Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader)
 {
 	m_Nodes = reinterpret_cast<ModelNodes*>(malloc(a_File->nodeAmount * sizeof(ModelNodes)));
 	memset(m_Nodes, 0, a_File->nodeAmount * sizeof(ModelNodes));
@@ -80,14 +80,14 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, VertexShader* a_VertexShade
 		{ "InstanceTransform", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 	};
 
-	m_InputLayout = new InputLayout(a_Gfx, ied, m_CurVertexShader->GetByteCode());
+	m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(m_CurVertexShader));
 	AddBind(m_InputLayout);
 
 	m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(m_Topology);
 }
 
-void Model::SetCurrentShader(VertexShader* a_VertexShader, PixelShader* a_PixelShader)
+void Model::SetCurrentShader(uint32_t a_VertexShader, uint32_t a_PixelShader)
 {
 	m_CurVertexShader = a_VertexShader;
 	m_CurPixelShader = a_PixelShader;
@@ -116,8 +116,8 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
 			}
 
-			m_CurVertexShader->Bind(a_Gfx);
-			m_CurPixelShader->Bind(a_Gfx);
+			a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
+			a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
 
 			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(InstanceBuffer), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);

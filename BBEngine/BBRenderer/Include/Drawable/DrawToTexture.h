@@ -6,7 +6,7 @@ class DrawToTexture : Drawable
 {
 public:
 	DrawToTexture() = default;
-	DrawToTexture(Graphics& a_Graphics, VertexShader* a_VertexShader, PixelShader* a_PixelShader);
+	DrawToTexture(Graphics& a_Graphics, uint32_t a_VertexShader, uint32_t a_PixelShader);
 	~DrawToTexture() = default;
 
 	void Update(float a_DeltaTime) noexcept override;
