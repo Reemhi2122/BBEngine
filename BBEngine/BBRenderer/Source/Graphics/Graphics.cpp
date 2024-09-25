@@ -257,7 +257,7 @@ ID3DBlob* Graphics::GetVertexShaderByteCode(TMPHANDLE a_Shader) const
 }
 
 //Note(Stan): I'm going to make this function very big for testing purposes
-void Graphics::CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
+void Graphics::CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix, Camera& a_Cam1, Camera& a_Cam2)
 {
 	SetDepthStencilTarget();
 
@@ -266,36 +266,21 @@ void Graphics::CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a
 		a_Models[i]->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
 	}
 
-	//Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
-	//DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
-	//	DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-	//	DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
-	//	DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-	//);
+	a_Cam2.m_ViewMatrix = spotLightMatrix;
+	SetCamera(&a_Cam2);
 
-	//m_Cam2.m_ViewMatrix = lightView;
-	//SetCamera(&m_Cam2);
+	for (size_t i = 0; i < a_Models.size(); i++)
+	{
+		a_Models[i]->Draw(*this);
+	}
 
-	//for (size_t i = 0; i < a_Models.size(); i++)
-	//{
-	//	a_Models[i]->Draw(*this);
-	//}
+	ResetRenderTarget();
+	SetCamera(&a_Cam1);
 
-	//ResetRenderTarget();
-	//SetCamera(&m_Cam1);
-
-	//for (size_t i = 0; i < a_Models.size(); i++)
-	//{
-	//	a_Models[i]->ResetShaders();
-	//}
-
-	//vcbPerFrame buf;
-	//buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
-	//m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
-	//m_LightMatrix.Bind(m_Graphics);
-
-	//m_Cam2.SetViewMatrix(buf.lightMatrix);
-	
+	for (size_t i = 0; i < a_Models.size(); i++)
+	{
+		a_Models[i]->ResetShaders();
+	}
 }
 
 Graphics::~Graphics() 

@@ -181,7 +181,21 @@ namespace BBE
             m_GameObjects[i]->Update(m_Graphics);
         }
 
-        m_Graphics.CalculateLightShadowMap();
+        Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
+        DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
+            DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
+            DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
+            DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+        );
+
+        m_Graphics.CalculateLightShadowMap(m_Models, m_VSShadowMapShader, m_PSShadowMapShader, lightView, m_Cam1, m_Cam2);
+
+        vcbPerFrame buf;
+        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
+        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
+        m_LightMatrix.Bind(m_Graphics);
+
+        m_Cam2.SetViewMatrix(buf.lightMatrix);
 
         m_Graphics.BindDepthTexture();
 

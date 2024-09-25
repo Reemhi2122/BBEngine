@@ -8,12 +8,17 @@
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
+
 #include "Camera.h"
+#include "Vertexconstant.h"
 
 #include <vector>
 
 typedef uint32_t TMPHANDLE;
 struct Model;
+
+template<typename Type = cbPerFrame>
+struct VertexConstantBuffer;
 
 enum class ShaderType
 {
@@ -54,7 +59,7 @@ public:
 	void SetCamera(Camera* a_Camera);
 
 	void ResetRenderTarget();
-	void CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader);
+	void CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix, Camera& a_Cam1, Camera& a_Cam2);
 
 	void SetGameViewRenderTarget();
 	void SetDepthStencilTarget();
