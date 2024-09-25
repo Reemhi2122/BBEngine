@@ -5,6 +5,7 @@
 #include <d3dcompiler.h>
 
 #include "Bindable/BindableInclude.h"
+#include "Drawable/Model.h"
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -255,46 +256,46 @@ ID3DBlob* Graphics::GetVertexShaderByteCode(TMPHANDLE a_Shader) const
 	return m_VertexShaders[a_Shader].m_ByteCodeBlob;
 }
 
-void Graphics::CalculateLightShadowMap()
+//Note(Stan): I'm going to make this function very big for testing purposes
+void Graphics::CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
 {
-	/*
 	SetDepthStencilTarget();
 
-	for (size_t i = 0; i < m_Models.size(); i++)
+	for (size_t i = 0; i < a_Models.size(); i++)
 	{
-		m_Models[i]->SetCurrentShader(&m_VSShadowMapShader, &m_PSShadowMapShader);
+		a_Models[i]->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
 	}
 
-	Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
-	DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
-		DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-		DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
-		DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-	);
+	//Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
+	//DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
+	//	DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
+	//	DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
+	//	DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+	//);
 
-	m_Cam2.m_ViewMatrix = lightView;
-	SetCamera(&m_Cam2);
+	//m_Cam2.m_ViewMatrix = lightView;
+	//SetCamera(&m_Cam2);
 
-	for (size_t i = 0; i < m_Models.size(); i++)
-	{
-		m_Models[i]->Draw(m_Graphics);
-	}
+	//for (size_t i = 0; i < a_Models.size(); i++)
+	//{
+	//	a_Models[i]->Draw(*this);
+	//}
 
-	m_Graphics.ResetRenderTarget();
-	m_Graphics.SetCamera(&m_Cam1);
+	//ResetRenderTarget();
+	//SetCamera(&m_Cam1);
 
-	for (size_t i = 0; i < m_Models.size(); i++)
-	{
-		m_Models[i]->ResetShaders();
-	}
+	//for (size_t i = 0; i < a_Models.size(); i++)
+	//{
+	//	a_Models[i]->ResetShaders();
+	//}
 
-	vcbPerFrame buf;
-	buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
-	m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
-	m_LightMatrix.Bind(m_Graphics);
+	//vcbPerFrame buf;
+	//buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
+	//m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
+	//m_LightMatrix.Bind(m_Graphics);
 
-	m_Cam2.SetViewMatrix(buf.lightMatrix);
-	*/
+	//m_Cam2.SetViewMatrix(buf.lightMatrix);
+	
 }
 
 Graphics::~Graphics() 

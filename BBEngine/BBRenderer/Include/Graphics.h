@@ -10,7 +10,10 @@
 #include "imgui_impl_win32.h"
 #include "Camera.h"
 
+#include <vector>
+
 typedef uint32_t TMPHANDLE;
+struct Model;
 
 enum class ShaderType
 {
@@ -51,7 +54,7 @@ public:
 	void SetCamera(Camera* a_Camera);
 
 	void ResetRenderTarget();
-	void CalculateLightShadowMap();
+	void CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader);
 
 	void SetGameViewRenderTarget();
 	void SetDepthStencilTarget();
