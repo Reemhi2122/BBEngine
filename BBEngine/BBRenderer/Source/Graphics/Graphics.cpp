@@ -202,7 +202,6 @@ Graphics::Graphics(HWND a_HWnd)
 TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::wstring a_Path)
 {
 	TMPHANDLE handle = -1;
-	Microsoft::WRL::ComPtr<ID3DBlob> blob;
 
 	switch (a_Type)
 	{
@@ -213,10 +212,12 @@ TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::wstring a_Path)
 		handle = m_VertexIndex++;
 	} break;
 	case ShaderType::PixelShader:
+	{
+		Microsoft::WRL::ComPtr<ID3DBlob> blob;
 		D3DCompileFromFile(a_Path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
 		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PixelShaders[m_VertexIndex]);
 		handle = m_PixelIndex++;
-		break;
+	} break;
 	case ShaderType::GeometryShader:
 		break;
 	case ShaderType::ComputeShader:
@@ -251,7 +252,7 @@ void Graphics::BindShader(ShaderType a_Type, TMPHANDLE a_Shader)
 	}
 }
 
-ID3DBlob* Graphics::GetVertexShaderByteCode(TMPHANDLE a_Shader) const
+Microsoft::WRL::ComPtr<ID3DBlob> Graphics::GetVertexShaderByteCode(TMPHANDLE a_Shader) const
 {
 	return m_VertexShaders[a_Shader].m_ByteCodeBlob;
 }

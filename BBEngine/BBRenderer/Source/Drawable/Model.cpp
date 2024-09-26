@@ -80,7 +80,7 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, ui
 		{ "InstanceTransform", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 	};
 
-	m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(m_CurVertexShader));
+	m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(m_CurVertexShader).Get());
 	AddBind(m_InputLayout);
 
 	m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);

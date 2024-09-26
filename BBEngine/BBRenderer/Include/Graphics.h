@@ -33,7 +33,7 @@ enum class ShaderType
 struct VertexShader
 {
 	Microsoft::WRL::ComPtr <ID3D11VertexShader>	m_VertexShader;
-	ID3DBlob*			m_ByteCodeBlob;
+	Microsoft::WRL::ComPtr<ID3DBlob> 			m_ByteCodeBlob;
 };
 
 class Graphics {
@@ -69,7 +69,7 @@ public:
 
 	TMPHANDLE CreateShader(ShaderType a_Type, std::wstring a_Path);
 	void BindShader(ShaderType a_Type, TMPHANDLE a_Shader);
-	ID3DBlob* GetVertexShaderByteCode(TMPHANDLE a_Shader) const;
+	Microsoft::WRL::ComPtr<ID3DBlob> GetVertexShaderByteCode(TMPHANDLE a_Shader) const;
 
 private:
 	DirectX::XMMATRIX m_Projection;

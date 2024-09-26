@@ -75,7 +75,7 @@ namespace BBE
 
         m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
         m_Window.m_Keyboard.EnableAutorepeat();
-       
+
         m_DirectionalLight = DirectionalLight(
             Vector3(0.25f, 0.5f, -1.0f),
             Vector4(0.1f, 0.1f, 0.1f, 1.0f),
