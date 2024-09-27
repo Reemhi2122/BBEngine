@@ -19,70 +19,70 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 	m_Theta(adist(rng)),
 	m_Phi(adist(rng))
 {
-	//if (!IsStaticInitialized()) {
-	//	BBE::Vertex vertices[] = {
-	//		{ {-1.0f, -1.0f, -1.0f}, {0, 0} },
-	//		{ {1.0f, -1.0f, -1.0f}, {0, 0} },
-	//		{ {-1.0f, 1.0f, -1.0f}, {0, 0} },
-	//		{ {1.0f, 1.0f, -1.0f}, {0, 0} },
-	//		{ {-1.0f, -1.0f, 1.0f}, {0, 0} },
-	//		{ {1.0f, -1.0f, 1.0f}, {0, 0} },
-	//		{ {-1.0f, 1.0f, 1.0f}, {0, 0} },
-	//		{ {1.0f, 1.0f, 1.0f}, {0, 0} }
-	//	};
+	if (!IsStaticInitialized()) {
+		BBE::Vertex vertices[] = {
+			{ {-1.0f, -1.0f, -1.0f}, {0, 0} },
+			{ {1.0f, -1.0f, -1.0f}, {0, 0} },
+			{ {-1.0f, 1.0f, -1.0f}, {0, 0} },
+			{ {1.0f, 1.0f, -1.0f}, {0, 0} },
+			{ {-1.0f, -1.0f, 1.0f}, {0, 0} },
+			{ {1.0f, -1.0f, 1.0f}, {0, 0} },
+			{ {-1.0f, 1.0f, 1.0f}, {0, 0} },
+			{ {1.0f, 1.0f, 1.0f}, {0, 0} }
+		};
 
-	//	vBuffer = new VertexBuffer(a_Gfx, vertices, 8);
-	//	AddStaticBind(vBuffer);
+		vBuffer = new VertexBuffer(a_Gfx, vertices, 8);
+		AddStaticBind(vBuffer);
 
-	//	vShader = new VertexShader(a_Gfx, L"Assets/VertexShader.hlsl");
-	//	AddStaticBind(vShader);
+		vShader = a_Gfx.CreateShader(ShaderType::VertexShader, L"Assets/VertexShader.hlsl");
+		//AddStaticBind(vShader);
 
-	//	pShader = new PixelShader(a_Gfx, L"Assets/PixelShader.hlsl");
-	//	AddStaticBind(pShader);
+		pShader = a_Gfx.CreateShader(ShaderType::PixelShader, L"Assets/PixelShader.hlsl");
+		//AddStaticBind(pShader);
 
-	//	uint8_t indices[] = {
-	//		0,2,1, 2,3,1,
-	//		1,3,5, 3,7,5,
-	//		2,6,3, 3,6,7,
-	//		4,5,7, 4,7,6,
-	//		0,4,2, 2,4,6,
-	//		0,1,4, 1,5,4
-	//	};
+		uint8_t indices[] = {
+			0,2,1, 2,3,1,
+			1,3,5, 3,7,5,
+			2,6,3, 3,6,7,
+			4,5,7, 4,7,6,
+			0,4,2, 2,4,6,
+			0,1,4, 1,5,4
+		};
 
-	//	IBuffer = new IndexBuffer(a_Gfx, indices, 36, 4);
-	//	AddStaticBindIndexBuffer(IBuffer);
+		IBuffer = new IndexBuffer(a_Gfx, indices, 36, 4);
+		AddStaticBindIndexBuffer(IBuffer);
 
-	//	const ConstantBufferColor cbc = {
-	//		{
-	//			{1.0f, 0.0f, 1.0f, 1.0f},
-	//			{1.0f, 0.0f, 0.0f, 1.0f},
-	//			{0.0f, 1.0f, 0.0f, 1.0f},
-	//			{0.0f, 0.0f, 1.0f, 1.0f},
-	//			{1.0f, 1.0f, 0.0f, 1.0f},
-	//			{0.0f, 1.0f, 1.0f, 1.0f}
-	//		}
-	//	};
+		const ConstantBufferColor cbc = {
+			{
+				{1.0f, 0.0f, 1.0f, 1.0f},
+				{1.0f, 0.0f, 0.0f, 1.0f},
+				{0.0f, 1.0f, 0.0f, 1.0f},
+				{0.0f, 0.0f, 1.0f, 1.0f},
+				{1.0f, 1.0f, 0.0f, 1.0f},
+				{0.0f, 1.0f, 1.0f, 1.0f}
+			}
+		};
 
-	//	cCB = new PixelConstantBuffer<ConstantBufferColor>(a_Gfx, cbc);
-	//	AddStaticBind(cCB);
+		cCB = new PixelConstantBuffer<ConstantBufferColor>(a_Gfx, cbc);
+		AddStaticBind(cCB);
 
-	//	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
-	//		{"Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
-	//	};
+		const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
+			{"Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+		};
 
-	//	m_InputLayout = new InputLayout(a_Gfx, ied, vShader->GetByteCode());
-	//	AddStaticBind(m_InputLayout);
+		m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(vShader).Get());
+		AddStaticBind(m_InputLayout);
 
-	//	m_Topology = new Topology(a_Gfx, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//	AddStaticBind(m_Topology);
+		m_Topology = new Topology(a_Gfx, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		AddStaticBind(m_Topology);
 
-	//}
-	//else {
-	//	AddIndexFromStatic();
-	//}
+	}
+	else {
+		AddIndexFromStatic();
+	}
 
-	//m_TransformBuf = new TransformBuf(a_Gfx, *this, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0));
-	//AddBind(m_TransformBuf);
+	m_TransformBuf = new TransformBuf(a_Gfx, *this, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0, 0, 0));
+	AddBind(m_TransformBuf);
 }
 
 void Box::Update(float a_DeltaTime) noexcept

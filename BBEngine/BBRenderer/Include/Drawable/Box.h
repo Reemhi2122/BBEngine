@@ -23,6 +23,8 @@ public:
 
 	void Update(float a_DeltaTime) noexcept override;
 
+	void BindShaders() override;
+
 private:
 	VertexBuffer*	vBuffer;
 	IndexBuffer*	IBuffer;

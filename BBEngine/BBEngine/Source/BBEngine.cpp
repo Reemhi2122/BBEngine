@@ -103,20 +103,11 @@ namespace BBE
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
 
-        //m_VertexShader = VertexShader(m_Graphics, L"Assets/VertexShader.hlsl");
-        //m_PixelShader = PixelShader(m_Graphics, L"Assets/PixelShader.hlsl");
-
         m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VertexShader.hlsl");
         m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PixelShader.hlsl");
 
-        //m_RTTVertexShader = VertexShader(m_Graphics, L"Assets/VSDrawToTexture.hlsl");
-        //m_RTTPixelShader = PixelShader(m_Graphics, L"Assets/PSDrawToTexture.hlsl");
-
         m_RTTVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VSDrawToTexture.hlsl");
         m_RTTPixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PSDrawToTexture.hlsl");
-
-        //m_VSShadowMapShader = VertexShader(m_Graphics, L"Assets/VSShadowMap.hlsl");
-        //m_PSShadowMapShader = PixelShader(m_Graphics, L"Assets/PSShadowMap.hlsl");
 
         m_VSShadowMapShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VSShadowMap.hlsl");
         m_PSShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PSShadowMap.hlsl");

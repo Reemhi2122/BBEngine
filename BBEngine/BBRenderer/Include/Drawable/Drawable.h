@@ -19,6 +19,8 @@ public:
 	virtual void Draw(Graphics& a_Gfx) noexcept;
 	virtual void DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept;
 	virtual void Update(float dt) noexcept = 0;
+
+	virtual void BindShaders() {};
 	
 	void AddBind(Bindable* a_Bind) noexcept;
 	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
