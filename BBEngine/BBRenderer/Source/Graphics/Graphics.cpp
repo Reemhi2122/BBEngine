@@ -215,7 +215,7 @@ TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::wstring a_Path)
 	{
 		Microsoft::WRL::ComPtr<ID3DBlob> blob;
 		D3DCompileFromFile(a_Path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
-		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PixelShaders[m_VertexIndex]);
+		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PixelShaders[m_PixelIndex]);
 		handle = m_PixelIndex++;
 	} break;
 	case ShaderType::GeometryShader:
