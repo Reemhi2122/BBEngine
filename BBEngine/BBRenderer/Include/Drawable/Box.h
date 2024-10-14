@@ -15,15 +15,10 @@ struct ConstantBufferColor {
 class Box : public DrawableBase<Box> {
 
 public:
-	Box(Graphics& a_Gfx, std::mt19937& rng,
-		std::uniform_real_distribution<float>& adist,
-		std::uniform_real_distribution<float>& ddist,
-		std::uniform_real_distribution<float>& odist,
-		std::uniform_real_distribution<float>& rdist);
+	Box(Graphics& a_Gfx);
 
 	void Update(float a_DeltaTime) noexcept override;
-
-	void BindShaders() override;
+	void Draw(Graphics& a_Gfx) noexcept override;
 
 private:
 	VertexBuffer*	vBuffer;
@@ -34,19 +29,4 @@ private:
 	Topology*		m_Topology;
 	TransformBuf*	m_TransformBuf;
 	PixelConstantBuffer<ConstantBufferColor>* cCB;
-	
-	float m_R;
-	float m_Roll;
-	float m_Pitch;
-	float m_Yaw;
-	float m_Theta;
-	float m_Phi;
-	float m_Chi;
-
-	float m_DRoll;
-	float m_DPitch;
-	float m_DYaw;
-	float m_DTheta;
-	float m_DPhi;
-	float m_DChi;
 };

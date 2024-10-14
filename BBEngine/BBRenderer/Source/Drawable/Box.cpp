@@ -2,22 +2,7 @@
 #include "Drawable/Box.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-Box::Box(Graphics& a_Gfx, std::mt19937& rng,
-	std::uniform_real_distribution<float>& adist,
-	std::uniform_real_distribution<float>& ddist,
-	std::uniform_real_distribution<float>& odist,
-	std::uniform_real_distribution<float>& rdist)
-	:
-	m_R(rdist(rng)),
-	m_DRoll(ddist(rng)),
-	m_DPitch(ddist(rng)),
-	m_DYaw(ddist(rng)),
-	m_DPhi(odist(rng)),
-	m_DTheta(odist(rng)),
-	m_DChi(odist(rng)),
-	m_Chi(adist(rng)),
-	m_Theta(adist(rng)),
-	m_Phi(adist(rng))
+Box::Box(Graphics& a_Gfx)
 {
 	if (!IsStaticInitialized()) {
 		BBE::Vertex vertices[] = {
@@ -34,11 +19,8 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 		vBuffer = new VertexBuffer(a_Gfx, vertices, 8);
 		AddStaticBind(vBuffer);
 
-		vShader = a_Gfx.CreateShader(ShaderType::VertexShader, L"Assets/VertexShader.hlsl");
-		//AddStaticBind(vShader);
-
-		pShader = a_Gfx.CreateShader(ShaderType::PixelShader, L"Assets/PixelShader.hlsl");
-		//AddStaticBind(pShader);
+		vShader = a_Gfx.CreateShader(ShaderType::VertexShader, L"Assets/VSCubeMap.hlsl");
+		pShader = a_Gfx.CreateShader(ShaderType::PixelShader, L"Assets/PSCubeMap.hlsl");
 
 		uint8_t indices[] = {
 			0,2,1, 2,3,1,
@@ -85,14 +67,14 @@ Box::Box(Graphics& a_Gfx, std::mt19937& rng,
 	AddBind(m_TransformBuf);
 }
 
-void Box::Update(float a_DeltaTime) noexcept
+void Box::Update(float a_DeltaTime) noexcept {};
+
+void Box::Draw(Graphics& a_Gfx) noexcept
 {
-	m_Roll += m_DRoll * a_DeltaTime;
-	m_Pitch += m_DPitch * a_DeltaTime;
-	m_Yaw += m_DYaw * a_DeltaTime;
-	m_Theta += m_DTheta * a_DeltaTime;
-	m_Phi += m_DPhi * a_DeltaTime;
-	m_Chi += m_DChi * a_DeltaTime;
+	a_Gfx.BindShader(ShaderType::VertexShader, vShader);
+	a_Gfx.BindShader(ShaderType::PixelShader, pShader);
+
+	Drawable::Draw(a_Gfx);
 }
 
 //DirectX::XMMATRIX Box::GetTransformXM() const noexcept

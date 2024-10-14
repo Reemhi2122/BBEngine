@@ -70,6 +70,8 @@ namespace BBE {
 		Camera m_Cam1;
 		Camera m_Cam2;
 
+		Box* m_Box;
+
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;
 		class ThreadPool* m_ThreadPool;

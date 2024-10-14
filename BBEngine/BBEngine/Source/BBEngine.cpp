@@ -121,6 +121,8 @@ namespace BBE
         Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(aBeautifulGame);
 
+        m_Box = BBNew(m_StackAllocator, Box)(m_Graphics);
+
         int XSize = 2, YSize = 2;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
@@ -187,6 +189,8 @@ namespace BBE
         m_LightMatrix.Bind(m_Graphics);
 
         m_Cam2.SetViewMatrix(buf.lightMatrix);
+
+        m_Box->Draw(m_Graphics);
 
         m_Graphics.BindDepthTexture();
 
