@@ -65,10 +65,6 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, ui
 	m_VertexShader = m_CurVertexShader = a_VertexShader; 
 	m_PixelShader = m_CurPixelShader = a_PixelShader;
 
-	// Removed for now to do - per draw shaders
-	//AddBind(m_CurVertexShader);
-	//AddBind(m_CurPixelShader);
-
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },

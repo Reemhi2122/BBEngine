@@ -1,14 +1,20 @@
+cbuffer CBuf : register(b0)
+{
+    matrix WVP;
+    matrix transform;
+};
+
 struct VSOut
 {
     float4 pos : SV_Position;
-    //float2 tex : TexCoord;
 };
 
-VSOut main(float3 inPos : position)
+VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal)
 {
-    VSOut output = (VSOut) 0;
+    VSOut output;
     
-    output.pos = float4(inPos, 1.0);
-
+    matrix MVP = mul(transform, WVP);
+    
+    output.pos = mul(float4(pos, 1.0f), MVP);
     return output;
 }

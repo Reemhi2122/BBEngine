@@ -10,6 +10,7 @@ namespace BBE
 		~GameObject();
 
 		virtual void Update(Graphics& a_Graphics);
+		virtual void Draw(Graphics& a_Graphics);
 
 		DirectX::XMMATRIX GetTransformXM(Graphics& a_Graphics) const noexcept;
 	

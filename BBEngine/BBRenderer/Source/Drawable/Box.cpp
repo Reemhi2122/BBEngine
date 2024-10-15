@@ -6,14 +6,14 @@ Box::Box(Graphics& a_Gfx)
 {
 	if (!IsStaticInitialized()) {
 		BBE::Vertex vertices[] = {
-			{ {-1.0f, -1.0f, -1.0f}, {0, 0} },
-			{ {1.0f, -1.0f, -1.0f}, {0, 0} },
-			{ {-1.0f, 1.0f, -1.0f}, {0, 0} },
-			{ {1.0f, 1.0f, -1.0f}, {0, 0} },
-			{ {-1.0f, -1.0f, 1.0f}, {0, 0} },
-			{ {1.0f, -1.0f, 1.0f}, {0, 0} },
-			{ {-1.0f, 1.0f, 1.0f}, {0, 0} },
-			{ {1.0f, 1.0f, 1.0f}, {0, 0} }
+			{ {-1.0f, -1.0f, -1.0f}, {0, 0}, {0, 0, 0} },
+			{ {1.0f, -1.0f, -1.0f}, {0, 0}, {0, 0, 0} },
+			{ {-1.0f, 1.0f, -1.0f}, {0, 0}, {0, 0, 0} },
+			{ {1.0f, 1.0f, -1.0f}, {0, 0}, {0, 0, 0} },
+			{ {-1.0f, -1.0f, 1.0f}, {0, 0}, {0, 0, 0} },
+			{ {1.0f, -1.0f, 1.0f}, {0, 0}, {0, 0, 0} },
+			{ {-1.0f, 1.0f, 1.0f}, {0, 0}, {0, 0, 0} },
+			{ {1.0f, 1.0f, 1.0f}, {0, 0}, {0, 0, 0} }
 		};
 
 		vBuffer = new VertexBuffer(a_Gfx, vertices, 8);
@@ -31,39 +31,40 @@ Box::Box(Graphics& a_Gfx)
 			0,1,4, 1,5,4
 		};
 
-		IBuffer = new IndexBuffer(a_Gfx, indices, 36, 4);
+		IBuffer = new IndexBuffer(a_Gfx, indices, 36, 1);
 		AddStaticBindIndexBuffer(IBuffer);
 
-		const ConstantBufferColor cbc = {
-			{
-				{1.0f, 0.0f, 1.0f, 1.0f},
-				{1.0f, 0.0f, 0.0f, 1.0f},
-				{0.0f, 1.0f, 0.0f, 1.0f},
-				{0.0f, 0.0f, 1.0f, 1.0f},
-				{1.0f, 1.0f, 0.0f, 1.0f},
-				{0.0f, 1.0f, 1.0f, 1.0f}
-			}
-		};
+		//const ConstantBufferColor cbc = {
+		//	{
+		//		{1.0f, 0.0f, 1.0f, 1.0f},
+		//		{1.0f, 0.0f, 0.0f, 1.0f},
+		//		{0.0f, 1.0f, 0.0f, 1.0f},
+		//		{0.0f, 0.0f, 1.0f, 1.0f},
+		//		{1.0f, 1.0f, 0.0f, 1.0f},
+		//		{0.0f, 1.0f, 1.0f, 1.0f}
+		//	}
+		//};
 
-		cCB = new PixelConstantBuffer<ConstantBufferColor>(a_Gfx, cbc);
-		AddStaticBind(cCB);
+		//cCB = new PixelConstantBuffer<ConstantBufferColor>(a_Gfx, cbc);
+		//AddStaticBind(cCB);
 
 		const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
-			{"Position",0,DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+			{ "Position",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TexCoord",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Normal",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
 		m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(vShader).Get());
 		AddStaticBind(m_InputLayout);
 
-		m_Topology = new Topology(a_Gfx, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		AddStaticBind(m_Topology);
-
 	}
 	else {
 		AddIndexFromStatic();
 	}
 
-	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 0, 0), Vector4(0, 0, 0, 0), Vector3(0, 0, 0));
+	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 0, 0), Vector4(0, 0, 0, 1), Vector3(10, 10, 10));
 	AddBind(m_TransformBuf);
 }
 
@@ -76,11 +77,3 @@ void Box::Draw(Graphics& a_Gfx) noexcept
 
 	Drawable::Draw(a_Gfx);
 }
-
-//DirectX::XMMATRIX Box::GetTransformXM() const noexcept
-//{
-//	return	DirectX::XMMatrixRotationRollPitchYaw(m_Pitch, m_Yaw, m_Roll) *
-//			DirectX::XMMatrixTranslation(m_R, 0.0f, 0.0f) *
-//			DirectX::XMMatrixRotationRollPitchYaw(m_Theta, m_Phi, m_Chi) *
-//			DirectX::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
-//}
