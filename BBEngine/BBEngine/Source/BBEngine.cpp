@@ -103,14 +103,14 @@ namespace BBE
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
 
-        m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VertexShader.hlsl");
-        m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PixelShader.hlsl");
+        m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
+        m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
 
-        m_RTTVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VSDrawToTexture.hlsl");
-        m_RTTPixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PSDrawToTexture.hlsl");
+        m_RTTVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VSDrawToTexture.hlsl");
+        m_RTTPixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSDrawToTexture.hlsl");
 
-        m_VSShadowMapShader = m_Graphics.CreateShader(ShaderType::VertexShader, L"Assets/VSShadowMap.hlsl");
-        m_PSShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, L"Assets/PSShadowMap.hlsl");
+        m_VSShadowMapShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VSShadowMap.hlsl");
+        m_PSShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl");
 
         //Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(Sponza);
@@ -199,7 +199,7 @@ namespace BBE
 
         m_Box->Draw(m_Graphics);
 
-        ImGui::ShowDemoWindow(&show_demo_window);
+        RenderDebugOptions();
 
         m_Graphics.EndFrame();
     }
@@ -339,5 +339,45 @@ namespace BBE
         m_Graphics.GetContext()->ClearRenderTargetView(renderTarget, color);
 
         m_Graphics.ResetRenderTarget();
+    }
+
+    void BBEngine::RenderDebugOptions()
+    {
+        ImGui::ShowDemoWindow(&show_demo_window);
+        
+        if (ImGui::Begin("Game Options"))
+        {
+            static int curVShader = 0;
+            std::vector<const char*> vShaders;
+            VertexShader* vShaderArray = m_Graphics.GetVertexShaderArray();
+            for (uint32_t i = 0; i < 100; i++)
+            {
+                if (vShaderArray[i].m_Path.empty()) break;
+                vShaders.push_back(vShaderArray[i].m_Path.c_str());
+            }
+            
+            ImGui::Combo("VertexShaders", &curVShader, vShaders.data(), vShaders.size());
+            if (ImGui::Button("Reload Vertex Shader"))
+            {
+                m_Graphics.ReloadShader(ShaderType::VertexShader, curVShader);
+            }
+
+            std::vector<const char*> pShaders;
+            PixelShader* pShadersArray = m_Graphics.GetPixelShaderArray();
+            for (uint32_t i = 0; i < 100; i++)
+            {
+                if (pShadersArray[i].m_Path.empty()) break;
+                pShaders.push_back(pShadersArray[i].m_Path.c_str());
+            }
+
+            static int curPShader = 0;
+            ImGui::Combo("PixelShaders", &curPShader, pShaders.data(), pShaders.size());
+            if (ImGui::Button("Reload Pixel Shader"))
+            {
+                m_Graphics.ReloadShader(ShaderType::PixelShader, curPShader);
+            }
+
+            ImGui::End();
+        }
     }
 }

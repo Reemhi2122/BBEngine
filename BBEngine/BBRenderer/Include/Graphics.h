@@ -32,8 +32,15 @@ enum class ShaderType
 
 struct VertexShader
 {
-	Microsoft::WRL::ComPtr <ID3D11VertexShader>	m_VertexShader;
+	Microsoft::WRL::ComPtr <ID3D11VertexShader>	m_Shader;
 	Microsoft::WRL::ComPtr<ID3DBlob> 			m_ByteCodeBlob;
+	std::string									m_Path;
+};
+
+struct PixelShader
+{
+	Microsoft::WRL::ComPtr <ID3D11PixelShader>	m_Shader;
+	std::string									m_Path;
 };
 
 class Graphics {
@@ -67,8 +74,13 @@ public:
 	void BindDepthTexture();
 	void UnbindSRV(uint32_t a_Slot);
 
-	TMPHANDLE CreateShader(ShaderType a_Type, std::wstring a_Path);
+	TMPHANDLE CreateShader(ShaderType a_Type, std::string a_Path);
 	void BindShader(ShaderType a_Type, TMPHANDLE a_Shader);
+	void ReloadShader(ShaderType a_Type, TMPHANDLE a_Shader);
+	
+	VertexShader* GetVertexShaderArray() noexcept { return (VertexShader*)m_VertexShaders; }
+	PixelShader* GetPixelShaderArray() noexcept { return (PixelShader*)m_PixelShaders; }
+
 	Microsoft::WRL::ComPtr<ID3DBlob> GetVertexShaderByteCode(TMPHANDLE a_Shader) const;
 
 private:
@@ -95,7 +107,7 @@ private:
 	uint32_t			m_VertexIndex = 0u;
 	VertexShader		m_VertexShaders[100u];
 	uint32_t			m_PixelIndex = 0u;
-	Microsoft::WRL::ComPtr<ID3D11PixelShader> m_PixelShaders[100u];
+	PixelShader			m_PixelShaders[100u];
 };
 
 inline ID3D11DeviceContext* Graphics::GetContext() const noexcept {

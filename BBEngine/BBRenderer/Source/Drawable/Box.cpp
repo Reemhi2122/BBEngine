@@ -19,8 +19,8 @@ Box::Box(Graphics& a_Gfx)
 		vBuffer = new VertexBuffer(a_Gfx, vertices, 8);
 		AddStaticBind(vBuffer);
 
-		vShader = a_Gfx.CreateShader(ShaderType::VertexShader, L"Assets/VSCubeMap.hlsl");
-		pShader = a_Gfx.CreateShader(ShaderType::PixelShader, L"Assets/PSCubeMap.hlsl");
+		vShader = a_Gfx.CreateShader(ShaderType::VertexShader, "Assets/VSCubeMap.hlsl");
+		pShader = a_Gfx.CreateShader(ShaderType::PixelShader, "Assets/PSCubeMap.hlsl");
 
 		uint8_t indices[] = {
 			0,2,1, 2,3,1,

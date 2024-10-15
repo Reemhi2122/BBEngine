@@ -33,6 +33,7 @@ namespace BBE {
 
 		//Note(Stan):	This should be temp
 		void RenderToTexture();
+		void RenderDebugOptions();
 
 	private:
 		BBWindow m_Window;

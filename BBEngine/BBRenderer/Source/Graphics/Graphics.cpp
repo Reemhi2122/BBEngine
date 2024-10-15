@@ -199,23 +199,27 @@ Graphics::Graphics(HWND a_HWnd)
 	m_Camera = new Camera();
 }
 
-TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::wstring a_Path)
+TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path)
 {
 	TMPHANDLE handle = -1;
+	wchar_t pathString[MAX_PATH];
+	mbstowcs(pathString, a_Path.c_str(), MAX_PATH);
 
 	switch (a_Type)
 	{
 	case ShaderType::VertexShader:
 	{
-		D3DCompileFromFile(a_Path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 0, 0, &m_VertexShaders[m_VertexIndex].m_ByteCodeBlob, nullptr);
-		m_Device->CreateVertexShader(m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferPointer(), m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferSize(), nullptr, &m_VertexShaders[m_VertexIndex].m_VertexShader);
+		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 0, 0, &m_VertexShaders[m_VertexIndex].m_ByteCodeBlob, nullptr);
+		m_Device->CreateVertexShader(m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferPointer(), m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferSize(), nullptr, &m_VertexShaders[m_VertexIndex].m_Shader);
+		m_VertexShaders[m_VertexIndex].m_Path = a_Path;
 		handle = m_VertexIndex++;
 	} break;
 	case ShaderType::PixelShader:
 	{
 		Microsoft::WRL::ComPtr<ID3DBlob> blob;
-		D3DCompileFromFile(a_Path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
-		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PixelShaders[m_PixelIndex]);
+		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
+		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PixelShaders[m_PixelIndex].m_Shader);
+		m_PixelShaders[m_PixelIndex].m_Path = a_Path;
 		handle = m_PixelIndex++;
 	} break;
 	case ShaderType::GeometryShader:
@@ -236,11 +240,44 @@ void Graphics::BindShader(ShaderType a_Type, TMPHANDLE a_Shader)
 	switch (a_Type)
 	{
 	case ShaderType::VertexShader:
-		m_Context->VSSetShader(m_VertexShaders[a_Shader].m_VertexShader.Get(), nullptr, 0);
+		m_Context->VSSetShader(m_VertexShaders[a_Shader].m_Shader.Get(), nullptr, 0);
 		break;
 	case ShaderType::PixelShader:
-		m_Context->PSSetShader(m_PixelShaders[a_Shader].Get(), nullptr, 0);
+		m_Context->PSSetShader(m_PixelShaders[a_Shader].m_Shader.Get(), nullptr, 0);
 		break;
+	case ShaderType::GeometryShader:
+		break;
+	case ShaderType::ComputeShader:
+		break;
+	case ShaderType::HullShader:
+		break;
+	default:
+		break;
+	}
+}
+
+void Graphics::ReloadShader(ShaderType a_Type, TMPHANDLE a_Shader)
+{
+	switch (a_Type)
+	{
+	case ShaderType::VertexShader:
+	{
+		VertexShader& vShader = m_VertexShaders[a_Shader];
+		wchar_t pathString[MAX_PATH];
+		mbstowcs(pathString, vShader.m_Path.c_str(), MAX_PATH);
+		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 0, 0, &vShader.m_ByteCodeBlob, nullptr);
+		m_Device->CreateVertexShader(vShader.m_ByteCodeBlob->GetBufferPointer(), vShader.m_ByteCodeBlob->GetBufferSize(), nullptr, &vShader.m_Shader);
+	} break;
+	case ShaderType::PixelShader:
+	{
+		PixelShader& pShader = m_PixelShaders[a_Shader];
+		Microsoft::WRL::ComPtr<ID3DBlob> blob;
+		wchar_t pathString[MAX_PATH];
+		mbstowcs(pathString, pShader.m_Path.c_str(), MAX_PATH);
+		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
+		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pShader.m_Shader);
+;
+	} break;
 	case ShaderType::GeometryShader:
 		break;
 	case ShaderType::ComputeShader:
@@ -319,6 +356,7 @@ void Graphics::EndFrame()
 			ImGui::Image((void*)m_TextureDepthShaderResourceView, ImVec2(400, 225));
 		}
 	}
+
 	ImGui::End();
 
 	ImGui::Render();
