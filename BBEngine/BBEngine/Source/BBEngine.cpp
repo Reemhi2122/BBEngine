@@ -123,13 +123,13 @@ namespace BBE
 
         m_Box = BBNew(m_StackAllocator, Box)(m_Graphics);
 
-        int XSize = 2, YSize = 2;
-        for (size_t i = 0; i < XSize; i++) {
-            for (size_t y = 0; y < YSize; y++) {
-                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
-                m_GameObjects.push_back(sponzaObj);
-            }
-        }
+        //int XSize = 2, YSize = 2;
+        //for (size_t i = 0; i < XSize; i++) {
+        //    for (size_t y = 0; y < YSize; y++) {
+        //        GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
+        //        m_GameObjects.push_back(sponzaObj);
+        //    }
+        //}
 
         GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         m_GameObjects.push_back(lanternObj);

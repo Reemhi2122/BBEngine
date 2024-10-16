@@ -22,13 +22,22 @@ Box::Box(Graphics& a_Gfx)
 		vShader = a_Gfx.CreateShader(ShaderType::VertexShader, "Assets/VSCubeMap.hlsl");
 		pShader = a_Gfx.CreateShader(ShaderType::PixelShader, "Assets/PSCubeMap.hlsl");
 
+		//uint8_t indices[] = {
+		//	0,2,1, 2,3,1,
+		//	1,3,5, 3,7,5,
+		//	2,6,3, 3,6,7,
+		//	4,5,7, 4,7,6,
+		//	0,4,2, 2,4,6,
+		//	0,1,4, 1,5,4
+		//};
+
 		uint8_t indices[] = {
-			0,2,1, 2,3,1,
-			1,3,5, 3,7,5,
-			2,6,3, 3,6,7,
-			4,5,7, 4,7,6,
-			0,4,2, 2,4,6,
-			0,1,4, 1,5,4
+			1,2,0, 1,3,2,
+			5,3,1, 5,7,3,
+			3,6,2, 7,6,3,
+			7,5,4, 6,7,4,
+			2,4,0, 6,4,2,
+			4,1,0, 4,5,1
 		};
 
 		IBuffer = new IndexBuffer(a_Gfx, indices, 36, 1);
@@ -54,6 +63,12 @@ Box::Box(Graphics& a_Gfx)
 			{ "Normal",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
+		m_CubeMap = new CubeMap(a_Gfx);
+		AddStaticBind(m_CubeMap);
+
+		m_Sampler = new Sampler(a_Gfx);
+		AddStaticBind(m_Sampler);
+
 		m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(vShader).Get());
 		AddStaticBind(m_InputLayout);
 
@@ -64,7 +79,7 @@ Box::Box(Graphics& a_Gfx)
 		AddIndexFromStatic();
 	}
 
-	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 0, 0), Vector4(0, 0, 0, 1), Vector3(1, 1, 1));
+	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 0, 0), Vector4(0, 0, 0, 1), Vector3(10, 10, 10));
 	AddBind(m_TransformBuf);
 }
 

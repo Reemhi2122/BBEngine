@@ -28,5 +28,9 @@ private:
 	InputLayout*	m_InputLayout;
 	Topology*		m_Topology;
 	TransformBuf*	m_TransformBuf;
+
+	CubeMap*		m_CubeMap;
+	Sampler*		m_Sampler;
+
 	PixelConstantBuffer<ConstantBufferColor>* cCB;
 };

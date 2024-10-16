@@ -1,5 +1,4 @@
 #include "Bindable/Texture.h"
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 Texture::Texture(Graphics& a_Gfx, const char* a_Path)

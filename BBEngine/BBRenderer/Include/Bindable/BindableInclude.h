@@ -5,5 +5,6 @@
 #include "Bindable/TransformBuf.h"
 #include "Bindable/Topology.h"
 #include "Bindable/InputLayout.h"
+#include "Bindable/CubeMap.h"
 #include "Bindable/Texture.h"
 #include "Bindable/Sampler.h"
