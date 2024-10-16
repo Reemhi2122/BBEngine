@@ -295,25 +295,7 @@ Microsoft::WRL::ComPtr<ID3DBlob> Graphics::GetVertexShaderByteCode(TMPHANDLE a_S
 }
 
 //Note(Stan): I'm going to make this function very big for testing purposes
-void Graphics::CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix, Camera& a_Cam1, Camera& a_Cam2)
-{
-	a_Cam2.m_ViewMatrix = spotLightMatrix;
-	SetCamera(&a_Cam2);
 
-	SetDepthStencilTarget();
-	
-	for (size_t i = 0; i < a_Models.size(); i++)
-	{
-		Model* model = a_Models[i];
-		model->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
-		model->Draw(*this);
-		model->ResetShaders();
-	}
-	
-	ResetRenderTarget();
-	
-	SetCamera(&a_Cam1);
-}
 
 Graphics::~Graphics() 
 {

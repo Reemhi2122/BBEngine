@@ -35,6 +35,8 @@ namespace BBE {
 		void RenderToTexture();
 		void RenderDebugOptions();
 
+		void CalculateLightShadowMap(std::vector<GameObject*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix);
+
 	private:
 		BBWindow m_Window;
 		BBTimer m_Timer;

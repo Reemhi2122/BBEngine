@@ -23,6 +23,8 @@ namespace BBE
 		void SetScale(Vector3 a_Position);
 		Vector3 GetScale() const;
 
+		Model* GetModel() const noexcept { return m_Model; };
+
 	private:
 		Model* m_Model;
 

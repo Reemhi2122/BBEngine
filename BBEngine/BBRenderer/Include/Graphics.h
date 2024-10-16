@@ -66,8 +66,6 @@ public:
 	void SetCamera(Camera* a_Camera);
 
 	void ResetRenderTarget();
-	void CalculateLightShadowMap(std::vector<Model*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix, Camera& a_Cam1, Camera& a_Cam2);
-
 	void SetGameViewRenderTarget();
 	void SetDepthStencilTarget();
 	
