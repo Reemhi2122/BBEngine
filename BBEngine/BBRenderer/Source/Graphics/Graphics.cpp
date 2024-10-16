@@ -10,7 +10,6 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
 
-
 Graphics::Graphics(HWND a_HWnd)
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
@@ -49,7 +48,6 @@ Graphics::Graphics(HWND a_HWnd)
 	Microsoft::WRL::ComPtr<ID3D11Resource> backBuffer;
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
-
 
 #if 0
 	D3D11_TEXTURE2D_DESC tex_desc;
@@ -136,8 +134,6 @@ Graphics::Graphics(HWND a_HWnd)
 #endif
 
 #pragma region CUBEMAP
-
-
 
 #pragma endregion
 
@@ -293,9 +289,6 @@ Microsoft::WRL::ComPtr<ID3DBlob> Graphics::GetVertexShaderByteCode(TMPHANDLE a_S
 {
 	return m_VertexShaders[a_Shader].m_ByteCodeBlob;
 }
-
-//Note(Stan): I'm going to make this function very big for testing purposes
-
 
 Graphics::~Graphics() 
 {
