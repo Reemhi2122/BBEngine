@@ -2,12 +2,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#define CUBEMAP_SIZE 6
-
-CubeMap::CubeMap(Graphics& a_Gfx)
+CubeMap::CubeMap(Graphics& a_Gfx, bool a_CreateStandardCubeMap)
 {
 	constexpr char* names[CUBEMAP_SIZE] = {"right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"};
-	unsigned char* images[CUBEMAP_SIZE]; //bottom top front left back right
 
 	int sizeX, sizeY, Channels;
 	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)

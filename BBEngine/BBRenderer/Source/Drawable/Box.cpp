@@ -63,7 +63,7 @@ Box::Box(Graphics& a_Gfx)
 			{ "Normal",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
 
-		m_CubeMap = new CubeMap(a_Gfx);
+		m_CubeMap = new CubeMap(a_Gfx, false);
 		AddStaticBind(m_CubeMap);
 
 		m_Sampler = new Sampler(a_Gfx);
