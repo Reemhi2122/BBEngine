@@ -4,7 +4,8 @@
 
 Box::Box(Graphics& a_Gfx)
 {
-	if (!IsStaticInitialized()) {
+	if (!IsStaticInitialized())
+	{
 		BBE::Vertex vertices[] = {
 			{ {-1.0f, -1.0f, -1.0f}, {0, 0}, {0, 0, 0} },
 			{ {1.0f, -1.0f, -1.0f}, {0, 0}, {0, 0, 0} },
@@ -23,36 +24,25 @@ Box::Box(Graphics& a_Gfx)
 		pShader = a_Gfx.CreateShader(ShaderType::PixelShader, "Assets/PSCubeMap.hlsl");
 
 		uint8_t indices[] = {
-			0,2,1, 2,3,1,
-			1,3,5, 3,7,5,
-			2,6,3, 3,6,7,
-			4,5,7, 4,7,6,
-			0,4,2, 2,4,6,
-			0,1,4, 1,5,4
+			1,2,0, 1,3,2,
+			5,3,1, 5,7,3,
+			3,6,2, 7,6,3,
+			7,5,4, 6,7,4,
+			2,4,0, 6,4,2,
+			4,1,0, 4,5,1
 		};
 
 		IBuffer = new IndexBuffer(a_Gfx, indices, 36, 1);
 		AddStaticBindIndexBuffer(IBuffer);
-
-		//const ConstantBufferColor cbc = {
-		//	{
-		//		{1.0f, 0.0f, 1.0f, 1.0f},
-		//		{1.0f, 0.0f, 0.0f, 1.0f},
-		//		{0.0f, 1.0f, 0.0f, 1.0f},
-		//		{0.0f, 0.0f, 1.0f, 1.0f},
-		//		{1.0f, 1.0f, 0.0f, 1.0f},
-		//		{0.0f, 1.0f, 1.0f, 1.0f}
-		//	}
-		//};
-
-		//cCB = new PixelConstantBuffer<ConstantBufferColor>(a_Gfx, cbc);
-		//AddStaticBind(cCB);
 
 		const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 			{ "Position",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "TexCoord",	0, DXGI_FORMAT_R32G32_FLOAT,	0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 			{ "Normal",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20,	D3D11_INPUT_PER_VERTEX_DATA, 0 }
 		};
+
+		m_CubeMap = new CubeMap(a_Gfx, false);
+		AddStaticBind(m_CubeMap);
 
 		m_Sampler = new Sampler(a_Gfx);
 		AddStaticBind(m_Sampler);
@@ -63,7 +53,8 @@ Box::Box(Graphics& a_Gfx)
 		m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		AddStaticBind(m_Topology);
 	}
-	else {
+	else
+	{
 		AddIndexFromStatic();
 	}
 

@@ -1,19 +1,9 @@
 #pragma once
 #include "Drawable/DrawableBase.h"
-#include <random>
 #include "Bindable/BindableInclude.h"
 
-struct ConstantBufferColor {
-	struct {
-		float r;
-		float g;
-		float b;
-		float a;
-	}face_colors[6];
-};
-
-class Box : public DrawableBase<Box> {
-
+class Box : public DrawableBase<Box>
+{
 public:
 	Box(Graphics& a_Gfx);
 
@@ -28,7 +18,6 @@ private:
 	InputLayout*	m_InputLayout;
 	Topology*		m_Topology;
 	TransformBuf*	m_TransformBuf;
-
+	CubeMap*		m_CubeMap;
 	Sampler*		m_Sampler;
-	PixelConstantBuffer<ConstantBufferColor>* cCB;
 };

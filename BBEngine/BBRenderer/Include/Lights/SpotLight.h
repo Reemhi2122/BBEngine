@@ -20,5 +20,5 @@ public:
 	Vector4 diffuse;
 
 private:
-	ID3D11DepthStencilView* m_DepthStencilView;
+	//ID3D11DepthStencilView* m_DepthStencilView;
 };
