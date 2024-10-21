@@ -2,10 +2,10 @@
 #include "Drawable/DrawableBase.h"
 #include "Bindable/BindableInclude.h"
 
-class Box : public DrawableBase<Box>
+class Skybox : public DrawableBase<Skybox>
 {
 public:
-	Box(Graphics& a_Gfx);
+	Skybox(Graphics& a_Gfx);
 
 	void Update(float a_DeltaTime) noexcept override;
 	void Draw(Graphics& a_Gfx) noexcept override;

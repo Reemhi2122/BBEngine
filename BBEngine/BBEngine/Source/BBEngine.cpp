@@ -121,7 +121,7 @@ namespace BBE
         Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(aBeautifulGame);
 
-        m_Box = BBNew(m_StackAllocator, Box)(m_Graphics);
+        m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
         //int XSize = 2, YSize = 2;
         //for (size_t i = 0; i < XSize; i++) {
@@ -197,7 +197,7 @@ namespace BBE
 
         m_Graphics.UnbindSRV(1);
 
-        m_Box->Draw(m_Graphics);
+        m_Skybox->Draw(m_Graphics);
 
         RenderDebugOptions();
 

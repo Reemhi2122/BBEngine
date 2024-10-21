@@ -1,8 +1,8 @@
 #include "Drawable/Drawable.h"
-#include "Drawable/Box.h"
+#include "Drawable/Skybox.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-Box::Box(Graphics& a_Gfx)
+Skybox::Skybox(Graphics& a_Gfx)
 {
 	if (!IsStaticInitialized())
 	{
@@ -62,9 +62,9 @@ Box::Box(Graphics& a_Gfx)
 	AddBind(m_TransformBuf);
 }
 
-void Box::Update(float a_DeltaTime) noexcept {};
+void Skybox::Update(float a_DeltaTime) noexcept {};
 
-void Box::Draw(Graphics& a_Gfx) noexcept
+void Skybox::Draw(Graphics& a_Gfx) noexcept
 {
 	a_Gfx.BindShader(ShaderType::VertexShader, vShader);
 	a_Gfx.BindShader(ShaderType::PixelShader, pShader);

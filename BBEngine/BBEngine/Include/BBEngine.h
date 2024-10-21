@@ -3,7 +3,7 @@
 
 #include "Utility/BBTimer.h"
 #include "Utility/BBMemory.h"
-#include "Drawable/Box.h"
+#include "Drawable/Skybox.h"
 #include "Drawable/Model.h"
 #include "Drawable/DrawToTexture.h"
 #include "GameLib/GameObject.h"
@@ -73,7 +73,7 @@ namespace BBE {
 		Camera m_Cam1;
 		Camera m_Cam2;
 
-		Box* m_Box;
+		Skybox* m_Skybox;
 
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;
