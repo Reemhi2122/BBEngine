@@ -56,7 +56,7 @@ Skybox::Skybox(Graphics& a_Gfx)
 		AddIndexFromStatic();
 	}
 
-	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 0, 0), Vector4(0, 0, 0, 1), Vector3(10, 10, 10));
+	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 0, 0), Vector4(0, 0, 0, 1), Vector3(1, 1, 1));
 	AddBind(m_TransformBuf);
 }
 
@@ -66,8 +66,6 @@ void Skybox::Draw(Graphics& a_Gfx) noexcept
 {
 	a_Gfx.BindShader(ShaderType::VertexShader, vShader);
 	a_Gfx.BindShader(ShaderType::PixelShader, pShader);
-
-	
 
 	Drawable::Draw(a_Gfx);
 }

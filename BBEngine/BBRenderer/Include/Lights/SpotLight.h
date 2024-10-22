@@ -8,7 +8,6 @@ public:
 	~SpotLight();
 
 	//bool GenerateDepthMap(Graphics& a_Gfx);
-
 public:
 	Vector3 position;
 	float pad0;
