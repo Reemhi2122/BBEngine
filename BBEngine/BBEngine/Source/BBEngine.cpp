@@ -123,13 +123,13 @@ namespace BBE
 
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
-        //int XSize = 2, YSize = 2;
-        //for (size_t i = 0; i < XSize; i++) {
-        //    for (size_t y = 0; y < YSize; y++) {
-        //        GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
-        //        m_GameObjects.push_back(sponzaObj);
-        //    }
-        //}
+        int XSize = 2, YSize = 2;
+        for (size_t i = 0; i < XSize; i++) {
+            for (size_t y = 0; y < YSize; y++) {
+                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
+                m_GameObjects.push_back(sponzaObj);
+            }
+        }
 
         GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         m_GameObjects.push_back(lanternObj);
@@ -151,13 +151,15 @@ namespace BBE
     void BBEngine::Update()
     {
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
-        
+        m_Skybox->Draw(m_Graphics);
+
         CheckInput();
 
         cbPerFrame FrameConstantBuffer;
         FrameConstantBuffer.directionalLight = m_DirectionalLight;
 
         m_SpotLights[0].position.z = sin(incr += 0.01);
+        m_GameObjects[0]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
             FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
@@ -196,8 +198,6 @@ namespace BBE
         }
 
         m_Graphics.UnbindSRV(1);
-
-        m_Skybox->Draw(m_Graphics);
 
         RenderDebugOptions();
 
