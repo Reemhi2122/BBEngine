@@ -311,6 +311,12 @@ void Graphics::SetDepthStencilTarget()
 	m_Context->ClearDepthStencilView(m_TextureDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
+void Graphics::SetDepthStencilTarget(ID3D11DepthStencilView* a_Target)
+{
+	m_Context->OMSetRenderTargets(0u, 0, a_Target);
+	m_Context->ClearDepthStencilView(a_Target, D3D11_CLEAR_DEPTH, 1.0f, 0u);
+}
+
 void Graphics::BindDepthTexture() 
 {
 	m_Context->PSSetShaderResources(1, 1, &m_TextureDepthShaderResourceView);
@@ -325,13 +331,6 @@ void Graphics::UnbindSRV(uint32_t a_Slot)
 
 void Graphics::EndFrame()
 {
-	ImGui::Begin("GameWindow");
-	{
-		if (m_TextureDepthShaderResourceView) {
-			ImGui::Image((void*)m_TextureDepthShaderResourceView, ImVec2(400, 225));
-		}
-	}
-
 	ImGui::End();
 
 	ImGui::Render();

@@ -29,6 +29,11 @@ namespace BBE
         m_ArenaAllocator.Init(BBE::PageSize);
         m_StackAllocator.Init(128 * BBE::MBSize);
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(8, 2);
+
+        for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
+        {
+            m_LightDepthStencils[i].Init(m_Graphics);
+        }
     }
 
     BBEngine::~BBEngine()
@@ -183,6 +188,8 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
+        CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
+
         CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
         vcbPerFrame buf;
@@ -200,6 +207,14 @@ namespace BBE
         m_Graphics.UnbindSRV(1);
 
         RenderDebugOptions();
+
+        ImGui::Begin("GameWindow");
+        {
+            for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
+            {
+                ImGui::Image((void*)m_LightDepthStencils[i].GetResourceView(), ImVec2(400, 225));
+            }
+        }
 
         m_Graphics.EndFrame();
     }
@@ -237,14 +252,14 @@ namespace BBE
 
         for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
         {
-            Vector3 focusPoint = a_Spotlight.position + a_Spotlight.direction;
+            Vector3 focusPoint = a_Spotlight.position + viewDirections[i];
             DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
                 DirectX::XMVectorSet(a_Spotlight.position.x, a_Spotlight.position.y, a_Spotlight.position.z, 0),
                 DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
-                DirectX::XMVectorSet(viewDirections[i].x, viewDirections[i].y, viewDirections[i].z, 0.0f)
+                DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
             );
 
-            m_Graphics.SetDepthStencilTarget();
+            m_Graphics.SetDepthStencilTarget(m_LightDepthStencils[i].GetDepthStencilView());
             m_Cam2.m_ViewMatrix = lightView;
 
             for (size_t i = 0; i < a_GameObjects.size(); i++)
@@ -255,9 +270,9 @@ namespace BBE
                 obj->GetModel()->ResetShaders();
             }
 
-            m_Graphics.ResetRenderTarget();
         }
 
+        m_Graphics.ResetRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
     }
 

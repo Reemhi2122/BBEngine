@@ -8,6 +8,8 @@
 #include "Drawable/DrawToTexture.h"
 #include "GameLib/GameObject.h"
 
+#include "DepthStencil.h"
+
 #include "Lights/PointLight.h"
 #include "Lights/SpotLight.h"
 #include "Lights/DirectionalLight.h"
@@ -17,6 +19,8 @@
 #include "Vertexconstant.h"
 
 #include "Containers/Vector.h"
+
+#define TEMP_LIGHT_DEPTHSTENCILS 6
 
 namespace BBE {
 	class BBEngine {
@@ -57,6 +61,8 @@ namespace BBE {
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
+
+		DepthStencil m_LightDepthStencils[TEMP_LIGHT_DEPTHSTENCILS];
 
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;

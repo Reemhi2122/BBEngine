@@ -67,7 +67,9 @@ public:
 
 	void ResetRenderTarget();
 	void SetGameViewRenderTarget();
+
 	void SetDepthStencilTarget();
+	void SetDepthStencilTarget(ID3D11DepthStencilView* a_Target);
 	
 	void BindDepthTexture();
 	void UnbindSRV(uint32_t a_Slot);
