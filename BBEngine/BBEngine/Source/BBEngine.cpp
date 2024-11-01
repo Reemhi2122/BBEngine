@@ -240,8 +240,8 @@ namespace BBE
     void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, SpotLight a_Spotlight)
     {
         Vector3 viewDirections[6] = { 
-            { 0.0f, 1.0f, 0.0f },   // Right  
-            { 0.0f, -1.0f, 0.0f },   // Left
+            { 0.001f, 1.0f, 0.0f },   // Right  
+            { 0.001f, -1.0f, 0.0f },   // Left
             { 0.0f, 0.0f, 1.0f },   // Top
             { 0.0f, 0.0f, -1.0f },   // Bottom
             { -1.0f, 0.0f, 0.0f },   // Back
@@ -250,26 +250,25 @@ namespace BBE
 
         m_Graphics.SetCamera(&m_Cam2);
 
-        for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+        for (uint32_t depthStencilIndex = 0; depthStencilIndex < TEMP_LIGHT_DEPTHSTENCILS; depthStencilIndex++)
         {
-            Vector3 focusPoint = a_Spotlight.position + viewDirections[i];
+            Vector3 focusPoint = a_Spotlight.position + viewDirections[depthStencilIndex];
             DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
                 DirectX::XMVectorSet(a_Spotlight.position.x, a_Spotlight.position.y, a_Spotlight.position.z, 0),
                 DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
-                DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+                DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f)
             );
 
-            m_Graphics.SetDepthStencilTarget(m_LightDepthStencils[i].GetDepthStencilView());
+            m_Graphics.SetDepthStencilTarget(m_LightDepthStencils[depthStencilIndex].GetDepthStencilView());
             m_Cam2.m_ViewMatrix = lightView;
 
-            for (size_t i = 0; i < a_GameObjects.size(); i++)
+            for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)
             {
-                GameObject* obj = a_GameObjects[i];
+                GameObject* obj = a_GameObjects[gameObjIndex];
                 obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
                 obj->Draw(m_Graphics);
                 obj->GetModel()->ResetShaders();
             }
-
         }
 
         m_Graphics.ResetRenderTarget();
