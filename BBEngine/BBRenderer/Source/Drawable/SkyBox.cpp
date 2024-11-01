@@ -39,7 +39,7 @@ Skybox::Skybox(Graphics& a_Gfx)
 			{ "Position",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 
-		m_CubeMap = new CubeMap(a_Gfx, false);
+		m_CubeMap = new CubeMap(a_Gfx);
 		AddStaticBind(m_CubeMap);
 
 		m_Sampler = new Sampler(a_Gfx);

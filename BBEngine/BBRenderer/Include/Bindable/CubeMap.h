@@ -6,7 +6,8 @@
 class CubeMap : public Bindable
 {
 public:
-	CubeMap(Graphics& a_Gfx, bool a_CreateStandardCubeMap);
+	CubeMap(Graphics& a_Gfx);
+
 	void Bind(Graphics& a_Gfx) noexcept;
 
 private:

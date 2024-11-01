@@ -188,7 +188,7 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
+        //CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
 
         CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
@@ -414,7 +414,7 @@ namespace BBE
 
     void BBEngine::RenderDebugOptions()
     {
-        ImGui::ShowDemoWindow(&show_demo_window);
+        //ImGui::ShowDemoWindow(&show_demo_window);0
         
         if (ImGui::Begin("Game Options"))
         {
@@ -447,8 +447,7 @@ namespace BBE
             {
                 m_Graphics.ReloadShader(ShaderType::PixelShader, curPShader);
             }
-
-            ImGui::End();
         }
+        ImGui::End();
     }
 }
