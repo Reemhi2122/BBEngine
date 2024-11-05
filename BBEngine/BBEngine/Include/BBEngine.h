@@ -35,6 +35,8 @@ namespace BBE {
 		void Update();
 		void CheckInput();
 
+		void DrawUI();
+
 		//Note(Stan):	This should be temp
 		void RenderToTexture();
 		void RenderDebugOptions();

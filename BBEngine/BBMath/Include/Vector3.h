@@ -7,14 +7,22 @@ public:
 	Vector3(float, float, float) noexcept;
 	~Vector3() noexcept = default;
 
+	float* GetXYZ() { return vector; };
+
 	Vector3& operator+(const Vector3& a_Rhs);
 	Vector3& operator-(const Vector3& a_Rhs);
 
 public:
-	float 
-		x = 0, 
-		y = 0, 
-		z = 0;
+	union
+	{
+		float vector[3] = {0, 0, 0};
+		struct
+		{
+			float x;
+			float y;
+			float z;
+		};
+	};
 
 private:
 };

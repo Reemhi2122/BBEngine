@@ -16,12 +16,16 @@ namespace BBE
 	
 		void SetPosition(Vector3 a_Position);
 		Vector3 GetPosition() const;
+		Vector3& GetPositionRef() { return m_Position; };
 
 		void SetRotation(Vector3 a_Position);
 		Vector3 GetRotation() const;
+		Vector3& GetRotationRef() { return m_Rotation; };
 
 		void SetScale(Vector3 a_Position);
 		Vector3 GetScale() const;
+		Vector3& GetScaleRef() { return m_Scale; };
+
 
 		Model* GetModel() const noexcept { return m_Model; };
 

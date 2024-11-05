@@ -331,8 +331,6 @@ void Graphics::UnbindSRV(uint32_t a_Slot)
 
 void Graphics::EndFrame()
 {
-	ImGui::End();
-
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	HRESULT hr;

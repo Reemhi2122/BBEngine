@@ -208,6 +208,12 @@ namespace BBE
 
         RenderDebugOptions();
 
+        DrawUI();
+        m_Graphics.EndFrame();
+    }
+
+    void BBEngine::DrawUI()
+    {
         ImGui::Begin("GameWindow");
         {
             for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
@@ -215,8 +221,24 @@ namespace BBE
                 ImGui::Image((void*)m_LightDepthStencils[i].GetResourceView(), ImVec2(400, 225));
             }
         }
+        ImGui::End();
 
-        m_Graphics.EndFrame();
+        ImGui::Begin("Objects");
+        {
+            for (uint32_t i = 0; i < m_GameObjects.size(); i++)
+            {
+                char name[8];
+                itoa(i, name, 10);
+                if (ImGui::CollapsingHeader(name))
+                {
+                    ImGui::InputFloat3("Transform", m_GameObjects[i]->GetPositionRef().GetXYZ());
+                    ImGui::InputFloat3("Rotation",  m_GameObjects[i]->GetRotationRef().GetXYZ());
+                    ImGui::InputFloat3("Scale",     m_GameObjects[i]->GetScaleRef().GetXYZ());
+                }
+            }
+        }
+
+        ImGui::End();
     }
 
     void BBEngine::CalculateLightShadowMap(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix)
