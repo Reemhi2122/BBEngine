@@ -164,7 +164,7 @@ namespace BBE
         FrameConstantBuffer.directionalLight = m_DirectionalLight;
 
         m_SpotLights[0].position.z = sin(incr += 0.01);
-        m_GameObjects[0]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
+        m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
             FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
@@ -188,28 +188,31 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        //CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
+        CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
 
         CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
-        vcbPerFrame buf;
-        buf.lightMatrix = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
-        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, buf, 1, 1);
-        m_LightMatrix.Bind(m_Graphics);
-
-        m_Cam2.SetViewMatrix(buf.lightMatrix);
         m_Graphics.BindDepthTexture();
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
         }
+        DrawAllModels(); // Find better way to do this?
 
         m_Graphics.UnbindSRV(1);
 
         RenderDebugOptions();
-
         DrawUI();
+
         m_Graphics.EndFrame();
+    }
+
+    void BBEngine::DrawAllModels()
+    {
+        for (uint32_t i = 0; i < m_Models.size(); i++)
+        {
+            m_Models[i]->Draw(m_Graphics);
+        }
     }
 
     void BBEngine::DrawUI()
@@ -255,6 +258,8 @@ namespace BBE
             obj->GetModel()->ResetShaders();
         }
 
+        DrawAllModels();
+
         m_Graphics.ResetRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
     }
@@ -291,6 +296,8 @@ namespace BBE
                 obj->Draw(m_Graphics);
                 obj->GetModel()->ResetShaders();
             }
+
+            DrawAllModels();
         }
 
         m_Graphics.ResetRenderTarget();

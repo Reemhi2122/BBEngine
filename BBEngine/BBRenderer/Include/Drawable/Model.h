@@ -25,11 +25,7 @@ public:
 
 private:
 
-	struct InstanceBuffer {
-		DirectX::XMMATRIX m_GameObjTransform;
-	};
-
-	std::vector<InstanceBuffer> m_InstanceBuffer;
+	std::vector<DirectX::XMMATRIX> m_InstanceBuffer;
 
 	struct ModelNodes
 	{

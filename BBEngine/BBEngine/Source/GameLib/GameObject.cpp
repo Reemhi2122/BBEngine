@@ -10,18 +10,17 @@ namespace BBE
 		m_Scale = a_Scale;
 
 		UpdateTransform();
-		m_Model->AddToDraw(m_Transform);
 	}
 
 	void GameObject::Update(Graphics& a_Graphics) 
 	{
 		m_Model->Update(0.0f);
-		//UpdateTransform();
+		UpdateTransform();
 	}
 
 	void GameObject::Draw(Graphics& a_Graphics)
 	{
-		m_Model->Draw(a_Graphics);
+		m_Model->AddToDraw(m_Transform);
 	}
 
 	void GameObject::UpdateTransform() noexcept

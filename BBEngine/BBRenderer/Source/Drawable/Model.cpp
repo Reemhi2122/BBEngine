@@ -115,7 +115,7 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 			a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
 			a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
 
-			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(InstanceBuffer), m_InstanceBuffer.size());
+			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(DirectX::XMMATRIX), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
 
@@ -123,6 +123,8 @@ void Model::Draw(Graphics& a_Gfx) noexcept
 			Drawable::DrawInstanced(a_Gfx, m_InstanceBuffer.size());
 		}
 	}
+
+	m_InstanceBuffer.clear();
 }
 
 void Model::Update(float a_DeltaTime) noexcept {}

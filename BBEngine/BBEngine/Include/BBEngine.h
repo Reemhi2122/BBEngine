@@ -35,10 +35,11 @@ namespace BBE {
 		void Update();
 		void CheckInput();
 
-		void DrawUI();
-
 		//Note(Stan):	This should be temp
 		void RenderToTexture();
+		void DrawAllModels();
+
+		void DrawUI();
 		void RenderDebugOptions();
 
 		void CalculateLightShadowMap(std::vector<GameObject*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix);
