@@ -12,7 +12,7 @@ namespace BBE
 		virtual void Update(Graphics& a_Graphics);
 		virtual void Draw(Graphics& a_Graphics);
 
-		DirectX::XMMATRIX GetTransformXM(Graphics& a_Graphics) const noexcept;
+		void UpdateTransform() noexcept;
 	
 		void SetPosition(Vector3 a_Position);
 		Vector3 GetPosition() const;
@@ -31,6 +31,8 @@ namespace BBE
 
 	private:
 		Model* m_Model;
+
+		DirectX::XMMATRIX m_Transform;
 
 		Vector3 m_Position;
 		Vector3 m_Rotation;

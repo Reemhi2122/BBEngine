@@ -9,12 +9,14 @@ namespace BBE
 		m_Rotation = a_Rotation;
 		m_Scale = a_Scale;
 
-		m_Model->AddToDraw(GetTransformXM(a_Graphics));
+		UpdateTransform();
+		m_Model->AddToDraw(m_Transform);
 	}
 
 	void GameObject::Update(Graphics& a_Graphics) 
 	{
 		m_Model->Update(0.0f);
+		//UpdateTransform();
 	}
 
 	void GameObject::Draw(Graphics& a_Graphics)
@@ -22,14 +24,14 @@ namespace BBE
 		m_Model->Draw(a_Graphics);
 	}
 
-	DirectX::XMMATRIX GameObject::GetTransformXM(Graphics& a_Graphics) const noexcept
+	void GameObject::UpdateTransform() noexcept
 	{
 		DirectX::XMMATRIX objTransform = 
 			DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
 			DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) *
 			DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 	
-		return DirectX::XMMatrixTranspose(objTransform);
+		m_Transform = DirectX::XMMatrixTranspose(objTransform);
 	}
 
 	void GameObject::SetPosition(Vector3 a_Position)

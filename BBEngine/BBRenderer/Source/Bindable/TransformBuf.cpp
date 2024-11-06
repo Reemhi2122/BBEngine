@@ -2,10 +2,7 @@
 
 TransformBuf::TransformBuf(Graphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale)
 {
-	m_LocalMatrix = 
-		DirectX::XMMatrixScaling(a_LocalScale.x, a_LocalScale.y, a_LocalScale.z) *
-		DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(a_LocalRotation.x, a_LocalRotation.y, a_LocalRotation.z, a_LocalRotation.w)) *
-		DirectX::XMMatrixTranslation(a_LocalTranslation.x, a_LocalTranslation.y, a_LocalTranslation.z);
+	UpdateTransform(a_LocalTranslation, a_LocalRotation, a_LocalScale);
 
 	if (!m_VCB) {
 		m_VCB = new VertexConstantBuffer<perObjectBuffer>(a_Gfx);
@@ -15,6 +12,14 @@ TransformBuf::TransformBuf(Graphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 
 TransformBuf::~TransformBuf() {
 	//TODO(Stan): Use custom allocation for this
 	delete(m_VCB);
+}
+
+void TransformBuf::UpdateTransform(Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale)
+{
+	m_LocalMatrix =
+		DirectX::XMMatrixScaling(a_LocalScale.x, a_LocalScale.y, a_LocalScale.z) *
+		DirectX::XMMatrixRotationQuaternion(DirectX::XMVectorSet(a_LocalRotation.x, a_LocalRotation.y, a_LocalRotation.z, a_LocalRotation.w)) *
+		DirectX::XMMatrixTranslation(a_LocalTranslation.x, a_LocalTranslation.y, a_LocalTranslation.z);
 }
 
 void TransformBuf::SetParentTransform(Vector3 a_ParentTranslation, Vector4 a_ParentRotation, Vector3 a_ParentScale)

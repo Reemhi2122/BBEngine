@@ -13,7 +13,8 @@ public:
 	TransformBuf(Graphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
 	~TransformBuf();
 	void Bind(Graphics& a_Gfx) noexcept;
-	 
+
+	void UpdateTransform(Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
 	void SetParentTransform(Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
 
 private:
