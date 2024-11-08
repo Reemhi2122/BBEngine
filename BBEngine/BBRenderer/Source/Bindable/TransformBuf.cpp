@@ -43,4 +43,17 @@ void TransformBuf::Bind(Graphics& a_Gfx) noexcept
 	m_VCB->Bind(a_Gfx);
 }
 
+void TransformBuf::Bind(Graphics& a_Gfx, DirectX::XMMATRIX a_ObjTransform) noexcept
+{
+	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * m_ParentTransform;
+
+	perObjectBuffer buf = {
+		DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
+		DirectX::XMMatrixTranspose(finalMatrix)
+	};
+
+	m_VCB->Update(a_Gfx, buf);
+	m_VCB->Bind(a_Gfx);
+}
+
 VertexConstantBuffer<perObjectBuffer>* TransformBuf::m_VCB;

@@ -70,10 +70,10 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, ui
 		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "Normal",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
-		{ "InstanceTransform", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,							D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{ "InstanceTransform", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{ "InstanceTransform", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{ "InstanceTransform", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
+		//{ "InstanceTransform", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,							D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		//{ "InstanceTransform", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		//{ "InstanceTransform", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		//{ "InstanceTransform", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1}
 	};
 
 	m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(m_CurVertexShader).Get());
@@ -99,7 +99,31 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 	m_InstanceBuffer.push_back({ a_Transform });
 }
 
-void Model::Draw(Graphics& a_Gfx) noexcept
+void Model::Draw(Graphics& a_Gfx) noexcept {
+	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
+	{
+		m_Nodes[curNode].transformBuf->Bind(a_Gfx, *m_CurTransform);
+		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
+		{
+			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
+			{
+				m_Nodes[curNode].primitives[i].m_Texture->Bind(a_Gfx);
+				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
+			}
+
+			a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
+			a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
+
+			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
+			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
+
+			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
+			Drawable::Draw(a_Gfx);
+		}
+	}
+}
+
+void Model::DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept
 {
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{

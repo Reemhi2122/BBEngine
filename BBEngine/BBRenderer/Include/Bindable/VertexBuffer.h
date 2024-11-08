@@ -19,5 +19,7 @@ private:
 	UINT m_Count;
 	uint32_t m_InstanceDataSize;
 
+	DirectX::XMMATRIX IdenityMatrix = DirectX::XMMatrixIdentity();
+
 	bool m_HasInstanceBuffer = false;
 };

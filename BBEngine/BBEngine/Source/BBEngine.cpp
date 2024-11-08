@@ -188,7 +188,7 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
+        //CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
 
         CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
@@ -197,7 +197,7 @@ namespace BBE
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
         }
-        DrawAllModels(); // Find better way to do this?
+        //DrawAllModels(); // Find better way to do this?
 
         m_Graphics.UnbindSRV(1);
 
@@ -257,8 +257,7 @@ namespace BBE
             obj->Draw(m_Graphics);
             obj->GetModel()->ResetShaders();
         }
-
-        DrawAllModels();
+        //DrawAllModels();
 
         m_Graphics.ResetRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
@@ -297,7 +296,7 @@ namespace BBE
                 obj->GetModel()->ResetShaders();
             }
 
-            DrawAllModels();
+            //DrawAllModels();
         }
 
         m_Graphics.ResetRenderTarget();

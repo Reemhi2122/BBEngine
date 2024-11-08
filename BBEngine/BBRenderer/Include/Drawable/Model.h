@@ -12,11 +12,14 @@ public:
 	
 	void SetCurrentShader(uint32_t a_VertexShader, uint32_t a_PixelShader);
 	void ResetShaders();
+
 	void AddToDraw(DirectX::XMMATRIX a_Transform);
 	
 	void Draw(Graphics& a_Gfx) noexcept override;
+	void DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept override;
 	void Update(float a_DeltaTime) noexcept override;
 
+	void SetTransform(DirectX::XMMATRIX* a_Transform) { m_CurTransform = a_Transform; }
 
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	{
@@ -26,6 +29,7 @@ public:
 private:
 
 	std::vector<DirectX::XMMATRIX> m_InstanceBuffer;
+	DirectX::XMMATRIX* m_CurTransform = nullptr;
 
 	struct ModelNodes
 	{
