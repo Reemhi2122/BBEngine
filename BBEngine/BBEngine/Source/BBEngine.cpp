@@ -164,7 +164,7 @@ namespace BBE
         FrameConstantBuffer.directionalLight = m_DirectionalLight;
 
         m_SpotLights[0].position.z = sin(incr += 0.01);
-        m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
+        //m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
             FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
@@ -190,7 +190,7 @@ namespace BBE
 
         //CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
 
-        CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
+        //CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
         m_Graphics.BindDepthTexture();
 

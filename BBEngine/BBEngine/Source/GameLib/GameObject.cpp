@@ -15,7 +15,6 @@ namespace BBE
 	void GameObject::Update(Graphics& a_Graphics) 
 	{
 		m_Model->Update(0.0f);
-		//UpdateTransform();
 	}
 
 	void GameObject::Draw(Graphics& a_Graphics)
@@ -32,7 +31,7 @@ namespace BBE
 			DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) *
 			DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
 	
-		m_Transform = DirectX::XMMatrixTranspose(objTransform);
+		m_Transform = objTransform;
 	}
 
 	void GameObject::SetPosition(Vector3 a_Position)
