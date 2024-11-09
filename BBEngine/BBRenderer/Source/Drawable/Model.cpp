@@ -100,6 +100,7 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 }
 
 void Model::Draw(Graphics& a_Gfx) noexcept {
+
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
 		m_Nodes[curNode].transformBuf->Bind(a_Gfx, *m_CurTransform);

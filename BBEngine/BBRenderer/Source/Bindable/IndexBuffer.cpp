@@ -1,10 +1,15 @@
 #include "Bindable/IndexBuffer.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-IndexBuffer::IndexBuffer(Graphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, const uint8_t a_IndexDataSize)
+IndexBuffer::IndexBuffer(Graphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
 	: m_Count(a_Count)
 {
 	INFOMAN(a_Gfx);
+
+	if (a_IndexDataSize < 2)
+	{
+		a_IndexDataSize = 2;
+	}
 
 	D3D11_BUFFER_DESC ibd = {};
 	ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -18,9 +23,6 @@ IndexBuffer::IndexBuffer(Graphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_C
 
 	switch (a_IndexDataSize)
 	{
-	case 1:
-		m_IndexBufferFormat = DXGI_FORMAT_R8_UINT;
-		break;
 	case 2:
 		m_IndexBufferFormat = DXGI_FORMAT_R16_UINT;
 		break;

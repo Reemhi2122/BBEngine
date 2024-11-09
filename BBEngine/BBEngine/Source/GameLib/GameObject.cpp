@@ -15,11 +15,11 @@ namespace BBE
 	void GameObject::Update(Graphics& a_Graphics) 
 	{
 		m_Model->Update(0.0f);
+		UpdateTransform();
 	}
 
 	void GameObject::Draw(Graphics& a_Graphics)
 	{
-		UpdateTransform();
 		m_Model->SetTransform(&m_Transform);
 		m_Model->Draw(a_Graphics);
 	}

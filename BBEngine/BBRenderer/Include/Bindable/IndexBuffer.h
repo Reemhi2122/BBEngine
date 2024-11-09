@@ -5,7 +5,7 @@
 class IndexBuffer : public Bindable
 {
 public:
-	IndexBuffer(Graphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, const uint8_t a_IndexDataSize);
+	IndexBuffer(Graphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize);
 	void Bind(Graphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 

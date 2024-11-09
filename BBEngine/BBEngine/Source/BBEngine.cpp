@@ -190,7 +190,7 @@ namespace BBE
 
         //CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
 
-        //CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
+        CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
         m_Graphics.BindDepthTexture();
 
