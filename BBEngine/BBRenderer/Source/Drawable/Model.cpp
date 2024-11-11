@@ -11,6 +11,10 @@ Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, ui
 	{
 		BBE::Node& curNode = a_File->nodes[nodeIndex];
 
+		m_Nodes[nodeIndex].position = curNode.translation;
+		m_Nodes[nodeIndex].rotation = curNode.rotation;
+		m_Nodes[nodeIndex].scale	= curNode.scale;
+			
 		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
 			curNode.translation,
 			curNode.rotation,

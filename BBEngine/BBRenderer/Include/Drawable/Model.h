@@ -4,6 +4,31 @@
 #include "Drawable/DrawableBase.h"
 #include "Vector3.h"
 
+struct ModelNodes
+{
+	uint32_t primitiveCount = 0;
+
+	Vector3 position;
+	Vector4 rotation;
+	Vector3 scale;
+
+	TransformBuf* transformBuf = nullptr;
+
+	struct ModelPrimitive
+	{
+		VertexBuffer* vBuffer;
+		Texture* m_Texture;
+		Sampler* m_Sampler;
+		IndexBuffer* m_IndexBuffer;
+
+	}*primitives = nullptr;
+};
+
+struct NodeContainer {
+	ModelNodes* data;
+	uint32_t count;
+};
+
 class Model : public Drawable
 {
 public:
@@ -21,31 +46,18 @@ public:
 
 	void SetTransform(DirectX::XMMATRIX* a_Transform) { m_CurTransform = a_Transform; }
 
+	NodeContainer GetNodes() { return { m_Nodes, m_nodeCount }; };
+
 	const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	{
 		return std::vector<Bindable*>();
 	}
 
 private:
-
 	std::vector<DirectX::XMMATRIX> m_InstanceBuffer;
 	DirectX::XMMATRIX* m_CurTransform = nullptr;
 
-	struct ModelNodes
-	{
-		uint32_t primitiveCount = 0;
-		TransformBuf* transformBuf = nullptr;
-		
-		struct ModelPrimitive
-		{
-			VertexBuffer* vBuffer;
-			Texture* m_Texture;
-			Sampler* m_Sampler;
-			IndexBuffer* m_IndexBuffer;
-
-		}* primitives = nullptr;
-
-	}* m_Nodes = nullptr;
+	ModelNodes* m_Nodes = nullptr;
 
 	InputLayout* m_InputLayout;
 	Topology* m_Topology;

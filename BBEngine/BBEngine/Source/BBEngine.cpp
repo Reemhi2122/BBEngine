@@ -136,7 +136,7 @@ namespace BBE
             }
         }
 
-        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         m_GameObjects.push_back(lanternObj);
 
         GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
@@ -217,14 +217,7 @@ namespace BBE
 
     void BBEngine::DrawUI()
     {
-        ImGui::Begin("GameWindow");
-        {
-            for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
-            {
-                ImGui::Image((void*)m_LightDepthStencils[i].GetResourceView(), ImVec2(400, 225));
-            }
-        }
-        ImGui::End();
+
 
         ImGui::Begin("Objects");
         {
@@ -237,6 +230,29 @@ namespace BBE
                     ImGui::InputFloat3("Transform", m_GameObjects[i]->GetPositionRef().GetXYZ());
                     ImGui::InputFloat3("Rotation",  m_GameObjects[i]->GetRotationRef().GetXYZ());
                     ImGui::InputFloat3("Scale",     m_GameObjects[i]->GetScaleRef().GetXYZ());
+
+                    NodeContainer con = m_GameObjects[i]->GetModel()->GetNodes();
+
+                    for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
+                    {
+                        ModelNodes& node = con.data[i];
+
+                        char subnodename[255];
+                        itoa(nodeIndex, subnodename, 10);
+                        strcat(subnodename, " subitem");
+                        strcat(subnodename, name);
+                        if (ImGui::CollapsingHeader(subnodename))
+                        {
+                            if (
+                                ImGui::InputFloat3("Transform", node.position.GetXYZ()) ||
+                                ImGui::InputFloat4("Rotation", node.rotation.GetXYZ()) ||
+                                ImGui::InputFloat3("Scale", node.scale.GetXYZ())
+                                ) 
+                            {
+                                node.transformBuf->UpdateTransform(node.position, node.rotation, node.position);
+                            }
+                        }
+                    }
                 }
             }
         }
