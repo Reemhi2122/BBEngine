@@ -29,7 +29,8 @@ add_library (Renderer STATIC
 "Source/Lights/PointLight.cpp"
 
 "Source/Camera.cpp"
- "Include/Drawable/SkyBox.h" "Source/Drawable/SkyBox.cpp" "Include/DepthStencil.h")
+"Source/Drawable/SkyBox.cpp"
+)
 
 set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 

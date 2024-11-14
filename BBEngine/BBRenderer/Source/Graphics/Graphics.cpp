@@ -331,17 +331,6 @@ void Graphics::UnbindSRV(uint32_t a_Slot)
 
 void Graphics::EndFrame()
 {
-	ImGui::Begin("GameWindow");
-	{
-		//for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
-		//{
-		//    ImGui::Image((void*)m_LightDepthStencils[i].GetResourceView(), ImVec2(400, 225));
-		//}
-
-		ImGui::Image((void*)m_TextureDepthShaderResourceView, ImVec2(400, 225));
-	}
-	ImGui::End();
-
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	HRESULT hr;

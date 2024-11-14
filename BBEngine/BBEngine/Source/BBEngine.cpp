@@ -188,7 +188,7 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        //CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
+        CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_SpotLights[0]);
 
         CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
@@ -197,7 +197,6 @@ namespace BBE
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
         }
-        //DrawAllModels(); // Find better way to do this?
 
         m_Graphics.UnbindSRV(1);
 
@@ -217,7 +216,14 @@ namespace BBE
 
     void BBEngine::DrawUI()
     {
-
+        ImGui::Begin("GameWindow");
+        {
+            for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
+            {
+                ImGui::Image((void*)m_LightDepthStencils[i].GetResourceView(), ImVec2(400, 225));
+            }
+        }
+        ImGui::End();
 
         ImGui::Begin("Objects");
         {
@@ -235,7 +241,7 @@ namespace BBE
 
                     for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
                     {
-                        ModelNodes& node = con.data[i];
+                        ModelNodes& node = con.data[nodeIndex];
 
                         char subnodename[255];
                         itoa(nodeIndex, subnodename, 10);
@@ -243,14 +249,16 @@ namespace BBE
                         strcat(subnodename, name);
                         if (ImGui::CollapsingHeader(subnodename))
                         {
+                            ImGui::PushID(i * nodeIndex);
                             if (
-                                ImGui::InputFloat3("Transform", node.position.GetXYZ()) ||
-                                ImGui::InputFloat4("Rotation", node.rotation.GetXYZ()) ||
-                                ImGui::InputFloat3("Scale", node.scale.GetXYZ())
+                                ImGui::InputFloat3("subTransform", node.position.GetXYZ()) ||
+                                ImGui::InputFloat4("subRotation", node.rotation.GetXYZ()) ||
+                                ImGui::InputFloat3("subScale", node.scale.GetXYZ())
                                 ) 
                             {
-                                node.transformBuf->UpdateTransform(node.position, node.rotation, node.position);
+                                node.transformBuf->UpdateTransform(node.position, node.rotation, node.scale);
                             }
+                            ImGui::PopID();
                         }
                     }
                 }
@@ -273,7 +281,6 @@ namespace BBE
             obj->Draw(m_Graphics);
             obj->GetModel()->ResetShaders();
         }
-        //DrawAllModels();
 
         m_Graphics.ResetRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
@@ -312,7 +319,6 @@ namespace BBE
                 obj->GetModel()->ResetShaders();
             }
 
-            //DrawAllModels();
         }
 
         m_Graphics.ResetRenderTarget();

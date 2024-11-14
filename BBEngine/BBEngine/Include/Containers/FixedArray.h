@@ -4,16 +4,20 @@
 
 namespace BBE
 {
-	template<typename T>
+	typedef int32_t FA_HANDLE;
+
+	template<typename Type>
 	class FixedArray
 	{
 	public:
 		FixedArray(uint32_t a_Size);
 		~FixedArray();
 
-		T* GetArray();
+		Type* GetArray();
 		uint32_t GetCurrentSize();
-		int32_t AddElement(T a_Element);
+		
+		FA_HANDLE	AddElement(Type a_Element);
+		Type*		GetElement(FA_HANDLE a_Handle);
 
 	private:
 		uint32_t m_MaxSize;
@@ -28,35 +32,44 @@ namespace BBE
 		m_InnerArray = T[a_Size];
 	}
 
-	template<typename T>
-	inline FixedArray<T>::~FixedArray()
+	template<typename Type>
+	inline FixedArray<Type>::~FixedArray()
 	{
 		delete[] m_InnerArray;
 		m_InnerArray = nullptr;
 	}
 
-	template<typename T>
-	inline T* FixedArray<T>::GetArray()
+	template<typename Type>
+	inline Type* FixedArray<Type>::GetArray()
 	{
-		m_InnerArray;
+		return m_InnerArray;
 	}
 
-	template<typename T>
-	inline uint32_t FixedArray<T>::GetCurrentSize()
+	template<typename Type>
+	inline uint32_t FixedArray<Type>::GetCurrentSize()
 	{
 		return m_CurrentSize;
 	}
 
-	template<typename T>
-	inline int32_t FixedArray<T>::AddElement(T a_Element)
+	template<typename Type>
+	inline FA_HANDLE FixedArray<Type>::AddElement(Type a_Element)
 	{
-		uint32_t handle;
-		if (m_CurrentSize < m_MaxSize)
+		FA_HANDLE handle = -1;
+		for (uint32_t i = 0; i < m_MaxSize; i++)
 		{
-			m_InnerArray[m_CurrentSize] = a_Element;
-			handle = m_CurrentSize++;
-			return handle;
+			if (m_InnerArray[i] == nullptr)
+			{
+				m_InnerArray[i] = a_Element;
+				handle = i;
+				return handle;
+			}
 		}
-		return -1;
+		return handle;
+	}
+
+	template<typename Type>
+	inline Type* FixedArray<Type>::GetElement(FA_HANDLE a_Handle)
+	{
+		return m_InnerArray[a_Handle];
 	}
 }
