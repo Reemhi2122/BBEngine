@@ -124,5 +124,13 @@ inline Camera* Graphics::GetCamera()
 }
 
 inline void Graphics::SetCamera(Camera* a_Camera) {
+	D3D11_VIEWPORT viewport;
+	viewport.Width = a_Camera->viewPortWidth;
+	viewport.Height = a_Camera->viewPortHeight;
+	viewport.MinDepth = 0;
+	viewport.MaxDepth = 1;
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	m_Context->RSSetViewports(1, &viewport);
 	m_Camera = a_Camera;
 }

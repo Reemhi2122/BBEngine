@@ -12,6 +12,8 @@ public:
 	DirectX::XMMATRIX GetRotation() const;
 	void SetRotation(DirectX::XMMATRIX& a_Rotation);
 
+	void SetViewPort(float a_ViewPortWidth, float a_ViewPortHeight) { viewPortWidth = a_ViewPortWidth, viewPortHeight = a_ViewPortHeight; }
+
 	void Update();
 
 public:
@@ -21,6 +23,9 @@ public:
 	float camForwardMove = 0.0f;
 	float camRightMove = 0.0f;
 	float camUpMove = 0.0f;
+
+	float viewPortWidth = 1600;
+	float viewPortHeight = 900;
 
 public:
 	DirectX::XMVECTOR DefaultRight =	DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);

@@ -145,6 +145,7 @@ namespace BBE
         //Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
         m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+        m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.SetCamera(&m_Cam1);
     }
 
@@ -295,7 +296,7 @@ namespace BBE
         };
 
         m_Graphics.SetCamera(&m_Cam2);
-
+        
         for (uint32_t depthStencilIndex = 0; depthStencilIndex < CUBEMAP_SIZE; depthStencilIndex++)
         {
             Vector3 focusPoint = a_Spotlight.position + viewDirections[depthStencilIndex];
