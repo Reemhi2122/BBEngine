@@ -133,10 +133,6 @@ Graphics::Graphics(HWND a_HWnd)
 	m_Device->CreateSamplerState(&image_sampler_desc, &m_DepthTextureSampler);
 #endif
 
-#pragma region CUBEMAP
-
-#pragma endregion
-
 	//Create depth stencil
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
 	dsDesc.DepthEnable = TRUE;
@@ -321,6 +317,16 @@ void Graphics::BindDepthTexture()
 {
 	m_Context->PSSetShaderResources(1, 1, &m_TextureDepthShaderResourceView);
 	m_Context->PSSetSamplers(1, 1, &m_DepthTextureSampler);
+}
+
+void Graphics::BindDepthTexture(ID3D11ShaderResourceView* a_View, uint32_t a_StartSlot, uint32_t a_NumViews)
+{
+	m_Context->PSSetShaderResources(a_StartSlot, a_NumViews, &a_View);
+}
+
+void Graphics::BindSampler(ID3D11SamplerState* a_Sampler, uint32_t a_StartSlot, uint32_t a_NumViews)
+{
+	m_Context->PSSetSamplers(a_StartSlot, a_NumViews, &a_Sampler);
 }
 
 void Graphics::UnbindSRV(uint32_t a_Slot) 

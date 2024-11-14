@@ -72,6 +72,10 @@ public:
 	void SetDepthStencilTarget(ID3D11DepthStencilView* a_Target);
 	
 	void BindDepthTexture();
+
+	void BindDepthTexture(ID3D11ShaderResourceView* a_View, uint32_t a_StartSlot, uint32_t a_NumViews);
+	void BindSampler(ID3D11SamplerState* a_Sampler, uint32_t a_StartSlot, uint32_t a_NumViews);
+
 	void UnbindSRV(uint32_t a_Slot);
 
 	TMPHANDLE CreateShader(ShaderType a_Type, std::string a_Path);

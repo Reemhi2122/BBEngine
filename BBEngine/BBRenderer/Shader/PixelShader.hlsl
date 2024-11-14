@@ -1,7 +1,8 @@
 #include "Lights.h"
 
-Texture2D tex           : register(ps, t0);
-Texture2D depthBuffer   : register(ps, t1);
+Texture2D tex               : register(ps, t0);
+Texture2D depthBuffer       : register(ps, t1);
+TextureCube depthCubeMap    : register(ps, t2);
 
 SamplerState splr           : register(ps, s0);
 SamplerState depthSampler   : register(ps, s1);
@@ -24,6 +25,17 @@ float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight di
     finalColor += saturate(dot(directionalLight.dir, psin.normal) * directionalLight.diffuse * diffuse);
 
     return finalColor;
+}
+
+float ShadowCalculationPointLight(float4 fragPos, float3 lightPos)
+{
+    float3 fragToLight = (lightPos - fragPos);
+    float closestDepth = depthCubeMap.Sample(depthSampler, fragToLight).r;
+    closestDepth *= 100;
+
+    float currentDepth = length(fragToLight);
+    float bias = 0.005f;
+    return (currentDepth - bias) > closestDepth ? 1.0 : 0.0;
 }
 
 float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlight) {
@@ -51,6 +63,8 @@ float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlig
 
     finalColor = saturate(finalColor + finalAmbient);
 
+    float shadow = ShadowCalculationPointLight(psin.worldPos, pointlight.position);
+    finalColor = finalColor * (1.0 - shadow);
     return finalColor;
 }
 
@@ -106,7 +120,7 @@ float4 main(VSOut psin) : SV_Target
     
     float4 finalColor = float4(0, 0, 0, 1);
     
-    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
+    //finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
 
     for(int i = 0; i < MAXLIGHTS; i++) {
         finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i]), diffuse.a);       

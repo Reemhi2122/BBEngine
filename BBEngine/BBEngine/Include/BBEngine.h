@@ -41,7 +41,7 @@ namespace BBE {
 		void RenderDebugOptions();
 
 		void CalculateLightShadowMap(std::vector<GameObject*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix);
-		void CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, SpotLight a_Spotlight);
+		void CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight);
 
 	private:
 		BBWindow m_Window;
