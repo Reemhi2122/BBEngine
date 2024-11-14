@@ -30,10 +30,7 @@ namespace BBE
         m_StackAllocator.Init(128 * BBE::MBSize);
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(8, 2);
 
-        for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
-        {
-            m_LightDepthStencils[i].Init(m_Graphics);
-        }
+        m_DepthStencilCubeMap = BBNew(m_ArenaAllocator, CubeMap)(m_Graphics, CubeMapType::DEPTH);
     }
 
     BBEngine::~BBEngine()
@@ -218,9 +215,9 @@ namespace BBE
     {
         ImGui::Begin("GameWindow");
         {
-            for (uint32_t i = 0; i < TEMP_LIGHT_DEPTHSTENCILS; i++)
+            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
             {
-                ImGui::Image((void*)m_LightDepthStencils[i].GetResourceView(), ImVec2(400, 225));
+                ImGui::Image((void*)m_DepthStencilCubeMap->GetTextureDepthRSV()[i], ImVec2(200, 200));
             }
         }
         ImGui::End();
@@ -299,7 +296,7 @@ namespace BBE
 
         m_Graphics.SetCamera(&m_Cam2);
 
-        for (uint32_t depthStencilIndex = 0; depthStencilIndex < TEMP_LIGHT_DEPTHSTENCILS; depthStencilIndex++)
+        for (uint32_t depthStencilIndex = 0; depthStencilIndex < CUBEMAP_SIZE; depthStencilIndex++)
         {
             Vector3 focusPoint = a_Spotlight.position + viewDirections[depthStencilIndex];
             DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
@@ -308,7 +305,7 @@ namespace BBE
                 DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f)
             );
 
-            m_Graphics.SetDepthStencilTarget(m_LightDepthStencils[depthStencilIndex].GetDepthStencilView());
+            m_Graphics.SetDepthStencilTarget(m_DepthStencilCubeMap->GetTextureDepthStencilViews()[depthStencilIndex]);
             m_Cam2.m_ViewMatrix = lightView;
 
             for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)

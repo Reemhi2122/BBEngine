@@ -22,7 +22,7 @@ namespace BBE
 	private:
 		uint32_t m_MaxSize;
 		uint32_t m_CurrentSize;
-		T* m_InnerArray;
+		Type* m_InnerArray;
 	};
 
 	template<typename ArrayType>
