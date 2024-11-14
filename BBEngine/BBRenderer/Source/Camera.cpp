@@ -1,5 +1,26 @@
 #include "Camera.h"
 
+Camera::Camera()
+{
+    m_Viewport.Width = 1600;
+    m_Viewport.Height = 900;
+    m_Viewport.MinDepth = 0;
+    m_Viewport.MaxDepth = 1;
+    m_Viewport.TopLeftX = 0;
+    m_Viewport.TopLeftY = 0;
+}
+
+void Camera::SetViewPort(float a_ViewPortWidth, float a_ViewPortHeight)
+{
+    D3D11_VIEWPORT viewport;
+    m_Viewport.Width = a_ViewPortWidth;
+    m_Viewport.Height = a_ViewPortHeight;
+    m_Viewport.MinDepth = 0;
+    m_Viewport.MaxDepth = 1;
+    m_Viewport.TopLeftX = 0;
+    m_Viewport.TopLeftY = 0;
+}
+
 void Camera::Update()
 {
     DirectX::XMMATRIX rotation = DirectX::XMMatrixIdentity();

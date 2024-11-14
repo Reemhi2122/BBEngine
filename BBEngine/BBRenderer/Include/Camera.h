@@ -1,8 +1,12 @@
 #pragma once
 #include <DirectXMath.h>
+#include <d3d11.h>
 
 class Camera {
 public:
+	Camera();
+	~Camera() = default;
+
 	DirectX::XMMATRIX GetViewMatrix() const;
 	void SetViewMatrix(DirectX::XMMATRIX& a_ViewMatrix);
 
@@ -12,20 +16,17 @@ public:
 	DirectX::XMMATRIX GetRotation() const;
 	void SetRotation(DirectX::XMMATRIX& a_Rotation);
 
-	void SetViewPort(float a_ViewPortWidth, float a_ViewPortHeight) { viewPortWidth = a_ViewPortWidth, viewPortHeight = a_ViewPortHeight; }
+	void SetViewPort(float a_ViewPortWidth, float a_ViewPortHeight);
+	D3D11_VIEWPORT* GetViewPort() { return &m_Viewport; };
 
 	void Update();
 
-public:
 	float camYaw = 0.0f;
 	float camPitch = 0.0f;
 
 	float camForwardMove = 0.0f;
 	float camRightMove = 0.0f;
 	float camUpMove = 0.0f;
-
-	float viewPortWidth = 1600;
-	float viewPortHeight = 900;
 
 public:
 	DirectX::XMVECTOR DefaultRight =	DirectX::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
@@ -38,6 +39,9 @@ public:
 	DirectX::XMVECTOR m_Position =	DirectX::XMVectorSet(0.f, 0.f, -10.f, 0.f);
 	DirectX::XMMATRIX m_BaseRotation = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX m_ViewMatrix = DirectX::XMMatrixIdentity();
+
+private:
+	D3D11_VIEWPORT m_Viewport;
 };
 
 inline DirectX::XMMATRIX Camera::GetViewMatrix() const
