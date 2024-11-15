@@ -85,7 +85,7 @@ namespace BBE
         );
 
         m_PointLights.Push_Back(PointLight(
-            Vector3(0.0f, 2.0f, 0.0f),
+            Vector3(-2.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -199,6 +199,7 @@ namespace BBE
         }
 
         m_Graphics.UnbindSRV(1);
+        m_Graphics.UnbindSRV(2);
 
         RenderDebugOptions();
         DrawUI();
@@ -289,12 +290,12 @@ namespace BBE
     void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight)
     {
         Vector3 viewDirections[6] = { 
-            { 0.001f, 1.0f, 0.0f },   // Right  
-            { 0.001f, -1.0f, 0.0f },   // Left
-            { 0.0f, 0.0f, 1.0f },   // Top
-            { 0.0f, 0.0f, -1.0f },   // Bottom
-            { -1.0f, 0.0f, 0.0f },   // Back
-            { 1.0f, 0.0f, 0.0f }    // Front
+            { 1.0f, 0.0f, 0.0f },    // Right
+            { -1.0f, 0.0f, 0.0f },   // Left
+            { 0.0f, 1.0f, 0.001f },   // top  
+            { 0.0f, -1.0f, 0.001f },   // Bottom
+            { 0.0f, 0.0f, 1.0f },   // front
+            { 0.0f, 0.0f, -1.0f },   // back
         };
 
         m_Graphics.SetCamera(&m_Cam2);

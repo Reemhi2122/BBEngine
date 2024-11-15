@@ -29,13 +29,18 @@ float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight di
 
 float ShadowCalculationPointLight(float4 fragPos, float3 lightPos)
 {
-    float3 fragToLight = (lightPos - fragPos);
+    float3 fragToLight = (fragPos.xyz - lightPos);
+    
     float closestDepth = depthCubeMap.Sample(depthSampler, fragToLight).r;
-    closestDepth *= 100;
-
+    //return closestDepth;
     float currentDepth = length(fragToLight);
-    float bias = 0.005f;
-    return (currentDepth - bias) > closestDepth ? 1.0 : 0.0;
+    
+    currentDepth /= 100;
+    //return currentDepth / 10;
+    
+    float bias = 0.005;
+    
+    return (currentDepth + bias) > closestDepth ? 1.0 : 0.0;
 }
 
 float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlight) {
@@ -65,6 +70,7 @@ float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlig
 
     float shadow = ShadowCalculationPointLight(psin.worldPos, pointlight.position);
     finalColor = finalColor * (1.0 - shadow);
+    //finalColor *= shadow;
     return finalColor;
 }
 
