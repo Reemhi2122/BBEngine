@@ -85,7 +85,7 @@ namespace BBE
         );
 
         m_PointLights.Push_Back(PointLight(
-            Vector3(-2.0f, 2.0f, 0.0f),
+            Vector3(0.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -118,8 +118,8 @@ namespace BBE
         m_Models.push_back(Sponza);
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(lantern);
-        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, m_VertexShader, m_PixelShader);
-        m_Models.push_back(car);
+        //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, m_VertexShader, m_PixelShader);
+        //m_Models.push_back(car);
         Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(aBeautifulGame);
 
@@ -136,8 +136,8 @@ namespace BBE
         GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         m_GameObjects.push_back(lanternObj);
 
-        GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        m_GameObjects.push_back(carObj);
+        //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        //m_GameObjects.push_back(carObj);
 
         GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
         m_GameObjects.push_back(beautifulGameObj);
