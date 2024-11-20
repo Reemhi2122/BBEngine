@@ -63,8 +63,6 @@ namespace BBE {
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 
-		CubeMap* m_DepthStencilCubeMap;
-
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;
 		GLTFFile m_CarFile;

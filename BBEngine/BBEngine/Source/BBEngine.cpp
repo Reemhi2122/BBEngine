@@ -30,7 +30,7 @@ namespace BBE
         m_StackAllocator.Init(128 * BBE::MBSize);
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(8, 2);
 
-        m_DepthStencilCubeMap = BBNew(m_ArenaAllocator, CubeMap)(m_Graphics, CubeMapType::DEPTH);
+        //m_DepthStencilCubeMap = BBNew(m_ArenaAllocator, CubeMap)(m_Graphics, CubeMapType::DEPTH);
     }
 
     BBEngine::~BBEngine()
@@ -170,6 +170,7 @@ namespace BBE
         
         for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
             FrameConstantBuffer.pointlights[i] = m_PointLights[i];
+            CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i]);
         }
 
         m_PerFrameBuffer.Update(m_Graphics, FrameConstantBuffer);
@@ -186,13 +187,14 @@ namespace BBE
         //    DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         //);
 
-        CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[0]);
-
         //CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
 
         m_Graphics.BindDepthTexture();
 
-        m_Graphics.BindDepthTexture(m_DepthStencilCubeMap->GetTextureDepthCMRSV(), 2, 1);
+        for (uint32_t i = 0; i < m_PointLights.Size(); i++)
+        {
+            m_Graphics.BindDepthTexture(m_PointLights[i].DepthStencilCubeMap->GetTextureDepthCMRSV(), (2 + i), 1);
+        }
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
@@ -217,13 +219,13 @@ namespace BBE
 
     void BBEngine::DrawUI()
     {
-        ImGui::Begin("GameWindow");
-        {
-            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-            {
-                ImGui::Image((void*)m_DepthStencilCubeMap->GetTextureDepthRSV()[i], ImVec2(200, 200));
-            }
-        }
+        //ImGui::Begin("GameWindow");
+        //{
+        //    for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+        //    {
+        //        ImGui::Image((void*)m_DepthStencilCubeMap->GetTextureDepthRSV()[i], ImVec2(200, 200));
+        //    }
+        //}
         ImGui::End();
 
         ImGui::Begin("Objects");
@@ -309,7 +311,7 @@ namespace BBE
                 DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f)
             );
 
-            m_Graphics.SetDepthStencilTarget(m_DepthStencilCubeMap->GetTextureDepthStencilViews()[depthStencilIndex]);
+            m_Graphics.SetDepthStencilTarget(a_Spotlight.DepthStencilCubeMap->GetTextureDepthStencilViews()[depthStencilIndex]);
             m_Cam2.m_ViewMatrix = lightView;
 
             for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)

@@ -27,11 +27,11 @@ float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight di
     return finalColor;
 }
 
-float ShadowCalculationPointLight(float4 fragPos, float3 lightPos)
+float ShadowCalculationPointLight(float4 fragPos, PointLight pointLight)
 {
-    float3 fragToLight = (fragPos.xyz - lightPos);
+    float3 fragToLight = (fragPos.xyz - pointLight.position);
     
-    float closestDepth = depthCubeMap.Sample(depthSampler, fragToLight).r;
+    float closestDepth = pointLight.DepthStencilCubeMap.Sample(depthSampler, fragToLight).r;
     
     closestDepth *= 100;
     
@@ -67,7 +67,7 @@ float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlig
 
     finalColor = saturate(finalColor + finalAmbient);
 
-    float shadow = ShadowCalculationPointLight(psin.worldPos, pointlight.position);
+    float shadow = ShadowCalculationPointLight(psin.worldPos, pointlight);
     finalColor = finalColor * (1.0 - shadow);
     return finalColor;
 }
@@ -131,7 +131,7 @@ float4 main(VSOut psin) : SV_Target
     }
 
     for(int i = 0; i < MAXLIGHTS; i++) {
-        //finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], psin.FragPosLightSpace), diffuse.a);
+        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], psin.FragPosLightSpace), diffuse.a);
     }
     
     return finalColor;
