@@ -37,7 +37,7 @@ float ShadowCalculationPointLight(float4 fragPos, float3 lightPos)
     
     float currentDepth = length(fragToLight);
     
-    float bias = 0.05;
+    float bias = 0.5f;
     
     return (currentDepth - bias) > closestDepth ? 1.0 : 0.0;
 }
@@ -131,7 +131,7 @@ float4 main(VSOut psin) : SV_Target
     }
 
     for(int i = 0; i < MAXLIGHTS; i++) {
-        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], psin.FragPosLightSpace), diffuse.a);
+        //finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], psin.FragPosLightSpace), diffuse.a);
     }
     
     return finalColor;
