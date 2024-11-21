@@ -171,6 +171,7 @@ namespace BBE
         for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
             FrameConstantBuffer.pointlights[i] = m_PointLights[i];
             CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i]);
+            TexturesCubeArray[i] = m_PointLights[i].DepthStencilCubeMap->GetRawTextureArray();
         }
 
         m_PerFrameBuffer.Update(m_Graphics, FrameConstantBuffer);
@@ -193,6 +194,30 @@ namespace BBE
 
         for (uint32_t i = 0; i < m_PointLights.Size(); i++)
         {
+            //D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
+            //textureCubeMapDesc.Width = a_Resolution;
+            //textureCubeMapDesc.Height = a_Resolution;
+            //textureCubeMapDesc.MipLevels = 1;
+            //textureCubeMapDesc.ArraySize = 6;
+            //textureCubeMapDesc.Format =  DXGI_FORMAT_R24G8_TYPELESS);
+            //textureCubeMapDesc.SampleDesc.Count = 1u;
+            //textureCubeMapDesc.SampleDesc.Quality = 0u;
+            //textureCubeMapDesc.Usage = D3D11_USAGE_DEFAULT;
+            //textureCubeMapDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+            //textureCubeMapDesc.CPUAccessFlags = 0;
+            //textureCubeMapDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+            ID3D11ShaderResourceView* m_ShaderResourceView;
+            D3D11_SHADER_RESOURCE_VIEW_DESC desc;
+            desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+            desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
+            desc.TextureCubeArray.MostDetailedMip = 0;
+            desc.TextureCubeArray.MipLevels = 1;
+            desc.TextureCubeArray.First2DArrayFace = 0;
+            desc.TextureCubeArray.NumCubes = m_PointLights.Size();
+
+            m_Graphics.GetDevice()->CreateShaderResourceView(TexturesCubeArray, &desc, &m_ShaderResourceView);
+
             m_Graphics.BindDepthTexture(m_PointLights[i].DepthStencilCubeMap->GetTextureDepthCMRSV(), (2 + i), 1);
         }
 

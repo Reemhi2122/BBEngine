@@ -1,11 +1,11 @@
 #include "Lights.h"
 
-Texture2D tex               : register(ps, t0);
-Texture2D depthBuffer       : register(ps, t1);
-TextureCube depthCubeMap    : register(ps, t2);
+Texture2D tex                   : register(ps, t0);
+Texture2D depthBuffer           : register(ps, t1);
+TextureCubeArray depthCubeMap   : register(ps, t2);
 
-SamplerState splr           : register(ps, s0);
-SamplerState depthSampler   : register(ps, s1);
+SamplerState splr               : register(ps, s0);
+SamplerState depthSampler       : register(ps, s1);
 
 struct VSOut
 {

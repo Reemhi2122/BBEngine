@@ -16,10 +16,11 @@ public:
 	CubeMap(Graphics& a_Gfx);
 	CubeMap(Graphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution = 1024u, char* a_TexturePaths = nullptr);
 
-	ID3D11DepthStencilView** GetTextureDepthStencilViews() { return m_TextureDepthStencilViews; }
-	ID3D11ShaderResourceView** GetTextureDepthRSV() { return m_TextureDepthSRV; }
+	ID3D11DepthStencilView**	GetTextureDepthStencilViews() { return m_TextureDepthStencilViews; }
+	ID3D11ShaderResourceView**	GetTextureDepthRSV() { return m_TextureDepthSRV; }
 
-	ID3D11ShaderResourceView* GetTextureDepthCMRSV(){ return m_ShaderResourceView; }
+	ID3D11ShaderResourceView*	GetTextureDepthCMRSV(){ return m_ShaderResourceView; }
+	ID3D11Texture2D*			GetRawTextureArray() { return m_TextureCubeMap; };
 
 	void Bind(Graphics& a_Gfx) noexcept;
 

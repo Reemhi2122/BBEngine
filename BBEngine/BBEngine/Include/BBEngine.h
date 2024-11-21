@@ -63,6 +63,8 @@ namespace BBE {
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 
+		ID3D11Texture2D* TexturesCubeArray[10];
+
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;
 		GLTFFile m_CarFile;
