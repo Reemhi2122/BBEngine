@@ -387,6 +387,77 @@ void Graphics::ResetRenderTarget()
 }
 
 
+void Graphics::CreatePointLightDepthCubeMapArray()
+{
+	HRESULT hr;
+	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
+	textureCubeMapDesc.Width = 1024;
+	textureCubeMapDesc.Height = 1024;
+	textureCubeMapDesc.MipLevels = 1;
+	textureCubeMapDesc.ArraySize = 120;
+	textureCubeMapDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	textureCubeMapDesc.SampleDesc.Count = 1u;
+	textureCubeMapDesc.SampleDesc.Quality = 0u;
+	textureCubeMapDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureCubeMapDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	textureCubeMapDesc.CPUAccessFlags = 0;
+	textureCubeMapDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+	GFX_THROW_FAILED(m_Device->CreateTexture2D(&textureCubeMapDesc, nullptr, &m_SpotLightDepthCubeArray));
+
+	//for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+	//{
+	//	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
+	//	TextureDepthStencilDesc.Flags = 0;
+	//	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	//	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+	//	TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
+	//	TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = i;
+	//	TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
+
+	//	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_DepthTextureArraySpotLights, &TextureDepthStencilDesc, &m_TextureDepthStencilViews[i]));
+	//}
+
+	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+	{
+		D3D11_SHADER_RESOURCE_VIEW_DESC image_rsv_desc = {};
+		image_rsv_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		image_rsv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+		image_rsv_desc.Texture2DArray.ArraySize = 1;
+		image_rsv_desc.Texture2DArray.FirstArraySlice = i;
+		image_rsv_desc.Texture2DArray.MipLevels = 1;
+
+		GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightDepthCubeArray, &image_rsv_desc, &m_TextureDepthSRV[i]));
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC RSV_desc = {};
+	RSV_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	RSV_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
+	RSV_desc.TextureCubeArray.MostDetailedMip = 0;
+	RSV_desc.TextureCubeArray.MipLevels = 1;
+	RSV_desc.TextureCubeArray.First2DArrayFace = 0;
+	RSV_desc.TextureCubeArray.NumCubes = 12;
+
+	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightDepthCubeArray, &RSV_desc, &m_SpotLightDepthCubeArraySRV));
+}
+
+void Graphics::CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index)
+{
+	HRESULT hr;
+	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+	{
+		D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
+		TextureDepthStencilDesc.Flags = 0;
+		TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+		TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
+		TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = (CUBEMAP_SIZE * index) + i;
+		TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
+
+		GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightDepthCubeArray, &TextureDepthStencilDesc, &a_DepthStencilArray[i]));
+	}
+}
+
 //////////////////////////////
 //	Old Code
 //////////////////////////////

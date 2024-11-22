@@ -78,6 +78,12 @@ public:
 
 	void UnbindSRV(uint32_t a_Slot);
 
+	// == Lights functions ==
+	void CreatePointLightDepthCubeMapArray();
+	void CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
+
+	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV() { return m_SpotLightDepthCubeArraySRV; };
+
 	TMPHANDLE CreateShader(ShaderType a_Type, std::string a_Path);
 	void BindShader(ShaderType a_Type, TMPHANDLE a_Shader);
 	void ReloadShader(ShaderType a_Type, TMPHANDLE a_Shader);
@@ -86,6 +92,8 @@ public:
 	PixelShader* GetPixelShaderArray() noexcept { return (PixelShader*)m_PixelShaders; }
 
 	Microsoft::WRL::ComPtr<ID3DBlob> GetVertexShaderByteCode(TMPHANDLE a_Shader) const;
+
+	ID3D11ShaderResourceView* m_TextureDepthSRV[6];
 
 private:
 	DirectX::XMMATRIX m_Projection;
@@ -107,6 +115,9 @@ private:
 
 	ID3D11Texture2D*	m_TextureCubeMap = nullptr;
 	ID3D11SamplerState* m_DepthTextureSampler = nullptr;
+
+	ID3D11Texture2D*			m_SpotLightDepthCubeArray;
+	ID3D11ShaderResourceView*	m_SpotLightDepthCubeArraySRV;
 
 	uint32_t			m_VertexIndex = 0u;
 	VertexShader		m_VertexShaders[100u];

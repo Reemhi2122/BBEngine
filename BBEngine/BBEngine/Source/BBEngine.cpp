@@ -85,7 +85,15 @@ namespace BBE
         );
 
         m_PointLights.Push_Back(PointLight(
-            Vector3(0.0f, 2.0f, 0.0f),
+            Vector3(-5.0f, 2.0f, 0.0f),
+            Vector3(0.0f, 0.2f, 0.0f),
+            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+            1000.0f
+        ));
+
+        m_PointLights.Push_Back(PointLight(
+            Vector3(5.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -101,6 +109,12 @@ namespace BBE
         //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
         //    1000.0f
         //));
+
+        m_Graphics.CreatePointLightDepthCubeMapArray();
+        for (uint32_t i = 0; i < m_PointLights.Size(); i++)
+        {
+            m_Graphics.CreatePointLightDepthCubeMap(/*m_PointLights[i].*/m_TextureDepthStencilViews[i], i);
+        }
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
@@ -170,8 +184,7 @@ namespace BBE
         
         for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
             FrameConstantBuffer.pointlights[i] = m_PointLights[i];
-            CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i]);
-            TexturesCubeArray[i] = m_PointLights[i].DepthStencilCubeMap->GetRawTextureArray();
+            CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i], i);
         }
 
         m_PerFrameBuffer.Update(m_Graphics, FrameConstantBuffer);
@@ -181,45 +194,10 @@ namespace BBE
             m_GameObjects[i]->Update(m_Graphics);
         }
 
-        //Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
-        //DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
-        //    DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-        //    DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
-        //    DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-        //);
-
         //CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
-
+       
         m_Graphics.BindDepthTexture();
-
-        for (uint32_t i = 0; i < m_PointLights.Size(); i++)
-        {
-            //D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
-            //textureCubeMapDesc.Width = a_Resolution;
-            //textureCubeMapDesc.Height = a_Resolution;
-            //textureCubeMapDesc.MipLevels = 1;
-            //textureCubeMapDesc.ArraySize = 6;
-            //textureCubeMapDesc.Format =  DXGI_FORMAT_R24G8_TYPELESS);
-            //textureCubeMapDesc.SampleDesc.Count = 1u;
-            //textureCubeMapDesc.SampleDesc.Quality = 0u;
-            //textureCubeMapDesc.Usage = D3D11_USAGE_DEFAULT;
-            //textureCubeMapDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-            //textureCubeMapDesc.CPUAccessFlags = 0;
-            //textureCubeMapDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
-
-            ID3D11ShaderResourceView* m_ShaderResourceView;
-            D3D11_SHADER_RESOURCE_VIEW_DESC desc;
-            desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-            desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
-            desc.TextureCubeArray.MostDetailedMip = 0;
-            desc.TextureCubeArray.MipLevels = 1;
-            desc.TextureCubeArray.First2DArrayFace = 0;
-            desc.TextureCubeArray.NumCubes = m_PointLights.Size();
-
-            m_Graphics.GetDevice()->CreateShaderResourceView(TexturesCubeArray, &desc, &m_ShaderResourceView);
-
-            m_Graphics.BindDepthTexture(m_PointLights[i].DepthStencilCubeMap->GetTextureDepthCMRSV(), (2 + i), 1);
-        }
+        m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
@@ -244,13 +222,13 @@ namespace BBE
 
     void BBEngine::DrawUI()
     {
-        //ImGui::Begin("GameWindow");
-        //{
-        //    for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-        //    {
-        //        ImGui::Image((void*)m_DepthStencilCubeMap->GetTextureDepthRSV()[i], ImVec2(200, 200));
-        //    }
-        //}
+        ImGui::Begin("GameWindow");
+        {
+            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+            {
+                ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+            }
+        }
         ImGui::End();
 
         ImGui::Begin("Objects");
@@ -298,6 +276,13 @@ namespace BBE
 
     void BBEngine::CalculateLightShadowMap(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix)
     {
+        //Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
+        //DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
+        //    DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
+        //    DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
+        //    DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+        //);
+
         m_Cam2.m_ViewMatrix = spotLightMatrix;
         m_Graphics.SetCamera(&m_Cam2);
         m_Graphics.SetDepthStencilTarget();
@@ -314,7 +299,7 @@ namespace BBE
         m_Graphics.SetCamera(&m_Cam1);
     }
 
-    void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight)
+    void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index)
     {
         Vector3 viewDirections[6] = { 
             { 1.0f, 0.0f, 0.0f },    // Right
@@ -336,7 +321,7 @@ namespace BBE
                 DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f)
             );
 
-            m_Graphics.SetDepthStencilTarget(a_Spotlight.DepthStencilCubeMap->GetTextureDepthStencilViews()[depthStencilIndex]);
+            m_Graphics.SetDepthStencilTarget(/*a_Spotlight.*/m_TextureDepthStencilViews[a_Index][depthStencilIndex]);
             m_Cam2.m_ViewMatrix = lightView;
 
             for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)
