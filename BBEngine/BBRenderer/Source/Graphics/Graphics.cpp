@@ -424,7 +424,7 @@ void Graphics::CreatePointLightDepthCubeMapArray()
 		image_rsv_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
 		image_rsv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
 		image_rsv_desc.Texture2DArray.ArraySize = 1;
-		image_rsv_desc.Texture2DArray.FirstArraySlice = i;
+		image_rsv_desc.Texture2DArray.FirstArraySlice = 6 + i;
 		image_rsv_desc.Texture2DArray.MipLevels = 1;
 
 		GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightDepthCubeArray, &image_rsv_desc, &m_TextureDepthSRV[i]));

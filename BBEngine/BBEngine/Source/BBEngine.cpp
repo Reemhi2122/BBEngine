@@ -29,8 +29,6 @@ namespace BBE
         m_ArenaAllocator.Init(BBE::PageSize);
         m_StackAllocator.Init(128 * BBE::MBSize);
         m_ThreadPool = BBNew(m_ArenaAllocator, BBE::ThreadPool)(8, 2);
-
-        //m_DepthStencilCubeMap = BBNew(m_ArenaAllocator, CubeMap)(m_Graphics, CubeMapType::DEPTH);
     }
 
     BBEngine::~BBEngine()
@@ -93,7 +91,7 @@ namespace BBE
         ));
 
         m_PointLights.Push_Back(PointLight(
-            Vector3(5.0f, 2.0f, 0.0f),
+            Vector3(6.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -118,6 +116,9 @@ namespace BBE
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         m_PerFrameBuffer.Bind(m_Graphics);
+
+        m_ShadowMapCB = PixelConstantBuffer<ShadowMapCreation>(m_Graphics, 1, 1);
+        m_ShadowMapCB.Bind(m_Graphics);
 
         m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
         m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
@@ -175,7 +176,7 @@ namespace BBE
         cbPerFrame FrameConstantBuffer;
         FrameConstantBuffer.directionalLight = m_DirectionalLight;
 
-        //m_SpotLights[0].position.z = sin(incr += 0.01);
+        //m_PointLights[0].position.x = (sin(incr += 0.001f) * 5);
         //m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
@@ -312,6 +313,9 @@ namespace BBE
 
         m_Graphics.SetCamera(&m_Cam2);
         
+        m_ShadowMapCBBuffer.index = a_Index;
+        m_ShadowMapCB.Update(m_Graphics, m_ShadowMapCBBuffer);
+
         for (uint32_t depthStencilIndex = 0; depthStencilIndex < CUBEMAP_SIZE; depthStencilIndex++)
         {
             Vector3 focusPoint = a_Spotlight.position + viewDirections[depthStencilIndex];

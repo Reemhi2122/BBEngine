@@ -61,6 +61,9 @@ namespace BBE {
 		uint32_t m_PSShadowMapShader;
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
+		PixelConstantBuffer<ShadowMapCreation> m_ShadowMapCB;
+		ShadowMapCreation m_ShadowMapCBBuffer;
+
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 
 		//Note(Stan): Fix this somewhere

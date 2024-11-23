@@ -17,9 +17,6 @@
 typedef uint32_t TMPHANDLE;
 struct Model;
 
-template<typename Type = cbPerFrame>
-struct VertexConstantBuffer;
-
 enum class ShaderType
 {
 	VertexShader,
