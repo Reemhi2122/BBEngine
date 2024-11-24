@@ -11,7 +11,7 @@ public:
 	ConstantBuffer(Graphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
 		: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
 	{
-		INFOMAN(a_Gfx);
+		INFOMAN;
 
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -26,7 +26,7 @@ public:
 	ConstantBuffer(Graphics& a_Gfx, const T& a_Consts, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
 		: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
 	{
-		INFOMAN(a_Gfx);
+		INFOMAN;
 
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -43,7 +43,7 @@ public:
 	}
 
 	void Update(Graphics& a_Gfx, const T& a_Consts) {
-		INFOMAN(a_Gfx);
+		INFOMAN;
 
 		D3D11_MAPPED_SUBRESOURCE msr;
 		GFX_THROW_FAILED(		

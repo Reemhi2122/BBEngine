@@ -4,7 +4,7 @@
 VertexBuffer::VertexBuffer(Graphics& a_Gfx, BBE::Vertex* a_Vertices, const uint32_t a_Count)
 	: m_Count(a_Count)
 {
-	INFOMAN(a_Gfx);
+	INFOMAN;
 
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -21,7 +21,7 @@ VertexBuffer::VertexBuffer(Graphics& a_Gfx, BBE::Vertex* a_Vertices, const uint3
 
 void VertexBuffer::CreateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count)
 {
-	INFOMAN(a_Gfx);
+	INFOMAN;
 	m_HasInstanceBuffer = true;
 	m_InstanceDataSize = a_DataSize;
 

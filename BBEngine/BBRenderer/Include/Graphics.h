@@ -68,7 +68,7 @@ public:
 	void SetDepthStencilTarget();
 	void SetDepthStencilTarget(ID3D11DepthStencilView* a_Target);
 	
-	void BindDepthTexture();
+	void BindDepthSampler();
 
 	void BindDepthTexture(ID3D11ShaderResourceView* a_View, uint32_t a_StartSlot, uint32_t a_NumViews);
 	void BindSampler(ID3D11SamplerState* a_Sampler, uint32_t a_StartSlot, uint32_t a_NumViews);
@@ -78,10 +78,14 @@ public:
 	// == Lights functions ==
 	void CreatePointLightDepthCubeMapArray();
 	void CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
+	
+	void CreateSpotLightDepthMapArray();
+	void CreateSpotLightDepthTexture(ID3D11DepthStencilView* a_DepthStencilArray, uint32_t index);
 
-	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV() { return m_SpotLightDepthCubeArraySRV; };
+	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV() { return m_PointLightDepthCubeArraySRV; };
+	ID3D11ShaderResourceView* GetSpotLightDepthMapArrayRSV() { return m_SpotLightsDepthArraySRV; };
 
-	TMPHANDLE CreateShader(ShaderType a_Type, std::string a_Path);
+	TMPHANDLE CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc = "main");
 	void BindShader(ShaderType a_Type, TMPHANDLE a_Shader);
 	void ReloadShader(ShaderType a_Type, TMPHANDLE a_Shader);
 	
@@ -105,16 +109,15 @@ private:
 	ID3D11Texture2D*			m_TextureTarget = nullptr;
 	ID3D11RenderTargetView*		m_TextureRenderTargetView = nullptr;
 	ID3D11ShaderResourceView*	m_TextureShaderResourceView = nullptr;
+	
+	ID3D11Texture2D*			m_TextureCubeMap = nullptr;
+	ID3D11SamplerState*			m_DepthTextureSampler = nullptr;
 
-	ID3D11Texture2D*			m_TextureDepthTarget = nullptr;
-	ID3D11DepthStencilView*		m_TextureDepthStencilView = nullptr;
-	ID3D11ShaderResourceView*	m_TextureDepthShaderResourceView = nullptr;
+	ID3D11Texture2D*			m_PointLightDepthCubeArray = nullptr;
+	ID3D11ShaderResourceView*	m_PointLightDepthCubeArraySRV = nullptr;
 
-	ID3D11Texture2D*	m_TextureCubeMap = nullptr;
-	ID3D11SamplerState* m_DepthTextureSampler = nullptr;
-
-	ID3D11Texture2D*			m_SpotLightDepthCubeArray;
-	ID3D11ShaderResourceView*	m_SpotLightDepthCubeArraySRV;
+	ID3D11Texture2D*			m_SpotLightsDepthArray = nullptr;
+	ID3D11ShaderResourceView*	m_SpotLightsDepthArraySRV = nullptr;
 
 	uint32_t			m_VertexIndex = 0u;
 	VertexShader		m_VertexShaders[100u];

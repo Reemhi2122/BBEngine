@@ -3,7 +3,7 @@
 
 InputLayout::InputLayout(Graphics& a_Gfx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& a_Desc, ID3DBlob* a_Blob)
 {
-	INFOMAN(a_Gfx);
+	INFOMAN;
 
 	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateInputLayout(
 		a_Desc.data(),

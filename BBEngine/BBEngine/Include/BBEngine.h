@@ -40,7 +40,7 @@ namespace BBE {
 		void DrawUI();
 		void RenderDebugOptions();
 
-		void CalculateLightShadowMap(std::vector<GameObject*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix);
+		void CalculateLightShadowMap(std::vector<GameObject*>& a_Models, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index);
 		void CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index);
 
 	private:
@@ -67,7 +67,8 @@ namespace BBE {
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 
 		//Note(Stan): Fix this somewhere
-		ID3D11DepthStencilView* m_TextureDepthStencilViews[20][6];
+		ID3D11DepthStencilView* m_PLTextureDepthStencilViews[20][6];
+		ID3D11DepthStencilView* m_SLTextureDepthStencilViews[120];
 
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;

@@ -83,39 +83,6 @@ Graphics::Graphics(HWND a_HWnd)
 	m_Device->CreateShaderResourceView(m_TextureTarget, &shaderResourceViewDesc, &m_TextureShaderResourceView);
 #endif
 
-#if 1
-	D3D11_TEXTURE2D_DESC tex_desc{};
-	tex_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-	tex_desc.Width = 1600u;
-	tex_desc.Height = 900u;
-	tex_desc.MipLevels = 1u;
-	tex_desc.ArraySize = 1u;
-	tex_desc.SampleDesc.Count = 1u;
-	tex_desc.SampleDesc.Quality = 0u;
-	tex_desc.Usage = D3D11_USAGE_DEFAULT;
-	tex_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
-	tex_desc.CPUAccessFlags = 0;
-	tex_desc.MiscFlags = 0;
-
-	HRESULT res = m_Device->CreateTexture2D(&tex_desc, nullptr, &m_TextureDepthTarget);
-
-	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
-	TextureDepthStencilDesc.Flags = 0;
-	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-	TextureDepthStencilDesc.Texture2D.MipSlice = 0;
-
-	res = m_Device->CreateDepthStencilView(m_TextureDepthTarget, &TextureDepthStencilDesc, &m_TextureDepthStencilView);
-
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC TextureDepthShaderResourceViewDesc{};
-	TextureDepthShaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	TextureDepthShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	TextureDepthShaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	TextureDepthShaderResourceViewDesc.Texture2D.MipLevels = 1;
-
-	res = m_Device->CreateShaderResourceView(m_TextureDepthTarget, &TextureDepthShaderResourceViewDesc, &m_TextureDepthShaderResourceView);
-
 	D3D11_SAMPLER_DESC image_sampler_desc = {};
 	image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_BORDER;
@@ -131,7 +98,6 @@ Graphics::Graphics(HWND a_HWnd)
 	image_sampler_desc.MaxLOD = FLT_MAX;
 
 	m_Device->CreateSamplerState(&image_sampler_desc, &m_DepthTextureSampler);
-#endif
 
 	//Create depth stencil
 	D3D11_DEPTH_STENCIL_DESC dsDesc = {};
@@ -191,7 +157,7 @@ Graphics::Graphics(HWND a_HWnd)
 	m_Camera = new Camera();
 }
 
-TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path)
+TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc /*= "main"*/)
 {
 	TMPHANDLE handle = -1;
 	wchar_t pathString[MAX_PATH];
@@ -301,21 +267,14 @@ void Graphics::SetGameViewRenderTarget()
 	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Graphics::SetDepthStencilTarget() 
-{
-	m_Context->OMSetRenderTargets(0u, 0, m_TextureDepthStencilView);
-	m_Context->ClearDepthStencilView(m_TextureDepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0u);
-}
-
 void Graphics::SetDepthStencilTarget(ID3D11DepthStencilView* a_Target)
 {
 	m_Context->OMSetRenderTargets(0u, 0, a_Target);
 	m_Context->ClearDepthStencilView(a_Target, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
-void Graphics::BindDepthTexture() 
+void Graphics::BindDepthSampler() 
 {
-	m_Context->PSSetShaderResources(1, 1, &m_TextureDepthShaderResourceView);
 	m_Context->PSSetSamplers(1, 1, &m_DepthTextureSampler);
 }
 
@@ -386,10 +345,9 @@ void Graphics::ResetRenderTarget()
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());
 }
 
-
 void Graphics::CreatePointLightDepthCubeMapArray()
 {
-	HRESULT hr;
+	INFOMAN;
 	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
 	textureCubeMapDesc.Width = 1024;
 	textureCubeMapDesc.Height = 1024;
@@ -403,20 +361,7 @@ void Graphics::CreatePointLightDepthCubeMapArray()
 	textureCubeMapDesc.CPUAccessFlags = 0;
 	textureCubeMapDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
-	GFX_THROW_FAILED(m_Device->CreateTexture2D(&textureCubeMapDesc, nullptr, &m_SpotLightDepthCubeArray));
-
-	//for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-	//{
-	//	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
-	//	TextureDepthStencilDesc.Flags = 0;
-	//	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	//	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
-	//	TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
-	//	TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = i;
-	//	TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
-
-	//	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_DepthTextureArraySpotLights, &TextureDepthStencilDesc, &m_TextureDepthStencilViews[i]));
-	//}
+	GFX_THROW_FAILED(m_Device->CreateTexture2D(&textureCubeMapDesc, nullptr, &m_PointLightDepthCubeArray));
 
 	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
 	{
@@ -427,7 +372,7 @@ void Graphics::CreatePointLightDepthCubeMapArray()
 		image_rsv_desc.Texture2DArray.FirstArraySlice = 6 + i;
 		image_rsv_desc.Texture2DArray.MipLevels = 1;
 
-		GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightDepthCubeArray, &image_rsv_desc, &m_TextureDepthSRV[i]));
+		GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_PointLightDepthCubeArray, &image_rsv_desc, &m_TextureDepthSRV[i]));
 	}
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC RSV_desc = {};
@@ -438,12 +383,12 @@ void Graphics::CreatePointLightDepthCubeMapArray()
 	RSV_desc.TextureCubeArray.First2DArrayFace = 0;
 	RSV_desc.TextureCubeArray.NumCubes = 12;
 
-	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightDepthCubeArray, &RSV_desc, &m_SpotLightDepthCubeArraySRV));
+	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_PointLightDepthCubeArray, &RSV_desc, &m_PointLightDepthCubeArraySRV));
 }
 
 void Graphics::CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index)
 {
-	HRESULT hr;
+	INFOMAN;
 	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
@@ -454,8 +399,51 @@ void Graphics::CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthSten
 		TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = (CUBEMAP_SIZE * index) + i;
 		TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
 
-		GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightDepthCubeArray, &TextureDepthStencilDesc, &a_DepthStencilArray[i]));
+		GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_PointLightDepthCubeArray, &TextureDepthStencilDesc, &a_DepthStencilArray[i]));
 	}
+}
+
+void Graphics::CreateSpotLightDepthMapArray()
+{
+	INFOMAN;
+
+	D3D11_TEXTURE2D_DESC tex_desc{};
+	tex_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
+	tex_desc.Width = 1600u;
+	tex_desc.Height = 900u;
+	tex_desc.MipLevels = 1u;
+	tex_desc.ArraySize = 120u;
+	tex_desc.SampleDesc.Count = 1u;
+	tex_desc.SampleDesc.Quality = 0u;
+	tex_desc.Usage = D3D11_USAGE_DEFAULT;
+	tex_desc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	tex_desc.CPUAccessFlags = 0;
+	tex_desc.MiscFlags = 0;
+
+	GFX_THROW_FAILED(m_Device->CreateTexture2D(&tex_desc, nullptr, &m_SpotLightsDepthArray));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC TextureDepthShaderResourceViewDesc{};
+	TextureDepthShaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	TextureDepthShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	TextureDepthShaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+	TextureDepthShaderResourceViewDesc.Texture2D.MipLevels = 1;
+
+	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightsDepthArray, &TextureDepthShaderResourceViewDesc, &m_SpotLightsDepthArraySRV));
+}
+
+void Graphics::CreateSpotLightDepthTexture(ID3D11DepthStencilView* a_DepthStencilArray, uint32_t index)
+{
+	INFOMAN;
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
+	TextureDepthStencilDesc.Flags = 0;
+	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+	TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
+	TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = index;
+	TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
+
+	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightsDepthArray, &TextureDepthStencilDesc, &a_DepthStencilArray));
 }
 
 //////////////////////////////
@@ -464,8 +452,7 @@ void Graphics::CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthSten
 
 void Graphics::DrawTestTriangle(float a_Angle, float x, float y, Vertex* ver, unsigned short* indices) 
 {
-
-	HRESULT hr;
+	INFOMAN;
 
 	//const Vertex vertices[] = {
 	//	{ -1.0f, -1.0f, -1.0f},

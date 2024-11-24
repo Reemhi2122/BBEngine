@@ -2,7 +2,9 @@
 
 Texture2D tex                   : register(ps, t0);
 Texture2D depthBuffer           : register(ps, t1);
+
 TextureCubeArray depthCubeMap   : register(ps, t2);
+Texture2DArray SLDepthArray     : register(ps, t3);
 
 SamplerState splr               : register(ps, s0);
 SamplerState depthSampler       : register(ps, s1);

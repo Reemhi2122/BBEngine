@@ -111,7 +111,13 @@ namespace BBE
         m_Graphics.CreatePointLightDepthCubeMapArray();
         for (uint32_t i = 0; i < m_PointLights.Size(); i++)
         {
-            m_Graphics.CreatePointLightDepthCubeMap(/*m_PointLights[i].*/m_TextureDepthStencilViews[i], i);
+            m_Graphics.CreatePointLightDepthCubeMap(/*m_PointLights[i].*/m_PLTextureDepthStencilViews[i], i);
+        }
+
+        m_Graphics.CreateSpotLightDepthMapArray();
+        for (uint32_t i = 0; i < m_SpotLights.Size(); i++)
+        {
+            m_Graphics.CreateSpotLightDepthTexture(m_SLTextureDepthStencilViews[i], i);
         }
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
@@ -181,6 +187,7 @@ namespace BBE
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
             FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
+            CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, i);
         }
         
         for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
@@ -194,10 +201,8 @@ namespace BBE
         {
             m_GameObjects[i]->Update(m_Graphics);
         }
-
-        //CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, lightView);
        
-        m_Graphics.BindDepthTexture();
+        m_Graphics.BindDepthSampler();
         m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
@@ -275,18 +280,18 @@ namespace BBE
         ImGui::End();
     }
 
-    void BBEngine::CalculateLightShadowMap(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, DirectX::XMMATRIX spotLightMatrix)
+    void BBEngine::CalculateLightShadowMap(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index)
     {
-        //Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
-        //DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
-        //    DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
-        //    DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
-        //    DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-        //);
+        Vector3 focusPoint = m_SpotLights[a_Index].position + m_SpotLights[a_Index].direction;
+        DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
+            DirectX::XMVectorSet(m_SpotLights[a_Index].position.x, m_SpotLights[a_Index].position.y, m_SpotLights[a_Index].position.z, 0),
+            DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
+            DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+        );
 
-        m_Cam2.m_ViewMatrix = spotLightMatrix;
+        m_Cam2.m_ViewMatrix = lightView;
         m_Graphics.SetCamera(&m_Cam2);
-        m_Graphics.SetDepthStencilTarget();
+        m_Graphics.SetDepthStencilTarget(m_SLTextureDepthStencilViews[a_Index]);
 
         for (size_t i = 0; i < a_GameObjects.size(); i++)
         {
@@ -325,7 +330,7 @@ namespace BBE
                 DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f)
             );
 
-            m_Graphics.SetDepthStencilTarget(/*a_Spotlight.*/m_TextureDepthStencilViews[a_Index][depthStencilIndex]);
+            m_Graphics.SetDepthStencilTarget(/*a_Spotlight.*/m_PLTextureDepthStencilViews[a_Index][depthStencilIndex]);
             m_Cam2.m_ViewMatrix = lightView;
 
             for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)
