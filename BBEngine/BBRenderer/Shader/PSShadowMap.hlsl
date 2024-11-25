@@ -13,3 +13,6 @@ float main(VSOut psin) : SV_Depth
 
     return lightDistance / 100;
 };
+
+void SpotLightPS(VSOut psin)
+{};

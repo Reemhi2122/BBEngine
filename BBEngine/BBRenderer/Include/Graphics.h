@@ -80,7 +80,7 @@ public:
 	void CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
 	
 	void CreateSpotLightDepthMapArray();
-	void CreateSpotLightDepthTexture(ID3D11DepthStencilView* a_DepthStencilArray, uint32_t index);
+	void CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
 
 	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV() { return m_PointLightDepthCubeArraySRV; };
 	ID3D11ShaderResourceView* GetSpotLightDepthMapArrayRSV() { return m_SpotLightsDepthArraySRV; };

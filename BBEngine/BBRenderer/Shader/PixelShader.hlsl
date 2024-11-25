@@ -78,7 +78,7 @@ float ShadowCalculation(float4 fragPosLigthSpace)
 {
     float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
     
-    float closestDepth = depthBuffer.Sample(depthSampler, projCoords.xy).r;
+    float closestDepth = SLDepthArray.Sample(depthSampler, float3(projCoords.xy, 0)).r;
     
     float currentDepth = projCoords.z;
     

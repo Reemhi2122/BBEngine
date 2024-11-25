@@ -59,6 +59,7 @@ namespace BBE {
 
 		uint32_t m_VSShadowMapShader;
 		uint32_t m_PSShadowMapShader;
+		uint32_t m_PSSpotLightShadowMapShader;
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		PixelConstantBuffer<ShadowMapCreation> m_ShadowMapCB;

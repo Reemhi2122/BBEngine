@@ -424,26 +424,28 @@ void Graphics::CreateSpotLightDepthMapArray()
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC TextureDepthShaderResourceViewDesc{};
 	TextureDepthShaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	TextureDepthShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	TextureDepthShaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
-	TextureDepthShaderResourceViewDesc.Texture2D.MipLevels = 1;
+	TextureDepthShaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	TextureDepthShaderResourceViewDesc.Texture2DArray.MostDetailedMip = 0;
+	TextureDepthShaderResourceViewDesc.Texture2DArray.MipLevels = 1;
+	TextureDepthShaderResourceViewDesc.Texture2DArray.FirstArraySlice = 0;
+	TextureDepthShaderResourceViewDesc.Texture2DArray.ArraySize = 120;
 
 	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightsDepthArray, &TextureDepthShaderResourceViewDesc, &m_SpotLightsDepthArraySRV));
 }
 
-void Graphics::CreateSpotLightDepthTexture(ID3D11DepthStencilView* a_DepthStencilArray, uint32_t index)
+void Graphics::CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index)
 {
 	INFOMAN;
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
 	TextureDepthStencilDesc.Flags = 0;
 	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
 	TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = index;
 	TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
 
-	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightsDepthArray, &TextureDepthStencilDesc, &a_DepthStencilArray));
+	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightsDepthArray, &TextureDepthStencilDesc, a_DepthStencilArray));
 }
 
 //////////////////////////////

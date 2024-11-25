@@ -82,31 +82,31 @@ namespace BBE
             Vector4(0.5f, 0.5f, 0.5f, 1.0f)
         );
 
-        m_PointLights.Push_Back(PointLight(
-            Vector3(-5.0f, 2.0f, 0.0f),
-            Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-            1000.0f
-        ));
-
-        m_PointLights.Push_Back(PointLight(
-            Vector3(6.0f, 2.0f, 0.0f),
-            Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-            1000.0f
-        ));
-
-        //m_SpotLights.Push_Back(SpotLight(
-        //    Vector3(8.0f, 2.0f, 0.0f),
-        //    Vector3(-1.0f, 0.0f, 0.0f),
-        //    5.f,
-        //    Vector3(0.4f, 0.2f, 0.0f),
+        //m_PointLights.Push_Back(PointLight(
+        //    Vector3(-5.0f, 2.0f, 0.0f),
+        //    Vector3(0.0f, 0.2f, 0.0f),
         //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
         //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
         //    1000.0f
         //));
+
+        //m_PointLights.Push_Back(PointLight(
+        //    Vector3(6.0f, 2.0f, 0.0f),
+        //    Vector3(0.0f, 0.2f, 0.0f),
+        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+        //    1000.0f
+        //));
+
+        m_SpotLights.Push_Back(SpotLight(
+            Vector3(8.0f, 2.0f, 0.0f),
+            Vector3(-1.0f, 0.0f, 0.0f),
+            5.f,
+            Vector3(0.4f, 0.2f, 0.0f),
+            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+            1000.0f
+        ));
 
         m_Graphics.CreatePointLightDepthCubeMapArray();
         for (uint32_t i = 0; i < m_PointLights.Size(); i++)
@@ -117,7 +117,7 @@ namespace BBE
         m_Graphics.CreateSpotLightDepthMapArray();
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++)
         {
-            m_Graphics.CreateSpotLightDepthTexture(m_SLTextureDepthStencilViews[i], i);
+            m_Graphics.CreateSpotLightDepthTexture(&m_SLTextureDepthStencilViews[i], i);
         }
         
         m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
@@ -134,6 +134,8 @@ namespace BBE
 
         m_VSShadowMapShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VSShadowMap.hlsl");
         m_PSShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl");
+        
+        m_PSSpotLightShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl", "SpotLightPS");
 
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
@@ -187,7 +189,7 @@ namespace BBE
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
             FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
-            CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, i);
+            CalculateLightShadowMap(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader, i);
         }
         
         for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
@@ -204,6 +206,7 @@ namespace BBE
        
         m_Graphics.BindDepthSampler();
         m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
+        m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
@@ -211,6 +214,7 @@ namespace BBE
 
         m_Graphics.UnbindSRV(1);
         m_Graphics.UnbindSRV(2);
+        m_Graphics.UnbindSRV(3);
 
         RenderDebugOptions();
         DrawUI();
@@ -330,8 +334,9 @@ namespace BBE
                 DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f)
             );
 
-            m_Graphics.SetDepthStencilTarget(/*a_Spotlight.*/m_PLTextureDepthStencilViews[a_Index][depthStencilIndex]);
             m_Cam2.m_ViewMatrix = lightView;
+            m_Graphics.SetDepthStencilTarget(/*a_Spotlight.*/m_PLTextureDepthStencilViews[a_Index][depthStencilIndex]);
+            m_Graphics.SetCamera(&m_Cam2);
 
             for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)
             {
