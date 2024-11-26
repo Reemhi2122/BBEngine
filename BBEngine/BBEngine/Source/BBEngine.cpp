@@ -126,6 +126,9 @@ namespace BBE
         m_ShadowMapCB = PixelConstantBuffer<ShadowMapCreation>(m_Graphics, 1, 1);
         m_ShadowMapCB.Bind(m_Graphics);
 
+        m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, 1, 1);
+        m_LightMatrix.Bind(m_Graphics);
+
         m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
         m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
 
@@ -208,6 +211,15 @@ namespace BBE
         m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
         m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
 
+        Vector3 focusPoint = m_SpotLights[0].position + m_SpotLights[0].direction;
+        DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
+            DirectX::XMVectorSet(m_SpotLights[0].position.x, m_SpotLights[0].position.y, m_SpotLights[0].position.z, 0),
+            DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
+            DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
+        );
+        
+        m_LightMatrix.Update(m_Graphics, { DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection()) });
+
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
         }
@@ -234,10 +246,12 @@ namespace BBE
     {
         ImGui::Begin("GameWindow");
         {
-            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-            {
-                ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
-            }
+            //for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+            //{
+            //    ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+            //}
+
+            ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
         }
         ImGui::End();
 

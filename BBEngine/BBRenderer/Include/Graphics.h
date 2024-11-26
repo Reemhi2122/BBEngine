@@ -95,6 +95,8 @@ public:
 	Microsoft::WRL::ComPtr<ID3DBlob> GetVertexShaderByteCode(TMPHANDLE a_Shader) const;
 
 	ID3D11ShaderResourceView* m_TextureDepthSRV[6];
+	ID3D11ShaderResourceView* m_SpotLightsDepthTest = nullptr;
+
 
 private:
 	DirectX::XMMATRIX m_Projection;

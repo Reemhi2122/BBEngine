@@ -167,7 +167,7 @@ TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::str
 	{
 	case ShaderType::VertexShader:
 	{
-		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "vs_5_0", 0, 0, &m_VertexShaders[m_VertexIndex].m_ByteCodeBlob, nullptr);
+		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, a_EntryPointFunc.c_str(), "vs_5_0", 0, 0, &m_VertexShaders[m_VertexIndex].m_ByteCodeBlob, nullptr);
 		m_Device->CreateVertexShader(m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferPointer(), m_VertexShaders[m_VertexIndex].m_ByteCodeBlob->GetBufferSize(), nullptr, &m_VertexShaders[m_VertexIndex].m_Shader);
 		m_VertexShaders[m_VertexIndex].m_Path = a_Path;
 		handle = m_VertexIndex++;
@@ -175,7 +175,7 @@ TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::str
 	case ShaderType::PixelShader:
 	{
 		Microsoft::WRL::ComPtr<ID3DBlob> blob;
-		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
+		D3DCompileFromFile(pathString, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, a_EntryPointFunc.c_str(), "ps_5_0", D3DCOMPILE_DEBUG, 0, &blob, nullptr);
 		m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_PixelShaders[m_PixelIndex].m_Shader);
 		m_PixelShaders[m_PixelIndex].m_Path = a_Path;
 		handle = m_PixelIndex++;
@@ -409,8 +409,8 @@ void Graphics::CreateSpotLightDepthMapArray()
 
 	D3D11_TEXTURE2D_DESC tex_desc{};
 	tex_desc.Format = DXGI_FORMAT_R24G8_TYPELESS;
-	tex_desc.Width = 1600u;
-	tex_desc.Height = 900u;
+	tex_desc.Width = 1024;
+	tex_desc.Height = 1024;
 	tex_desc.MipLevels = 1u;
 	tex_desc.ArraySize = 120u;
 	tex_desc.SampleDesc.Count = 1u;
@@ -421,6 +421,15 @@ void Graphics::CreateSpotLightDepthMapArray()
 	tex_desc.MiscFlags = 0;
 
 	GFX_THROW_FAILED(m_Device->CreateTexture2D(&tex_desc, nullptr, &m_SpotLightsDepthArray));
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC image_rsv_desc = {};
+	image_rsv_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	image_rsv_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+	image_rsv_desc.Texture2DArray.ArraySize = 1;
+	image_rsv_desc.Texture2DArray.FirstArraySlice = 0;
+	image_rsv_desc.Texture2DArray.MipLevels = 1;
+
+	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightsDepthArray, &image_rsv_desc, &m_SpotLightsDepthTest));
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC TextureDepthShaderResourceViewDesc{};
 	TextureDepthShaderResourceViewDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
@@ -440,7 +449,7 @@ void Graphics::CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStenc
 	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
 	TextureDepthStencilDesc.Flags = 0;
 	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 	TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
 	TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = index;
 	TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
