@@ -70,7 +70,6 @@ namespace BBE {
 		//Note(Stan): Fix this somewhere
 		ID3D11DepthStencilView* m_PLTextureDepthStencilViews[20][6];
 		ID3D11DepthStencilView* m_SLTextureDepthStencilViews[120];
-		DirectX::XMMATRIX m_ViewBuffers[120];
 
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;

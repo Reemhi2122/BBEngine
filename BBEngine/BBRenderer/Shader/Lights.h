@@ -29,6 +29,7 @@ struct SpotLight
     float   range;
     float4  ambient;
     float4  diffuse;
+    matrix lightView;
 };
 #endif
 

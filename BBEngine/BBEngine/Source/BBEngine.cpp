@@ -82,21 +82,21 @@ namespace BBE
             Vector4(0.5f, 0.5f, 0.5f, 1.0f)
         );
 
-        m_PointLights.Push_Back(PointLight(
-            Vector3(-5.0f, 2.0f, 0.0f),
-            Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-            1000.0f
-        ));
+        //m_PointLights.Push_Back(PointLight(
+        //    Vector3(-5.0f, 2.0f, 0.0f),
+        //    Vector3(0.0f, 0.2f, 0.0f),
+        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+        //    1000.0f
+        //));
 
-        m_PointLights.Push_Back(PointLight(
-            Vector3(6.0f, 2.0f, 0.0f),
-            Vector3(0.0f, 0.2f, 0.0f),
-            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-            1000.0f
-        ));
+        //m_PointLights.Push_Back(PointLight(
+        //    Vector3(6.0f, 2.0f, 0.0f),
+        //    Vector3(0.0f, 0.2f, 0.0f),
+        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+        //    1000.0f
+        //));
 
         m_SpotLights.Push_Back(SpotLight(
             Vector3(8.0f, 2.0f, 0.0f),
@@ -211,9 +211,6 @@ namespace BBE
         m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
         m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
 
-
-        m_LightMatrix.Update(m_Graphics, m_ViewBuffers);
-
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
         }
@@ -301,6 +298,8 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
+        m_SpotLights[a_Index].lightView = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
+
         m_Cam2.m_ViewMatrix = lightView;
         m_Graphics.SetCamera(&m_Cam2);
         m_Graphics.SetDepthStencilTarget(m_SLTextureDepthStencilViews[a_Index]);
@@ -315,7 +314,6 @@ namespace BBE
 
         m_Graphics.ResetRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
-        m_ViewBuffers[a_Index] = { DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection()) };
     }
 
     void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index)

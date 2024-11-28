@@ -15,7 +15,7 @@ struct VSOut
     float4 worldPos : POSITION;
     float2 tex : TexCoord;
     float3 normal : Normal;
-    float4 FragPosLightSpace : FragPos;
+    //float4 FragPosLightSpace : FragPos;
 };
 
 float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight directionalLight) {
@@ -133,8 +133,11 @@ float4 main(VSOut psin) : SV_Target
         finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i], i), diffuse.a);
     }
 
-    for(int i = 0; i < MAXLIGHTS; i++) {
-        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], psin.FragPosLightSpace), diffuse.a);
+    for(int i = 0; i < MAXLIGHTS; i++) 
+    {
+        const float4 lightView = mul(psin.worldPos, spotlights[i].lightView);
+        float4 FragPosLightSpace = lightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * lightView.w);
+        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], FragPosLightSpace), diffuse.a);
     }
     
     return finalColor;
