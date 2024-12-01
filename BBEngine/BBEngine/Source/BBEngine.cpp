@@ -108,10 +108,12 @@ namespace BBE
             1000.0f
         ));
 
+        m_Graphics.CreateDirLightShadowBuffer(m_DLTextureDepthStencilView);
+
         m_Graphics.CreatePointLightDepthCubeMapArray();
         for (uint32_t i = 0; i < m_PointLights.Size(); i++)
         {
-            m_Graphics.CreatePointLightDepthCubeMap(/*m_PointLights[i].*/m_PLTextureDepthStencilViews[i], i);
+            m_Graphics.CreatePointLightDepthCubeMap(m_PLTextureDepthStencilViews[i], i);
         }
 
         m_Graphics.CreateSpotLightDepthMapArray();
