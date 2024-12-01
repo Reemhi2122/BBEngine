@@ -76,6 +76,8 @@ public:
 	void UnbindSRV(uint32_t a_Slot);
 
 	// == Lights functions ==
+	void CreateDirLightShadowBuffer(ID3D11DepthStencilView* a_DepthStencilArray);
+
 	void CreatePointLightDepthCubeMapArray();
 	void CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
 	
@@ -114,6 +116,9 @@ private:
 	
 	ID3D11Texture2D*			m_TextureCubeMap = nullptr;
 	ID3D11SamplerState*			m_DepthTextureSampler = nullptr;
+
+	ID3D11Texture2D*			m_DirLightDepthBuffer;
+	ID3D11ShaderResourceView*	m_DirLightDepthBufferSRV;
 
 	ID3D11Texture2D*			m_PointLightDepthCubeArray = nullptr;
 	ID3D11ShaderResourceView*	m_PointLightDepthCubeArraySRV = nullptr;

@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector3.h"
 #include "Vector4.h"
+#include <DirectXMath.h>
 
 class DirectionalLight
 {
@@ -14,4 +15,5 @@ private:
 	float pad0;
 	Vector4 ambient;
 	Vector4 diffuse;
+	DirectX::XMMATRIX lightView;
 };

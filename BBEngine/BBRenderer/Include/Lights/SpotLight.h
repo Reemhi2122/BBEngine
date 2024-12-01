@@ -18,5 +18,4 @@ public:
 	Vector4 ambient;
 	Vector4 diffuse;
 	DirectX::XMMATRIX lightView;
-
 };

@@ -18,17 +18,6 @@ struct VSOut
     //float4 FragPosLightSpace : FragPos;
 };
 
-float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight directionalLight) {
-    
-    float3 finalColor;
-
-    finalColor = diffuse * directionalLight.ambient;
-
-    finalColor += saturate(dot(directionalLight.dir, psin.normal) * directionalLight.diffuse * diffuse);
-
-    return finalColor;
-}
-
 float ShadowCalculationPointLight(float4 fragPos, PointLight pointLight, int lightIndex)
 {
     float3 fragToLight = (fragPos.xyz - pointLight.position);
@@ -118,6 +107,20 @@ float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight,
     return finalColor;
 }
 
+
+float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight dirlight, float4 fragPosLigthSpace)
+{
+    float3 finalColor;
+
+    finalColor = diffuse * directionalLight.ambient;
+
+    finalColor += saturate(dot(directionalLight.dir, psin.normal) * directionalLight.diffuse * diffuse);
+    
+    float shadow = ShadowCalculation(fragPosLigthSpace);
+    finalColor = finalColor * (1.0 - shadow);
+    return finalColor;
+}
+
 float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
@@ -126,7 +129,7 @@ float4 main(VSOut psin) : SV_Target
     
     float4 finalColor = float4(0, 0, 0, 1);
     
-    //finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
+    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
 
     for (int i = 0; i < MAXLIGHTS; i++)
     {
