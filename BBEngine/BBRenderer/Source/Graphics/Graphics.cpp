@@ -359,7 +359,7 @@ void Graphics::CreateDirLightShadowBuffer(ID3D11DepthStencilView* a_DepthStencil
 	textureCubeMapDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureCubeMapDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	textureCubeMapDesc.CPUAccessFlags = 0;
-	textureCubeMapDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+	textureCubeMapDesc.MiscFlags = 0;
 
 	GFX_THROW_FAILED(m_Device->CreateTexture2D(&textureCubeMapDesc, nullptr, &m_DirLightDepthBuffer));
 
@@ -373,11 +373,9 @@ void Graphics::CreateDirLightShadowBuffer(ID3D11DepthStencilView* a_DepthStencil
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC RSV_desc = {};
 	RSV_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	RSV_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBEARRAY;
-	RSV_desc.TextureCubeArray.MostDetailedMip = 0;
-	RSV_desc.TextureCubeArray.MipLevels = 1;
-	RSV_desc.TextureCubeArray.First2DArrayFace = 0;
-	RSV_desc.TextureCubeArray.NumCubes = 12;
+	RSV_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	RSV_desc.Texture2D.MostDetailedMip = 0;
+	RSV_desc.Texture2D.MipLevels = 1;
 
 	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_DirLightDepthBuffer, &RSV_desc, &m_DirLightDepthBufferSRV));
 }

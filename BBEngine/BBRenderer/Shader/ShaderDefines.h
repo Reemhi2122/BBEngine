@@ -9,7 +9,7 @@
 #define float3 Vector3
 #define float4 Vector4
 #define cbuffer struct
-#define matrix DirectX::XMMATRIX
+#define float4x4 DirectX::XMMATRIX
 
 #define CBRegister1
 #else

@@ -117,8 +117,8 @@ private:
 	ID3D11Texture2D*			m_TextureCubeMap = nullptr;
 	ID3D11SamplerState*			m_DepthTextureSampler = nullptr;
 
-	ID3D11Texture2D*			m_DirLightDepthBuffer;
-	ID3D11ShaderResourceView*	m_DirLightDepthBufferSRV;
+	ID3D11Texture2D*			m_DirLightDepthBuffer = nullptr;
+	ID3D11ShaderResourceView*	m_DirLightDepthBufferSRV = nullptr;
 
 	ID3D11Texture2D*			m_PointLightDepthCubeArray = nullptr;
 	ID3D11ShaderResourceView*	m_PointLightDepthCubeArraySRV = nullptr;

@@ -83,7 +83,7 @@ namespace BBE
         );
 
         m_PointLights.Push_Back(PointLight(
-            Vector3(-5.0f, 2.0f, 50.0f),
+            Vector3(-5.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -91,7 +91,7 @@ namespace BBE
         ));
 
         m_PointLights.Push_Back(PointLight(
-            Vector3(6.0f, 2.0f, 50.0f),
+            Vector3(6.0f, 2.0f, 0.0f),
             Vector3(0.0f, 0.2f, 0.0f),
             Vector4(0.0f, 0.0f, 0.0f, 1.0f),
             Vector4(1.0f, 1.0f, 1.0f, 1.0f),
@@ -99,7 +99,7 @@ namespace BBE
         ));
 
         m_SpotLights.Push_Back(SpotLight(
-            Vector3(8.0f, 2.0f, 0.0f),
+            Vector3(4.0f, 2.0f, 0.0f),
             Vector3(-1.0f, 0.0f, 0.0f),
             5.f,
             Vector3(0.4f, 0.2f, 0.0f),
@@ -108,7 +108,7 @@ namespace BBE
             1000.0f
         ));
 
-        m_Graphics.CreateDirLightShadowBuffer(m_DLTextureDepthStencilView);
+        //m_Graphics.CreateDirLightShadowBuffer(m_DLTextureDepthStencilView);
 
         m_Graphics.CreatePointLightDepthCubeMapArray();
         for (uint32_t i = 0; i < m_PointLights.Size(); i++)
@@ -199,7 +199,7 @@ namespace BBE
         
         for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
             FrameConstantBuffer.pointlights[i] = m_PointLights[i];
-            CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i], i);
+            CalculateLightShadowMapPointLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i], i);
         }
 
         m_PerFrameBuffer.Update(m_Graphics, FrameConstantBuffer);
@@ -318,7 +318,7 @@ namespace BBE
         m_Graphics.SetCamera(&m_Cam1);
     }
 
-    void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index)
+    void BBEngine::CalculateLightShadowMapPointLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index)
     {
         Vector3 viewDirections[6] = { 
             { 1.0f, 0.0f, 0.0f },    // Right
