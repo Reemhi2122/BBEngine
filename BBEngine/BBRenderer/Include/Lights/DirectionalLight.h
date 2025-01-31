@@ -15,5 +15,5 @@ private:
 	float pad0;
 	Vector4 ambient;
 	Vector4 diffuse;
-	DirectX::XMMATRIX lightView;
+	//DirectX::XMMATRIX lightView;
 };
