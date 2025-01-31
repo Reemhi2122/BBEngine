@@ -110,8 +110,7 @@ float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight,
 
 float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight dirlight, float4 fragPosLigthSpace)
 {
-    float3 finalColor;
-
+    float3 finalColor = float3(0.0f, 0.0f, 0.0f);
     finalColor = diffuse * directionalLight.ambient;
 
     finalColor += saturate(dot(directionalLight.dir, psin.normal) * directionalLight.diffuse * diffuse);
@@ -129,8 +128,9 @@ float4 main(VSOut psin) : SV_Target
     
     float4 finalColor = float4(0, 0, 0, 1);
     
-    //float4 DirFragPosLightSpace = lightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * lightView.w);
-    //finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight), diffuse.a);       
+    const float4 lightViewTemp = mul(psin.worldPos, directionalLight.lightView);
+    float4 DirFragPosLightSpaceTemp = lightViewTemp * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * lightViewTemp.w);
+    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight, DirFragPosLightSpaceTemp), diffuse.a);       
 
     for (int i = 0; i < MAXLIGHTS; i++)
     {

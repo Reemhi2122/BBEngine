@@ -10,10 +10,10 @@ public:
 	DirectionalLight(Vector3 a_Direction, Vector4 a_Ambient, Vector4 a_Diffuse);
 	~DirectionalLight();
 
-private:
+public:
 	Vector3 direction;
 	float pad0;
 	Vector4 ambient;
 	Vector4 diffuse;
-	//DirectX::XMMATRIX lightView;
+	DirectX::XMMATRIX lightView;
 };
