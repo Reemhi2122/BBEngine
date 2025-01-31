@@ -187,7 +187,7 @@ namespace BBE
         CheckInput();
 
         //m_PointLights[0].position.x = (sin(incr += 0.001f) * 5);
-//m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
+        //m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
 
         cbPerFrame FrameConstantBuffer;
 
@@ -214,6 +214,7 @@ namespace BBE
         m_Graphics.BindDepthSampler();
         m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
         m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
+        m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
@@ -222,6 +223,7 @@ namespace BBE
         m_Graphics.UnbindSRV(1);
         m_Graphics.UnbindSRV(2);
         m_Graphics.UnbindSRV(3);
+        m_Graphics.UnbindSRV(4);
 
         RenderDebugOptions();
         DrawUI();
@@ -247,7 +249,7 @@ namespace BBE
             //}
 
             //ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-            ImGui::Image((void*)m_Graphics.m_DirLightDepthBufferSRV, ImVec2(200, 200));
+            ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
         }
         ImGui::End();
 
@@ -296,13 +298,15 @@ namespace BBE
 
     void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
     {
-        Vector3 FakePos = Vector3(0, 12, 0);
+        Vector3 FakePos = Vector3(0, 20, 0);
         Vector3 focusPoint = FakePos + Vector3(m_DirectionalLight.direction.x, -m_DirectionalLight.direction.y, m_DirectionalLight.direction.z);
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(FakePos.x, FakePos.y, FakePos.z, 0),
             DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
+
+        //DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f);
 
         m_DirectionalLight.lightView = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
 

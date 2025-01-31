@@ -5,6 +5,7 @@ Texture2D depthBuffer           : register(ps, t1);
 
 TextureCubeArray depthCubeMap   : register(ps, t2);
 Texture2DArray SLDepthArray     : register(ps, t3);
+Texture2D depthMapDL            : register(ps, t4);
 
 SamplerState splr               : register(ps, s0);
 SamplerState depthSampler       : register(ps, s1);
@@ -67,7 +68,7 @@ float ShadowCalculation(float4 fragPosLigthSpace)
 {
     float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
     
-    float closestDepth = SLDepthArray.Sample(depthSampler, float3(projCoords.xy, 0)).r;
+    float closestDepth = depthMapDL.Sample(depthSampler, float3(projCoords.xy, 0)).r; //SLDepthArray changed temp
     
     float currentDepth = projCoords.z;
     
