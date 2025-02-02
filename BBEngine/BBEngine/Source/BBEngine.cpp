@@ -298,7 +298,7 @@ namespace BBE
 
     void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
     {
-        Vector3 FakePos = Vector3(0, 20, 0);
+        Vector3 FakePos = Vector3(0, 100, 0);
         Vector3 focusPoint = FakePos + Vector3(m_DirectionalLight.direction.x, -m_DirectionalLight.direction.y, m_DirectionalLight.direction.z);
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(FakePos.x, FakePos.y, FakePos.z, 0),

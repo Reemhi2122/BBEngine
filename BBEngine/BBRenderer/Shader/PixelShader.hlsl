@@ -68,11 +68,11 @@ float ShadowCalculation(float4 fragPosLigthSpace)
 {
     float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
     
-    float closestDepth = depthMapDL.Sample(depthSampler, float3(projCoords.xy, 0)).r; //SLDepthArray changed temp
+    float closestDepth = depthMapDL.Sample(depthSampler, float2(projCoords.xy)).r; //SLDepthArray changed temp
     
     float currentDepth = projCoords.z;
     
-    float bias = 0.005f;
+    float bias = 0.000001f;
     
     return (currentDepth - bias) > closestDepth ? 1.0 : 0.0;
 }
