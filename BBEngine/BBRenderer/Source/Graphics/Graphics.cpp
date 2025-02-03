@@ -384,8 +384,8 @@ void Graphics::CreatePointLightDepthCubeMapArray()
 {
 	INFOMAN;
 	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
-	textureCubeMapDesc.Width = 1024;
-	textureCubeMapDesc.Height = 1024;
+	textureCubeMapDesc.Width = 2048;
+	textureCubeMapDesc.Height = 2048;
 	textureCubeMapDesc.MipLevels = 1;
 	textureCubeMapDesc.ArraySize = 120;
 	textureCubeMapDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;

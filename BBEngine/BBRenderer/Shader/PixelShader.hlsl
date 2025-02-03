@@ -140,9 +140,12 @@ float4 main(VSOut psin) : SV_Target
     
     float4 finalColor = float4(0, 0, 0, 1);
     
-    const float4 lightViewTemp = mul(psin.worldPos, directionalLight.lightView);
-    float4 DirFragPosLightSpaceTemp = lightViewTemp * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * lightViewTemp.w);
-    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight, DirFragPosLightSpaceTemp), diffuse.a);       
+    float4 curLightView;
+    float4 curFragLightPos;
+    
+    curLightView = mul(psin.worldPos, directionalLight.lightView);
+    curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
+    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight, curFragLightPos), diffuse.a);
 
     for (int i = 0; i < MAXLIGHTS; i++)
     {
@@ -151,9 +154,9 @@ float4 main(VSOut psin) : SV_Target
 
     for(int i = 0; i < MAXLIGHTS; i++) 
     {
-        const float4 lightView = mul(psin.worldPos, spotlights[i].lightView);
-        float4 FragPosLightSpace = lightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * lightView.w);
-        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], FragPosLightSpace, i), diffuse.a);
+        curLightView = mul(psin.worldPos, spotlights[i].lightView);
+        curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
+        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], curFragLightPos, i), diffuse.a);
     }
     
     return finalColor;
