@@ -330,16 +330,6 @@ void Graphics::DrawIndexedInstanced(UINT a_IndexCount, UINT a_InstanceCount) noe
 	m_Context->DrawIndexedInstanced(a_IndexCount, a_InstanceCount, 0, 0, 0);
 }
 
-void Graphics::SetProjection(DirectX::XMMATRIX a_Projections) 
-{
-	m_Projection = a_Projections;
-}
-
-DirectX::XMMATRIX Graphics::GetProjection() const noexcept 
-{
-	return m_Projection;
-}
-
 void Graphics::ResetRenderTarget() 
 {
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());

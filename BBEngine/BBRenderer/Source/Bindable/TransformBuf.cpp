@@ -35,7 +35,7 @@ void TransformBuf::Bind(Graphics& a_Gfx) noexcept
 	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * m_ParentTransform; 
 
 	perObjectBuffer buf = {
-		DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
+		DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetCamera()->GetProjection()),
 		DirectX::XMMatrixTranspose(finalMatrix)
 	};
 
@@ -48,7 +48,7 @@ void TransformBuf::Bind(Graphics& a_Gfx, DirectX::XMMATRIX a_ObjTransform) noexc
 	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * a_ObjTransform * m_ParentTransform;
 
 	perObjectBuffer buf = {
-		DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetProjection()),
+		DirectX::XMMatrixTranspose(DirectX::XMMatrixIdentity() * a_Gfx.GetCamera()->GetViewMatrix() * a_Gfx.GetCamera()->GetProjection()),
 		DirectX::XMMatrixTranspose(finalMatrix)
 	};
 

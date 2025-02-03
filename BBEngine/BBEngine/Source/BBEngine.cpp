@@ -73,7 +73,6 @@ namespace BBE
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
 
-        m_Graphics.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
         m_Window.m_Keyboard.EnableAutorepeat();
 
         m_DirectionalLight = DirectionalLight(
@@ -172,7 +171,11 @@ namespace BBE
 
         //Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+        m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
+
         m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+        m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
+
         m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.SetCamera(&m_Cam1);
     }
@@ -335,7 +338,7 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        m_SpotLights[a_Index].lightView = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetProjection());
+        m_SpotLights[a_Index].lightView = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetCamera()->GetProjection());
 
         m_Cam2.m_ViewMatrix = lightView;
         m_Graphics.SetCamera(&m_Cam2);

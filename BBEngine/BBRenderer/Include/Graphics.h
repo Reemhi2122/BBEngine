@@ -55,9 +55,6 @@ public:
 	void DrawTestTriangle(float a_Angle, float x, float y, struct Vertex* ver, unsigned short* indices);
 	void DrawIndexed(UINT a_Count) noexcept;
 	void DrawIndexedInstanced(UINT a_IndexCount, UINT a_InstanceCount) noexcept;
-
-	void SetProjection(DirectX::XMMATRIX a_Projections);
-	DirectX::XMMATRIX GetProjection() const noexcept;
 	
 	Camera* GetCamera();
 	void SetCamera(Camera* a_Camera);
@@ -102,7 +99,6 @@ public:
 
 
 private:
-	DirectX::XMMATRIX m_Projection;
 	Camera* m_Camera;
 
 	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
