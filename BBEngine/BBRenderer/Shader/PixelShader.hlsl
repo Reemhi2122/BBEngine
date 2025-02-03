@@ -16,7 +16,6 @@ struct VSOut
     float4 worldPos : POSITION;
     float2 tex : TexCoord;
     float3 normal : Normal;
-    //float4 FragPosLightSpace : FragPos;
 };
 
 float ShadowCalculationPointLight(float4 fragPos, PointLight pointLight, int lightIndex)
@@ -64,20 +63,20 @@ float3 CalculatePointLight(VSOut psin, float4 dirlightcolor, PointLight pointlig
     return finalColor;
 }
 
-float ShadowCalculation(float4 fragPosLigthSpace)
+float ShadowCalculationSpotLight(float4 fragPosLigthSpace, int index)
 {
     float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
     
-    float closestDepth = depthMapDL.Sample(depthSampler, float2(projCoords.xy)).r; //SLDepthArray changed temp
+    float closestDepth = SLDepthArray.Sample(depthSampler, float3(projCoords.xy, index)).r; //We need to add index here
     
     float currentDepth = projCoords.z;
     
-    float bias = 0.000001f;
+    float bias = 0.005f;
     
     return (currentDepth - bias) > closestDepth ? 1.0 : 0.0;
 }
 
-float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight, float4 fragPosLigthSpace)
+float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight, float4 fragPosLigthSpace, int lightIndex)
 {
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
 
@@ -103,11 +102,23 @@ float3 CalculateSpotLight(VSOut psin, float4 dirlightcolor, SpotLight spotlight,
 
     finalColor = saturate(finalColor + finalAmbient);
 
-    float shadow = ShadowCalculation(fragPosLigthSpace);
+    float shadow = ShadowCalculationSpotLight(fragPosLigthSpace, lightIndex);
     finalColor = finalColor * (1.0 - shadow);
     return finalColor;
 }
 
+float ShadowCalculationDirectionalLight(float4 fragPosLigthSpace)
+{
+    float3 projCoords = fragPosLigthSpace.xyz / fragPosLigthSpace.w;
+    
+    float closestDepth = depthMapDL.Sample(depthSampler, float2(projCoords.xy)).r; //SLDepthArray changed temp
+    
+    float currentDepth = projCoords.z;
+    
+    float bias = 0.00001f;
+    
+    return (currentDepth - bias) > closestDepth ? 1.0 : 0.0;
+}
 
 float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight dirlight, float4 fragPosLigthSpace)
 {
@@ -116,7 +127,7 @@ float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight di
 
     finalColor += saturate(dot(directionalLight.dir, psin.normal) * directionalLight.diffuse * diffuse);
     
-    float shadow = ShadowCalculation(fragPosLigthSpace);
+    float shadow = ShadowCalculationDirectionalLight(fragPosLigthSpace);
     finalColor = finalColor * (1.0 - shadow);
     return finalColor;
 }
@@ -142,7 +153,7 @@ float4 main(VSOut psin) : SV_Target
     {
         const float4 lightView = mul(psin.worldPos, spotlights[i].lightView);
         float4 FragPosLightSpace = lightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * lightView.w);
-        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], FragPosLightSpace), diffuse.a);
+        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], FragPosLightSpace, i), diffuse.a);
     }
     
     return finalColor;
