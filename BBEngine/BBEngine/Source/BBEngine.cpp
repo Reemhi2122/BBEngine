@@ -76,18 +76,18 @@ namespace BBE
         m_Window.m_Keyboard.EnableAutorepeat();
 
         m_DirectionalLight = DirectionalLight(
-            Vector3(0.0f, 1.0f, 0.1f),
+            Vector3(0.0f, 1.0f, 0.00001f),
             Vector4(0.1f, 0.1f, 0.1f, 1.0f),
             Vector4(0.5f, 0.5f, 0.5f, 1.0f)
         );
 
-        //m_PointLights.Push_Back(PointLight(
-        //    Vector3(-5.0f, 2.0f, 0.0f),
-        //    Vector3(0.0f, 0.2f, 0.0f),
-        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-        //    1000.0f
-        //));
+        m_PointLights.Push_Back(PointLight(
+            Vector3(-5.0f, 2.0f, 0.0f),
+            Vector3(0.0f, 0.2f, 0.0f),
+            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+            1000.0f
+        ));
 
         //m_PointLights.Push_Back(PointLight(
         //    Vector3(6.0f, 2.0f, 0.0f),
@@ -174,7 +174,7 @@ namespace BBE
         m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
 
         m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
-        m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
+        m_Cam2.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
 
         m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.SetCamera(&m_Cam1);
@@ -246,13 +246,13 @@ namespace BBE
     {
         ImGui::Begin("GameWindow");
         {
-            //for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-            //{
-            //    ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
-            //}
+            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+            {
+                ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+            }
 
             //ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-            ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+            //ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
         }
         ImGui::End();
 
@@ -301,7 +301,7 @@ namespace BBE
 
     void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
     {
-        Vector3 FakePos = Vector3(0, 15, 0);
+        Vector3 FakePos = Vector3(0, 50, 0);
         Vector3 focusPoint = FakePos + Vector3(m_DirectionalLight.direction.x, -m_DirectionalLight.direction.y, m_DirectionalLight.direction.z);
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(FakePos.x, FakePos.y, FakePos.z, 0),
@@ -309,7 +309,10 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(10.f, 10.f, 0.5f, 100.f);
+        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(256.f, 256.f, 0.5f, 100.f);
+        DirectX::XMMATRIX oldProjection = m_Cam2.GetProjection();
+        m_Cam2.SetProjection(projection);
+        m_Cam2.SetViewPort(4096, 4096);
 
         m_DirectionalLight.lightView = DirectX::XMMatrixTranspose(lightView * projection);
 
@@ -325,8 +328,11 @@ namespace BBE
             obj->GetModel()->ResetShaders();
         }
 
+        m_Cam2.SetProjection(oldProjection);
+        m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.ResetRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
+
     }
 
     void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index)
@@ -382,7 +388,7 @@ namespace BBE
             );
 
             m_Cam2.m_ViewMatrix = lightView;
-            m_Graphics.SetDepthStencilTarget(/*a_Spotlight.*/m_PLTextureDepthStencilViews[a_Index][depthStencilIndex]);
+            m_Graphics.SetDepthStencilTarget(m_PLTextureDepthStencilViews[a_Index][depthStencilIndex]);
             m_Graphics.SetCamera(&m_Cam2);
 
             for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)
