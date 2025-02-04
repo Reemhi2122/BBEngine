@@ -76,7 +76,7 @@ namespace BBE
         m_Window.m_Keyboard.EnableAutorepeat();
 
         m_DirectionalLight = DirectionalLight(
-            Vector3(0.0f, 1.0f, 0.00001f),
+            Vector3(0.0f, -1.0f, 0.0f),
             Vector4(0.1f, 0.1f, 0.1f, 1.0f),
             Vector4(0.5f, 0.5f, 0.5f, 1.0f)
         );
@@ -242,19 +242,24 @@ namespace BBE
         }
     }
 
+    float cx = 0.0f, cy = 50.0f, cz = 0.0f;
     void BBEngine::DrawUI()
     {
         ImGui::Begin("GameWindow");
         {
-            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-            {
-                ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
-            }
+            //for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+            //{
+            //    ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+            //}
 
             //ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-            //ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+            ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
         }
         ImGui::End();
+
+        ImGui::InputFloat("Cam Transofrm x", &cx);
+        ImGui::InputFloat("Cam Transofrm y", &cy);
+        ImGui::InputFloat("Cam Transofrm z", &cz);
 
         ImGui::Begin("Objects");
         {
@@ -301,8 +306,13 @@ namespace BBE
 
     void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
     {
-        Vector3 FakePos = Vector3(0, 50, 0);
-        Vector3 focusPoint = FakePos + Vector3(m_DirectionalLight.direction.x, -m_DirectionalLight.direction.y, m_DirectionalLight.direction.z);
+        Vector3 FakePos = Vector3(cx, cy, cz);
+        //Vector3 focusPoint = FakePos + Vector3(m_DirectionalLight.direction.x, -m_DirectionalLight.direction.y, m_DirectionalLight.direction.z);
+        Vector3 focusPoint = Vector3(0, 0, 0);
+
+        float length = sqrt(cx * cx + cy * cy + cz * cz);
+        m_DirectionalLight.direction = Vector3(cx / length, cy / length, cz / length);
+
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(FakePos.x, FakePos.y, FakePos.z, 0),
             DirectX::XMVectorSet(focusPoint.x, focusPoint.y, focusPoint.z, 1.0f),
