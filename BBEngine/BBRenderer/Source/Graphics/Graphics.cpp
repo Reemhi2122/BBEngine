@@ -89,7 +89,7 @@ Graphics::Graphics(HWND a_HWnd)
 	image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_BORDER;
 	image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_BORDER;
 	image_sampler_desc.MaxAnisotropy = 1;
-	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL;
+	image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_LESS_EQUAL; 
 	image_sampler_desc.BorderColor[0] = 1.0f;
 	image_sampler_desc.BorderColor[1] = 1.0f;
 	image_sampler_desc.BorderColor[2] = 1.0f;
@@ -339,8 +339,8 @@ void Graphics::CreateDirLightShadowBuffer(ID3D11DepthStencilView** a_DepthStenci
 {
 	INFOMAN;
 	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
-	textureCubeMapDesc.Width = 4096;
-	textureCubeMapDesc.Height = 4096;
+	textureCubeMapDesc.Width = 8192;
+	textureCubeMapDesc.Height = 8192;
 	textureCubeMapDesc.MipLevels = 1;
 	textureCubeMapDesc.ArraySize = 1;
 	textureCubeMapDesc.Format = DXGI_FORMAT_R24G8_TYPELESS;

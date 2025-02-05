@@ -319,10 +319,10 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(256.f, 256.f, 0.5f, 100.f);
+        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(150.f, 150.f, 0.5f, 500.f);
         DirectX::XMMATRIX oldProjection = m_Cam2.GetProjection();
         m_Cam2.SetProjection(projection);
-        m_Cam2.SetViewPort(4096, 4096);
+        m_Cam2.SetViewPort(8192, 8192);
 
         m_DirectionalLight.lightView = DirectX::XMMatrixTranspose(lightView * projection);
 
