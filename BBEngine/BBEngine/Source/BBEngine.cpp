@@ -75,11 +75,11 @@ namespace BBE
 
         m_Window.m_Keyboard.EnableAutorepeat();
 
-        m_DirectionalLight = DirectionalLight(
-            Vector3(0.0f, -1.0f, 0.0f),
-            Vector4(0.1f, 0.1f, 0.1f, 1.0f),
-            Vector4(0.5f, 0.5f, 0.5f, 1.0f)
-        );
+        //m_DirectionalLight = DirectionalLight(
+        //    Vector3(0.0f, -1.0f, 0.0f),
+        //    Vector4(0.1f, 0.1f, 0.1f, 1.0f),
+        //    Vector4(0.5f, 0.5f, 0.5f, 1.0f)
+        //);
 
         m_PointLights.Push_Back(PointLight(
             Vector3(-5.0f, 2.0f, 0.0f),
@@ -89,7 +89,7 @@ namespace BBE
             1000.0f
         ));
 
-        //m_PointLights.Push_Back(PointLight(
+        //m_PointLights.Push_Back(PointLight(1
         //    Vector3(6.0f, 2.0f, 0.0f),
         //    Vector3(0.0f, 0.2f, 0.0f),
         //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
@@ -174,7 +174,7 @@ namespace BBE
         m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
 
         m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
-        m_Cam2.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
+        m_Cam2.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 100.f));
 
         m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.SetCamera(&m_Cam1);
@@ -247,13 +247,13 @@ namespace BBE
     {
         ImGui::Begin("GameWindow");
         {
-            //for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-            //{
-            //    ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
-            //}
+            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+            {
+                ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+            }
 
             //ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-            ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+            //ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
         }
         ImGui::End();
 
@@ -357,6 +357,7 @@ namespace BBE
         m_SpotLights[a_Index].lightView = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetCamera()->GetProjection());
 
         m_Cam2.m_ViewMatrix = lightView;
+        m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.SetCamera(&m_Cam2);
         m_Graphics.SetDepthStencilTarget(m_SLTextureDepthStencilViews[a_Index]);
 
@@ -419,53 +420,6 @@ namespace BBE
     {
         Camera* cam = m_Graphics.GetCamera();
         Keyboard& kBoard = m_Window.m_Keyboard;
-
-        //while (!kBoard.KeyIsEmpty())
-        //{
-        //    Keyboard::Event kEvent = kBoard.ReadKey();
-        //    switch (kEvent.GetCode())
-        //    {
-        //    case 'W':
-        //        cam->camForwardMove += 0.1f;
-        //        break;
-        //    case 'S':
-        //        cam->camForwardMove += -0.1f;
-        //        break;
-        //    case 'A':
-        //        cam->camRightMove += -0.1f;
-        //        break;
-        //    case 'D':
-        //        cam->camRightMove += 0.1f;
-        //        break;
-        //    case VK_NUMPAD1:
-        //        cam->camUpMove = 0.1f;
-        //        break;
-        //    case VK_NUMPAD0:
-        //        cam->camUpMove = -0.1f;
-        //        break;
-        //    case VK_LEFT:
-        //        cam->camYaw += -0.025f;
-        //        break;
-        //    case VK_RIGHT:
-        //        cam->camYaw += 0.025f;
-        //        break;
-        //    case VK_UP:
-        //        cam->camPitch += -0.025f;
-        //        break;
-        //    case VK_DOWN:
-        //        cam->camPitch += 0.025f;
-        //        break;
-        //    case '1':
-        //         m_Graphics.SetCamera(&m_Cam1);
-        //        break;
-        //    case '2':
-        //         m_Graphics.SetCamera(&m_Cam2);
-        //         break;
-        //    default:
-        //        break;
-        //    }
-        //}
-
 
         if (kBoard.KeyIsPressed('W'))
         {

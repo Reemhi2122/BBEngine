@@ -3,10 +3,16 @@
 
 #include "Utility/BBTimer.h"
 #include "Utility/BBMemory.h"
-#include "Drawable/Skybox.h"
-#include "Drawable/Model.h"
-#include "Drawable/DrawToTexture.h"
+
 #include "GameLib/GameObject.h"
+
+#include "Containers/FixedArray.h"
+#include "Containers/Vector.h"
+
+//Graphics includes
+#include "Drawable/Skybox.h"
+#include "Drawable/DrawToTexture.h"
+#include "Drawable/Model.h"
 
 #include "DepthStencil.h"
 
@@ -14,11 +20,9 @@
 #include "Lights/SpotLight.h"
 #include "Lights/DirectionalLight.h"
 
-#include "Containers/FixedArray.h"
 #include "Lights.h"
 #include "Vertexconstant.h"
 
-#include "Containers/Vector.h"
 
 namespace BBE {
 	class BBEngine {
