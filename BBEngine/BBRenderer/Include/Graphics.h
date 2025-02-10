@@ -81,9 +81,10 @@ public:
 	void CreateSpotLightDepthMapArray();
 	void CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
 
-	ID3D11ShaderResourceView* GetDirectionLightDepthMapRSV() { return m_DirLightDepthBufferSRV; };
-	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV() { return m_PointLightDepthCubeArraySRV; };
-	ID3D11ShaderResourceView* GetSpotLightDepthMapArrayRSV() { return m_SpotLightsDepthArraySRV; };
+	ID3D11ShaderResourceView* GetDirectionLightDepthMapRSV()	{ return m_DirLightDepthBufferSRV; };
+	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV()	{ return m_PointLightDepthCubeArraySRV; };
+	ID3D11ShaderResourceView* GetSpotLightDepthMapArrayRSV()	{ return m_SpotLightsDepthArraySRV; };
+	ID3D11ShaderResourceView* GetGameViewRSV()					{ return m_GameWindowSRV; };
 
 	TMPHANDLE CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc = "main");
 	void BindShader(ShaderType a_Type, TMPHANDLE a_Shader);
@@ -107,9 +108,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_Target;
 	Microsoft::WRL::ComPtr<ID3D11DepthStencilView>	m_DepthStencilView;
 
-	ID3D11Texture2D*			m_TextureTarget = nullptr;
-	ID3D11RenderTargetView*		m_TextureRenderTargetView = nullptr;
-	ID3D11ShaderResourceView*	m_TextureShaderResourceView = nullptr;
+	ID3D11Texture2D*			m_GameWindowRT = nullptr;
+	ID3D11RenderTargetView*		m_GameWindowRTV = nullptr;
+	ID3D11ShaderResourceView*   m_GameWindowSRV = nullptr;
 	
 	ID3D11Texture2D*			m_TextureCubeMap = nullptr;
 	ID3D11SamplerState*			m_DepthTextureSampler = nullptr;

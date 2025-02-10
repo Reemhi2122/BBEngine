@@ -184,6 +184,7 @@ namespace BBE
     float incr = 0;
     void BBEngine::Update()
     {
+        m_Graphics.SetGameViewRenderTarget();
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
         m_Skybox->Draw(m_Graphics);
 
@@ -228,6 +229,7 @@ namespace BBE
         m_Graphics.UnbindSRV(3);
         m_Graphics.UnbindSRV(4);
 
+        m_Graphics.ResetRenderTarget();
         RenderDebugOptions();
         DrawUI();
 
@@ -245,7 +247,7 @@ namespace BBE
     float cx = -20.0f, cy = 50.0f, cz = 0.0f;
     void BBEngine::DrawUI()
     {
-        ImGui::Begin("GameWindow");
+        ImGui::Begin("ShadowMapWindow");
         {
             for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
             {
@@ -254,6 +256,13 @@ namespace BBE
 
             //ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
             //ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+        }
+        ImGui::End();
+
+        ImGui::Begin("GameWindow");
+        {
+            ImVec2 size = ImGui::GetWindowSize();
+            ImGui::Image((void*)m_Graphics.GetGameViewRSV(), size);
         }
         ImGui::End();
 
@@ -340,7 +349,7 @@ namespace BBE
 
         m_Cam2.SetProjection(oldProjection);
         m_Cam2.SetViewPort(1024, 1024);
-        m_Graphics.ResetRenderTarget();
+        m_Graphics.SetGameViewRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
 
     }
@@ -369,7 +378,7 @@ namespace BBE
             obj->GetModel()->ResetShaders();
         }
 
-        m_Graphics.ResetRenderTarget();
+        m_Graphics.SetGameViewRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
     }
 
@@ -412,7 +421,7 @@ namespace BBE
 
         }
 
-        m_Graphics.ResetRenderTarget();
+        m_Graphics.SetGameViewRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
     }
 
@@ -508,8 +517,6 @@ namespace BBE
 
     void BBEngine::RenderDebugOptions()
     {
-        //ImGui::ShowDemoWindow(&show_demo_window);0
-        
         if (ImGui::Begin("Game Options"))
         {
             static int curVShader = 0;

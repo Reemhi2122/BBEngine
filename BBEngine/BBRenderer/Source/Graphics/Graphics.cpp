@@ -49,10 +49,9 @@ Graphics::Graphics(HWND a_HWnd)
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
 
-#if 0
-	D3D11_TEXTURE2D_DESC tex_desc;
-	ZeroMemory(&tex_desc, sizeof(tex_desc));
-
+#if 1
+	//Create render texture for imgui
+	D3D11_TEXTURE2D_DESC tex_desc {};
 	tex_desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	tex_desc.Width = 1600u;
 	tex_desc.Height = 900u;
@@ -64,7 +63,7 @@ Graphics::Graphics(HWND a_HWnd)
 	tex_desc.CPUAccessFlags = 0u;
 	tex_desc.MiscFlags = 0u;
 
-	HRESULT res = m_Device->CreateTexture2D(&tex_desc, nullptr, &m_TextureTarget);
+	HRESULT res = m_Device->CreateTexture2D(&tex_desc, nullptr, &m_GameWindowRT);
 
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
@@ -73,14 +72,14 @@ Graphics::Graphics(HWND a_HWnd)
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	m_Device->CreateRenderTargetView(m_TextureTarget, &renderTargetViewDesc, &m_TextureRenderTargetView);
+	m_Device->CreateRenderTargetView(m_GameWindowRT, &renderTargetViewDesc, &m_GameWindowRTV);
 
 	shaderResourceViewDesc.Format = tex_desc.Format;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	m_Device->CreateShaderResourceView(m_TextureTarget, &shaderResourceViewDesc, &m_TextureShaderResourceView);
+	m_Device->CreateShaderResourceView(m_GameWindowRT, &shaderResourceViewDesc, &m_GameWindowSRV);
 #endif
 
 	D3D11_SAMPLER_DESC image_sampler_desc = {};
@@ -261,9 +260,9 @@ Graphics::~Graphics()
 
 void Graphics::SetGameViewRenderTarget() 
 {
-	m_Context->OMSetRenderTargets(1u, &m_TextureRenderTargetView, m_DepthStencilView.Get());
+	m_Context->OMSetRenderTargets(1u, &m_GameWindowRTV, m_DepthStencilView.Get());
 	const float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	m_Context->ClearRenderTargetView(m_TextureRenderTargetView, color);
+	m_Context->ClearRenderTargetView(m_GameWindowRTV, color);
 	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
