@@ -123,12 +123,14 @@ float ShadowCalculationDirectionalLight(float4 fragPosLigthSpace)
 float3 CalculateDirectionalLight(VSOut psin, float4 diffuse, DirectionalLight dirlight, float4 fragPosLigthSpace)
 {
     float3 finalColor = float3(0.0f, 0.0f, 0.0f);
-    finalColor = diffuse * directionalLight.ambient;
 
     finalColor += saturate(dot(directionalLight.dir, psin.normal) * directionalLight.diffuse * diffuse);
     
     float shadow = ShadowCalculationDirectionalLight(fragPosLigthSpace);
     finalColor = finalColor * (1.0 - shadow);
+
+    finalColor = saturate(finalColor + (diffuse * directionalLight.ambient));
+
     return finalColor;
 }
 

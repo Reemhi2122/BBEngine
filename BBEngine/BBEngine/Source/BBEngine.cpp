@@ -75,11 +75,11 @@ namespace BBE
 
         m_Window.m_Keyboard.EnableAutorepeat();
 
-        //m_DirectionalLight = DirectionalLight(
-        //    Vector3(0.0f, -1.0f, 0.0f),
-        //    Vector4(0.1f, 0.1f, 0.1f, 1.0f),
-        //    Vector4(0.5f, 0.5f, 0.5f, 1.0f)
-        //);
+        m_DirectionalLight = DirectionalLight(
+            Vector3(0.0f, -1.0f, 0.0f),
+            Vector4(0.1f, 0.1f, 0.1f, 1.0f),
+            Vector4(0.5f, 0.5f, 0.5f, 1.0f)
+        );
 
         m_PointLights.Push_Back(PointLight(
             Vector3(-5.0f, 2.0f, 0.0f),
@@ -242,7 +242,7 @@ namespace BBE
         }
     }
 
-    float cx = 0.0f, cy = 50.0f, cz = 0.0f;
+    float cx = -20.0f, cy = 50.0f, cz = 0.0f;
     void BBEngine::DrawUI()
     {
         ImGui::Begin("GameWindow");
