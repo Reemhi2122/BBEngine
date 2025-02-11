@@ -73,6 +73,8 @@ namespace BBE
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
 
+        //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
         m_Window.m_Keyboard.EnableAutorepeat();
 
         m_DirectionalLight = DirectionalLight(
@@ -251,7 +253,7 @@ namespace BBE
         {
             for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
             {
-                ImGui::Image((void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+                ImGui::Image((ImTextureID)(void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
             }
 
             //ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
@@ -262,7 +264,7 @@ namespace BBE
         ImGui::Begin("GameWindow");
         {
             ImVec2 size = ImGui::GetWindowSize();
-            ImGui::Image((void*)m_Graphics.GetGameViewRSV(), size);
+            ImGui::Image((ImTextureID)(void*)m_Graphics.GetGameViewRSV(), size);
         }
         ImGui::End();
 
