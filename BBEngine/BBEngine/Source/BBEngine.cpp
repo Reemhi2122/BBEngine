@@ -11,6 +11,8 @@
 #include <iostream>
 #include <cstdint>
 
+#include <stb_image.h>
+
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "imgui_impl_dx11.h"
@@ -166,22 +168,22 @@ namespace BBE
 
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
-        //int XSize = 2, YSize = 2;
-        //for (size_t i = 0; i < XSize; i++) {
-        //    for (size_t y = 0; y < YSize; y++) {
-        //        GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
-        //        m_GameObjects.push_back(sponzaObj);
-        //    }
-        //}
+        int XSize = 2, YSize = 2;
+        for (size_t i = 0; i < XSize; i++) {
+            for (size_t y = 0; y < YSize; y++) {
+                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
+                m_GameObjects.push_back(sponzaObj);
+            }
+        }
 
-        //GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //m_GameObjects.push_back(lanternObj);
+        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        m_GameObjects.push_back(lanternObj);
 
         //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(carObj);
 
-        //GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        //m_GameObjects.push_back(beautifulGameObj);
+        GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        m_GameObjects.push_back(beautifulGameObj);
 
         //Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
@@ -300,7 +302,13 @@ namespace BBE
                 ImGui::Image((ImTextureID)(void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
                 ImGui::TreePop();
             }
+        }
+        ImGui::End();
 
+
+        if (ImGui::Begin("Assets Browser"))
+        {
+            ImGui::ImageButton("TestAsset", (ImTextureID)img, ImVec2(125, 125));
         }
         ImGui::End();
 
@@ -342,6 +350,7 @@ namespace BBE
         {
             ImVec2 size = ImGui::GetWindowSize();
             ImGui::Image((ImTextureID)(void*)m_Graphics.GetGameViewRSV(), size);
+
         }
         ImGui::End();
 
