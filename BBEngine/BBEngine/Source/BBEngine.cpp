@@ -12,6 +12,7 @@
 #include <cstdint>
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
@@ -65,6 +66,17 @@ namespace BBE
         return -1;
     }
 
+    void InitImGui()
+    {
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+        ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImGui::SetNextWindowPos(viewport->Pos);
+        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::SetNextWindowBgAlpha(0.0f);
+    }
+
     void BBEngine::Initialize()
     {
         GLTFParser parser;
@@ -73,7 +85,7 @@ namespace BBE
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
 
-        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+        InitImGui();
 
         m_Window.m_Keyboard.EnableAutorepeat();
 
@@ -191,6 +203,7 @@ namespace BBE
         m_Skybox->Draw(m_Graphics);
 
         CheckInput();
+ 
 
         //m_PointLights[0].position.x = (sin(incr += 0.001f) * 5);
         //m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
@@ -249,6 +262,24 @@ namespace BBE
     float cx = -20.0f, cy = 50.0f, cz = 0.0f;
     void BBEngine::DrawUI()
     {
+        bool open = true;
+
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::Begin("DockSpace Demo", &open, window_flags);
+        ImGui::PopStyleVar(3);
+
+        ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
+        ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
+        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+
+        ImGui::End();
+
         ImGui::Begin("ShadowMapWindow");
         {
             for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
@@ -268,9 +299,11 @@ namespace BBE
         }
         ImGui::End();
 
+        ImGui::Begin("Directional Light");
         ImGui::InputFloat("Cam Transofrm x", &cx);
         ImGui::InputFloat("Cam Transofrm y", &cy);
         ImGui::InputFloat("Cam Transofrm z", &cz);
+        ImGui::End();
 
         ImGui::Begin("Objects");
         {
