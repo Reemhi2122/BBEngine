@@ -166,22 +166,22 @@ namespace BBE
 
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
-        int XSize = 2, YSize = 2;
-        for (size_t i = 0; i < XSize; i++) {
-            for (size_t y = 0; y < YSize; y++) {
-                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
-                m_GameObjects.push_back(sponzaObj);
-            }
-        }
+        //int XSize = 2, YSize = 2;
+        //for (size_t i = 0; i < XSize; i++) {
+        //    for (size_t y = 0; y < YSize; y++) {
+        //        GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
+        //        m_GameObjects.push_back(sponzaObj);
+        //    }
+        //}
 
-        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        m_GameObjects.push_back(lanternObj);
+        //GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        //m_GameObjects.push_back(lanternObj);
 
         //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(carObj);
 
-        GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        m_GameObjects.push_back(beautifulGameObj);
+        //GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        //m_GameObjects.push_back(beautifulGameObj);
 
         //Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
@@ -200,13 +200,13 @@ namespace BBE
     {
         m_Graphics.SetGameViewRenderTarget();
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
-        m_Skybox->Draw(m_Graphics);
 
         CheckInput();
- 
 
         //m_PointLights[0].position.x = (sin(incr += 0.001f) * 5);
         //m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
+
+        m_Skybox->Draw(m_Graphics);
 
         cbPerFrame FrameConstantBuffer;
 
@@ -245,9 +245,7 @@ namespace BBE
         m_Graphics.UnbindSRV(4);
 
         m_Graphics.ResetRenderTarget();
-        RenderDebugOptions();
         DrawUI();
-
         m_Graphics.EndFrame();
     }
 
@@ -282,13 +280,61 @@ namespace BBE
 
         ImGui::Begin("ShadowMapWindow");
         {
-            for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+            if (ImGui::TreeNode("Point Light"))
             {
-                ImGui::Image((ImTextureID)(void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+                for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+                {
+                    ImGui::Image((ImTextureID)(void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+                }
+                ImGui::TreePop();
             }
 
-            //ImGui::Image((void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-            //ImGui::Image((void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+            if (ImGui::TreeNode("Spot Light"))
+            {
+                ImGui::Image((ImTextureID)(void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
+                ImGui::TreePop();
+            }
+
+            if (ImGui::TreeNode("Directional Light"))
+            {
+                ImGui::Image((ImTextureID)(void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+                ImGui::TreePop();
+            }
+
+        }
+        ImGui::End();
+
+        if (ImGui::Begin("Game Options"))
+        {
+            static int curVShader = 0;
+            std::vector<const char*> vShaders;
+            VertexShader* vShaderArray = m_Graphics.GetVertexShaderArray();
+            for (uint32_t i = 0; i < 100; i++)
+            {
+                if (vShaderArray[i].m_Path.empty()) break;
+                vShaders.push_back(vShaderArray[i].m_Path.c_str());
+            }
+
+            ImGui::Combo("VertexShaders", &curVShader, vShaders.data(), vShaders.size());
+            if (ImGui::Button("Reload Vertex Shader"))
+            {
+                m_Graphics.ReloadShader(ShaderType::VertexShader, curVShader);
+            }
+
+            std::vector<const char*> pShaders;
+            PixelShader* pShadersArray = m_Graphics.GetPixelShaderArray();
+            for (uint32_t i = 0; i < 100; i++)
+            {
+                if (pShadersArray[i].m_Path.empty()) break;
+                pShaders.push_back(pShadersArray[i].m_Path.c_str());
+            }
+
+            static int curPShader = 0;
+            ImGui::Combo("PixelShaders", &curPShader, pShaders.data(), pShaders.size());
+            if (ImGui::Button("Reload Pixel Shader"))
+            {
+                m_Graphics.ReloadShader(ShaderType::PixelShader, curPShader);
+            }
         }
         ImGui::End();
 
@@ -515,75 +561,5 @@ namespace BBE
         }
 
         cam->Update();
-    }
-
-    void BBEngine::RenderToTexture() {
-        ID3D11Texture2D* texture;
-        D3D11_TEXTURE2D_DESC tex_desc;
-        tex_desc.Format = DXGI_FORMAT_A8_UNORM;
-        tex_desc.Width = 1024;
-        tex_desc.Height = 1024;
-        tex_desc.MipLevels = 1;
-        tex_desc.ArraySize = 1;
-        tex_desc.SampleDesc.Count = 1;
-        tex_desc.SampleDesc.Quality = 0;
-        tex_desc.Usage = D3D11_USAGE_DEFAULT;
-        tex_desc.BindFlags = D3D11_BIND_RENDER_TARGET;
-        tex_desc.CPUAccessFlags = 0;
-        tex_desc.MiscFlags = 0;
-
-        m_Graphics.GetDevice()->CreateTexture2D(&tex_desc, nullptr, &texture);
-
-        ID3D11RenderTargetView* renderTarget;
-        D3D11_RENDER_TARGET_VIEW_DESC render_desc = {};
-        render_desc.Format = DXGI_FORMAT_A8_UNORM;
-        render_desc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
-        render_desc.Texture2D.MipSlice = 0;
-
-        m_Graphics.GetDevice()->CreateRenderTargetView(texture, &render_desc, &renderTarget);
-
-        m_Graphics.GetContext()->OMSetRenderTargets(1, &renderTarget, nullptr);
-
-        const float color[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-        m_Graphics.GetContext()->ClearRenderTargetView(renderTarget, color);
-
-        m_Graphics.ResetRenderTarget();
-    }
-
-    void BBEngine::RenderDebugOptions()
-    {
-        if (ImGui::Begin("Game Options"))
-        {
-            static int curVShader = 0;
-            std::vector<const char*> vShaders;
-            VertexShader* vShaderArray = m_Graphics.GetVertexShaderArray();
-            for (uint32_t i = 0; i < 100; i++)
-            {
-                if (vShaderArray[i].m_Path.empty()) break;
-                vShaders.push_back(vShaderArray[i].m_Path.c_str());
-            }
-            
-            ImGui::Combo("VertexShaders", &curVShader, vShaders.data(), vShaders.size());
-            if (ImGui::Button("Reload Vertex Shader"))
-            {
-                m_Graphics.ReloadShader(ShaderType::VertexShader, curVShader);
-            }
-
-            std::vector<const char*> pShaders;
-            PixelShader* pShadersArray = m_Graphics.GetPixelShaderArray();
-            for (uint32_t i = 0; i < 100; i++)
-            {
-                if (pShadersArray[i].m_Path.empty()) break;
-                pShaders.push_back(pShadersArray[i].m_Path.c_str());
-            }
-
-            static int curPShader = 0;
-            ImGui::Combo("PixelShaders", &curPShader, pShaders.data(), pShaders.size());
-            if (ImGui::Button("Reload Pixel Shader"))
-            {
-                m_Graphics.ReloadShader(ShaderType::PixelShader, curPShader);
-            }
-        }
-        ImGui::End();
     }
 }

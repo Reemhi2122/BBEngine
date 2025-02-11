@@ -50,12 +50,11 @@ Graphics::Graphics(HWND a_HWnd)
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
 
 #if 1
-	//Create render texture for imgui
 	D3D11_TEXTURE2D_DESC tex_desc {};
 	tex_desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	tex_desc.Width = 1600u;
 	tex_desc.Height = 900u;
-	tex_desc.MipLevels = 1u;
+	tex_desc.MipLevels = 0u;
 	tex_desc.ArraySize = 1u;
 	tex_desc.SampleDesc.Count = 1u;
 	tex_desc.Usage = D3D11_USAGE_DEFAULT;
@@ -66,14 +65,13 @@ Graphics::Graphics(HWND a_HWnd)
 	HRESULT res = m_Device->CreateTexture2D(&tex_desc, nullptr, &m_GameWindowRT);
 
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
-	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-
 	renderTargetViewDesc.Format = tex_desc.Format;
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	m_Device->CreateRenderTargetView(m_GameWindowRT, &renderTargetViewDesc, &m_GameWindowRTV);
 
+	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
 	shaderResourceViewDesc.Format = tex_desc.Format;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
@@ -261,9 +259,6 @@ Graphics::~Graphics()
 void Graphics::SetGameViewRenderTarget() 
 {
 	m_Context->OMSetRenderTargets(1u, &m_GameWindowRTV, m_DepthStencilView.Get());
-	const float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	m_Context->ClearRenderTargetView(m_GameWindowRTV, color);
-	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Graphics::SetDepthStencilTarget(ID3D11DepthStencilView* a_Target)
@@ -312,6 +307,7 @@ void Graphics::ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept
 {
 	const float color[] = { a_Red, a_Green, a_Blue, 1.0f };
 	m_Context->ClearRenderTargetView(m_Target.Get(), color);
+	m_Context->ClearRenderTargetView(m_GameWindowRTV, color);
 	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 
 	ImGui_ImplDX11_NewFrame();

@@ -14,8 +14,11 @@ VSOut main(float3 pos : Position)
 {
     VSOut output;
     
+    matrix MVP = mul(transform, WVP);
+    output.pos = mul(float4(pos, 1.0f), MVP);
+
     output.worldPos = pos;
-    output.pos = mul(float4(pos, 0.0f), WVP);
-    output.pos.z = output.pos.w;
+    // output.pos = mul(float4(pos, 0.0f), WVP);
+    // output.pos.z = output.pos.w;
     return output;
 }

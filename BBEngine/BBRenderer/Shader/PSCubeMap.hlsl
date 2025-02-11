@@ -9,5 +9,6 @@ struct VSOut
 
 float4 main(VSOut psin) : SV_Target
 {
-    return tex.Sample(sam, psin.worldPos);
+    // return tex.Sample(sam, psin.worldPos);
+    return float4(1, 1, 1, 1);
 }
