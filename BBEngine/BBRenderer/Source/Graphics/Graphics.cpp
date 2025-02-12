@@ -477,6 +477,13 @@ void Graphics::CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStenc
 	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightsDepthArray, &TextureDepthStencilDesc, a_DepthStencilArray));
 }
 
+//uint32_t Graphics::CreateTexture(const char* a_Path)
+//{
+//	Texture newTexture = Texture(*this, a_Path);
+//	m_TextureList.push_back(newTexture);
+//	return (m_TextureList.size() - 1);
+//}
+
 //////////////////////////////
 //	Old Code
 //////////////////////////////

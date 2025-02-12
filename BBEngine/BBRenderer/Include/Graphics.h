@@ -81,6 +81,9 @@ public:
 	void CreateSpotLightDepthMapArray();
 	void CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
 
+	//uint32_t CreateTexture(const char* a_Path);
+
+
 	ID3D11ShaderResourceView* GetDirectionLightDepthMapRSV()	{ return m_DirLightDepthBufferSRV; };
 	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV()	{ return m_PointLightDepthCubeArraySRV; };
 	ID3D11ShaderResourceView* GetSpotLightDepthMapArrayRSV()	{ return m_SpotLightsDepthArraySRV; };
@@ -97,7 +100,6 @@ public:
 
 	ID3D11ShaderResourceView* m_TextureDepthSRV[6];
 	ID3D11ShaderResourceView* m_SpotLightsDepthTest = nullptr;
-
 
 private:
 	Camera* m_Camera;
@@ -123,6 +125,8 @@ private:
 
 	ID3D11Texture2D*			m_SpotLightsDepthArray = nullptr;
 	ID3D11ShaderResourceView*	m_SpotLightsDepthArraySRV = nullptr;
+
+	//std::vector<Texture>		m_TextureList;
 
 	uint32_t			m_VertexIndex = 0u;
 	VertexShader		m_VertexShaders[100u];

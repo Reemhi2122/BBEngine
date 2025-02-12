@@ -95,6 +95,8 @@ namespace BBE {
 
 		Skybox* m_Skybox;
 
+		Texture m_EmptyFolderTexture;
+
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;
 		class ThreadPool* m_ThreadPool;

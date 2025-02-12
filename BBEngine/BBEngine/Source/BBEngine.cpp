@@ -168,6 +168,8 @@ namespace BBE
 
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
+        m_EmptyFolderTexture = Texture(m_Graphics, "Assets/Image/Icons/closed_folder.png");
+
         int XSize = 2, YSize = 2;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
@@ -305,10 +307,17 @@ namespace BBE
         }
         ImGui::End();
 
-
         if (ImGui::Begin("Assets Browser"))
         {
-            ImGui::ImageButton("TestAsset", (ImTextureID)img, ImVec2(125, 125));
+            int32_t x, y, c;
+            unsigned char* img = stbi_load("Assets/Image/Icons/closed_folder.png", &x, &y, &c, 4);
+
+
+
+            if (ImGui::ImageButton("TestAsset", (ImTextureID)m_EmptyFolderTexture.GetRSV(), ImVec2(125, 125)))
+            {
+
+            }
         }
         ImGui::End();
 
