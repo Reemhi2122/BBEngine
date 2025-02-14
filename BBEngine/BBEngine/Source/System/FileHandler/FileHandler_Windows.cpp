@@ -23,8 +23,38 @@ namespace BBE {
 
 			return (attrib != INVALID_FILE_ATTRIBUTES &&
 				!(attrib & FILE_ATTRIBUTE_DIRECTORY));
+		}
 
-			return false;
+		bool DirectoryExistBB(std::string a_Path)
+		{
+			DWORD attrib = GetFileAttributes(a_Path.c_str());
+
+			return (attrib != INVALID_FILE_ATTRIBUTES &&
+				(attrib & FILE_ATTRIBUTE_DIRECTORY));
+		}
+
+
+		bool GetDirectoryInfo(std::string a_Path, BBDIRECTORY* a_Dir)
+		{
+			if (!DirectoryExistBB(a_Path))
+			{
+				a_Dir = nullptr;
+				return false;
+			}
+
+			a_Path.append("*");
+			WIN32_FIND_DATAA data;
+			HANDLE previous;
+			previous = FindFirstFile(a_Path.c_str(), &data);
+			FindNextFile(previous, &data);
+
+			while (FindNextFile(previous, &data))
+			{
+			 	a_Dir->files[a_Dir->fileCount].fileName.append(data.cFileName);
+				a_Dir->files[a_Dir->fileCount].type = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? FILETYPE::Directory : FILETYPE::File;
+				a_Dir->fileCount++;
+			}
+			return true;
 		}
 
 		BBFILE CreateFileBB(std::string a_Path)

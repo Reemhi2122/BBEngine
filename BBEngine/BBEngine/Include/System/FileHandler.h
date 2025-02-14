@@ -10,12 +10,32 @@ namespace BBE {
 		
 		using DWORD = unsigned long;
 		using BBFILE = void*;
-
 		using BB_BOOL = int;
 
-		void CreateDirBB(std::string path);
-		bool FileExistsBB(std::string path);
+		enum FILETYPE
+		{
+			Directory,
+			File
+		};
 
+		struct BBFILEINFO
+		{
+			std::string fileName;
+			FILETYPE type;
+		};
+
+		struct BBDIRECTORY
+		{
+			uint32_t fileCount = 0;
+			BBFILEINFO files[100];
+		};
+
+		void CreateDirBB(std::string a_Path);
+		bool FileExistsBB(std::string a_Path);
+		bool DirectoryExistBB(std::string a_Path);
+
+		bool GetDirectoryInfo(std::string a_Path, BBDIRECTORY* a_Dir);
+			
 		BBFILE CreateFileBB(std::string a_Path);
 		BBFILE OpenFileWriteBB(std::string a_Path);
 		BBFILE OpenFileReadBB(std::string a_Path);

@@ -7,6 +7,8 @@
 #include "FileLoaders/Models/GLTFParser.h"
 #include "Vector4.h"
 
+#include "System/FileHandler.h"
+
 #include <chrono>
 #include <iostream>
 #include <cstdint>
@@ -169,6 +171,7 @@ namespace BBE
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
         m_EmptyFolderTexture = Texture(m_Graphics, "Assets/Image/Icons/closed_folder.png");
+        m_FileTexture = Texture(m_Graphics, "Assets/Image/Icons/file.png");
 
         int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
@@ -308,31 +311,33 @@ namespace BBE
         ImGui::End();
 
         if (ImGui::Begin("Assets Browser"))
-        {
-            int32_t x, y, c;
-            unsigned char* img = stbi_load("Assets/Image/Icons/closed_folder.png", &x, &y, &c, 4);
-            
+        {            
+            BBE::BBSystem::BBDIRECTORY dir;
+            BBE::BBSystem::GetDirectoryInfo("Assets\\", &dir);
+
+            const uint32_t imgSize = 64;
+
             ImGuiStyle& style = ImGui::GetStyle();
-
             float PanelSize = ImGui::GetWindowSize().x;
-            uint32_t elementCountSameLine = std::floor(PanelSize / (64 + (style.ItemSpacing.x*2)));
+            uint32_t elementCountSameLine = std::floor(PanelSize / (imgSize + (style.ItemSpacing.x*2)));
 
-            for (uint32_t i = 0; i < 30; i++)
+            for (uint32_t i = 0; i < dir.fileCount; i++)
             {
                 ImGui::PushID(i);
                 if ((i % elementCountSameLine) != 0)
                     ImGui::SameLine();
 
                 ImGui::BeginGroup();
+                ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
 
-                if (ImGui::ImageButton("Folder", (ImTextureID)m_EmptyFolderTexture.GetRSV(), ImVec2(64, 64)))
+                Texture* tex = (dir.files[i].type == BBE::BBSystem::FILETYPE::Directory) ? &m_EmptyFolderTexture : &m_FileTexture;
+
+                if (ImGui::ImageButton("Folder", (ImTextureID)tex->GetRSV(), ImVec2(imgSize, imgSize)))
                 {
-
                 }
-                ImGui::Text("test");
-                
+                ImGui::TextWrapped(dir.files[i].fileName.c_str());
+                ImGui::PopTextWrapPos();
                 ImGui::EndGroup();
-
                 ImGui::PopID();
             }
         }
