@@ -21,7 +21,7 @@ namespace BBE {
 	};
 
 	//TODO(Stan):	Add support for MIME type images
-	struct Texture {
+	struct TextureT {
 		struct {
 			char* m_Path;
 		} image;
@@ -67,16 +67,16 @@ namespace BBE {
 			struct {
 				
 				struct {
-					Texture baseColorTexture;
+					TextureT baseColorTexture;
 					Vector3 baseColorFactor;
-					Texture metallicRoughnessTexture;
+					TextureT metallicRoughnessTexture;
 					uint32_t metallicFactor;
 					uint32_t roughnessFactor;
 				} pbrMetallicRoughness ;
 
-				Texture normalTexture;
-				Texture occlusionTexture;
-				Texture emissiveTexture;
+				TextureT normalTexture;
+				TextureT occlusionTexture;
+				TextureT emissiveTexture;
 				Vector3 emissiveFactor;
 
 			} Material;

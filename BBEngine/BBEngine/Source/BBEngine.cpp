@@ -159,18 +159,18 @@ namespace BBE
 
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
-        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
-        m_Models.push_back(lantern);
+        //Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
+        //m_Models.push_back(lantern);
         //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(car);
-        Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
-        m_Models.push_back(aBeautifulGame);
+        //Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
+        //m_Models.push_back(aBeautifulGame);
 
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
         m_EmptyFolderTexture = Texture(m_Graphics, "Assets/Image/Icons/closed_folder.png");
 
-        int XSize = 2, YSize = 2;
+        int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
@@ -178,14 +178,14 @@ namespace BBE
             }
         }
 
-        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        m_GameObjects.push_back(lanternObj);
+        //GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        //m_GameObjects.push_back(lanternObj);
 
         //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(carObj);
 
-        GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        m_GameObjects.push_back(beautifulGameObj);
+        //GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        //m_GameObjects.push_back(beautifulGameObj);
 
         //Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
@@ -311,12 +311,29 @@ namespace BBE
         {
             int32_t x, y, c;
             unsigned char* img = stbi_load("Assets/Image/Icons/closed_folder.png", &x, &y, &c, 4);
+            
+            ImGuiStyle& style = ImGui::GetStyle();
 
+            float PanelSize = ImGui::GetWindowSize().x;
+            uint32_t elementCountSameLine = std::floor(PanelSize / (64 + (style.ItemSpacing.x*2)));
 
-
-            if (ImGui::ImageButton("TestAsset", (ImTextureID)m_EmptyFolderTexture.GetRSV(), ImVec2(125, 125)))
+            for (uint32_t i = 0; i < 30; i++)
             {
+                ImGui::PushID(i);
+                if ((i % elementCountSameLine) != 0)
+                    ImGui::SameLine();
 
+                ImGui::BeginGroup();
+
+                if (ImGui::ImageButton("Folder", (ImTextureID)m_EmptyFolderTexture.GetRSV(), ImVec2(64, 64)))
+                {
+
+                }
+                ImGui::Text("test");
+                
+                ImGui::EndGroup();
+
+                ImGui::PopID();
             }
         }
         ImGui::End();
