@@ -48,6 +48,8 @@ namespace BBE {
 		void CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index);
 		void CalculateLightShadowMapPointLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index);
 
+		std::vector<GameObject*>* GetGameObjects() { return &m_GameObjects; };
+
 	private:
 		BBWindow m_Window;
 		BBTimer m_Timer;
@@ -94,9 +96,6 @@ namespace BBE {
 		Camera m_Cam2;
 
 		Skybox* m_Skybox;
-
-		Texture m_EmptyFolderTexture;
-		Texture m_FileTexture;
 
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;

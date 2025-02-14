@@ -21,6 +21,8 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
+#include "UserInterface.h"
+
 #include "Camera.h"
 #include "FileLoaders/Image/BMPLoader.h"
 
@@ -71,17 +73,6 @@ namespace BBE
         return -1;
     }
 
-    void InitImGui()
-    {
-        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
-        ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(viewport->Size);
-        ImGui::SetNextWindowViewport(viewport->ID);
-        ImGui::SetNextWindowBgAlpha(0.0f);
-    }
-
     void BBEngine::Initialize()
     {
         GLTFParser parser;
@@ -90,7 +81,7 @@ namespace BBE
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
 
-        InitImGui();
+        BBE:UI::InitializeUI(m_Graphics, &m_GameObjects);
 
         m_Window.m_Keyboard.EnableAutorepeat();
 
@@ -164,15 +155,13 @@ namespace BBE
         m_Models.push_back(Sponza);
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(lantern);
+
         //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(car);
         //Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(aBeautifulGame);
 
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
-
-        m_EmptyFolderTexture = Texture(m_Graphics, "Assets/Image/Icons/closed_folder.png");
-        m_FileTexture = Texture(m_Graphics, "Assets/Image/Icons/file.png");
 
         int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
@@ -184,6 +173,9 @@ namespace BBE
 
         GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Lantern", lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         m_GameObjects.push_back(lanternObj);
+
+        GameObject* lanternObj2 = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Lantern2", lantern, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        m_GameObjects.push_back(lanternObj2);
 
         //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(carObj);
@@ -253,7 +245,9 @@ namespace BBE
         m_Graphics.UnbindSRV(4);
 
         m_Graphics.ResetRenderTarget();
-        DrawUI();
+       
+        BBE:UI::UpdateUI(m_Graphics);
+
         m_Graphics.EndFrame();
     }
 
@@ -265,201 +259,9 @@ namespace BBE
         }
     }
 
-    
-    std::string curPath = "Assets\\";    
-    std::stack<std::string> history;
-    float cx = -20.0f, cy = 50.0f, cz = 0.0f;
-    void BBEngine::DrawUI()
-    {
-        bool open = true;
-
-        ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-        window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("DockSpace Demo", &open, window_flags);
-        ImGui::PopStyleVar(3);
-
-        ImGuiID dockspace_id = ImGui::GetID("MyDockspace");
-        ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
-        ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-
-        ImGui::End();
-
-        ImGui::Begin("ShadowMapWindow");
-        {
-            if (ImGui::TreeNode("Point Light"))
-            {
-                for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-                {
-                    ImGui::Image((ImTextureID)(void*)m_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
-                }
-                ImGui::TreePop();
-            }
-
-            if (ImGui::TreeNode("Spot Light"))
-            {
-                ImGui::Image((ImTextureID)(void*)m_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-                ImGui::TreePop();
-            }
-
-            if (ImGui::TreeNode("Directional Light"))
-            {
-                ImGui::Image((ImTextureID)(void*)m_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
-                ImGui::TreePop();
-            }
-        }
-        ImGui::End();
-
-        ImGuiWindowFlags AssetBrowserFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
-        if (ImGui::Begin("Assets Browser"), true, AssetBrowserFlags)
-        {            
-            BBE::BBSystem::BBDIRECTORY dir;
-            BBE::BBSystem::GetDirectoryInfo(curPath, &dir);
-
-            if(ImGui::Button("Revert", ImVec2(100, 30)))
-            {
-                if (history.size() > 0)
-                {
-                    curPath = history.top();
-                    history.pop();
-                }
-            }
-            ImGui::SameLine();
-            ImGui::Text(curPath.c_str());
-
-            const uint32_t imgSize = 64;
-            ImGuiStyle& style = ImGui::GetStyle();
-            float PanelSize = ImGui::GetWindowSize().x;
-            uint32_t elementCountSameLine = std::floor(PanelSize / (imgSize + (style.ItemSpacing.x*2)));
-            for (uint32_t i = 0; i < dir.fileCount; i++)
-            {
-                ImGui::PushID(i);
-                if ((i % elementCountSameLine) != 0)
-                    ImGui::SameLine();
-
-                ImGui::BeginGroup();
-                ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
-
-                Texture* tex = (dir.files[i].type == BBE::BBSystem::FILETYPE::Directory) ? &m_EmptyFolderTexture : &m_FileTexture;
-                if (ImGui::ImageButton("Folder", (ImTextureID)tex->GetRSV(), ImVec2(imgSize, imgSize)))
-                {
-                    history.push(curPath);
-                    curPath.append(dir.files[i].fileName + "\\");
-                }
-
-                ImGui::TextWrapped(dir.files[i].fileName.c_str());
-                ImGui::PopTextWrapPos();
-                ImGui::EndGroup();
-                ImGui::PopID();
-            }
-        }
-        ImGui::End();
-
-        if (ImGui::Begin("Game Options"))
-        {
-            static int curVShader = 0;
-            std::vector<const char*> vShaders;
-            VertexShader* vShaderArray = m_Graphics.GetVertexShaderArray();
-            for (uint32_t i = 0; i < 100; i++)
-            {
-                if (vShaderArray[i].m_Path.empty()) break;
-                vShaders.push_back(vShaderArray[i].m_Path.c_str());
-            }
-
-            ImGui::Combo("VertexShaders", &curVShader, vShaders.data(), vShaders.size());
-            if (ImGui::Button("Reload Vertex Shader"))
-            {
-                m_Graphics.ReloadShader(ShaderType::VertexShader, curVShader);
-            }
-
-            std::vector<const char*> pShaders;
-            PixelShader* pShadersArray = m_Graphics.GetPixelShaderArray();
-            for (uint32_t i = 0; i < 100; i++)
-            {
-                if (pShadersArray[i].m_Path.empty()) break;
-                pShaders.push_back(pShadersArray[i].m_Path.c_str());
-            }
-
-            static int curPShader = 0;
-            ImGui::Combo("PixelShaders", &curPShader, pShaders.data(), pShaders.size());
-            if (ImGui::Button("Reload Pixel Shader"))
-            {
-                m_Graphics.ReloadShader(ShaderType::PixelShader, curPShader);
-            }
-        }
-        ImGui::End();
-
-        ImGui::Begin("GameWindow");
-        {
-            ImVec2 size = ImGui::GetWindowSize();
-            ImGui::Image((ImTextureID)(void*)m_Graphics.GetGameViewRSV(), size);
-
-        }
-        ImGui::End();
-
-        ImGui::Begin("Directional Light");
-        ImGui::InputFloat("Cam Transofrm x", &cx);
-        ImGui::InputFloat("Cam Transofrm y", &cy);
-        ImGui::InputFloat("Cam Transofrm z", &cz);
-        ImGui::End();
-
-        GameObject* inspectedObj = nullptr;
-
-        ImGui::Begin("Hierarchy");
-        {
-            for (uint32_t i = 0; i < m_GameObjects.size(); i++)
-            {
-                if (ImGui::CollapsingHeader(m_GameObjects[i]->GetName()))
-                {
-                    inspectedObj = m_GameObjects[i];
-                    NodeContainer con = m_GameObjects[i]->GetModel()->GetNodes();
-                    for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
-                    {
-                        ModelNodes& node = con.data[nodeIndex];
-                        char subnodename[255];
-                        itoa(nodeIndex, subnodename, 10);
-                        strcat(subnodename, " subitem ");
-                        strcat(subnodename, m_GameObjects[i]->GetName());
-                        if (ImGui::CollapsingHeader(subnodename))
-                        {
-                            ImGui::PushID(i * nodeIndex);
-                            if (
-                                ImGui::InputFloat3("subTransform", node.position.GetXYZ()) ||
-                                ImGui::InputFloat4("subRotation", node.rotation.GetXYZ()) ||
-                                ImGui::InputFloat3("subScale", node.scale.GetXYZ())
-                                ) 
-                            {
-                                node.transformBuf->UpdateTransform(node.position, node.rotation, node.scale);
-                            }
-                            ImGui::PopID();
-                        }
-                    }
-                }
-            }
-        }
-        ImGui::End();
-    
-        ImGui::Begin("Inspector");
-        {
-            if (inspectedObj)
-            {
-                ImGui::Text(inspectedObj->GetName());
-                ImGui::Spacing();
-                ImGui::Text("Transform");
-                ImGui::InputFloat3("Position", inspectedObj->GetPositionRef().GetXYZ());
-                ImGui::InputFloat3("Rotation", inspectedObj->GetRotationRef().GetXYZ());
-                ImGui::InputFloat3("Scale", inspectedObj->GetScaleRef().GetXYZ());
-            }
-        }
-        ImGui::End();
-    }
-
     void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
     {
+        float cx = -20.0f, cy = 50.0f, cz = 0.0f;
         Vector3 FakePos = Vector3(cx, cy, cz);
         //Vector3 focusPoint = FakePos + Vector3(m_DirectionalLight.direction.x, -m_DirectionalLight.direction.y, m_DirectionalLight.direction.z);
         Vector3 focusPoint = Vector3(0, 0, 0);
