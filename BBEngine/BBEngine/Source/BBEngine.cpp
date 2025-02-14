@@ -162,8 +162,8 @@ namespace BBE
 
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
-        //Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
-        //m_Models.push_back(lantern);
+        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
+        m_Models.push_back(lantern);
         //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(car);
         //Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
@@ -177,18 +177,18 @@ namespace BBE
         int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
-                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
+                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Sponza One", Sponza, Vector3(i * 50, 0, y * 50));
                 m_GameObjects.push_back(sponzaObj);
             }
         }
 
-        //GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //m_GameObjects.push_back(lanternObj);
+        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Lantern", lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        m_GameObjects.push_back(lanternObj);
 
-        //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(carObj);
 
-        //GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
+        //GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(beautifulGameObj);
 
         //Cameras
@@ -407,28 +407,23 @@ namespace BBE
         ImGui::InputFloat("Cam Transofrm z", &cz);
         ImGui::End();
 
-        ImGui::Begin("Objects");
+        GameObject* inspectedObj = nullptr;
+
+        ImGui::Begin("Hierarchy");
         {
             for (uint32_t i = 0; i < m_GameObjects.size(); i++)
             {
-                char name[8];
-                itoa(i, name, 10);
-                if (ImGui::CollapsingHeader(name))
+                if (ImGui::CollapsingHeader(m_GameObjects[i]->GetName()))
                 {
-                    ImGui::InputFloat3("Transform", m_GameObjects[i]->GetPositionRef().GetXYZ());
-                    ImGui::InputFloat3("Rotation",  m_GameObjects[i]->GetRotationRef().GetXYZ());
-                    ImGui::InputFloat3("Scale",     m_GameObjects[i]->GetScaleRef().GetXYZ());
-
+                    inspectedObj = m_GameObjects[i];
                     NodeContainer con = m_GameObjects[i]->GetModel()->GetNodes();
-
                     for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
                     {
                         ModelNodes& node = con.data[nodeIndex];
-
                         char subnodename[255];
                         itoa(nodeIndex, subnodename, 10);
-                        strcat(subnodename, " subitem");
-                        strcat(subnodename, name);
+                        strcat(subnodename, " subitem ");
+                        strcat(subnodename, m_GameObjects[i]->GetName());
                         if (ImGui::CollapsingHeader(subnodename))
                         {
                             ImGui::PushID(i * nodeIndex);
@@ -446,7 +441,20 @@ namespace BBE
                 }
             }
         }
-
+        ImGui::End();
+    
+        ImGui::Begin("Inspector");
+        {
+            if (inspectedObj)
+            {
+                ImGui::Text(inspectedObj->GetName());
+                ImGui::Spacing();
+                ImGui::Text("Transform");
+                ImGui::InputFloat3("Position", inspectedObj->GetPositionRef().GetXYZ());
+                ImGui::InputFloat3("Rotation", inspectedObj->GetRotationRef().GetXYZ());
+                ImGui::InputFloat3("Scale", inspectedObj->GetScaleRef().GetXYZ());
+            }
+        }
         ImGui::End();
     }
 
