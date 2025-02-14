@@ -12,6 +12,7 @@
 #include <chrono>
 #include <iostream>
 #include <cstdint>
+#include <stack>
 
 #include <stb_image.h>
 
@@ -264,6 +265,9 @@ namespace BBE
         }
     }
 
+    
+    std::string curPath = "Assets\\";    
+    std::stack<std::string> history;
     float cx = -20.0f, cy = 50.0f, cz = 0.0f;
     void BBEngine::DrawUI()
     {
@@ -310,17 +314,27 @@ namespace BBE
         }
         ImGui::End();
 
-        if (ImGui::Begin("Assets Browser"))
+        ImGuiWindowFlags AssetBrowserFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
+        if (ImGui::Begin("Assets Browser"), true, AssetBrowserFlags)
         {            
             BBE::BBSystem::BBDIRECTORY dir;
-            BBE::BBSystem::GetDirectoryInfo("Assets\\", &dir);
+            BBE::BBSystem::GetDirectoryInfo(curPath, &dir);
+
+            if(ImGui::Button("Revert", ImVec2(100, 30)))
+            {
+                if (history.size() > 0)
+                {
+                    curPath = history.top();
+                    history.pop();
+                }
+            }
+            ImGui::SameLine();
+            ImGui::Text(curPath.c_str());
 
             const uint32_t imgSize = 64;
-
             ImGuiStyle& style = ImGui::GetStyle();
             float PanelSize = ImGui::GetWindowSize().x;
             uint32_t elementCountSameLine = std::floor(PanelSize / (imgSize + (style.ItemSpacing.x*2)));
-
             for (uint32_t i = 0; i < dir.fileCount; i++)
             {
                 ImGui::PushID(i);
@@ -331,10 +345,12 @@ namespace BBE
                 ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
 
                 Texture* tex = (dir.files[i].type == BBE::BBSystem::FILETYPE::Directory) ? &m_EmptyFolderTexture : &m_FileTexture;
-
                 if (ImGui::ImageButton("Folder", (ImTextureID)tex->GetRSV(), ImVec2(imgSize, imgSize)))
                 {
+                    history.push(curPath);
+                    curPath.append(dir.files[i].fileName + "\\");
                 }
+
                 ImGui::TextWrapped(dir.files[i].fileName.c_str());
                 ImGui::PopTextWrapPos();
                 ImGui::EndGroup();
