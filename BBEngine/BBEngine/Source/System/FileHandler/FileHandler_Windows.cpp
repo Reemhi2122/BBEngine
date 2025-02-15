@@ -50,14 +50,21 @@ namespace BBE {
 
 			while (FindNextFile(previous, &data))
 			{
-			 	a_Dir->files[a_Dir->fileCount].fileName.append(data.cFileName);
-				a_Dir->files[a_Dir->fileCount].type = data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? FILETYPE::Directory : FILETYPE::File;
-				a_Dir->fileCount++;
+				if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+				{
+					a_Dir->directories[a_Dir->directoryCount].name.append(data.cFileName);
+					a_Dir->directoryCount++;
+				}
+				else
+				{
+					a_Dir->files[a_Dir->fileCount].name.append(data.cFileName);
+					a_Dir->fileCount++;
+				}
 			}
 			return true;
 		}
 
-		BBFILE CreateFileBB(std::string a_Path)
+		BBFHANDLE CreateFileBB(std::string a_Path)
 		{
 			return CreateFile(
 				a_Path.c_str(),
@@ -69,7 +76,7 @@ namespace BBE {
 				NULL);
 		}
 
-		BBFILE OpenFileWriteBB(std::string a_Path) {
+		BBFHANDLE OpenFileWriteBB(std::string a_Path) {
 			return CreateFile(
 				a_Path.c_str(), 
 				FILE_GENERIC_WRITE,
@@ -80,7 +87,7 @@ namespace BBE {
 				NULL);
 		}
 
-		BBFILE OpenFileReadBB(std::string a_Path) {
+		BBFHANDLE OpenFileReadBB(std::string a_Path) {
 			return CreateFile(
 				a_Path.c_str(),
 				GENERIC_READ,
@@ -91,14 +98,14 @@ namespace BBE {
 				NULL);
 		}
 
-		uint32_t GetFileSize(BBFILE a_Handle)
+		uint32_t GetFileSize(BBFHANDLE a_Handle)
 		{
 			LARGE_INTEGER fileSize;
 			BOOL res = GetFileSizeEx(a_Handle, &fileSize);
 			return static_cast<uint32_t>(fileSize.LowPart);
 		}
 
-		void ReadFileBB(BBFILE a_Handle, unsigned char* a_Buffer, uint32_t a_Size) {
+		void ReadFileBB(BBFHANDLE a_Handle, unsigned char* a_Buffer, uint32_t a_Size) {
 			
 			DWORD dwBytesRead = 0;
 			BOOL result = ReadFile(a_Handle, a_Buffer, a_Size, &dwBytesRead, NULL);
@@ -112,24 +119,24 @@ namespace BBE {
 
 		}
 
-		void ReadFileAtBB(BBFILE a_Handle, unsigned char* a_Buffer, uint32_t a_Size, uint32_t a_Offset) 
+		void ReadFileAtBB(BBFHANDLE a_Handle, unsigned char* a_Buffer, uint32_t a_Size, uint32_t a_Offset)
 		{
 			SetFilePointer(a_Handle, a_Offset, NULL, FILE_BEGIN);
 			ReadFileBB(a_Handle, a_Buffer, a_Size);
 			SetFilePointer(a_Handle, 0, NULL, FILE_BEGIN);
 		}
 
-		void WriteToFileBB(BBFILE a_File, std::string a_Message)
+		void WriteToFileBB(BBFHANDLE a_File, std::string a_Message)
 		{
 			WriteFile(a_File, a_Message.c_str(), a_Message.length(), NULL, NULL);
 		}
 
-		void WriteToFileBinary(BBFILE a_File, void* buffer, uint32_t a_Size) {
+		void WriteToFileBinary(BBFHANDLE a_File, void* buffer, uint32_t a_Size) {
 			BOOL res = WriteFile(a_File, buffer, a_Size, NULL, NULL);
 			BB_Assert((res == TRUE), "Couldn't write to file!");
 		}
 
-		void CloseFileBB(BBFILE a_File)
+		void CloseFileBB(BBFHANDLE a_File)
 		{
 			CloseHandle(a_File);
 		}

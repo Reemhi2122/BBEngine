@@ -43,7 +43,7 @@ namespace BBE {
 			bool Bad() const noexcept;
 
 		private:
-			BBFILE m_File;
+			BBFHANDLE m_File;
 
 			size_t m_BufferPos;
 			size_t m_BufferSize;

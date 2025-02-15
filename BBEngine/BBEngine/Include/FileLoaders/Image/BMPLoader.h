@@ -61,8 +61,8 @@ namespace BBE {
 		uint8_t* GetBuffer() const;
 
 	private:
-		void WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle);
-		void WriteHeaders(BBSystem::BBFILE& a_FileHandle);
+		void WriteHeadersAndData(BBSystem::BBFHANDLE& a_FileHandle);
+		void WriteHeaders(BBSystem::BBFHANDLE& a_FileHandle);
 
 		void CheckColorHeader(BMPColorHeader& a_ColorHeader);
 		uint32_t MakeStrideAligned(uint32_t align_stride);

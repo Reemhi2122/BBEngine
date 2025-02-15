@@ -15,7 +15,7 @@ namespace BBE {
 		uint32_t ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute, uint8_t* a_DataSize = NULL);
 
 	private:
-		BBSystem::BBFILE m_BinFile;
+		BBSystem::BBFHANDLE m_BinFile;
 	
 		JsonParser m_Parser;
 		GLTFFile* m_GLTFFile;

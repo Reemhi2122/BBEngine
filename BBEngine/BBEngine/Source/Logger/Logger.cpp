@@ -53,7 +53,7 @@ namespace BBE {
 				BB_Assert(0, "Logger - No file found");
 			}
 
-			BBSystem::BBFILE file = BBSystem::OpenFileWriteBB(m_FilePath);
+			BBSystem::BBFHANDLE file = BBSystem::OpenFileWriteBB(m_FilePath);
 			BBSystem::WriteToFileBB(file, a_Message);
 			BBSystem::CloseFileBB(file);
 		}

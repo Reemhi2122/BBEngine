@@ -55,7 +55,7 @@ namespace BBE {
 	
 	void BMP::LoadBMP(const char* a_Name)
 	{
-		BBSystem::BBFILE file;
+		BBSystem::BBFHANDLE file;
 		file = BBSystem::OpenFileReadBB(a_Name);
 
 		if (!file) {
@@ -136,7 +136,7 @@ namespace BBE {
 	
 	void BMP::WriteBMP(const char* a_Name)
 	{
-		BBSystem::BBFILE file;
+		BBSystem::BBFHANDLE file;
 		file = BBSystem::OpenFileWriteBB(a_Name);
 
 		if (!file) {
@@ -193,7 +193,7 @@ namespace BBE {
 		}
 	}
 
-	void BMP::WriteHeaders(BBSystem::BBFILE& a_FileHandle)
+	void BMP::WriteHeaders(BBSystem::BBFHANDLE& a_FileHandle)
 	{
 		BBSystem::WriteToFileBinary(a_FileHandle, &m_FileHeader, sizeof(BMPFileHeader));
 		BBSystem::WriteToFileBinary(a_FileHandle, &m_InfoHeader, sizeof(BMPInfoHeader));
@@ -202,7 +202,7 @@ namespace BBE {
 		}
 	}
 
-	void BMP::WriteHeadersAndData(BBSystem::BBFILE& a_FileHandle)
+	void BMP::WriteHeadersAndData(BBSystem::BBFHANDLE& a_FileHandle)
 	{
 		WriteHeaders(a_FileHandle);
 		uint32_t size = (m_InfoHeader.width * m_InfoHeader.height) * (m_InfoHeader.bitCount / 8);

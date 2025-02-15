@@ -114,7 +114,7 @@ namespace BBE {
 
 	void JsonParser::WriteJson(const char* a_FilePath)
 	{
-		BBSystem::BBFILE file = BBSystem::OpenFileWriteBB(a_FilePath);
+		BBSystem::BBFHANDLE file = BBSystem::OpenFileWriteBB(a_FilePath);
 		std::string out;
 
 		JSONNode* node = m_List.Pop_Front();

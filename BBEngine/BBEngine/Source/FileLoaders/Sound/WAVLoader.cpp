@@ -18,7 +18,7 @@ namespace BBE {
 
 	void WAV::LoadWav(const char* a_FilePath)
 	{
-		BBSystem::BBFILE file;
+		BBSystem::BBFHANDLE file;
 		file = BBSystem::OpenFileReadBB(a_FilePath);
 		
 		if (!file) {
@@ -79,7 +79,7 @@ namespace BBE {
 
 	void WAV::WriteWav(const char* a_FilePath)
 	{
-		BBSystem::BBFILE file;
+		BBSystem::BBFHANDLE file;
 		file = BBSystem::OpenFileWriteBB(a_FilePath);
 
 		if (!file) {

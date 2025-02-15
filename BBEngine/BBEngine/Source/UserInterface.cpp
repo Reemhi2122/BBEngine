@@ -4,7 +4,7 @@
 #include "Bindable/Texture.h"
 
 #include "BBEngine.h"
-
+#include <shellapi.h>
 #include <stack>
 
 //Note(Stan): Prob move this to graphics.h
@@ -103,26 +103,56 @@ namespace BBE
                 ImGuiStyle& style = ImGui::GetStyle();
                 float PanelSize = ImGui::GetWindowSize().x;
                 uint32_t elementCountSameLine = std::max(std::floor(PanelSize / (imgSize + (style.ItemSpacing.x * 2))), 1.0f);
-                for (uint32_t i = 0; i < dir.fileCount; i++)
+
+                uint32_t elementIndex = 0;
+
+                for (uint32_t i = 0; i < dir.directoryCount; i++)
                 {
                     ImGui::PushID(i);
-                    if ((i % elementCountSameLine) != 0)
+                    if ((elementIndex % elementCountSameLine) != 0)
                         ImGui::SameLine();
 
                     ImGui::BeginGroup();
                     ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
 
-                    Texture* tex = (dir.files[i].type == BBE::BBSystem::FILETYPE::Directory) ? &m_EmptyFolderTexture : &m_FileTexture;
-                    if (ImGui::ImageButton("Folder", (ImTextureID)tex->GetRSV(), ImVec2(imgSize, imgSize)))
+                    if (ImGui::ImageButton("Folder", (ImTextureID)m_EmptyFolderTexture.GetRSV(), ImVec2(imgSize, imgSize)))
                     {
                         history.push(curPath);
-                        curPath.append(dir.files[i].fileName + "\\");
+                        curPath.append(dir.directories[i].name + "\\");
                     }
 
-                    ImGui::TextWrapped(dir.files[i].fileName.c_str());
+                    ImGui::TextWrapped(dir.directories[i].name.c_str());
                     ImGui::PopTextWrapPos();
                     ImGui::EndGroup();
                     ImGui::PopID();
+
+                    elementIndex++;
+                }
+
+                if ((elementIndex % elementCountSameLine) != 0)
+                    ImGui::SameLine();
+
+                for (uint32_t i = 0; i < dir.fileCount; i++)
+                {
+                    ImGui::PushID(i);
+                    if ((elementIndex % elementCountSameLine) != 0)
+                        ImGui::SameLine();
+
+                    ImGui::BeginGroup();
+                    ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
+
+                    if (ImGui::ImageButton("Files", (ImTextureID)m_FileTexture.GetRSV(), ImVec2(imgSize, imgSize)))
+                    {
+                        std::string result(curPath + dir.files[i].name);
+                        ShellExecute(0, 0, result.c_str(), 0, 0, SW_SHOW);
+                    }
+
+                    ImGui::TextWrapped(dir.files[i].name.c_str());
+                    ImGui::PopTextWrapPos();
+                    ImGui::EndGroup();
+                    ImGui::PopID();
+
+                    elementIndex++;
                 }
             }
             ImGui::End();
