@@ -14,6 +14,14 @@ namespace BBE
 {
     namespace UI
     {
+        void DrawHierarchy(Graphics& a_Graphics);
+        void DrawAssetBrowser(Graphics& a_Graphics);
+        void DrawInspector(Graphics& a_Graphics);
+
+        void DrawRandomUI(Graphics& a_Graphics);
+
+        static GameObject* g_InspectedObj;
+
         //Note(Stan): Local objects reference, look into changing this?
         static std::vector<GameObject*>* m_GameObjectsPointer;
 
@@ -57,31 +65,55 @@ namespace BBE
             ImGui::End();
             ImGui::PopStyleVar(3);
 
-            ImGui::Begin("ShadowMapWindow");
+
+            DrawHierarchy(a_Graphics);
+            DrawAssetBrowser(a_Graphics);
+            DrawInspector(a_Graphics);
+            DrawRandomUI(a_Graphics);
+        }
+
+        void DrawHierarchy(Graphics& a_Graphics)
+        {
+            g_InspectedObj = nullptr;
+            ImGui::Begin("Hierarchy");
             {
-                if (ImGui::TreeNode("Point Light"))
+                for (uint32_t i = 0; i < m_GameObjectsPointer->size(); i++)
                 {
-                    for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+                    if (ImGui::TreeNode((*m_GameObjectsPointer)[i]->GetName()))
                     {
-                        ImGui::Image((ImTextureID)(void*)a_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+                        g_InspectedObj = (*m_GameObjectsPointer)[i];
+                        NodeContainer con = (*m_GameObjectsPointer)[i]->GetModel()->GetNodes();
+                        for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
+                        {
+                            ModelNodes& node = con.data[nodeIndex];
+                            char subnodename[255];
+                            itoa(nodeIndex, subnodename, 10);
+                            strcat(subnodename, " subitem ");
+                            strcat(subnodename, (*m_GameObjectsPointer)[i]->GetName());
+                            if (ImGui::TreeNode(subnodename))
+                            {
+                                ImGui::PushID(i * nodeIndex);
+                                if (
+                                    ImGui::InputFloat3("subTransform", node.position.GetXYZ()) ||
+                                    ImGui::InputFloat4("subRotation", node.rotation.GetXYZ()) ||
+                                    ImGui::InputFloat3("subScale", node.scale.GetXYZ())
+                                    )
+                                {
+                                    node.transformBuf->UpdateTransform(node.position, node.rotation, node.scale);
+                                }
+                                ImGui::PopID();
+                                ImGui::TreePop();
+                            }
+                        }
+                        ImGui::TreePop();
                     }
-                    ImGui::TreePop();
-                }
-
-                if (ImGui::TreeNode("Spot Light"))
-                {
-                    ImGui::Image((ImTextureID)(void*)a_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-                    ImGui::TreePop();
-                }
-
-                if (ImGui::TreeNode("Directional Light"))
-                {
-                    ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
-                    ImGui::TreePop();
                 }
             }
             ImGui::End();
+        }
 
+        void DrawAssetBrowser(Graphics& a_Graphics)
+        {
             ImGuiWindowFlags AssetBrowserFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
             if (ImGui::Begin("Assets Browser"), true, AssetBrowserFlags)
             {
@@ -156,6 +188,51 @@ namespace BBE
                 }
             }
             ImGui::End();
+        }
+
+        void DrawInspector(Graphics& a_Graphics)
+        {
+            ImGui::Begin("Inspector");
+            {
+                if (g_InspectedObj)
+                {
+                    ImGui::Text(g_InspectedObj->GetName());
+                    ImGui::Spacing();
+                    ImGui::Text("Transform");
+                    ImGui::InputFloat3("Position", g_InspectedObj->GetPositionRef().GetXYZ());
+                    ImGui::InputFloat3("Rotation", g_InspectedObj->GetRotationRef().GetXYZ());
+                    ImGui::InputFloat3("Scale", g_InspectedObj->GetScaleRef().GetXYZ());
+                }
+            }
+            ImGui::End();
+        }
+
+        void DrawRandomUI(Graphics& a_Graphics)
+        {
+            ImGui::Begin("ShadowMapWindow");
+            {
+                if (ImGui::TreeNode("Point Light"))
+                {
+                    for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+                    {
+                        ImGui::Image((ImTextureID)(void*)a_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+                    }
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Spot Light"))
+                {
+                    ImGui::Image((ImTextureID)(void*)a_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
+                    ImGui::TreePop();
+                }
+
+                if (ImGui::TreeNode("Directional Light"))
+                {
+                    ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::End();
 
             if (ImGui::Begin("Game Options"))
             {
@@ -203,58 +280,6 @@ namespace BBE
             ImGui::InputFloat("Cam Transofrm x", &cx);
             ImGui::InputFloat("Cam Transofrm y", &cy);
             ImGui::InputFloat("Cam Transofrm z", &cz);
-            ImGui::End();
-
-            GameObject* inspectedObj = nullptr;
-
-            ImGui::Begin("Hierarchy");
-            {
-                for (uint32_t i = 0; i < m_GameObjectsPointer->size(); i++)
-                {
-                    if (ImGui::TreeNode((*m_GameObjectsPointer)[i]->GetName()))
-                    {
-                        inspectedObj = (*m_GameObjectsPointer)[i];
-                        NodeContainer con = (*m_GameObjectsPointer)[i]->GetModel()->GetNodes();
-                        for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
-                        {
-                            ModelNodes& node = con.data[nodeIndex];
-                            char subnodename[255];
-                            itoa(nodeIndex, subnodename, 10);
-                            strcat(subnodename, " subitem ");
-                            strcat(subnodename, (*m_GameObjectsPointer)[i]->GetName());
-                            if (ImGui::TreeNode(subnodename))
-                            {
-                                ImGui::PushID(i * nodeIndex);
-                                if (
-                                    ImGui::InputFloat3("subTransform", node.position.GetXYZ()) ||
-                                    ImGui::InputFloat4("subRotation", node.rotation.GetXYZ()) ||
-                                    ImGui::InputFloat3("subScale", node.scale.GetXYZ())
-                                    )
-                                {
-                                    node.transformBuf->UpdateTransform(node.position, node.rotation, node.scale);
-                                }
-                                ImGui::PopID();
-                                ImGui::TreePop();
-                            }
-                        }
-                        ImGui::TreePop();
-                    }
-                }
-            }
-            ImGui::End();
-
-            ImGui::Begin("Inspector");
-            {
-                if (inspectedObj)
-                {
-                    ImGui::Text(inspectedObj->GetName());
-                    ImGui::Spacing();
-                    ImGui::Text("Transform");
-                    ImGui::InputFloat3("Position", inspectedObj->GetPositionRef().GetXYZ());
-                    ImGui::InputFloat3("Rotation", inspectedObj->GetRotationRef().GetXYZ());
-                    ImGui::InputFloat3("Scale", inspectedObj->GetScaleRef().GetXYZ());
-                }
-            }
             ImGui::End();
         }
     }
