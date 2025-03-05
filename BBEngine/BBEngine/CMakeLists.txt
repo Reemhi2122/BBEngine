@@ -34,8 +34,9 @@ add_library (BBEngine
 "Source/FileLoaders/Models/GLTFParser.cpp" 
 
 "Source/GameLib/GameObject.cpp" 
-"Source/UserInterface.cpp" 
-)
+"Source/GameLib/BBObject.cpp"
+
+"Source/UserInterface.cpp" "Include/GameLib/BBComponent.h" "Source/GameLib/BBComponent.cpp")
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 

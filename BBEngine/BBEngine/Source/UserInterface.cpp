@@ -131,6 +131,8 @@ namespace BBE
                 ImGui::SameLine();
                 ImGui::Text(curPath.c_str());
 
+                ImGui::Spacing();
+
                 const uint32_t imgSize = 64;
                 ImGuiStyle& style = ImGui::GetStyle();
                 float PanelSize = ImGui::GetWindowSize().x;
