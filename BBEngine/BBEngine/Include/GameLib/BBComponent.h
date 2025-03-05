@@ -1,6 +1,9 @@
 #pragma once
+#include "Graphics.h"
 
 class BBComponent
 {
-	virtual void Update() = 0;
+public:
+	virtual void Update(Graphics& a_Graphics) = 0;
+	virtual void Draw(Graphics& a_Graphics) = 0;
 };

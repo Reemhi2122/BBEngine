@@ -1,17 +1,17 @@
 #pragma once
 #include "Drawable/Model.h"
-#include "GameLib/BBObject.h"
+#include "GameLib/BBComponent.h"
 
 namespace BBE 
 {
-	class GameObject : public BBObject
+	class GameObject : public BBComponent
 	{
 	public:
 		GameObject(Graphics& a_Graphics, char* a_Name, Model * a_Model, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
 		~GameObject();
 
 		virtual void Update(Graphics& a_Graphics) override;
-		virtual void Draw(Graphics& a_Graphics);
+		virtual void Draw(Graphics& a_Graphics) override;
 
 		void UpdateTransform() noexcept;
 	

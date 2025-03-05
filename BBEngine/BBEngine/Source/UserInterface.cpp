@@ -3,6 +3,8 @@
 #include "System/FileHandler.h"
 #include "Bindable/Texture.h"
 
+#include "GameLib/BBObject.h"
+
 #include "BBEngine.h"
 #include <shellapi.h>
 #include <stack>
@@ -20,15 +22,15 @@ namespace BBE
 
         void DrawRandomUI(Graphics& a_Graphics);
 
-        static GameObject* g_InspectedObj;
+        static BBObject* g_InspectedObj;
 
         //Note(Stan): Local objects reference, look into changing this?
-        static std::vector<GameObject*>* m_GameObjectsPointer;
+        static std::vector<BBObject*>* m_GameObjectsPointer;
 
         static Texture m_EmptyFolderTexture;
         static Texture m_FileTexture;
 
-        void InitializeUI(Graphics& a_Graphics, std::vector<GameObject*>* a_GameObjectListPointer)
+        void InitializeUI(Graphics& a_Graphics, std::vector<BBObject*>* a_GameObjectListPointer)
         {
             //Note(Stan): Not a big fan of doing it like this, prob want to just request it from engine when needed.
             m_GameObjectsPointer = a_GameObjectListPointer;
@@ -81,30 +83,30 @@ namespace BBE
                 {
                     if (ImGui::TreeNode((*m_GameObjectsPointer)[i]->GetName()))
                     {
-                        g_InspectedObj = (*m_GameObjectsPointer)[i];
-                        NodeContainer con = (*m_GameObjectsPointer)[i]->GetModel()->GetNodes();
-                        for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
-                        {
-                            ModelNodes& node = con.data[nodeIndex];
-                            char subnodename[255];
-                            itoa(nodeIndex, subnodename, 10);
-                            strcat(subnodename, " subitem ");
-                            strcat(subnodename, (*m_GameObjectsPointer)[i]->GetName());
-                            if (ImGui::TreeNode(subnodename))
-                            {
-                                ImGui::PushID(i * nodeIndex);
-                                if (
-                                    ImGui::InputFloat3("subTransform", node.position.GetXYZ()) ||
-                                    ImGui::InputFloat4("subRotation", node.rotation.GetXYZ()) ||
-                                    ImGui::InputFloat3("subScale", node.scale.GetXYZ())
-                                    )
-                                {
-                                    node.transformBuf->UpdateTransform(node.position, node.rotation, node.scale);
-                                }
-                                ImGui::PopID();
-                                ImGui::TreePop();
-                            }
-                        }
+                        //g_InspectedObj = (*m_GameObjectsPointer)[i];
+                        //NodeContainer con = (*m_GameObjectsPointer)[i]->GetModel()->GetNodes();
+                        //for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
+                        //{
+                        //    ModelNodes& node = con.data[nodeIndex];
+                        //    char subnodename[255];
+                        //    itoa(nodeIndex, subnodename, 10);
+                        //    strcat(subnodename, " subitem ");
+                        //    strcat(subnodename, (*m_GameObjectsPointer)[i]->GetName());
+                        //    if (ImGui::TreeNode(subnodename))
+                        //    {
+                        //        ImGui::PushID(i * nodeIndex);
+                        //        if (
+                        //            ImGui::InputFloat3("subTransform", node.position.GetXYZ()) ||
+                        //            ImGui::InputFloat4("subRotation", node.rotation.GetXYZ()) ||
+                        //            ImGui::InputFloat3("subScale", node.scale.GetXYZ())
+                        //            )
+                        //        {
+                        //            node.transformBuf->UpdateTransform(node.position, node.rotation, node.scale);
+                        //        }
+                        //        ImGui::PopID();
+                        //        ImGui::TreePop();
+                        //    }
+                        //}
                         ImGui::TreePop();
                     }
                 }
@@ -196,15 +198,15 @@ namespace BBE
         {
             ImGui::Begin("Inspector");
             {
-                if (g_InspectedObj)
-                {
-                    ImGui::Text(g_InspectedObj->GetName());
-                    ImGui::Spacing();
-                    ImGui::Text("Transform");
-                    ImGui::InputFloat3("Position", g_InspectedObj->GetPositionRef().GetXYZ());
-                    ImGui::InputFloat3("Rotation", g_InspectedObj->GetRotationRef().GetXYZ());
-                    ImGui::InputFloat3("Scale", g_InspectedObj->GetScaleRef().GetXYZ());
-                }
+                //if (g_InspectedObj)
+                //{
+                //    ImGui::Text(g_InspectedObj->GetName());
+                //    ImGui::Spacing();
+                //    ImGui::Text("Transform");
+                //    ImGui::InputFloat3("Position", g_InspectedObj->GetPositionRef().GetXYZ());
+                //    ImGui::InputFloat3("Rotation", g_InspectedObj->GetRotationRef().GetXYZ());
+                //    ImGui::InputFloat3("Scale", g_InspectedObj->GetScaleRef().GetXYZ());
+                //}
             }
             ImGui::End();
         }

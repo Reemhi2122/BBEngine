@@ -166,16 +166,22 @@ namespace BBE
         int XSize = 1, YSize = 1;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
+                BBObject* obj = BBNew(m_StackAllocator, BBObject)();
                 GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Sponza One", Sponza, Vector3(i * 50, 0, y * 50));
-                m_GameObjects.push_back(sponzaObj);
+                obj->AddComponent(sponzaObj);
+                m_GameObjects.push_back(obj);
             }
         }
 
+        BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)();
         GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Lantern", lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        m_GameObjects.push_back(lanternObj);
+        lanternBBObj->AddComponent(lanternObj);
+        m_GameObjects.push_back(lanternBBObj);
 
+        BBObject* lanternBBObj2 = BBNew(m_StackAllocator, BBObject)();
         GameObject* lanternObj2 = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Lantern2", lantern, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        m_GameObjects.push_back(lanternObj2);
+        lanternBBObj2->AddComponent(lanternObj2);
+        m_GameObjects.push_back(lanternBBObj2);
 
         //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(carObj);
@@ -236,6 +242,8 @@ namespace BBE
         m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
+            m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
+            m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
             m_GameObjects[i]->Draw(m_Graphics);
         }
 
@@ -255,11 +263,13 @@ namespace BBE
     {
         for (uint32_t i = 0; i < m_Models.size(); i++)
         {
+            m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
+            m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
             m_Models[i]->Draw(m_Graphics);
         }
     }
 
-    void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
+    void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
     {
         float cx = -20.0f, cy = 50.0f, cz = 0.0f;
         Vector3 FakePos = Vector3(cx, cy, cz);
@@ -288,10 +298,12 @@ namespace BBE
     
         for (size_t i = 0; i < a_GameObjects.size(); i++)
         {
-            GameObject* obj = a_GameObjects[i];
-            obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
+            BBObject* obj = a_GameObjects[i];
+            //obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
+            m_Graphics.BindShader(ShaderType::VertexShader, a_VSShadowMapShader);
+            m_Graphics.BindShader(ShaderType::PixelShader, a_PSShadowMapShader);
             obj->Draw(m_Graphics);
-            obj->GetModel()->ResetShaders();
+            //obj->GetModel()->ResetShaders();
         }
 
         m_Cam2.SetProjection(oldProjection);
@@ -301,7 +313,7 @@ namespace BBE
 
     }
 
-    void BBEngine::CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index)
+    void BBEngine::CalculateLightShadowMapSpotLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index)
     {
         Vector3 focusPoint = m_SpotLights[a_Index].position + m_SpotLights[a_Index].direction;
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
@@ -319,17 +331,19 @@ namespace BBE
 
         for (size_t i = 0; i < a_GameObjects.size(); i++)
         {
-            GameObject* obj = a_GameObjects[i];
-            obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
+            BBObject* obj = a_GameObjects[i];
+            //obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
+            m_Graphics.BindShader(ShaderType::VertexShader, a_VSShadowMapShader);
+            m_Graphics.BindShader(ShaderType::PixelShader, a_PSShadowMapShader);
             obj->Draw(m_Graphics);
-            obj->GetModel()->ResetShaders();
+            //obj->GetModel()->ResetShaders();
         }
 
         m_Graphics.SetGameViewRenderTarget();
         m_Graphics.SetCamera(&m_Cam1);
     }
 
-    void BBEngine::CalculateLightShadowMapPointLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index)
+    void BBEngine::CalculateLightShadowMapPointLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index)
     {
         Vector3 viewDirections[6] = { 
             { 1.0f, 0.0f, 0.0f },    // Right
@@ -360,10 +374,12 @@ namespace BBE
 
             for (size_t gameObjIndex = 0; gameObjIndex < a_GameObjects.size(); gameObjIndex++)
             {
-                GameObject* obj = a_GameObjects[gameObjIndex];
-                obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
+                BBObject* obj = a_GameObjects[gameObjIndex];
+                //obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
+                m_Graphics.BindShader(ShaderType::VertexShader, a_VSShadowMapShader);
+                m_Graphics.BindShader(ShaderType::PixelShader, a_PSShadowMapShader);
                 obj->Draw(m_Graphics);
-                obj->GetModel()->ResetShaders();
+                //obj->GetModel()->ResetShaders();
             }
 
         }

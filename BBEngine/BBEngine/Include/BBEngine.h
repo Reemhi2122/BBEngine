@@ -5,6 +5,7 @@
 #include "Utility/BBMemory.h"
 
 #include "GameLib/GameObject.h"
+#include "GameLib/BBObject.h"
 
 #include "Containers/FixedArray.h"
 #include "Containers/Vector.h"
@@ -44,17 +45,17 @@ namespace BBE {
 		void DrawUI();
 		void RenderDebugOptions();
 
-		void CalculateLightShadowMapDirectionalLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader);
-		void CalculateLightShadowMapSpotLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index);
-		void CalculateLightShadowMapPointLight(std::vector<GameObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index);
+		void CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader);
+		void CalculateLightShadowMapSpotLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index);
+		void CalculateLightShadowMapPointLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index);
 
-		std::vector<GameObject*>* GetGameObjects() { return &m_GameObjects; };
+		std::vector<BBObject*>* GetGameObjects() { return &m_GameObjects; };
 
 	private:
 		BBWindow m_Window;
 		BBTimer m_Timer;
 
-		std::vector<GameObject*> m_GameObjects;
+		std::vector<BBObject*> m_GameObjects;
 		std::vector<Model*> m_Models;
 		DrawToTexture* m_DrawToTexture;
 

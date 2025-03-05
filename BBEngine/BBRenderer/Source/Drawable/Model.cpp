@@ -116,8 +116,8 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
 			}
 
-			a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
-			a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
+			//a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
+			//a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
 
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
