@@ -7,15 +7,13 @@ namespace BBE
 	class GameObject : public BBComponent
 	{
 	public:
-		GameObject(Graphics& a_Graphics, char* a_Name, Model * a_Model, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
+		GameObject(Graphics& a_Graphics, Model * a_Model, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
 		~GameObject();
 
 		virtual void Update(Graphics& a_Graphics) override;
 		virtual void Draw(Graphics& a_Graphics) override;
 
 		void UpdateTransform() noexcept;
-	
-		const char* GetName() { return m_ObjName; }
 
 		void SetPosition(Vector3 a_Position);
 		Vector3 GetPosition() const;
@@ -33,8 +31,6 @@ namespace BBE
 
 	private:
 		Model* m_Model;
-
-		char m_ObjName[255];
 
 		DirectX::XMMATRIX m_Transform;
 

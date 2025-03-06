@@ -2,9 +2,8 @@
 
 namespace BBE
 {
-	GameObject::GameObject(Graphics& a_Graphics, char* a_Name, Model* a_Model, Vector3 a_Position, Vector3 a_Rotation, Vector3 a_Scale)
+	GameObject::GameObject(Graphics& a_Graphics, Model* a_Model, Vector3 a_Position, Vector3 a_Rotation, Vector3 a_Scale)
 	{
-		strcpy(m_ObjName, a_Name);
 		m_Model = a_Model;
 		m_Position = a_Position;
 		m_Rotation = a_Rotation;

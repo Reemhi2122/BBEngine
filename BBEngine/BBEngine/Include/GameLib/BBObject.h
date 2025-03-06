@@ -4,10 +4,12 @@
 #include "Graphics.h"
 #include "BBComponent.h"
 
+constexpr auto MAX_NAME_SIZE = 255;
+
 class BBObject
 {
 public:
-	BBObject() = default;
+	BBObject(const char* a_Name);
 	~BBObject() = default;
 
 	void Update(Graphics& a_Graphics);
@@ -18,9 +20,7 @@ public:
 	const char* GetName() { return m_Name; };
 
 private:
-	//BBE::BBString m_Name;
-
-	char* m_Name = "BBObject";
+	char m_Name[MAX_NAME_SIZE] = "BBObject";
 
 	//Note(Stan): Would have to make this ECS, for testing I'm just doing it like this.
 	BBE::LinkedList<BBComponent*> m_Components;

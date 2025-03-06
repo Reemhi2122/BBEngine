@@ -36,7 +36,7 @@ add_library (BBEngine
 "Source/GameLib/GameObject.cpp" 
 "Source/GameLib/BBObject.cpp"
 
-"Source/UserInterface.cpp" "Include/GameLib/BBComponent.h" "Source/GameLib/BBComponent.cpp")
+"Source/UserInterface.cpp" "Include/GameLib/BBComponent.h" "Source/GameLib/BBComponent.cpp" "Include/GameLib/Components/Transform.h")
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 
