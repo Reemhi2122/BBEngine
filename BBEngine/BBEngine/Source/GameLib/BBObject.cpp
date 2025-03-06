@@ -21,6 +21,19 @@ void BBObject::Draw(Graphics& a_Graphics)
 	}
 }
 
+void BBObject::InspectorDrawUI()
+{
+	ImGui::Text(m_Name);
+	ImGui::Spacing();
+	ImGui::Indent();
+	ImGui::InputText("Object Name", m_Name, MAX_NAME_SIZE);
+
+	for (uint32_t i = 0; i < m_Components.Size(); i++)
+	{
+		m_Components[i]->InspectorDrawUI();
+	}
+}
+
 bool BBObject::AddComponent(BBComponent* a_Component)
 {
 	m_Components.Push_Back(a_Component);

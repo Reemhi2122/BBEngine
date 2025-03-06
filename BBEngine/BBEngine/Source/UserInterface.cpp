@@ -83,7 +83,7 @@ namespace BBE
                 {
                     if (ImGui::TreeNode((*m_GameObjectsPointer)[i]->GetName()))
                     {
-                        //g_InspectedObj = (*m_GameObjectsPointer)[i];
+                        g_InspectedObj = (*m_GameObjectsPointer)[i];
                         //NodeContainer con = (*m_GameObjectsPointer)[i]->GetModel()->GetNodes();
                         //for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
                         //{
@@ -198,15 +198,10 @@ namespace BBE
         {
             ImGui::Begin("Inspector");
             {
-                //if (g_InspectedObj)
-                //{
-                //    ImGui::Text(g_InspectedObj->GetName());
-                //    ImGui::Spacing();
-                //    ImGui::Text("Transform");
-                //    ImGui::InputFloat3("Position", g_InspectedObj->GetPositionRef().GetXYZ());
-                //    ImGui::InputFloat3("Rotation", g_InspectedObj->GetRotationRef().GetXYZ());
-                //    ImGui::InputFloat3("Scale", g_InspectedObj->GetScaleRef().GetXYZ());
-                //}
+                if (g_InspectedObj)
+                {
+                    g_InspectedObj->InspectorDrawUI();
+                }
             }
             ImGui::End();
         }

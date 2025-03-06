@@ -165,27 +165,31 @@ namespace BBE
 
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
-        //int XSize = 2, YSize = 2;
-        //for (size_t i = 0; i < XSize; i++) {
-        //    for (size_t y = 0; y < YSize; y++) {
-        //        BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza One");
-        //        GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50));
-        //        obj->AddComponent(sponzaObj);
-        //        m_GameObjects.push_back(obj);
-        //    }
-        //}
+        int XSize = 2, YSize = 2;
+        for (size_t i = 0; i < XSize; i++) {
+            for (size_t y = 0; y < YSize; y++) {
+                BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza One");
+                Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
+                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, sponzaTransform);
+                obj->AddComponent(sponzaTransform);
+                obj->AddComponent(sponzaObj);
+                m_GameObjects.push_back(obj);
+            }
+        }
 
         BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
-        Transform* lanternTransform = BBNew(m_StackAllocator, Transform)();
+        Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, lanternTransform);
         lanternBBObj->AddComponent(lanternTransform);
-        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         lanternBBObj->AddComponent(lanternObj);
         m_GameObjects.push_back(lanternBBObj);
 
-        //BBObject* lanternBBObj2 = BBNew(m_StackAllocator, BBObject)("Lantern2");
-        //GameObject* lanternObj2 = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //lanternBBObj2->AddComponent(lanternObj2);
-        //m_GameObjects.push_back(lanternBBObj2);
+        BBObject* lanternBBObj2 = BBNew(m_StackAllocator, BBObject)("Lantern2");
+        Transform* lanternTransform2 = BBNew(m_StackAllocator, Transform)(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        GameObject* lanternObj2 = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, lanternTransform2);
+        lanternBBObj2->AddComponent(lanternTransform2);
+        lanternBBObj2->AddComponent(lanternObj2);
+        m_GameObjects.push_back(lanternBBObj2);
 
         //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
         //m_GameObjects.push_back(carObj);
