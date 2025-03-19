@@ -154,13 +154,12 @@ namespace BBE
         
         m_PSSpotLightShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl", "SpotLightPS");
 
-        Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, &m_SponzaFile, m_VertexShader, m_PixelShader);
+        Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, "Sponza", &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
-        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, &m_LanternFile, m_VertexShader, m_PixelShader);
+        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(lantern);
-
-        //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, &m_CarFile, m_VertexShader, m_PixelShader);
-        //m_Models.push_back(car);
+        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
+        m_Models.push_back(car);
         //Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(aBeautifulGame);
 
@@ -177,6 +176,13 @@ namespace BBE
                 m_GameObjects.push_back(obj);
             }
         }
+
+        BBObject* lightObject = BBNew(m_StackAllocator, BBObject)("Pointlight");
+        Transform* lightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        
+        lightObject->AddComponent(lightTransform);
+
+        m_GameObjects.push_back(lightObject);
 
         BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
         Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));

@@ -1,8 +1,10 @@
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-Model::Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader)
+Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader)
 {
+	strcpy(m_Name, a_Name);
+
 	m_Nodes = reinterpret_cast<ModelNodes*>(malloc(a_File->nodeAmount * sizeof(ModelNodes)));
 	memset(m_Nodes, 0, a_File->nodeAmount * sizeof(ModelNodes));
 

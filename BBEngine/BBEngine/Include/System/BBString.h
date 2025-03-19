@@ -1,7 +1,9 @@
 #pragma once
 
 namespace BBE {
-	
+
+	constexpr int MAX_NAME_LENGTH = 255;
+
 	template<typename TypeChar>
 	class BB_Basic_String {
 	public:
@@ -10,9 +12,8 @@ namespace BBE {
 		~BB_Basic_String();
 
 		BB_Basic_String<TypeChar>* Append(const BB_Basic_String& a_Str);
-
 		BB_Basic_String<TypeChar>* CStr();
-		uint32_t Strlen(const TypeChar* a_Str);
+		int Strlen(const BB_Basic_String<TypeChar>* a_Str);
 
 	private:
 		TypeChar* m_String;
@@ -47,7 +48,7 @@ namespace BBE {
 	}
 
 	template<typename TypeChar>
-	uint32_t BB_Basic_String<TypeChar>::Strlen(const TypeChar* a_Str) {
+	int BB_Basic_String<TypeChar>::Strlen(const BB_Basic_String<TypeChar>* a_Str) {
 		uint32_t strCount = 0;
 		uint32_t index = 0;
 

@@ -23,7 +23,6 @@
 #include "Lights.h"
 #include "Vertexconstant.h"
 
-
 namespace BBE {
 	class BBEngine {
 	public:
@@ -37,8 +36,6 @@ namespace BBE {
 		void Update();
 		void CheckInput();
 
-		//Note(Stan):	This should be temp
-		void RenderToTexture();
 		void DrawAllModels();
 
 		void DrawUI();

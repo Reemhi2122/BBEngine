@@ -35,6 +35,7 @@ add_library (BBEngine
 
 "Source/GameLib/Components/Transform.cpp"
 "Source/GameLib/Components/MeshComponent.cpp" 
+"Source/GameLib/Components/LightComponent.cpp"
 "Source/GameLib/BBObject.cpp"
 
 "Source/UserInterface.cpp" 

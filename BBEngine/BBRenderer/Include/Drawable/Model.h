@@ -33,7 +33,7 @@ class Model : public Drawable
 {
 public:
 	Model() = default;
-	Model(Graphics& a_Gfx, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader);
+	Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader);
 	
 	void SetCurrentShader(uint32_t a_VertexShader, uint32_t a_PixelShader);
 	void ResetShaders();
@@ -54,6 +54,8 @@ public:
 	}
 
 private:
+	char m_Name[255] = "Undefined Model";
+
 	std::vector<DirectX::XMMATRIX> m_InstanceBuffer;
 	DirectX::XMMATRIX* m_CurTransform = nullptr;
 

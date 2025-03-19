@@ -17,6 +17,7 @@ namespace BBE
 		virtual void InspectorDrawUI() override;
 
 		Model* GetModel() const noexcept { return m_Model; };
+		bool SetModel(Model* a_Model);
 
 	private:
 		Model* m_Model;
