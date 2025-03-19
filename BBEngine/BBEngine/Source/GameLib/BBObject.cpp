@@ -26,8 +26,8 @@ void BBObject::InspectorDrawUI()
 	ImGui::Text(m_Name);
 	ImGui::Spacing();
 	ImGui::Indent();
-	ImGui::InputText("Object Name", m_Name, MAX_NAME_SIZE);
 
+	ImGui::InputText("Object Name", m_Name, MAX_NAME_SIZE);
 	for (uint32_t i = 0; i < m_Components.Size(); i++)
 	{
 		m_Components[i]->InspectorDrawUI();

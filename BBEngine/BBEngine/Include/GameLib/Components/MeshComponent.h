@@ -5,11 +5,11 @@
 
 namespace BBE 
 {
-	class GameObject : public BBComponent
+	class MeshComponent : public BBComponent
 	{
 	public:
-		GameObject(Graphics& a_Graphics, Model * a_Model, Transform* a_Transform);
-		~GameObject() = default;
+		MeshComponent(Graphics& a_Graphics, Model * a_Model, Transform* a_Transform);
+		~MeshComponent() = default;
 
 		virtual void Update(Graphics& a_Graphics) override;
 		virtual void Draw(Graphics& a_Graphics) override;

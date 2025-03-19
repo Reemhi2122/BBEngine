@@ -33,12 +33,13 @@ add_library (BBEngine
 "Source/FileLoaders/Data/INIParser.cpp"
 "Source/FileLoaders/Models/GLTFParser.cpp" 
 
-"Source/GameLib/GameObject.cpp" 
+"Source/GameLib/Components/Transform.cpp"
+"Source/GameLib/Components/MeshComponent.cpp" 
 "Source/GameLib/BBObject.cpp"
 
 "Source/UserInterface.cpp" 
-"Source/GameLib/BBComponent.cpp" 
-"Source/GameLib/Transform/Transform.cpp")
+"Source/GameLib/BBComponent.cpp"
+)
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 

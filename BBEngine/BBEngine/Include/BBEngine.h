@@ -4,7 +4,6 @@
 #include "Utility/BBTimer.h"
 #include "Utility/BBMemory.h"
 
-#include "GameLib/GameObject.h"
 #include "GameLib/BBObject.h"
 
 #include "Containers/FixedArray.h"

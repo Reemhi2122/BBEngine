@@ -10,6 +10,7 @@
 #include "System/FileHandler.h"
 
 #include "GameLib/Components/Transform.h"
+#include "GameLib/Components/MeshComponent.h"
 
 #include <chrono>
 #include <iostream>
@@ -168,27 +169,27 @@ namespace BBE
         int XSize = 2, YSize = 2;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
-                BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza One");
+                BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
                 Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
-                GameObject* sponzaObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, Sponza, sponzaTransform);
+                MeshComponent* sponzaMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, Sponza, sponzaTransform);
                 obj->AddComponent(sponzaTransform);
-                obj->AddComponent(sponzaObj);
+                obj->AddComponent(sponzaMesh);
                 m_GameObjects.push_back(obj);
             }
         }
 
         BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
         Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        GameObject* lanternObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, lanternTransform);
+        MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
         lanternBBObj->AddComponent(lanternTransform);
-        lanternBBObj->AddComponent(lanternObj);
+        lanternBBObj->AddComponent(lanternMesh);
         m_GameObjects.push_back(lanternBBObj);
 
         BBObject* lanternBBObj2 = BBNew(m_StackAllocator, BBObject)("Lantern2");
         Transform* lanternTransform2 = BBNew(m_StackAllocator, Transform)(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        GameObject* lanternObj2 = BBNew(m_StackAllocator, GameObject)(m_Graphics, lantern, lanternTransform2);
+        MeshComponent* lanternMesh2 = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform2);
         lanternBBObj2->AddComponent(lanternTransform2);
-        lanternBBObj2->AddComponent(lanternObj2);
+        lanternBBObj2->AddComponent(lanternMesh2);
         m_GameObjects.push_back(lanternBBObj2);
 
         //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));

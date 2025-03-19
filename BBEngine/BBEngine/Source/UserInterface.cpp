@@ -17,12 +17,14 @@ namespace BBE
     namespace UI
     {
         void DrawHierarchy(Graphics& a_Graphics);
-        void DrawAssetBrowser(Graphics& a_Graphics);
         void DrawInspector(Graphics& a_Graphics);
+        void DrawAssetBrowser(Graphics& a_Graphics);
 
         void DrawRandomUI(Graphics& a_Graphics);
 
-        static BBObject* g_InspectedObj;
+        static BBObject* g_InspectedObj = nullptr;
+        static int selectedObjectNum = -1;
+        ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 
         //Note(Stan): Local objects reference, look into changing this?
         static std::vector<BBObject*>* m_GameObjectsPointer;
@@ -76,39 +78,31 @@ namespace BBE
 
         void DrawHierarchy(Graphics& a_Graphics)
         {
-            g_InspectedObj = nullptr;
             ImGui::Begin("Hierarchy");
             {
                 for (uint32_t i = 0; i < m_GameObjectsPointer->size(); i++)
                 {
-                    if (ImGui::TreeNode((*m_GameObjectsPointer)[i]->GetName()))
+                    ImGuiTreeNodeFlags flags = baseFlags;
+                    if (i == selectedObjectNum)
+                    {
+                        flags |= ImGuiTreeNodeFlags_Selected;
+                    }
+
+                    ImGui::PushID(i);
+                    bool isOpen = ImGui::TreeNodeEx("Hierarchy Object", flags, (*m_GameObjectsPointer)[i]->GetName());
+                    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
                     {
                         g_InspectedObj = (*m_GameObjectsPointer)[i];
-                        //NodeContainer con = (*m_GameObjectsPointer)[i]->GetModel()->GetNodes();
-                        //for (uint32_t nodeIndex = 0; nodeIndex < con.count; nodeIndex++)
-                        //{
-                        //    ModelNodes& node = con.data[nodeIndex];
-                        //    char subnodename[255];
-                        //    itoa(nodeIndex, subnodename, 10);
-                        //    strcat(subnodename, " subitem ");
-                        //    strcat(subnodename, (*m_GameObjectsPointer)[i]->GetName());
-                        //    if (ImGui::TreeNode(subnodename))
-                        //    {
-                        //        ImGui::PushID(i * nodeIndex);
-                        //        if (
-                        //            ImGui::InputFloat3("subTransform", node.position.GetXYZ()) ||
-                        //            ImGui::InputFloat4("subRotation", node.rotation.GetXYZ()) ||
-                        //            ImGui::InputFloat3("subScale", node.scale.GetXYZ())
-                        //            )
-                        //        {
-                        //            node.transformBuf->UpdateTransform(node.position, node.rotation, node.scale);
-                        //        }
-                        //        ImGui::PopID();
-                        //        ImGui::TreePop();
-                        //    }
-                        //}
+                        selectedObjectNum = i;
+                    }
+
+                    if (isOpen)
+                    {
+                        ImGui::Text("FakeChild1");
+                        ImGui::Text("FakeChild2");
                         ImGui::TreePop();
                     }
+                    ImGui::PopID();
                 }
             }
             ImGui::End();
