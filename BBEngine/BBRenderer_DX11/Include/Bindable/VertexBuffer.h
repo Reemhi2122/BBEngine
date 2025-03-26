@@ -1,7 +1,7 @@
 #pragma once
 #include "Bindable/Bindable.h"
 #include <vector>
-#include "DataTypes/SharedRenderTypes.h"
+#include "SharedRenderTypes.h"
 
 class VertexBuffer : public Bindable {
 public:

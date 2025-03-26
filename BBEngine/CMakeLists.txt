@@ -12,7 +12,7 @@ project ("BBEngine")
 add_compile_definitions(ENGINE)
 
 # Include sub-projects.
-add_subdirectory ("BBRenderer")
+add_subdirectory ("BBRenderer_DX11")
 add_subdirectory ("BBEngine")
 add_subdirectory ("BBMath")
 add_subdirectory ("BBGame")

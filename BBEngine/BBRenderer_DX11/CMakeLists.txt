@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-add_library (Renderer STATIC 
+add_library (BBDX11Renderer STATIC 
 
 "DXERR/dxerr.cpp"
 
@@ -32,14 +32,14 @@ add_library (Renderer STATIC
 "Source/Drawable/SkyBox.cpp"
 )
 
-set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
+#set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 
-target_include_directories(Renderer PUBLIC
+target_include_directories(BBDX11Renderer PUBLIC
 "Include/"
 "Shader/"
 )
 
-target_link_libraries(Renderer
+target_link_libraries(BBDX11Renderer
 ImGUI
 BBMath
 stb_image

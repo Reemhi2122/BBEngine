@@ -11,7 +11,7 @@ BBEngine
 #copy shaders when a change happened.
 add_custom_target(game_copy_shaders ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/BBRenderer/Shader"
+    "${CMAKE_SOURCE_DIR}/BBRenderer_DX11/Shader"
     "${CMAKE_CURRENT_BINARY_DIR}/Assets"
     COMMENT "Copying DX11 asset folder to output d1 folder")
 
