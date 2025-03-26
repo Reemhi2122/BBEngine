@@ -43,4 +43,5 @@ target_link_libraries(Renderer
 ImGUI
 BBMath
 stb_image
+Common
 )

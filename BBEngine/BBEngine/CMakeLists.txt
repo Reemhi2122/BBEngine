@@ -46,9 +46,10 @@ set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 
-Renderer
+#Renderer
 BBMath
 ImGUI
+Common
 )
 
 target_include_directories(BBEngine PUBLIC

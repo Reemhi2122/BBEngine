@@ -1,6 +1,6 @@
 #include "System/FileHandler.h"
 #include "Vector3.h"
-#include "DataTypes/SharedRenderTypes.h"
+#include "SharedRenderTypes.h"
 #include "FileLoaders/Data/JsonParser.h"
 
 namespace BBE {
