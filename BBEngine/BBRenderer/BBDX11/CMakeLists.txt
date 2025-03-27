@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-add_library (BBDX11Renderer STATIC 
+add_library (BBRenderer_DX11 STATIC 
 
 "DXERR/dxerr.cpp"
 
@@ -34,12 +34,12 @@ add_library (BBDX11Renderer STATIC
 
 #set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 
-target_include_directories(BBDX11Renderer PUBLIC
+target_include_directories(BBRenderer_DX11 PUBLIC
 "Include/"
 "Shader/"
 )
 
-target_link_libraries(BBDX11Renderer
+target_link_libraries(BBRenderer_DX11
 ImGUI
 BBMath
 stb_image
