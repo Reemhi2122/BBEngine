@@ -181,7 +181,8 @@ namespace BBE
         BBObject* lightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
         Transform* lightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 2, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         lightObject->AddComponent(lightTransform);
-        //SpotlightComponent* SpotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&m_SpotLights[0], lightTransform);
+        SpotlightComponent* SpotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&m_SpotLights[0], lightTransform);
+        lightObject->AddComponent(SpotLightComponent);
         m_GameObjects.push_back(lightObject);
 
         BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
