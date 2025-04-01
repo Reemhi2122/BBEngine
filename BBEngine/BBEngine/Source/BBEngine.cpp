@@ -112,7 +112,7 @@ namespace BBE
         //));
 
         m_SpotLights.Push_Back(SpotLight(
-            Vector3(4.0f, 2.0f, 0.0f),
+            Vector3(0.0f, 2.0f, 0.0f),
             Vector3(-1.0f, 0.0f, 0.0f),
             5.f,
             Vector3(0.4f, 0.2f, 0.0f),
@@ -179,9 +179,9 @@ namespace BBE
         }
 
         BBObject* lightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
-        Transform* lightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        Transform* lightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 2, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         lightObject->AddComponent(lightTransform);
-        SpotlightComponent* SpotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&m_SpotLights[0], lightTransform);
+        //SpotlightComponent* SpotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&m_SpotLights[0], lightTransform);
         m_GameObjects.push_back(lightObject);
 
         BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
@@ -231,8 +231,8 @@ namespace BBE
 
         cbPerFrame FrameConstantBuffer;
 
-        FrameConstantBuffer.directionalLight = m_DirectionalLight;
-        CalculateLightShadowMapDirectionalLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader);
+        //FrameConstantBuffer.directionalLight = m_DirectionalLight;
+        //CalculateLightShadowMapDirectionalLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader);
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
             FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
@@ -337,11 +337,11 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        m_SpotLights[a_Index].lightView = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetCamera()->GetProjection());
 
         m_Cam2.m_ViewMatrix = lightView;
         m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.SetCamera(&m_Cam2);
+        m_SpotLights[a_Index].lightView = DirectX::XMMatrixTranspose(lightView * m_Graphics.GetCamera()->GetProjection());
         m_Graphics.SetDepthStencilTarget(m_SLTextureDepthStencilViews[a_Index]);
 
         for (size_t i = 0; i < a_GameObjects.size(); i++)
