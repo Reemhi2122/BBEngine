@@ -2,6 +2,8 @@
 #include "GameLib/Components/Transform.h"
 #include "Lights/SpotLight.h"
 
+//Note(Stan): Still have to see if I want to convert these into one file and maybe add a base class.
+
 class SpotlightComponent : public BBComponent
 {
 public:
@@ -16,5 +18,4 @@ public:
 private:
 	SpotLight* m_Spotlight;
 	Transform* m_Transform;
-
 };

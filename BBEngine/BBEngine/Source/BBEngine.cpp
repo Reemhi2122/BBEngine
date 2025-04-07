@@ -11,7 +11,9 @@
 
 #include "GameLib/Components/Transform.h"
 #include "GameLib/Components/MeshComponent.h"
-#include "GameLib/Components/SpotLightComponent.h"
+#include "GameLib/Components/LightComponents/DirectionalLightComponent.h"
+#include "GameLib/Components/LightComponents/PointLightComponent.h"
+#include "GameLib/Components/LightComponents/SpotLightComponent.h"
 
 #include <chrono>
 #include <iostream>
