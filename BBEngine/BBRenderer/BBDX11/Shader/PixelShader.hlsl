@@ -140,6 +140,9 @@ float4 main(VSOut psin) : SV_Target
 
     float4 diffuse = tex.Sample(splr, psin.tex);
     
+    if (diffuse.a < 0.01f)
+        discard;
+    
     float4 finalColor = float4(0, 0, 0, 1);
     
     float4 curLightView;

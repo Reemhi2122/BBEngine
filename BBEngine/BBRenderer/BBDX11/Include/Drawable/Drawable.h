@@ -25,7 +25,7 @@ public:
 	void AddBind(Bindable* a_Bind) noexcept;
 	void AddIndexBuffer(IndexBuffer* a_Buf) noexcept;
 
-	virtual const std::vector<Bindable*>& GetStaticBinds() const noexcept = 0;
+	virtual const std::vector<Bindable*>& GetStaticBinds() const noexcept { return std::vector<Bindable*>(); };
 
 protected:
 	IndexBuffer* GetIndexBuffer() const;

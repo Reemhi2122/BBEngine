@@ -5,10 +5,10 @@
 Quad::Quad(Graphics& a_Gfx)
 {
 	BBE::Vertex vertices[] = {
-		{ {-1.0f, -1.0f, 0.0f}, {0, 0}, {0, 0, 0} },
-		{ {-1.0f, 1.0f, 0.0f}, {0, 0}, {0, 0, 0} },
-		{ {1.0f, 1.0f, 0.0f}, {0, 0}, {0, 0, 0} },
-		{ {1.0f, -1.0f, 0.0f}, {0, 0}, {0, 0, 0} },
+		{ {-1.0f, -1.0f, 0.0f}, {1.0f, 1.0f}, {0, 1, 0} },
+		{ {-1.0f, +1.0f, 0.0f}, {1.0f, 0.0f}, {0, 1, 0} },
+		{ {+1.0f, +1.0f, 0.0f}, {0.0f, 0.0f}, {0, 1, 0} },
+		{ {+1.0f, -1.0f, 0.0f}, {0.0f, 1.0f}, {0, 1, 0} },
 	};
 
 	vBuffer = new VertexBuffer(a_Gfx, vertices, 4);
@@ -18,8 +18,8 @@ Quad::Quad(Graphics& a_Gfx)
 		1,2,0, 1,3,2,
 	};
 
-	vShader = a_Gfx.CreateShader(ShaderType::VertexShader, "Assets/VSCubeMap.hlsl");
-	pShader = a_Gfx.CreateShader(ShaderType::PixelShader, "Assets/PSCubeMap.hlsl");
+	vShader = a_Gfx.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
+	pShader = a_Gfx.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
 
 	IBuffer = new IndexBuffer(a_Gfx, indices, 6, 1);
 		
@@ -40,15 +40,15 @@ Quad::Quad(Graphics& a_Gfx)
 
 	m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(m_Topology);
+
+	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(-4, 1, 1.3f), Vector4(0, 0, 0, 1), Vector3(1, 1, 1));
+	AddBind(m_TransformBuf);
 }
 
 void Quad::Update(float a_DeltaTime) noexcept {};
 
 void Quad::Draw(Graphics& a_Gfx) noexcept
 {
-	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 3, 0), Vector4(0, 0, 0, 1), Vector3(1, 1, 1));
-	m_TransformBuf->Bind(a_Gfx);
-
 	a_Gfx.BindShader(ShaderType::VertexShader, vShader);
 	a_Gfx.BindShader(ShaderType::PixelShader, pShader);
 

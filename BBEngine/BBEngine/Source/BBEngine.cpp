@@ -167,7 +167,7 @@ namespace BBE
 
         //Objects
         int XSize = 2, YSize = 2;
-        for (size_t i = 1; i < XSize; i++) {
+        for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
                 Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
