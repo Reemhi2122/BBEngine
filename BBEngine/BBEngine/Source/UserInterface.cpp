@@ -44,7 +44,6 @@ namespace BBE
 
         std::string curPath = "Assets\\";
         std::stack<std::string> history;
-        float cx = -20.0f, cy = 50.0f, cz = 0.0f;
         void UpdateUI(Graphics& a_Graphics)
         {
             bool open = true;
@@ -267,12 +266,6 @@ namespace BBE
                 ImGui::Image((ImTextureID)(void*)a_Graphics.GetGameViewRSV(), size);
 
             }
-            ImGui::End();
-
-            ImGui::Begin("Directional Light");
-            ImGui::InputFloat("Cam Transofrm x", &cx);
-            ImGui::InputFloat("Cam Transofrm y", &cy);
-            ImGui::InputFloat("Cam Transofrm z", &cz);
             ImGui::End();
         }
     }

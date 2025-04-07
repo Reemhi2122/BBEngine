@@ -1,6 +1,6 @@
 #include "GameLib/BBObject.h"
 
-BBObject::BBObject(const char* a_Name)
+BBObject::BBObject(const char* a_Name, bool a_InitializeDefault)
 {
 	strcpy(m_Name, a_Name);
 }

@@ -7,7 +7,7 @@
 class BBObject
 {
 public:
-	BBObject(const char* a_Name);
+	BBObject(const char* a_Name, bool a_InitializeDefault = true);
 	~BBObject() = default;
 
 	void Update(Graphics& a_Graphics);

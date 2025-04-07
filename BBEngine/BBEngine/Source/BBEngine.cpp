@@ -180,7 +180,7 @@ namespace BBE
         m_GameObjects.push_back(spotLightObject);
 
         BBObject* dirLightObject = BBNew(m_StackAllocator, BBObject)("DirectionalLight");
-        Transform* dirlightTransform = BBNew(m_StackAllocator, Transform)(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        Transform* dirlightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-20.0f, 50.0f, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         dirLightObject->AddComponent(dirlightTransform);
         DirectionalLightComponent* directionalLightComponent = BBNew(m_StackAllocator, DirectionalLightComponent)(&m_DirectionalLight, dirlightTransform);
         dirLightObject->AddComponent(directionalLightComponent);
@@ -190,7 +190,7 @@ namespace BBE
         Transform* pointlightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-5.0f, 2.0f, 0.0f), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         pointLightObject->AddComponent(pointlightTransform);
         PointLightComponent* pointLightComponent = BBNew(m_StackAllocator, PointLightComponent)(&m_PointLights[0], pointlightTransform);
-        pointLightObject->AddComponent(pointlightTransform);
+        pointLightObject->AddComponent(pointLightComponent);
         m_GameObjects.push_back(pointLightObject);
 
         BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
@@ -226,16 +226,11 @@ namespace BBE
         m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
 
         CheckInput();
-
-        //m_PointLights[0].position.x = (sin(incr += 0.001f) * 5);
-        //m_GameObjects[5]->SetPosition(Vector3(3 + sin(incr += 0.01), 0, 0));
-
         m_Skybox->Draw(m_Graphics);
 
         cbPerFrame FrameConstantBuffer;
-
-        //FrameConstantBuffer.directionalLight = m_DirectionalLight;
-        //CalculateLightShadowMapDirectionalLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader);
+        FrameConstantBuffer.directionalLight = m_DirectionalLight;
+        CalculateLightShadowMapDirectionalLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader);
 
         for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
             FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
@@ -291,7 +286,6 @@ namespace BBE
     {
         float cx = -20.0f, cy = 50.0f, cz = 0.0f;
         Vector3 FakePos = Vector3(cx, cy, cz);
-        //Vector3 focusPoint = FakePos + Vector3(m_DirectionalLight.direction.x, -m_DirectionalLight.direction.y, m_DirectionalLight.direction.z);
         Vector3 focusPoint = Vector3(0, 0, 0);
 
         float length = sqrt(cx * cx + cy * cy + cz * cz);
