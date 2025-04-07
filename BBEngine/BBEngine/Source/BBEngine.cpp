@@ -86,6 +86,7 @@ namespace BBE
         parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
         parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
+        parser.Parse("Assets/Models/GlassVaseFlowers/glTF/", "GlassVaseFlowers.gltf", &m_GlassVase);
 
         BBE:UI::InitializeUI(m_Graphics, &m_GameObjects);
 
@@ -156,6 +157,8 @@ namespace BBE
         m_Models.push_back(lantern);
         Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(car);
+        Model* glassVase = BBNew(m_StackAllocator, Model)(m_Graphics, "GlassVase", &m_GlassVase, m_VertexShader, m_PixelShader);
+        m_Models.push_back(glassVase);
         //Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(aBeautifulGame);
 
@@ -188,6 +191,13 @@ namespace BBE
         MeshComponent* carMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, car, carTransform);
         carObject->AddComponent(carMesh);
         m_GameObjects.push_back(carObject);
+
+        BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
+        Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(0, 3, 0), Vector3(0, 0, 0), Vector3(5.0f, 5.0f, 5.0f));
+        glassObject->AddComponent(glassTransform);
+        MeshComponent* glassVaseMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, glassVase, glassTransform);
+        glassObject->AddComponent(glassVaseMesh);
+        m_GameObjects.push_back(glassObject);
 
         //Lights
         BBObject* spotLightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");

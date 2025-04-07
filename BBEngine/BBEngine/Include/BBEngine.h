@@ -80,6 +80,7 @@ namespace BBE {
 		GLTFFile m_LanternFile;
 		GLTFFile m_CarFile;
 		GLTFFile m_ABeautifulGameFile;
+		GLTFFile m_GlassVase;
 
 		DirectionalLight m_DirectionalLight;
 		Vector<SpotLight> m_SpotLights;

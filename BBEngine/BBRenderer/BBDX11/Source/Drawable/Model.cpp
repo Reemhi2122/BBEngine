@@ -50,7 +50,7 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 
 			if (curPrim.Material.pbrMetallicRoughness.baseColorTexture.path)
 			{
-				char texturePath[64] = "";
+				char texturePath[_MAX_PATH] = "";
 				strcat(texturePath, a_File->gltfPath);
 				strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.path);
 
