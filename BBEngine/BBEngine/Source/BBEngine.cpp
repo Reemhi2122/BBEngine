@@ -97,21 +97,13 @@ namespace BBE
             Vector4(0.5f, 0.5f, 0.5f, 1.0f)
         );
 
-        //m_PointLights.Push_Back(PointLight(
-        //    Vector3(-5.0f, 2.0f, 0.0f),
-        //    Vector3(0.0f, 0.2f, 0.0f),
-        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-        //    1000.0f
-        //));
-
-        //m_PointLights.Push_Back(PointLight(1
-        //    Vector3(6.0f, 2.0f, 0.0f),
-        //    Vector3(0.0f, 0.2f, 0.0f),
-        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-        //    1000.0f
-        //));
+        m_PointLights.Push_Back(PointLight(
+            Vector3(-5.0f, 2.0f, 0.0f),
+            Vector3(0.0f, 0.2f, 0.0f),
+            Vector4(0.0f, 0.0f, 0.0f, 1.0f),
+            Vector4(1.0f, 1.0f, 1.0f, 1.0f),
+            1000.0f
+        ));
 
         m_SpotLights.Push_Back(SpotLight(
             Vector3(0.0f, 2.0f, 0.0f),
@@ -180,12 +172,26 @@ namespace BBE
             }
         }
 
-        BBObject* lightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
-        Transform* lightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 2, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        lightObject->AddComponent(lightTransform);
-        SpotlightComponent* SpotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&m_SpotLights[0], lightTransform);
-        lightObject->AddComponent(SpotLightComponent);
-        m_GameObjects.push_back(lightObject);
+        BBObject* spotLightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
+        Transform* spotLightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 2, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        spotLightObject->AddComponent(spotLightTransform);
+        SpotlightComponent* spotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&m_SpotLights[0], spotLightTransform);
+        spotLightObject->AddComponent(spotLightComponent);
+        m_GameObjects.push_back(spotLightObject);
+
+        BBObject* dirLightObject = BBNew(m_StackAllocator, BBObject)("DirectionalLight");
+        Transform* dirlightTransform = BBNew(m_StackAllocator, Transform)(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        dirLightObject->AddComponent(dirlightTransform);
+        DirectionalLightComponent* directionalLightComponent = BBNew(m_StackAllocator, DirectionalLightComponent)(&m_DirectionalLight, dirlightTransform);
+        dirLightObject->AddComponent(directionalLightComponent);
+        m_GameObjects.push_back(dirLightObject);
+
+        BBObject* pointLightObject = BBNew(m_StackAllocator, BBObject)("PointLight");
+        Transform* pointlightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-5.0f, 2.0f, 0.0f), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        pointLightObject->AddComponent(pointlightTransform);
+        PointLightComponent* pointLightComponent = BBNew(m_StackAllocator, PointLightComponent)(&m_PointLights[0], pointlightTransform);
+        pointLightObject->AddComponent(pointlightTransform);
+        m_GameObjects.push_back(pointLightObject);
 
         BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
         Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
@@ -200,12 +206,6 @@ namespace BBE
         lanternBBObj2->AddComponent(lanternTransform2);
         lanternBBObj2->AddComponent(lanternMesh2);
         m_GameObjects.push_back(lanternBBObj2);
-
-        //GameObject* carObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", car, Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        //m_GameObjects.push_back(carObj);
-
-        //GameObject* beautifulGameObj = BBNew(m_StackAllocator, GameObject)(m_Graphics, "Car", aBeautifulGame, Vector3(0, 2, -25), Vector3(0, 0, 0), Vector3(10, 10, 10));
-        //m_GameObjects.push_back(beautifulGameObj);
 
         //Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
