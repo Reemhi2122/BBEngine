@@ -13,6 +13,7 @@
 #include "Drawable/Skybox.h"
 #include "Drawable/DrawToTexture.h"
 #include "Drawable/Model.h"
+#include "Drawable/Quad.h"
 
 #include "DepthStencil.h"
 
@@ -85,6 +86,8 @@ namespace BBE {
 		DirectionalLight m_DirectionalLight;
 		Vector<SpotLight> m_SpotLights;
 		Vector<PointLight> m_PointLights;
+
+		Quad* m_Quad;
 
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();
