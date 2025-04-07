@@ -149,6 +149,7 @@ namespace BBE
         
         m_PSSpotLightShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl", "SpotLightPS");
 
+        //Models
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, "Sponza", &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
@@ -158,8 +159,10 @@ namespace BBE
         //Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(aBeautifulGame);
 
+        //Skybox
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
+        //Objects
         int XSize = 2, YSize = 2;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
@@ -172,6 +175,21 @@ namespace BBE
             }
         }
 
+        BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
+        Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
+        lanternBBObj->AddComponent(lanternTransform);
+        lanternBBObj->AddComponent(lanternMesh);
+        m_GameObjects.push_back(lanternBBObj);
+
+        BBObject* carObject = BBNew(m_StackAllocator, BBObject)("Car");
+        Transform* carTransform = BBNew(m_StackAllocator, Transform)(Vector3(0, 3, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        carObject->AddComponent(carTransform);
+        MeshComponent* carMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, car, carTransform);
+        carObject->AddComponent(carMesh);
+        m_GameObjects.push_back(carObject);
+
+        //Lights
         BBObject* spotLightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
         Transform* spotLightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 2, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         spotLightObject->AddComponent(spotLightTransform);
@@ -192,20 +210,6 @@ namespace BBE
         PointLightComponent* pointLightComponent = BBNew(m_StackAllocator, PointLightComponent)(&m_PointLights[0], pointlightTransform);
         pointLightObject->AddComponent(pointLightComponent);
         m_GameObjects.push_back(pointLightObject);
-
-        BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
-        Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
-        lanternBBObj->AddComponent(lanternTransform);
-        lanternBBObj->AddComponent(lanternMesh);
-        m_GameObjects.push_back(lanternBBObj);
-
-        BBObject* lanternBBObj2 = BBNew(m_StackAllocator, BBObject)("Lantern2");
-        Transform* lanternTransform2 = BBNew(m_StackAllocator, Transform)(Vector3(0, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        MeshComponent* lanternMesh2 = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform2);
-        lanternBBObj2->AddComponent(lanternTransform2);
-        lanternBBObj2->AddComponent(lanternMesh2);
-        m_GameObjects.push_back(lanternBBObj2);
 
         //Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));

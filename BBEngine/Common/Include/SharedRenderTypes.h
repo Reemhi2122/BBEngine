@@ -21,18 +21,14 @@ namespace BBE {
 	};
 
 	//TODO(Stan):	Add support for MIME type images
-	struct TextureT {
-		struct {
-			char* m_Path;
-		} image;
-
-		bool enabled = false;
-		float scale;
-		float strenght;
+	struct TextureT 
+	{
+		char* path = nullptr;
 		uint32_t texCoordIndex;
 	};
 
-	struct Mesh {
+	struct Mesh 
+	{
 		const char*	name;
 		uint32_t primitiveCount;
 		
@@ -64,21 +60,23 @@ namespace BBE {
 				};
 			};
 
-			struct {
-				
-				struct {
-					TextureT baseColorTexture;
-					Vector3 baseColorFactor;
-					TextureT metallicRoughnessTexture;
-					uint32_t metallicFactor;
-					uint32_t roughnessFactor;
-				} pbrMetallicRoughness ;
+			struct 
+			{
+				struct 
+				{
+					TextureT	baseColorTexture;
+					Vector3		baseColorFactor;
+					TextureT	metallicRoughnessTexture;
+					uint32_t	metallicFactor;
+					uint32_t	roughnessFactor;
+				} pbrMetallicRoughness;
 
-				TextureT normalTexture;
-				TextureT occlusionTexture;
-				TextureT emissiveTexture;
-				Vector3 emissiveFactor;
-
+				TextureT	normalTexture;
+				uint32_t	normalTextureScale;
+				TextureT	occlusionTexture;
+				uint32_t	occlusionTextureStrength;
+				TextureT	emissiveTexture;
+				Vector3		emissiveFactor;
 			} Material;
 
 			uint32_t		indicesAmount;

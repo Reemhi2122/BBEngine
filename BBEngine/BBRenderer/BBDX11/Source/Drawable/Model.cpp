@@ -48,11 +48,11 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 				vertices[i].normals = curPrim.normals[i];
 			}
 
-			if (curPrim.Material.pbrMetallicRoughness.baseColorTexture.enabled)
+			if (curPrim.Material.pbrMetallicRoughness.baseColorTexture.path)
 			{
 				char texturePath[64] = "";
 				strcat(texturePath, a_File->gltfPath);
-				strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.image.m_Path);
+				strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.path);
 
 				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Texture = new Texture(a_Gfx, texturePath);
 				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = new Sampler(a_Gfx);

@@ -64,6 +64,7 @@ namespace BBE {
 		a_CurNode->translation = Vector3(0.0, 0.0, 0.0);
 		a_CurNode->rotation = Vector4(0.0, 0.0, 0.0, 1.0);
 		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
+		a_CurNode->mesh = {};
 
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
 		{
@@ -86,7 +87,7 @@ namespace BBE {
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]) {
 			uint32_t curMeshIndex = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["mesh"]->GetFloatBB();
 			BBE::JSONObject curMesh = m_Parser.GetRootNode()["meshes"]->GetListBB()[curMeshIndex]->GetObjectBB();
-
+			
 			//Note(Stan):	This only works when doing it indirectly,
 			//				Look into a way of fixing this.
 			a_CurNode->mesh.name = "Unnamed";
@@ -100,6 +101,7 @@ namespace BBE {
 			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
 			a_CurNode->mesh.primitiveCount = primitiveList.size();
 			a_CurNode->mesh.primative = reinterpret_cast<Mesh::Primative*>(malloc(a_CurNode->mesh.primitiveCount * sizeof(Mesh::Primative)));
+			memset(a_CurNode->mesh.primative, 0, a_CurNode->mesh.primitiveCount * sizeof(Mesh::Primative));
 			for (uint32_t primitiveIndex = 0; primitiveIndex < a_CurNode->mesh.primitiveCount; primitiveIndex++)
 			{
 				JSONObject& primitiveObj = primitiveList[primitiveIndex]->GetObjectBB();
@@ -123,7 +125,6 @@ namespace BBE {
 				if (primitiveObj["material"])
 				{
 					uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
-
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"])
 					{
 						JSONObject pbrMetallicRoughnessObj = m_CurMaterials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB();
@@ -139,7 +140,6 @@ namespace BBE {
 								);
 						}
 
-						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.enabled = false;
 						if (pbrMetallicRoughnessObj["baseColorTexture"])
 						{
 							uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
@@ -147,8 +147,7 @@ namespace BBE {
 
 							char* charPointer = (char*)malloc(str.size());
 							strcpy(charPointer, str.c_str());
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.image.m_Path = charPointer;
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.enabled = true;
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.path = charPointer;
 						}
 
 						if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
@@ -158,7 +157,7 @@ namespace BBE {
 
 							char* charPointer = (char*)malloc(str.size());
 							strcpy(charPointer, str.c_str());
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.image.m_Path = charPointer;
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.path = charPointer;
 						}
 
 						if (pbrMetallicRoughnessObj["metallicFactor"])
@@ -181,7 +180,7 @@ namespace BBE {
 
 						char* charPointer = (char*)malloc(str.size());
 						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.image.m_Path = charPointer;
+						a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.path = charPointer;
 					}
 
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["occlusionTexture"])
@@ -191,7 +190,7 @@ namespace BBE {
 
 						char* charPointer = (char*)malloc(str.size());
 						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
+						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path = charPointer;
 					}
 
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveTexture"])
@@ -201,7 +200,7 @@ namespace BBE {
 
 						char* charPointer = (char*)malloc(str.size());
 						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.image.m_Path = charPointer;
+						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path = charPointer;
 					}
 
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveFactor"])
