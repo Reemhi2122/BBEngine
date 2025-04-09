@@ -39,3 +39,9 @@ void Texture::Bind(Graphics& a_Gfx) noexcept
 {
 	a_Gfx.GetContext()->PSSetShaderResources(0, 1, m_ShaderResourceView.GetAddressOf());
 }
+
+void Texture::UnBind(Graphics& a_Gfx) noexcept
+{
+	ID3D11ShaderResourceView* nullSRV[1]{ nullptr };
+	a_Gfx.GetContext()->PSSetShaderResources(0, 1, nullSRV);
+}

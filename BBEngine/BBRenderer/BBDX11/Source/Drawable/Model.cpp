@@ -107,6 +107,8 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 	m_InstanceBuffer.push_back({ a_Transform });
 }
 
+//Note(Stan): Look into unbinding of resources. Currently they are bound until something else is bound.
+//				Only fixed for textures right now.
 void Model::Draw(Graphics& a_Gfx) noexcept {
 
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
@@ -131,6 +133,7 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
 			Drawable::Draw(a_Gfx);
 
+			m_Nodes[curNode].primitives[i].m_Texture->UnBind(a_Gfx);
 			a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
 		}
 	}

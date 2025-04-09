@@ -6,7 +6,9 @@ class Texture : public Bindable
 public:
 	Texture() = default;
 	Texture(Graphics& a_Gfx, const char* a_Path);
+	
 	void Bind(Graphics& a_Gfx) noexcept;
+	void UnBind(Graphics& a_Gfx) noexcept;
 
 	ID3D11ShaderResourceView* GetRSV() { return m_ShaderResourceView.Get(); };
 
