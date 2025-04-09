@@ -3,6 +3,7 @@
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"
 #include "Vector3.h"
+#include "Materials.h"
 
 struct ModelNodes
 {

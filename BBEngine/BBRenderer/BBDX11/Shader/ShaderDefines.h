@@ -11,7 +11,13 @@
 #define cbuffer struct
 #define float4x4 DirectX::XMMATRIX
 
+#define CBRegister0
 #define CBRegister1
+#define CBRegister2
+#define CBRegister3
 #else
+#define CBRegister0 : register(b0)
 #define CBRegister1 : register(b1)
+#define CBRegister2 : register(b2)
+#define CBRegister3 : register(b3)
 #endif

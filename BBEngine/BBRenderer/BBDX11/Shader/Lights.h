@@ -34,21 +34,14 @@ struct SpotLight
 };
 #endif
 
-cbuffer cbPerFrame
+cbuffer cbPerFrame 
 {
     DirectionalLight directionalLight;
     PointLight pointlights[MAXLIGHTS];
     SpotLight spotlights[MAXLIGHTS];
 };
 
-cbuffer ShadowMapCreation
+cbuffer ShadowMapCreation 
 {
     int index;
-};
-
-cbuffer MaterialConstant
-{
-    float4 baseColor;
-    bool hasTexture;
-    float3 pad;
 };

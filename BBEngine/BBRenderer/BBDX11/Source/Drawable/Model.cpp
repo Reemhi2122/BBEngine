@@ -1,6 +1,5 @@
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
-#include "Lights.h"
 
 Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader)
 {

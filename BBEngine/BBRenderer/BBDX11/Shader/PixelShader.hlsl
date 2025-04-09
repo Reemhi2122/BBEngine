@@ -1,4 +1,5 @@
 #include "Lights.h"
+#include "Materials.h"
 
 Texture2D tex                   : register(ps, t0);
 Texture2D depthBuffer           : register(ps, t1);
@@ -138,15 +139,15 @@ float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
 
-    
-    float4 diffuse = tex.Sample(splr, psin.tex);
-    if (hasTexture)
-    {
+    float4 diffuse;
+    //float4 diffuse = tex.Sample(splr, psin.tex);
+    //if (hasTexture)
+    //{
         diffuse = baseColor;
-    }
+    //}
     
-    if (diffuse.a < 0.01f)
-        discard;
+    //if (diffuse.a < 0.01f)
+    //    discard;
     
     float4 finalColor = float4(0, 0, 0, 1);
     

@@ -30,7 +30,7 @@ add_library (BBRenderer_DX11 STATIC
 
 "Source/Camera.cpp"
 "Source/Drawable/SkyBox.cpp"
- "Include/Drawable/Quad.h" "Source/Drawable/Quad.cpp")
+ "Include/Drawable/Quad.h" "Source/Drawable/Quad.cpp" "Shader/Materials.h")
 
 #set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 

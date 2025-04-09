@@ -192,7 +192,7 @@ namespace BBE
         glassObject->AddComponent(glassVaseMesh);
         m_GameObjects.push_back(glassObject);
 
-        m_Quad = BBNew(m_StackAllocator, Quad)(m_Graphics);
+        //m_Quad = BBNew(m_StackAllocator, Quad)(m_Graphics);
 
         //Lights
         BBObject* spotLightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
@@ -269,7 +269,7 @@ namespace BBE
             m_GameObjects[i]->Draw(m_Graphics);
         }
 
-        m_Quad->Draw(m_Graphics);
+        //m_Quad->Draw(m_Graphics);
 
         m_Graphics.UnbindSRV(1);
         m_Graphics.UnbindSRV(2);
