@@ -152,6 +152,22 @@ Graphics::Graphics(HWND a_HWnd)
 	m_Context->RSSetViewports(1, &viewport);
 
 	m_Camera = new Camera();
+
+	D3D11_BLEND_DESC blendDesc{};
+	D3D11_RENDER_TARGET_BLEND_DESC renderTargetBlendDesc{};
+	renderTargetBlendDesc.BlendEnable = true;
+	renderTargetBlendDesc.SrcBlend = D3D11_BLEND_SRC_COLOR;
+	renderTargetBlendDesc.DestBlend = D3D11_BLEND_BLEND_FACTOR;
+	renderTargetBlendDesc.BlendOp = D3D11_BLEND_OP_ADD;
+	renderTargetBlendDesc.SrcBlendAlpha = D3D11_BLEND_ONE;
+	renderTargetBlendDesc.DestBlendAlpha = D3D11_BLEND_ZERO;
+	renderTargetBlendDesc.BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	renderTargetBlendDesc.RenderTargetWriteMask = D3D10_COLOR_WRITE_ENABLE_ALL;
+
+	blendDesc.AlphaToCoverageEnable = false;
+	blendDesc.RenderTarget[0] = renderTargetBlendDesc;
+	
+	m_Device->CreateBlendState(&blendDesc, &m_TransparancyBlendState);
 }
 
 TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc /*= "main"*/)
@@ -286,6 +302,25 @@ void Graphics::UnbindSRV(uint32_t a_Slot)
 {
 	ID3D11ShaderResourceView* nullSRV[1u] = { nullptr };
 	m_Context->PSSetShaderResources(a_Slot, 1u, nullSRV);
+}
+
+void Graphics::SetBlendState(BBE::AlphaMode a_BlendMode)
+{
+	float blendFactor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
+	switch (a_BlendMode)
+	{
+	case BBE::AlphaMode::MASK_MODE:
+		m_Context->OMSetBlendState(0, 0, 0xffffffff);
+		break;
+	case BBE::AlphaMode::BLEND_MODE:
+		m_Context->OMSetBlendState(m_TransparancyBlendState, blendFactor, 0xffffffff);
+		break;
+	case BBE::AlphaMode::OPAQUE_MODE:
+		m_Context->OMSetBlendState(0, 0, 0xffffffff);
+		break;
+	default:
+		break;
+	}
 }
 
 void Graphics::EndFrame()

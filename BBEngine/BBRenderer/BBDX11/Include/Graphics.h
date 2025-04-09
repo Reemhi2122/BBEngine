@@ -17,6 +17,11 @@
 typedef uint32_t TMPHANDLE;
 struct Model;
 
+namespace BBE
+{
+	enum class AlphaMode;
+}
+
 enum class ShaderType
 {
 	VertexShader,
@@ -70,6 +75,8 @@ public:
 	void BindDepthTexture(ID3D11ShaderResourceView* a_View, uint32_t a_StartSlot, uint32_t a_NumViews);
 	void BindSampler(ID3D11SamplerState* a_Sampler, uint32_t a_StartSlot, uint32_t a_NumViews);
 
+	void SetBlendState(BBE::AlphaMode a_BlendMode);
+
 	void UnbindSRV(uint32_t a_Slot);
 
 	// == Lights functions ==
@@ -82,7 +89,6 @@ public:
 	void CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
 
 	//uint32_t CreateTexture(const char* a_Path);
-
 
 	ID3D11ShaderResourceView* GetDirectionLightDepthMapRSV()	{ return m_DirLightDepthBufferSRV; };
 	ID3D11ShaderResourceView* GetPointLightDepthCubeArrayRSV()	{ return m_PointLightDepthCubeArraySRV; };
@@ -126,7 +132,7 @@ private:
 	ID3D11Texture2D*			m_SpotLightsDepthArray = nullptr;
 	ID3D11ShaderResourceView*	m_SpotLightsDepthArraySRV = nullptr;
 
-	//std::vector<Texture>		m_TextureList;
+	ID3D11BlendState*			m_TransparancyBlendState;
 
 	uint32_t			m_VertexIndex = 0u;
 	VertexShader		m_VertexShaders[100u];

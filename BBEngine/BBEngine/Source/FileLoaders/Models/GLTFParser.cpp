@@ -213,6 +213,17 @@ namespace BBE {
 								emissiveFactor[2]->GetFloatBB()
 							);
 					}
+
+					a_CurNode->mesh.primative[primitiveIndex].Material.alphaMode = AlphaMode::OPAQUE_MODE;
+					if (m_CurMaterials[materialIndex]->GetObjectBB()["AlphaMode"])
+					{
+						std::string alphaBlend = m_CurMaterials[materialIndex]->GetObjectBB()["AlphaMode"]->GetStringBB();
+						
+						if (strcmp(alphaBlend.c_str(), "MASK") == 0)
+						{
+							a_CurNode->mesh.primative[primitiveIndex].Material.alphaMode = AlphaMode::BLEND_MODE;
+						}
+					}
 				}
 
 				a_CurNode->mesh.primative[primitiveIndex].indicesAmount = 

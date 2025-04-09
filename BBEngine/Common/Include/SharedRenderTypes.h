@@ -8,6 +8,13 @@
 //				be part of the normal engine as well..
 namespace BBE {
 
+	enum class AlphaMode
+	{
+		MASK_MODE,
+		BLEND_MODE,
+		OPAQUE_MODE
+	};
+
 	struct UV
 	{
 		float u, v;
@@ -77,6 +84,8 @@ namespace BBE {
 				uint32_t	occlusionTextureStrength;
 				TextureT	emissiveTexture;
 				Vector3		emissiveFactor;
+
+				AlphaMode alphaMode;
 			} Material;
 
 			uint32_t		indicesAmount;

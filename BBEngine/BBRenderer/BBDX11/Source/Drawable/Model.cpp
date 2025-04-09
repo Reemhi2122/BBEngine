@@ -65,6 +65,8 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 		
 			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
 			m_Nodes[nodeIndex].primitives[primitiveIndex].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount, curPrim.indicesDataSize);
+			
+			m_Nodes[nodeIndex].primitives[primitiveIndex].m_Blend = curPrim.Material.alphaMode;
 		}
 	}
 
@@ -121,11 +123,15 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 			//a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
 			//a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
 
+			a_Gfx.SetBlendState(m_Nodes[curNode].primitives[i].m_Blend);
+
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
 
 			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
 			Drawable::Draw(a_Gfx);
+
+			a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
 		}
 	}
 }

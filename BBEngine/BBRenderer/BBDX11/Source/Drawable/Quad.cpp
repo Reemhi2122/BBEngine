@@ -14,14 +14,14 @@ Quad::Quad(Graphics& a_Gfx)
 	vBuffer = new VertexBuffer(a_Gfx, vertices, 4);
 	AddBind(vBuffer);
 
-	uint8_t indices[] = {
-		1,2,0, 1,3,2,
+	uint16_t* indices = new uint16_t[6] {
+		0,1,2, 0,2,3,
 	};
 
 	vShader = a_Gfx.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
 	pShader = a_Gfx.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
 
-	IBuffer = new IndexBuffer(a_Gfx, indices, 6, 1);
+	IBuffer = new IndexBuffer(a_Gfx, (uint8_t*)indices, 6, 2);
 		
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{ "Position",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
@@ -41,7 +41,7 @@ Quad::Quad(Graphics& a_Gfx)
 	m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	AddBind(m_Topology);
 
-	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(-4, 1, 1.3f), Vector4(0, 0, 0, 1), Vector3(1, 1, 1));
+	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(-4, 1, 1.0f), Vector4(0, 0, 0, 1), Vector3(1, 1, 1));
 	AddBind(m_TransformBuf);
 }
 
@@ -53,5 +53,7 @@ void Quad::Draw(Graphics& a_Gfx) noexcept
 	a_Gfx.BindShader(ShaderType::PixelShader, pShader);
 
 	SetIndexBuffer(IBuffer);
+	IBuffer->Bind(a_Gfx);
+
 	Drawable::Draw(a_Gfx);
 }

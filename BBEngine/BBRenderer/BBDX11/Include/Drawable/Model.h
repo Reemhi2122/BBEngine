@@ -20,6 +20,7 @@ struct ModelNodes
 		Texture* m_Texture;
 		Sampler* m_Sampler;
 		IndexBuffer* m_IndexBuffer;
+		BBE::AlphaMode m_Blend;
 
 	}*primitives = nullptr;
 };

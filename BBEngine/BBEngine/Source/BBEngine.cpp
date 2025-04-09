@@ -178,26 +178,19 @@ namespace BBE
             }
         }
 
-        //BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
-        //Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
-        //lanternBBObj->AddComponent(lanternTransform);
-        //lanternBBObj->AddComponent(lanternMesh);
-        //m_GameObjects.push_back(lanternBBObj);
+        BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
+        Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
+        lanternBBObj->AddComponent(lanternTransform);
+        lanternBBObj->AddComponent(lanternMesh);
+        m_GameObjects.push_back(lanternBBObj);
 
-        //BBObject* carObject = BBNew(m_StackAllocator, BBObject)("Car");
-        //Transform* carTransform = BBNew(m_StackAllocator, Transform)(Vector3(0, 3, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //carObject->AddComponent(carTransform);
-        //MeshComponent* carMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, car, carTransform);
-        //carObject->AddComponent(carMesh);
-        //m_GameObjects.push_back(carObject);
-
-        //BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
-        //Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 3, 0), Vector3(0, 0, 0), Vector3(5.0f, 5.0f, 5.0f));
-        //glassObject->AddComponent(glassTransform);
-        //MeshComponent* glassVaseMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, glassVase, glassTransform);
-        //glassObject->AddComponent(glassVaseMesh);
-        //m_GameObjects.push_back(glassObject);
+        BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
+        Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 3, 0), Vector3(0, 0, 0), Vector3(5.0f, 5.0f, 5.0f));
+        glassObject->AddComponent(glassTransform);
+        MeshComponent* glassVaseMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, glassVase, glassTransform);
+        glassObject->AddComponent(glassVaseMesh);
+        m_GameObjects.push_back(glassObject);
 
         m_Quad = BBNew(m_StackAllocator, Quad)(m_Graphics);
 
