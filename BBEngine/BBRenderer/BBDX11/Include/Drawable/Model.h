@@ -22,10 +22,13 @@ struct ModelNodes
 		IndexBuffer* m_IndexBuffer;
 		BBE::AlphaMode m_Blend;
 
+		PixelConstantBuffer<struct MaterialConstant>* m_PixelConstantBuffer;
+
 	}*primitives = nullptr;
 };
 
-struct NodeContainer {
+struct NodeContainer 
+{
 	ModelNodes* data;
 	uint32_t count;
 };

@@ -132,11 +132,13 @@ namespace BBE {
 						if (pbrMetallicRoughnessObj["baseColorFactor"])
 						{
 							JSONList baseColorFactor = pbrMetallicRoughnessObj["baseColorFactor"]->GetListBB();
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.hasBaseColorFactor = true;
 							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorFactor =
-								Vector3(
+								Vector4(
 									baseColorFactor[0]->GetFloatBB(),
 									baseColorFactor[1]->GetFloatBB(),
-									baseColorFactor[2]->GetFloatBB()
+									baseColorFactor[2]->GetFloatBB(),
+									baseColorFactor[3]->GetFloatBB()
 								);
 						}
 

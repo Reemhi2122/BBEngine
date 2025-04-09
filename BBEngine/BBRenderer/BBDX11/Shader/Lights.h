@@ -45,3 +45,10 @@ cbuffer ShadowMapCreation
 {
     int index;
 };
+
+cbuffer MaterialConstant
+{
+    float4 baseColor;
+    bool hasTexture;
+    float3 pad;
+};

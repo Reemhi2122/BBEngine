@@ -138,7 +138,12 @@ float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
 
+    
     float4 diffuse = tex.Sample(splr, psin.tex);
+    if (hasTexture)
+    {
+        diffuse = baseColor;
+    }
     
     if (diffuse.a < 0.01f)
         discard;

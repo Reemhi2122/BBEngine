@@ -1,5 +1,6 @@
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
+#include "Lights.h"
 
 Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader)
 {
@@ -62,7 +63,23 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Texture = nullptr;
 				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = nullptr;
 			}
-		
+			
+			MaterialConstant constant;
+			m_Nodes[nodeIndex].primitives[primitiveIndex].m_PixelConstantBuffer = new PixelConstantBuffer<MaterialConstant>(a_Gfx, 2, 1);
+			if (curPrim.Material.pbrMetallicRoughness.hasBaseColorFactor)
+			{
+				Vector4 FactorData = curPrim.Material.pbrMetallicRoughness.baseColorFactor;
+				constant.hasTexture = true;
+				constant.baseColor = FactorData;
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_PixelConstantBuffer->Update(a_Gfx, constant);
+			}
+			else
+			{
+				constant.hasTexture = false;
+				constant.baseColor = {0,0,0,0};
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_PixelConstantBuffer->Update(a_Gfx, constant);
+			}
+
 			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
 			m_Nodes[nodeIndex].primitives[primitiveIndex].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount, curPrim.indicesDataSize);
 			
@@ -74,10 +91,9 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 	m_PixelShader = m_CurPixelShader = a_PixelShader;
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
-		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "Normal",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-
+		{ "Position",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TexCoord",		0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "Normal",			0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		//{ "InstanceTransform", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0,							D3D11_INPUT_PER_INSTANCE_DATA, 1},
 		//{ "InstanceTransform", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
 		//{ "InstanceTransform", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
@@ -129,6 +145,7 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
+			m_Nodes[curNode].primitives[i].m_PixelConstantBuffer->Bind(a_Gfx);
 
 			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
 			Drawable::Draw(a_Gfx);
@@ -154,7 +171,7 @@ void Model::DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept
 
 			a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
 			a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
-
+			
 			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(DirectX::XMMATRIX), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
