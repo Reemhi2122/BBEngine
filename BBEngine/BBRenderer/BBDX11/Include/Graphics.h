@@ -11,6 +11,7 @@
 
 #include "Camera.h"
 #include "Vertexconstant.h"
+#include "Materials.h"
 
 #include <vector>
 

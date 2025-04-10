@@ -23,8 +23,7 @@ struct ModelNodes
 		IndexBuffer* m_IndexBuffer;
 		BBE::AlphaMode m_Blend;
 
-		PixelConstantBuffer<struct MaterialConstant>* m_PixelConstantBuffer;
-
+		MaterialConstant m_MaterialConstant;
 	}*primitives = nullptr;
 };
 

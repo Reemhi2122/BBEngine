@@ -136,6 +136,9 @@ namespace BBE
         m_ShadowMapCB = PixelConstantBuffer<ShadowMapCreation>(m_Graphics, 1, 1);
         m_ShadowMapCB.Bind(m_Graphics);
 
+        m_PerModelPixelBuffer = PixelConstantBuffer<MaterialConstant>(m_Graphics, 2, 1);
+        m_PerModelPixelBuffer.Bind(m_Graphics);
+
         m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, 1, 1);
         m_LightMatrix.Bind(m_Graphics);
 
@@ -166,24 +169,24 @@ namespace BBE
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
         //Objects
-        int XSize = 2, YSize = 2;
-        for (size_t i = 0; i < XSize; i++) {
-            for (size_t y = 0; y < YSize; y++) {
-                BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
-                Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
-                MeshComponent* sponzaMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, Sponza, sponzaTransform);
-                obj->AddComponent(sponzaTransform);
-                obj->AddComponent(sponzaMesh);
-                m_GameObjects.push_back(obj);
-            }
-        }
+        //int XSize = 2, YSize = 2;
+        //for (size_t i = 0; i < XSize; i++) {
+        //    for (size_t y = 0; y < YSize; y++) {
+        //        BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
+        //        Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
+        //        MeshComponent* sponzaMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, Sponza, sponzaTransform);
+        //        obj->AddComponent(sponzaTransform);
+        //        obj->AddComponent(sponzaMesh);
+        //        m_GameObjects.push_back(obj);
+        //    }
+        //}
 
-        BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
-        Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
-        lanternBBObj->AddComponent(lanternTransform);
-        lanternBBObj->AddComponent(lanternMesh);
-        m_GameObjects.push_back(lanternBBObj);
+        //BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
+        //Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        //MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
+        //lanternBBObj->AddComponent(lanternTransform);
+        //lanternBBObj->AddComponent(lanternMesh);
+        //m_GameObjects.push_back(lanternBBObj);
 
         BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
         Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 3, 0), Vector3(0, 0, 0), Vector3(5.0f, 5.0f, 5.0f));

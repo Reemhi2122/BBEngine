@@ -32,7 +32,7 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 
 		m_Nodes[nodeIndex].primitiveCount = curNode.mesh.primitiveCount;
 		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNodes::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNodes::ModelPrimitive)));
-			
+
 		for (size_t primitiveIndex = 0; primitiveIndex < curNode.mesh.primitiveCount; primitiveIndex++)
 		{
 			BBE::Mesh::Primative& curPrim = curNode.mesh.primative[primitiveIndex];
@@ -63,20 +63,16 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = nullptr;
 			}
 			
-			MaterialConstant constant;
-			m_Nodes[nodeIndex].primitives[primitiveIndex].m_PixelConstantBuffer = new PixelConstantBuffer<MaterialConstant>(a_Gfx, 2, 1);
 			if (curPrim.Material.pbrMetallicRoughness.hasBaseColorFactor)
 			{
 				Vector4 FactorData = curPrim.Material.pbrMetallicRoughness.baseColorFactor;
-				constant.hasTexture = true;
-				constant.baseColor = FactorData;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_PixelConstantBuffer->Update(a_Gfx, constant);
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = true;
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1); //FactorData;
 			}
 			else
 			{
-				constant.hasTexture = false;
-				constant.baseColor = {0,0,0,0};
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_PixelConstantBuffer->Update(a_Gfx, constant);
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = false;
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1);
 			}
 
 			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
@@ -144,7 +140,6 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
-			m_Nodes[curNode].primitives[i].m_PixelConstantBuffer->Bind(a_Gfx);
 
 			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
 			Drawable::Draw(a_Gfx);

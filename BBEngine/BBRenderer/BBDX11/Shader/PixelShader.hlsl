@@ -139,7 +139,7 @@ float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
 
-    float4 diffuse;
+    float4 diffuse = float4(1,1,1,1);
     //float4 diffuse = tex.Sample(splr, psin.tex);
     //if (hasTexture)
     //{

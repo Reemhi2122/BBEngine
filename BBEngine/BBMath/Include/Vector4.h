@@ -16,7 +16,7 @@ public:
 	union
 	{
 		float vector[4] = { 0, 0, 0, 0};
-		float xyz[3];
+		float xyz[4];
 		struct
 		{
 			float x;
