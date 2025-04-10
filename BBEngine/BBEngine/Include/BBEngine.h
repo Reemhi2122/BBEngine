@@ -68,7 +68,6 @@ namespace BBE {
 
 		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		PixelConstantBuffer<ShadowMapCreation> m_ShadowMapCB;
-		PixelConstantBuffer<MaterialConstant> m_PerModelPixelBuffer;
 		ShadowMapCreation m_ShadowMapCBBuffer;
 
 		VertexConstantBuffer<vcbPerFrame> m_LightMatrix;

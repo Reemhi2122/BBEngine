@@ -139,15 +139,20 @@ float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
 
-    float4 diffuse = float4(1,1,1,1);
-    //float4 diffuse = tex.Sample(splr, psin.tex);
-    //if (hasTexture)
-    //{
-        diffuse = baseColor;
-    //}
+    float4 diffuse;
     
-    //if (diffuse.a < 0.01f)
-    //    discard;
+    if (hasTexture > 0)
+    {
+        diffuse = tex.Sample(splr, psin.tex);
+        diffuse *= baseColor;
+    }
+    else
+    {
+        diffuse = baseColor;
+    }
+    
+    if (diffuse.a < 0.01f)
+        discard;
     
     float4 finalColor = float4(0, 0, 0, 1);
     
@@ -163,7 +168,7 @@ float4 main(VSOut psin) : SV_Target
         finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i], i), diffuse.a);
     }
 
-    for(int i = 0; i < MAXLIGHTS; i++) 
+    for (int i = 0; i < MAXLIGHTS; i++)
     {
         curLightView = mul(psin.worldPos, spotlights[i].lightView);
         curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);

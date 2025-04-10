@@ -74,5 +74,7 @@ private:
 	uint32_t m_CurVertexShader;
 	uint32_t m_CurPixelShader;
 
+	PixelConstantBuffer<MaterialConstant> m_ModelPixelBuffer;
+
 	uint32_t m_nodeCount;
 };

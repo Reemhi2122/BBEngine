@@ -132,7 +132,6 @@ namespace BBE {
 						if (pbrMetallicRoughnessObj["baseColorFactor"])
 						{
 							JSONList baseColorFactor = pbrMetallicRoughnessObj["baseColorFactor"]->GetListBB();
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.hasBaseColorFactor = true;
 							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorFactor =
 								Vector4(
 									baseColorFactor[0]->GetFloatBB(),
@@ -142,6 +141,7 @@ namespace BBE {
 								);
 						}
 
+						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.bHasTexture = false;
 						if (pbrMetallicRoughnessObj["baseColorTexture"])
 						{
 							uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
@@ -150,6 +150,7 @@ namespace BBE {
 							char* charPointer = (char*)malloc(str.size());
 							strcpy(charPointer, str.c_str());
 							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.path = charPointer;
+							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.bHasTexture = true;
 						}
 
 						if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
@@ -217,11 +218,11 @@ namespace BBE {
 					}
 
 					a_CurNode->mesh.primative[primitiveIndex].Material.alphaMode = AlphaMode::OPAQUE_MODE;
-					if (m_CurMaterials[materialIndex]->GetObjectBB()["AlphaMode"])
+					if (m_CurMaterials[materialIndex]->GetObjectBB()["alphaMode"])
 					{
-						std::string alphaBlend = m_CurMaterials[materialIndex]->GetObjectBB()["AlphaMode"]->GetStringBB();
+						std::string alphaBlend = m_CurMaterials[materialIndex]->GetObjectBB()["alphaMode"]->GetStringBB();
 						
-						if (strcmp(alphaBlend.c_str(), "MASK") == 0)
+						if (strcmp(alphaBlend.c_str(), "BLEND") == 0)
 						{
 							a_CurNode->mesh.primative[primitiveIndex].Material.alphaMode = AlphaMode::BLEND_MODE;
 						}

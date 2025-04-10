@@ -34,14 +34,14 @@ struct SpotLight
 };
 #endif
 
-cbuffer cbPerFrame 
+cbuffer cbPerFrame CBRegister0
 {
     DirectionalLight directionalLight;
     PointLight pointlights[MAXLIGHTS];
     SpotLight spotlights[MAXLIGHTS];
 };
 
-cbuffer ShadowMapCreation 
+cbuffer ShadowMapCreation CBRegister1
 {
     int index;
 };

@@ -72,7 +72,7 @@ namespace BBE {
 				struct 
 				{
 					TextureT	baseColorTexture;
-					bool		hasBaseColorFactor;
+					bool		bHasTexture;
 					Vector4		baseColorFactor;
 					TextureT	metallicRoughnessTexture;
 					uint32_t	metallicFactor;

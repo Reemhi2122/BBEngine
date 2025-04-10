@@ -63,16 +63,17 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = nullptr;
 			}
 			
-			if (curPrim.Material.pbrMetallicRoughness.hasBaseColorFactor)
+			if (curPrim.Material.pbrMetallicRoughness.bHasTexture)
 			{
 				Vector4 FactorData = curPrim.Material.pbrMetallicRoughness.baseColorFactor;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = true;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1); //FactorData;
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1);
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = 1;
 			}
 			else
 			{
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = false;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1);
+				Vector4 FactorData = curPrim.Material.pbrMetallicRoughness.baseColorFactor;
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = FactorData;
+				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = 0;
 			}
 
 			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
@@ -81,6 +82,8 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 			m_Nodes[nodeIndex].primitives[primitiveIndex].m_Blend = curPrim.Material.alphaMode;
 		}
 	}
+
+	m_ModelPixelBuffer = PixelConstantBuffer<MaterialConstant>(a_Gfx, 2, 1);
 
 	m_VertexShader = m_CurVertexShader = a_VertexShader; 
 	m_PixelShader = m_CurPixelShader = a_PixelShader;
@@ -122,6 +125,7 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 //				Only fixed for textures right now.
 void Model::Draw(Graphics& a_Gfx) noexcept {
 
+
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
 		m_Nodes[curNode].transformBuf->Bind(a_Gfx, *m_CurTransform);
@@ -138,13 +142,22 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 
 			a_Gfx.SetBlendState(m_Nodes[curNode].primitives[i].m_Blend);
 
+			m_ModelPixelBuffer.Update(a_Gfx, m_Nodes[curNode].primitives[i].m_MaterialConstant);
+			m_ModelPixelBuffer.Bind(a_Gfx);
+
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
 
 			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
 			Drawable::Draw(a_Gfx);
 
-			m_Nodes[curNode].primitives[i].m_Texture->UnBind(a_Gfx);
+			m_ModelPixelBuffer.UnBind(a_Gfx);
+
+			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
+			{
+				m_Nodes[curNode].primitives[i].m_Texture->UnBind(a_Gfx);
+			}
+
 			a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
 		}
 	}
@@ -165,7 +178,7 @@ void Model::DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept
 
 			a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
 			a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
-			
+
 			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(DirectX::XMMATRIX), m_InstanceBuffer.size());
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
