@@ -23,6 +23,9 @@ struct ModelNodes
 		IndexBuffer* m_IndexBuffer;
 		BBE::AlphaMode m_Blend;
 
+		Texture* m_KhrVolumeTexture;
+		Texture* m_KhrTransmissionTexture;
+
 		MaterialConstant m_MaterialConstant;
 	}*primitives = nullptr;
 };

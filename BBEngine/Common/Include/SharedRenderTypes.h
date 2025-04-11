@@ -67,7 +67,7 @@ namespace BBE {
 				};
 			};
 
-			struct 
+			struct Material
 			{
 				struct 
 				{
@@ -92,7 +92,7 @@ namespace BBE {
 				//Note(Stan): Hard coded for now, probably want a dynamic? array of extentions as these are rarely
 				//				here and I don't want GLTF files to be that big, although we only safe one of these
 				//				for each model.
-				struct
+				struct Extensions
 				{
 					struct
 					{
@@ -101,7 +101,7 @@ namespace BBE {
 					} khrMaterialTransmission;
 					bool hasKhrMaterialTransmission = false;
 
-					struct
+					struct KhrMaterialvolume
 					{
 						float thicknessFactor;
 						TextureT thicknessTexture;

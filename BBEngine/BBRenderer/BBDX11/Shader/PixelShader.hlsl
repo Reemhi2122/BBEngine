@@ -12,7 +12,7 @@ SamplerState splr                   : register(ps, s0);
 SamplerState depthSampler           : register(ps, s1);
 
 Texture2D khrThicknessTexture       : register(ps, t5);
-Texture2D khrTransmissionTexture    : register(ps, t5);
+Texture2D khrTransmissionTexture    : register(ps, t6);
 
 struct VSOut
 {
@@ -152,6 +152,11 @@ float4 main(VSOut psin) : SV_Target
     else
     {
         diffuse = baseColor;
+    }
+    
+    if (hasKhrVolumeTexture > 0)
+    {
+        diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
     }
     
     if (diffuse.a < 0.01f)

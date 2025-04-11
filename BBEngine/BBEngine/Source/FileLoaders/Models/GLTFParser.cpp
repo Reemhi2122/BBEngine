@@ -257,12 +257,15 @@ namespace BBE {
 						// EXTENSION: KHR_materials_volume
 						if (extensionsObject["KHR_materials_volume"])
 						{
-							JSONObject khrvolumeObject = extensionsObject["KHR_materials_transmission"]->GetObjectBB();
+							JSONObject khrvolumeObject = extensionsObject["KHR_materials_volume"]->GetObjectBB();
 							a_CurNode->mesh.primative[primitiveIndex].Material.extensions.hasKhrMaterialVolume = true;
 
+							Mesh::Primative::Material::Extensions::KhrMaterialvolume& khrMaterialVolume = a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume;
+
+							khrMaterialVolume.thicknessFactor = 0;
 							if (khrvolumeObject["thicknessFactor"])
 							{
-								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.thicknessFactor = khrvolumeObject["thicknessFactor"]->GetFloatBB();
+								khrMaterialVolume.thicknessFactor = khrvolumeObject["thicknessFactor"]->GetFloatBB();
 							}
 
 							if (khrvolumeObject["thicknessTexture"])
@@ -272,18 +275,20 @@ namespace BBE {
 
 								char* charPointer = (char*)malloc(uri.size());
 								strcpy(charPointer, uri.c_str());
-								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.thicknessTexture.path = charPointer;
+								khrMaterialVolume.thicknessTexture.path = charPointer;
 							}
 
+							khrMaterialVolume.thicknessFactor = +INFINITY;
 							if (khrvolumeObject["attenuationDistance"])
 							{
-								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.attenuationDistance = khrvolumeObject["attenuationDistance"]->GetFloatBB();
+								khrMaterialVolume.attenuationDistance = khrvolumeObject["attenuationDistance"]->GetFloatBB();
 							}
 
+							khrMaterialVolume.attenuationColor = Vector3(1.0f, 1.0f, 1.0f);
 							if (khrvolumeObject["attenuationColor"])
 							{
-								JSONList thicknessColorFactor = khrvolumeObject["thicknessFactor"]->GetListBB();
-								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.attenuationColor =
+								JSONList thicknessColorFactor = khrvolumeObject["attenuationColor"]->GetListBB();
+								khrMaterialVolume.attenuationColor =
 									Vector3(
 										thicknessColorFactor[0]->GetFloatBB(),
 										thicknessColorFactor[1]->GetFloatBB(),

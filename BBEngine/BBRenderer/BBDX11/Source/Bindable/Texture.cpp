@@ -1,7 +1,8 @@
 #include "Bindable/Texture.h"
 #include "stb_image.h"
 
-Texture::Texture(Graphics& a_Gfx, const char* a_Path)
+Texture::Texture(Graphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
+	: m_StartSlot(a_StartSlot)
 {
 	int sizeX, sizeY, Channels;
 	unsigned char* img = stbi_load(a_Path, &sizeX, &sizeY, &Channels, 4);
@@ -37,11 +38,11 @@ Texture::Texture(Graphics& a_Gfx, const char* a_Path)
 
 void Texture::Bind(Graphics& a_Gfx) noexcept
 {
-	a_Gfx.GetContext()->PSSetShaderResources(0, 1, m_ShaderResourceView.GetAddressOf());
+	a_Gfx.GetContext()->PSSetShaderResources(m_StartSlot, 1, m_ShaderResourceView.GetAddressOf());
 }
 
 void Texture::UnBind(Graphics& a_Gfx) noexcept
 {
 	ID3D11ShaderResourceView* nullSRV[1]{ nullptr };
-	a_Gfx.GetContext()->PSSetShaderResources(0, 1, nullSRV);
+	a_Gfx.GetContext()->PSSetShaderResources(m_StartSlot, 1, nullSRV);
 }

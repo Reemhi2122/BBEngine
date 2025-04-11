@@ -35,51 +35,68 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 
 		for (size_t primitiveIndex = 0; primitiveIndex < curNode.mesh.primitiveCount; primitiveIndex++)
 		{
-			BBE::Mesh::Primative& curPrim = curNode.mesh.primative[primitiveIndex];
-			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(curPrim.vertexCount * sizeof(BBE::Vertex)));
+			BBE::Mesh::Primative& gltfPrimitive = curNode.mesh.primative[primitiveIndex];
+			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(gltfPrimitive.vertexCount * sizeof(BBE::Vertex)));
+
+			ModelNodes::ModelPrimitive& modelPrimitive = m_Nodes[nodeIndex].primitives[primitiveIndex];
+			modelPrimitive = {};
 
 			if (vertices == nullptr)
 				return;
 
-			for (size_t i = 0; i < curPrim.vertexCount; i++)
+			for (size_t i = 0; i < gltfPrimitive.vertexCount; i++)
 			{
-				vertices[i].pos = curPrim.vertices[i];
-				vertices[i].texCoords = curPrim.texCoords[i];
-				vertices[i].normals = curPrim.normals[i];
+				vertices[i].pos = gltfPrimitive.vertices[i];
+				vertices[i].texCoords = gltfPrimitive.texCoords[i];
+				vertices[i].normals = gltfPrimitive.normals[i];
 			}
 
-			if (curPrim.Material.pbrMetallicRoughness.baseColorTexture.path)
+			if (gltfPrimitive.Material.pbrMetallicRoughness.baseColorTexture.path)
 			{
 				char texturePath[_MAX_PATH] = "";
 				strcat(texturePath, a_File->gltfPath);
-				strcat(texturePath, curPrim.Material.pbrMetallicRoughness.baseColorTexture.path);
+				strcat(texturePath, gltfPrimitive.Material.pbrMetallicRoughness.baseColorTexture.path);
 
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Texture = new Texture(a_Gfx, texturePath);
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = new Sampler(a_Gfx);
+				modelPrimitive.m_Texture = new Texture(a_Gfx, texturePath);
+				modelPrimitive.m_Sampler = new Sampler(a_Gfx);
+			}
+			
+			if (gltfPrimitive.Material.pbrMetallicRoughness.bHasTexture)
+			{
+				Vector4 FactorData = gltfPrimitive.Material.pbrMetallicRoughness.baseColorFactor;
+				modelPrimitive.m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1);
+				modelPrimitive.m_MaterialConstant.hasTexture = 1;
 			}
 			else
 			{
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Texture = nullptr;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_Sampler = nullptr;
-			}
-			
-			if (curPrim.Material.pbrMetallicRoughness.bHasTexture)
-			{
-				Vector4 FactorData = curPrim.Material.pbrMetallicRoughness.baseColorFactor;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1);
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = 1;
-			}
-			else
-			{
-				Vector4 FactorData = curPrim.Material.pbrMetallicRoughness.baseColorFactor;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.baseColor = FactorData;
-				m_Nodes[nodeIndex].primitives[primitiveIndex].m_MaterialConstant.hasTexture = 0;
+				Vector4 FactorData = gltfPrimitive.Material.pbrMetallicRoughness.baseColorFactor;
+				modelPrimitive.m_MaterialConstant.baseColor = FactorData;
+				modelPrimitive.m_MaterialConstant.hasTexture = 0;
 			}
 
-			m_Nodes[nodeIndex].primitives[primitiveIndex].vBuffer = new VertexBuffer(a_Gfx, vertices, curPrim.vertexCount);
-			m_Nodes[nodeIndex].primitives[primitiveIndex].m_IndexBuffer = new IndexBuffer(a_Gfx, curPrim.indices, curPrim.indicesAmount, curPrim.indicesDataSize);
-			
-			m_Nodes[nodeIndex].primitives[primitiveIndex].m_Blend = curPrim.Material.alphaMode;
+			if (gltfPrimitive.Material.extensions.hasKhrMaterialVolume)
+			{
+				gltfPrimitive.Material.alphaMode = BBE::AlphaMode::BLEND_MODE;
+
+				modelPrimitive.m_MaterialConstant.hasKhrVolume = 1;
+				modelPrimitive.m_MaterialConstant.khrThicknessFactor = gltfPrimitive.Material.extensions.khrMaterialVolume.thicknessFactor;
+				modelPrimitive.m_MaterialConstant.khrAttenuationDistance = gltfPrimitive.Material.extensions.khrMaterialVolume.attenuationDistance;
+				modelPrimitive.m_MaterialConstant.khrAttenuationColor = gltfPrimitive.Material.extensions.khrMaterialVolume.attenuationColor;
+
+				if (gltfPrimitive.Material.extensions.khrMaterialVolume.thicknessTexture.path)
+				{
+					char texturePath[_MAX_PATH] = "";
+					strcat(texturePath, a_File->gltfPath);
+					strcat(texturePath, gltfPrimitive.Material.extensions.khrMaterialVolume.thicknessTexture.path);
+
+					modelPrimitive.m_MaterialConstant.hasKhrVolumeTexture = 1;
+					modelPrimitive.m_KhrVolumeTexture = new Texture(a_Gfx, texturePath, 5);
+				}
+			}
+
+			modelPrimitive.vBuffer = new VertexBuffer(a_Gfx, vertices, gltfPrimitive.vertexCount);
+			modelPrimitive.m_IndexBuffer = new IndexBuffer(a_Gfx, gltfPrimitive.indices, gltfPrimitive.indicesAmount, gltfPrimitive.indicesDataSize);
+			modelPrimitive.m_Blend = gltfPrimitive.Material.alphaMode;
 		}
 	}
 
@@ -132,29 +149,36 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 		m_Nodes[curNode].transformBuf->Bind(a_Gfx, *m_CurTransform);
 		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
 		{
-			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
+			ModelNodes::ModelPrimitive& curPrimitive = m_Nodes[curNode].primitives[i];
+
+			if (curPrimitive.m_Texture != nullptr)
 			{
-				m_Nodes[curNode].primitives[i].m_Texture->Bind(a_Gfx);
-				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
+				curPrimitive.m_Texture->Bind(a_Gfx);
+				curPrimitive.m_Sampler->Bind(a_Gfx);
+			}
+
+			if (curPrimitive.m_KhrVolumeTexture != nullptr)
+			{
+				curPrimitive.m_KhrVolumeTexture->Bind(a_Gfx);
 			}
 
 			//a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
 			//a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
 
-			a_Gfx.SetBlendState(m_Nodes[curNode].primitives[i].m_Blend);
+			a_Gfx.SetBlendState(curPrimitive.m_Blend);
 
-			m_ModelPixelBuffer.Update(a_Gfx, m_Nodes[curNode].primitives[i].m_MaterialConstant);
+			m_ModelPixelBuffer.Update(a_Gfx, curPrimitive.m_MaterialConstant);
 
-			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
-			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
+			curPrimitive.vBuffer->Bind(a_Gfx);
+			curPrimitive.m_IndexBuffer->Bind(a_Gfx);
 
-			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
+			SetIndexBuffer(curPrimitive.m_IndexBuffer);
 			Drawable::Draw(a_Gfx);
 
 
-			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
+			if (curPrimitive.m_Texture != nullptr)
 			{
-				m_Nodes[curNode].primitives[i].m_Texture->UnBind(a_Gfx);
+				curPrimitive.m_Texture->UnBind(a_Gfx);
 			}
 
 			a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
