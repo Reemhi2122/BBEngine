@@ -125,6 +125,7 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 //				Only fixed for textures right now.
 void Model::Draw(Graphics& a_Gfx) noexcept {
 
+	m_ModelPixelBuffer.Bind(a_Gfx);
 
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
@@ -143,7 +144,6 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 			a_Gfx.SetBlendState(m_Nodes[curNode].primitives[i].m_Blend);
 
 			m_ModelPixelBuffer.Update(a_Gfx, m_Nodes[curNode].primitives[i].m_MaterialConstant);
-			m_ModelPixelBuffer.Bind(a_Gfx);
 
 			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
 			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
@@ -151,7 +151,6 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
 			Drawable::Draw(a_Gfx);
 
-			m_ModelPixelBuffer.UnBind(a_Gfx);
 
 			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
 			{
@@ -161,6 +160,8 @@ void Model::Draw(Graphics& a_Gfx) noexcept {
 			a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
 		}
 	}
+
+	m_ModelPixelBuffer.UnBind(a_Gfx);
 }
 
 void Model::DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept

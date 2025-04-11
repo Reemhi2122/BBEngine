@@ -1,15 +1,18 @@
 #include "Lights.h"
 #include "Materials.h"
 
-Texture2D tex                   : register(ps, t0);
-Texture2D depthBuffer           : register(ps, t1);
+Texture2D tex                       : register(ps, t0);
+Texture2D depthBuffer               : register(ps, t1);
 
-TextureCubeArray depthCubeMap   : register(ps, t2);
-Texture2DArray SLDepthArray     : register(ps, t3);
-Texture2D depthMapDL            : register(ps, t4);
+TextureCubeArray depthCubeMap       : register(ps, t2);
+Texture2DArray SLDepthArray         : register(ps, t3);
+Texture2D depthMapDL                : register(ps, t4);
 
-SamplerState splr               : register(ps, s0);
-SamplerState depthSampler       : register(ps, s1);
+SamplerState splr                   : register(ps, s0);
+SamplerState depthSampler           : register(ps, s1);
+
+Texture2D khrThicknessTexture       : register(ps, t5);
+Texture2D khrTransmissionTexture    : register(ps, t5);
 
 struct VSOut
 {

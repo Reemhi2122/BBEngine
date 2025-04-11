@@ -87,6 +87,30 @@ namespace BBE {
 				Vector3		emissiveFactor;
 
 				AlphaMode alphaMode;
+				const char* materialName;
+
+				//Note(Stan): Hard coded for now, probably want a dynamic? array of extentions as these are rarely
+				//				here and I don't want GLTF files to be that big, although we only safe one of these
+				//				for each model.
+				struct
+				{
+					struct
+					{
+						float transmissionFactor;
+						TextureT transmissionTexture;
+					} khrMaterialTransmission;
+					bool hasKhrMaterialTransmission = false;
+
+					struct
+					{
+						float thicknessFactor;
+						TextureT thicknessTexture;
+						float attenuationDistance;
+						Vector3	attenuationColor;
+					} khrMaterialVolume;
+					bool hasKhrMaterialVolume = false;;
+				} extensions;
+
 			} Material;
 
 			uint32_t		indicesAmount;

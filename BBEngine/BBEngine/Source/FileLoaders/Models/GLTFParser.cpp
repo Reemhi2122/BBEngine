@@ -227,6 +227,71 @@ namespace BBE {
 							a_CurNode->mesh.primative[primitiveIndex].Material.alphaMode = AlphaMode::BLEND_MODE;
 						}
 					}
+
+					// EXTENSION: KHR_materials_transmission
+					if (m_CurMaterials[materialIndex]->GetObjectBB()["extensions"])
+					{
+						JSONObject extensionsObject = m_CurMaterials[materialIndex]->GetObjectBB()["extensions"]->GetObjectBB();
+
+						if (extensionsObject["KHR_materials_transmission"])
+						{
+							JSONObject khrTransmissionObject = extensionsObject["KHR_materials_transmission"]->GetObjectBB();
+							a_CurNode->mesh.primative[primitiveIndex].Material.extensions.hasKhrMaterialTransmission = true;
+
+							if (khrTransmissionObject["transmissionFactor"])
+							{
+								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialTransmission.transmissionFactor = khrTransmissionObject["transmissionFactor"]->GetFloatBB();
+							}
+
+							if (khrTransmissionObject["transmissionTexture"])
+							{
+								uint32_t transmissionTextureIndex = khrTransmissionObject["transmissionTexture"]->GetObjectBB()["index"]->GetFloatBB();
+								std::string uri = m_CurImages[(uint32_t)m_CurTextures[transmissionTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+								char* charPointer = (char*)malloc(uri.size());
+								strcpy(charPointer, uri.c_str());
+								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialTransmission.transmissionTexture.path = charPointer;
+							}
+						}
+
+						// EXTENSION: KHR_materials_volume
+						if (extensionsObject["KHR_materials_volume"])
+						{
+							JSONObject khrvolumeObject = extensionsObject["KHR_materials_transmission"]->GetObjectBB();
+							a_CurNode->mesh.primative[primitiveIndex].Material.extensions.hasKhrMaterialVolume = true;
+
+							if (khrvolumeObject["thicknessFactor"])
+							{
+								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.thicknessFactor = khrvolumeObject["thicknessFactor"]->GetFloatBB();
+							}
+
+							if (khrvolumeObject["thicknessTexture"])
+							{
+								uint32_t thicknessTextureIndex = khrvolumeObject["thicknessTexture"]->GetObjectBB()["index"]->GetFloatBB();
+								std::string uri = m_CurImages[(uint32_t)m_CurTextures[thicknessTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+								char* charPointer = (char*)malloc(uri.size());
+								strcpy(charPointer, uri.c_str());
+								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.thicknessTexture.path = charPointer;
+							}
+
+							if (khrvolumeObject["attenuationDistance"])
+							{
+								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.attenuationDistance = khrvolumeObject["attenuationDistance"]->GetFloatBB();
+							}
+
+							if (khrvolumeObject["attenuationColor"])
+							{
+								JSONList thicknessColorFactor = khrvolumeObject["thicknessFactor"]->GetListBB();
+								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume.attenuationColor =
+									Vector3(
+										thicknessColorFactor[0]->GetFloatBB(),
+										thicknessColorFactor[1]->GetFloatBB(),
+										thicknessColorFactor[2]->GetFloatBB()
+									);
+							}
+						}
+					}
 				}
 
 				a_CurNode->mesh.primative[primitiveIndex].indicesAmount = 

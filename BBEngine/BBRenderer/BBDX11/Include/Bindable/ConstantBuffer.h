@@ -8,6 +8,21 @@ class ConstantBuffer : public Bindable
 public:
 	ConstantBuffer() = default;
 
+	//ConstantBuffer(Graphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
+	//	: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
+	//{
+	//	INFOMAN;
+
+	//	D3D11_BUFFER_DESC cbd;
+	//	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	//	cbd.Usage = D3D11_USAGE_DEFAULT;
+	//	cbd.CPUAccessFlags = 0;
+	//	cbd.MiscFlags = 0u;
+	//	cbd.ByteWidth = std::max<int>(sizeof(T), 16);
+	//	cbd.StructureByteStride = 0u;
+	//	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
+	//}
+
 	ConstantBuffer(Graphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
 		: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
 	{
@@ -15,10 +30,8 @@ public:
 
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		//cbd.Usage = D3D11_USAGE_DYNAMIC;
-		cbd.Usage = D3D11_USAGE_DEFAULT;
-		//cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbd.CPUAccessFlags = 0;
+		cbd.Usage = D3D11_USAGE_DYNAMIC;
+		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 		cbd.MiscFlags = 0u;
 		cbd.ByteWidth = std::max<int>(sizeof(T), 16);
 		cbd.StructureByteStride = 0u;
@@ -32,10 +45,10 @@ public:
 
 		D3D11_BUFFER_DESC cbd;
 		cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-		//cbd.Usage = D3D11_USAGE_DYNAMIC;
-		cbd.Usage = D3D11_USAGE_DEFAULT;
-		//cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-		cbd.CPUAccessFlags = 0;
+		cbd.Usage = D3D11_USAGE_DYNAMIC;
+		//cbd.Usage = D3D11_USAGE_DEFAULT;
+		cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		//cbd.CPUAccessFlags = 0;
 		cbd.MiscFlags = 0u;
 		cbd.ByteWidth = sizeof(a_Consts);
 		cbd.StructureByteStride = 0u;
@@ -46,7 +59,7 @@ public:
 		GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&cbd, &csd, &m_ConstantBuffer));
 	}
 
-	void UpdateMapped(Graphics& a_Gfx, const T& a_Consts) {
+	void Update(Graphics& a_Gfx, const T& a_Consts) {
 		INFOMAN;
 
 		D3D11_MAPPED_SUBRESOURCE msr;
@@ -63,10 +76,10 @@ public:
 		a_Gfx.GetContext()->Unmap(m_ConstantBuffer.Get(), 0u);
 	}
 
-	void Update(Graphics& a_Gfx, const T& a_Consts)
-	{
-		a_Gfx.GetContext()->UpdateSubresource(m_ConstantBuffer.Get(), 0, nullptr, &a_Consts, 0, 0);
-	}
+	//void Update(Graphics& a_Gfx, const T& a_Consts)
+	//{
+	//	a_Gfx.GetContext()->UpdateSubresource(m_ConstantBuffer.Get(), 0, nullptr, &a_Consts, 0, 0);
+	//}
 
 protected:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_ConstantBuffer;
