@@ -186,7 +186,7 @@ namespace BBE
         m_GameObjects.push_back(lanternBBObj);
 
         BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
-        Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 3, 0), Vector3(0, 0, 0), Vector3(5.0f, 5.0f, 5.0f));
+        Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-4, 2, 0), Vector3(0, 90, 0), Vector3(5.0f, 5.0f, 5.0f));
         glassObject->AddComponent(glassTransform);
         MeshComponent* glassVaseMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, glassVase, glassTransform);
         glassObject->AddComponent(glassVaseMesh);

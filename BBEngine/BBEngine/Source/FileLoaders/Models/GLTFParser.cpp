@@ -141,7 +141,6 @@ namespace BBE {
 								);
 						}
 
-						a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.bHasTexture = false;
 						if (pbrMetallicRoughnessObj["baseColorTexture"])
 						{
 							uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
@@ -150,7 +149,6 @@ namespace BBE {
 							char* charPointer = (char*)malloc(str.size());
 							strcpy(charPointer, str.c_str());
 							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.path = charPointer;
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.bHasTexture = true;
 						}
 
 						if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
@@ -228,11 +226,11 @@ namespace BBE {
 						}
 					}
 
-					// EXTENSION: KHR_materials_transmission
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["extensions"])
 					{
 						JSONObject extensionsObject = m_CurMaterials[materialIndex]->GetObjectBB()["extensions"]->GetObjectBB();
 
+						// EXTENSION: KHR_materials_transmission
 						if (extensionsObject["KHR_materials_transmission"])
 						{
 							JSONObject khrTransmissionObject = extensionsObject["KHR_materials_transmission"]->GetObjectBB();

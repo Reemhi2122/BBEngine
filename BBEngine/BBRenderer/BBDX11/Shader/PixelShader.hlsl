@@ -142,22 +142,17 @@ float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
 
-    float4 diffuse;
-    
-    if (hasTexture > 0)
+    float4 diffuse = baseColor;
+    if (hasBaseColorTexture)
     {
         diffuse = tex.Sample(splr, psin.tex);
         diffuse *= baseColor;
     }
-    else
-    {
-        diffuse = baseColor;
-    }
     
-    if (hasKhrVolumeTexture > 0)
-    {
-        diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
-    }
+    //if (hasKhrVolumeTexture)
+    //{
+    //    diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
+    //}
     
     if (diffuse.a < 0.01f)
         discard;

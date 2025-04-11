@@ -61,23 +61,21 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 				modelPrimitive.m_Sampler = new Sampler(a_Gfx);
 			}
 			
-			if (gltfPrimitive.Material.pbrMetallicRoughness.bHasTexture)
+			if (gltfPrimitive.Material.pbrMetallicRoughness.baseColorTexture.path != nullptr)
 			{
 				Vector4 FactorData = gltfPrimitive.Material.pbrMetallicRoughness.baseColorFactor;
 				modelPrimitive.m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1);
-				modelPrimitive.m_MaterialConstant.hasTexture = 1;
+				modelPrimitive.m_MaterialConstant.hasBaseColorTexture = 1;
 			}
 			else
 			{
 				Vector4 FactorData = gltfPrimitive.Material.pbrMetallicRoughness.baseColorFactor;
 				modelPrimitive.m_MaterialConstant.baseColor = FactorData;
-				modelPrimitive.m_MaterialConstant.hasTexture = 0;
+				modelPrimitive.m_MaterialConstant.hasBaseColorTexture = 0;
 			}
 
 			if (gltfPrimitive.Material.extensions.hasKhrMaterialVolume)
 			{
-				gltfPrimitive.Material.alphaMode = BBE::AlphaMode::BLEND_MODE;
-
 				modelPrimitive.m_MaterialConstant.hasKhrVolume = 1;
 				modelPrimitive.m_MaterialConstant.khrThicknessFactor = gltfPrimitive.Material.extensions.khrMaterialVolume.thicknessFactor;
 				modelPrimitive.m_MaterialConstant.khrAttenuationDistance = gltfPrimitive.Material.extensions.khrMaterialVolume.attenuationDistance;

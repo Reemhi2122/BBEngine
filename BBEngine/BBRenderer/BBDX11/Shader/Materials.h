@@ -3,17 +3,35 @@
 
 cbuffer MaterialConstant CBRegister2
 {
+    //PBR
     float4 baseColor;                   //16
-    int hasTexture;                     //20
+    float metallicFactor;               //20
+    float roughnessFactor;              //24
+    int hasBaseColorTexture;            //28
+    int hasMetallicRoughnessTexture;    //32
 
-    int hasKhrTransmission;             //24
-    int hasKhrTransmissionTexture;      //28
-    float khrTransmissionFactor;        //32
+    //Normal
+    int hasNormalTexture;               //36
+    float normalScale;                  //40
 
-    int hasKhrVolume;                   //36
-    int hasKhrVolumeTexture;            //40
-    float khrThicknessFactor;           //44
-    float khrAttenuationDistance;       //48
-    float3 khrAttenuationColor;         //60
-    float pad;                          //64
+    //Occlusion
+    int hasOcclusionTexture;            //44
+    float occlusionStrenght;            //48
+
+    //Emission
+    int hasEmissionTexture;             //52
+    float4 emmisiveFactor;              //68
+
+    //KHR Transmission
+    int hasKhrTransmission;             //72
+    int hasKhrTransmissionTexture;      //76
+    float khrTransmissionFactor;        //80
+
+    //KHR Volume
+    int hasKhrVolume;                   //84
+    int hasKhrVolumeTexture;            //88
+    float khrThicknessFactor;           //92
+    float khrAttenuationDistance;       //96
+    float3 khrAttenuationColor;         //108
+    float pad;                          //112
 };
