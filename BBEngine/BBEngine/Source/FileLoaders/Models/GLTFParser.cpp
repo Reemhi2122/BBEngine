@@ -211,10 +211,12 @@ namespace BBE {
 							JSONObject khrTransmissionObject = extensionsObject["KHR_materials_transmission"]->GetObjectBB();
 							curPrimitiveMaterial.extensions.hasKhrMaterialTransmission = true;
 
+							Mesh::Primative::Material::Extensions::KhrMaterialTransmission& khrMaterialTransmission = curPrimitiveMaterial.extensions.khrMaterialTransmission;
+							curPrimitiveMaterial.extensions.khrMaterialTransmission.transmissionFactor = 0;
 							ParseTexture(
 								khrTransmissionObject,
 								"transmissionTexture", "transmissionFactor",
-								&curPrimitiveMaterial.extensions.khrMaterialTransmission.transmissionTexture.path, &curPrimitiveMaterial.extensions.khrMaterialTransmission.transmissionFactor);
+								&khrMaterialTransmission.transmissionTexture.path, &khrMaterialTransmission.transmissionFactor);
 						}
 
 						// EXTENSION: KHR_materials_volume
@@ -224,24 +226,13 @@ namespace BBE {
 							curPrimitiveMaterial.extensions.hasKhrMaterialVolume = true;
 
 							Mesh::Primative::Material::Extensions::KhrMaterialvolume& khrMaterialVolume = curPrimitiveMaterial.extensions.khrMaterialVolume;
-
 							khrMaterialVolume.thicknessFactor = 0;
-							if (khrvolumeObject["thicknessFactor"])
-							{
-								khrMaterialVolume.thicknessFactor = khrvolumeObject["thicknessFactor"]->GetFloatBB();
-							}
+							ParseTexture(
+								khrvolumeObject,
+								"thicknessTexture", "thicknessFactor",
+								&khrMaterialVolume.thicknessTexture.path, &khrMaterialVolume.thicknessFactor);
 
-							if (khrvolumeObject["thicknessTexture"])
-							{
-								uint32_t thicknessTextureIndex = khrvolumeObject["thicknessTexture"]->GetObjectBB()["index"]->GetFloatBB();
-								std::string uri = m_CurImages[(uint32_t)m_CurTextures[thicknessTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-								char* charPointer = (char*)malloc(uri.size());
-								strcpy(charPointer, uri.c_str());
-								khrMaterialVolume.thicknessTexture.path = charPointer;
-							}
-
-							khrMaterialVolume.thicknessFactor = +INFINITY;
+							khrMaterialVolume.attenuationDistance = +INFINITY;
 							if (khrvolumeObject["attenuationDistance"])
 							{
 								khrMaterialVolume.attenuationDistance = khrvolumeObject["attenuationDistance"]->GetFloatBB();
