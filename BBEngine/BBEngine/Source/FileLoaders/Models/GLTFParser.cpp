@@ -176,32 +176,64 @@ namespace BBE {
 
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["normalTexture"])
 					{
-						uint32_t normalTextureIndex = m_CurMaterials[materialIndex]->GetObjectBB()["normalTexture"]->GetObjectBB()["index"]->GetFloatBB();
-						std::string str = m_CurImages[(uint32_t)m_CurTextures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+						JSONObject normalTextureObject = m_CurMaterials[materialIndex]->GetObjectBB()["normalTexture"]->GetObjectBB();
 
-						char* charPointer = (char*)malloc(str.size());
-						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.path = charPointer;
+						if (normalTextureObject["index"])
+						{
+							uint32_t normalTextureIndex = normalTextureObject["index"]->GetFloatBB();
+							std::string str = m_CurImages[(uint32_t)m_CurTextures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+							char* charPointer = (char*)malloc(str.size());
+							strcpy(charPointer, str.c_str());
+							a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.path = charPointer;
+						}
+
+						if (normalTextureObject["scale"])
+						{
+							a_CurNode->mesh.primative->Material.normalTextureScale = normalTextureObject["scale"]->GetFloatBB();
+						}
+
+						//Todo(Stan): Still need to add possiblility for texture coords here.
 					}
 
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["occlusionTexture"])
 					{
-						uint32_t occlusionTexture = m_CurMaterials[materialIndex]->GetObjectBB()["occlusionTexture"]->GetObjectBB()["index"]->GetFloatBB();
-						std::string str = m_CurImages[(uint32_t)m_CurTextures[occlusionTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+						JSONObject occlusionTextureObject = m_CurMaterials[materialIndex]->GetObjectBB()["occlusionTexture"]->GetObjectBB();
 
-						char* charPointer = (char*)malloc(str.size());
-						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path = charPointer;
+						if (occlusionTextureObject["index"])
+						{
+							uint32_t occlusionTexture = occlusionTextureObject["index"]->GetFloatBB();
+							std::string str = m_CurImages[(uint32_t)m_CurTextures[occlusionTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+							char* charPointer = (char*)malloc(str.size());
+							strcpy(charPointer, str.c_str());
+							a_CurNode->mesh.primative[primitiveIndex].Material.occlusionTexture.path = charPointer;
+						}
+						
+						if (occlusionTextureObject["strength"])
+						{
+							a_CurNode->mesh.primative->Material.occlusionTextureStrength = occlusionTextureObject["scale"]->GetFloatBB();
+						}
+
+						//Todo(Stan): Still need to add possiblility for texture coords here.
 					}
 
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveTexture"])
 					{
-						uint32_t emissiveTexture = m_CurMaterials[materialIndex]->GetObjectBB()["emissiveTexture"]->GetObjectBB()["index"]->GetFloatBB();
-						std::string str = m_CurImages[(uint32_t)m_CurTextures[emissiveTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+						JSONObject emissiveTextureObject = m_CurMaterials[materialIndex]->GetObjectBB()["emissiveTexture"]->GetObjectBB();
 
-						char* charPointer = (char*)malloc(str.size());
-						strcpy(charPointer, str.c_str());
-						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path = charPointer;
+						if (emissiveTextureObject["index"])
+						{
+							uint32_t emissiveTexture = emissiveTextureObject["index"]->GetFloatBB();
+							std::string str = m_CurImages[(uint32_t)m_CurTextures[emissiveTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+							
+							char* charPointer = (char*)malloc(str.size());
+							strcpy(charPointer, str.c_str());
+							a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path = charPointer;
+
+						}
+
+						//Todo(Stan): Still need to add possiblility for texture coords here.
 					}
 
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveFactor"])
