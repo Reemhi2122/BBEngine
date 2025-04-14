@@ -141,25 +141,15 @@ namespace BBE {
 								);
 						}
 
-						if (pbrMetallicRoughnessObj["baseColorTexture"])
-						{
-							uint32_t baseColorIndex = pbrMetallicRoughnessObj["baseColorTexture"]->GetObjectBB()["index"]->GetFloatBB();
-							std::string str = m_CurImages[(uint32_t)m_CurTextures[baseColorIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+						ParseTexture(
+							pbrMetallicRoughnessObj,
+							"baseColorTexture", nullptr,
+							&a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.path, nullptr);
 
-							char* charPointer = (char*)malloc(str.size());
-							strcpy(charPointer, str.c_str());
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.path = charPointer;
-						}
-
-						if (pbrMetallicRoughnessObj["metallicRoughnessTexture"])
-						{
-							uint32_t metallicRoughnessTexture = pbrMetallicRoughnessObj["metallicRoughnessTexture"]->GetObjectBB()["index"]->GetFloatBB();
-							std::string str = m_CurImages[(uint32_t)m_CurTextures[metallicRoughnessTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-							char* charPointer = (char*)malloc(str.size());
-							strcpy(charPointer, str.c_str());
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.path = charPointer;
-						}
+						ParseTexture(
+							pbrMetallicRoughnessObj,
+							"metallicRoughnessTexture", nullptr,
+							&a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.path, nullptr);
 
 						if (pbrMetallicRoughnessObj["metallicFactor"])
 						{
@@ -174,68 +164,19 @@ namespace BBE {
 						}
 					}
 
-					if (m_CurMaterials[materialIndex]->GetObjectBB()["normalTexture"])
-					{
-						JSONObject normalTextureObject = m_CurMaterials[materialIndex]->GetObjectBB()["normalTexture"]->GetObjectBB();
+					ParseTexture(
+						m_CurMaterials[materialIndex]->GetObjectBB(), 
+						"normalTexture", "scale", 
+						&a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.path, &a_CurNode->mesh.primative->Material.normalTextureScale);
+					
+					ParseTexture(m_CurMaterials[materialIndex]->GetObjectBB(), 
+						"occlusionTexture", "strength", 
+						&a_CurNode->mesh.primative[primitiveIndex].Material.occlusionTexture.path, &a_CurNode->mesh.primative->Material.occlusionTextureStrength);
 
-						if (normalTextureObject["index"])
-						{
-							uint32_t normalTextureIndex = normalTextureObject["index"]->GetFloatBB();
-							std::string str = m_CurImages[(uint32_t)m_CurTextures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-							char* charPointer = (char*)malloc(str.size());
-							strcpy(charPointer, str.c_str());
-							a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.path = charPointer;
-						}
-
-						if (normalTextureObject["scale"])
-						{
-							a_CurNode->mesh.primative->Material.normalTextureScale = normalTextureObject["scale"]->GetFloatBB();
-						}
-
-						//Todo(Stan): Still need to add possiblility for texture coords here.
-					}
-
-					if (m_CurMaterials[materialIndex]->GetObjectBB()["occlusionTexture"])
-					{
-						JSONObject occlusionTextureObject = m_CurMaterials[materialIndex]->GetObjectBB()["occlusionTexture"]->GetObjectBB();
-
-						if (occlusionTextureObject["index"])
-						{
-							uint32_t occlusionTexture = occlusionTextureObject["index"]->GetFloatBB();
-							std::string str = m_CurImages[(uint32_t)m_CurTextures[occlusionTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-							char* charPointer = (char*)malloc(str.size());
-							strcpy(charPointer, str.c_str());
-							a_CurNode->mesh.primative[primitiveIndex].Material.occlusionTexture.path = charPointer;
-						}
-						
-						if (occlusionTextureObject["strength"])
-						{
-							a_CurNode->mesh.primative->Material.occlusionTextureStrength = occlusionTextureObject["scale"]->GetFloatBB();
-						}
-
-						//Todo(Stan): Still need to add possiblility for texture coords here.
-					}
-
-					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveTexture"])
-					{
-						JSONObject emissiveTextureObject = m_CurMaterials[materialIndex]->GetObjectBB()["emissiveTexture"]->GetObjectBB();
-
-						if (emissiveTextureObject["index"])
-						{
-							uint32_t emissiveTexture = emissiveTextureObject["index"]->GetFloatBB();
-							std::string str = m_CurImages[(uint32_t)m_CurTextures[emissiveTexture]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-							
-							char* charPointer = (char*)malloc(str.size());
-							strcpy(charPointer, str.c_str());
-							a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path = charPointer;
-
-						}
-
-						//Todo(Stan): Still need to add possiblility for texture coords here.
-					}
-
+					ParseTexture(m_CurMaterials[materialIndex]->GetObjectBB(),
+						"emissiveTexture", nullptr,
+						&a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path, nullptr);
+					
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveFactor"])
 					{
 						JSONList emissiveFactor = m_CurMaterials[materialIndex]->GetObjectBB()["emissiveFactor"]->GetListBB();
@@ -410,5 +351,33 @@ namespace BBE {
 		}
 
 		return bufferCount;
+	}
+
+	uint32_t GLTFParser::ParseTexture(JSONObject a_CurObject, char* a_TextureName, char* a_AdditionalValueName, char** a_PathOut, float* a_OutAditionalValue)
+	{
+		if (a_CurObject[a_TextureName])
+		{
+			JSONObject normalTextureObject = a_CurObject[a_TextureName]->GetObjectBB();
+
+			if (normalTextureObject["index"])
+			{
+				//Todo(Stan): Might want to look into just saving index and saving full textures seperate
+				uint32_t normalTextureIndex = normalTextureObject["index"]->GetFloatBB();
+				std::string str = m_CurImages[(uint32_t)m_CurTextures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
+
+				char* charPointer = (char*)malloc(str.size());
+				strcpy(charPointer, str.c_str());
+				(*a_PathOut) = charPointer;
+			}
+
+			if (normalTextureObject["scale"])
+			{
+				(*a_OutAditionalValue) = normalTextureObject["scale"]->GetFloatBB();
+			}
+
+			//Todo(Stan): Still need to add possiblility for texture coords here.
+		}
+
+		return 1;
 	}
 }
