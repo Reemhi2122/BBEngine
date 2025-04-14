@@ -95,7 +95,7 @@ namespace BBE {
 				//				for each model.
 				struct Extensions
 				{
-					struct
+					struct KhrMaterialTransmission
 					{
 						float transmissionFactor;
 						TextureT transmissionTexture;
