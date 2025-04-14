@@ -112,7 +112,7 @@ namespace BBE {
 					bool hasKhrMaterialVolume = false;;
 				} extensions;
 
-			} Material;
+			} material;
 
 			uint32_t		indicesAmount;
 			uint8_t			indicesDataSize;

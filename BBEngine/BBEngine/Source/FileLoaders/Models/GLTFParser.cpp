@@ -125,6 +125,8 @@ namespace BBE {
 				if (primitiveObj["material"])
 				{
 					uint32_t materialIndex = primitiveObj["material"]->GetFloatBB();
+					BBE::Mesh::Primative::Material& curPrimitiveMaterial = a_CurNode->mesh.primative[primitiveIndex].material;
+
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"])
 					{
 						JSONObject pbrMetallicRoughnessObj = m_CurMaterials[materialIndex]->GetObjectBB()["pbrMetallicRoughness"]->GetObjectBB();
@@ -132,7 +134,7 @@ namespace BBE {
 						if (pbrMetallicRoughnessObj["baseColorFactor"])
 						{
 							JSONList baseColorFactor = pbrMetallicRoughnessObj["baseColorFactor"]->GetListBB();
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorFactor =
+							curPrimitiveMaterial.pbrMetallicRoughness.baseColorFactor =
 								Vector4(
 									baseColorFactor[0]->GetFloatBB(),
 									baseColorFactor[1]->GetFloatBB(),
@@ -144,22 +146,22 @@ namespace BBE {
 						ParseTexture(
 							pbrMetallicRoughnessObj,
 							"baseColorTexture", nullptr,
-							&a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.baseColorTexture.path, nullptr);
+							&curPrimitiveMaterial.pbrMetallicRoughness.baseColorTexture.path, nullptr);
 
 						ParseTexture(
 							pbrMetallicRoughnessObj,
 							"metallicRoughnessTexture", nullptr,
-							&a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicRoughnessTexture.path, nullptr);
+							&curPrimitiveMaterial.pbrMetallicRoughness.metallicRoughnessTexture.path, nullptr);
 
 						if (pbrMetallicRoughnessObj["metallicFactor"])
 						{
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.metallicFactor =
+							curPrimitiveMaterial.pbrMetallicRoughness.metallicFactor =
 								static_cast<uint32_t>(pbrMetallicRoughnessObj["metallicFactor"]->GetFloatBB());
 						}
 
 						if (pbrMetallicRoughnessObj["roughnessFactor"])
 						{
-							a_CurNode->mesh.primative[primitiveIndex].Material.pbrMetallicRoughness.roughnessFactor =
+							curPrimitiveMaterial.pbrMetallicRoughness.roughnessFactor =
 								static_cast<uint32_t>(pbrMetallicRoughnessObj["roughnessFactor"]->GetFloatBB());
 						}
 					}
@@ -167,20 +169,20 @@ namespace BBE {
 					ParseTexture(
 						m_CurMaterials[materialIndex]->GetObjectBB(), 
 						"normalTexture", "scale", 
-						&a_CurNode->mesh.primative[primitiveIndex].Material.normalTexture.path, &a_CurNode->mesh.primative->Material.normalTextureScale);
+						&curPrimitiveMaterial.normalTexture.path, &curPrimitiveMaterial.normalTextureScale);
 					
 					ParseTexture(m_CurMaterials[materialIndex]->GetObjectBB(), 
 						"occlusionTexture", "strength", 
-						&a_CurNode->mesh.primative[primitiveIndex].Material.occlusionTexture.path, &a_CurNode->mesh.primative->Material.occlusionTextureStrength);
+						&curPrimitiveMaterial.occlusionTexture.path, &curPrimitiveMaterial.occlusionTextureStrength);
 
 					ParseTexture(m_CurMaterials[materialIndex]->GetObjectBB(),
 						"emissiveTexture", nullptr,
-						&a_CurNode->mesh.primative[primitiveIndex].Material.emissiveTexture.path, nullptr);
+						&curPrimitiveMaterial.emissiveTexture.path, nullptr);
 					
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveFactor"])
 					{
 						JSONList emissiveFactor = m_CurMaterials[materialIndex]->GetObjectBB()["emissiveFactor"]->GetListBB();
-						a_CurNode->mesh.primative[primitiveIndex].Material.emissiveFactor =
+						curPrimitiveMaterial.emissiveFactor =
 							Vector3(
 								emissiveFactor[0]->GetFloatBB(),
 								emissiveFactor[1]->GetFloatBB(),
@@ -188,14 +190,14 @@ namespace BBE {
 							);
 					}
 
-					a_CurNode->mesh.primative[primitiveIndex].Material.alphaMode = AlphaMode::OPAQUE_MODE;
+					curPrimitiveMaterial.alphaMode = AlphaMode::OPAQUE_MODE;
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["alphaMode"])
 					{
 						std::string alphaBlend = m_CurMaterials[materialIndex]->GetObjectBB()["alphaMode"]->GetStringBB();
 						
 						if (strcmp(alphaBlend.c_str(), "BLEND") == 0)
 						{
-							a_CurNode->mesh.primative[primitiveIndex].Material.alphaMode = AlphaMode::BLEND_MODE;
+							curPrimitiveMaterial.alphaMode = AlphaMode::BLEND_MODE;
 						}
 					}
 
@@ -207,31 +209,21 @@ namespace BBE {
 						if (extensionsObject["KHR_materials_transmission"])
 						{
 							JSONObject khrTransmissionObject = extensionsObject["KHR_materials_transmission"]->GetObjectBB();
-							a_CurNode->mesh.primative[primitiveIndex].Material.extensions.hasKhrMaterialTransmission = true;
+							curPrimitiveMaterial.extensions.hasKhrMaterialTransmission = true;
 
-							if (khrTransmissionObject["transmissionFactor"])
-							{
-								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialTransmission.transmissionFactor = khrTransmissionObject["transmissionFactor"]->GetFloatBB();
-							}
-
-							if (khrTransmissionObject["transmissionTexture"])
-							{
-								uint32_t transmissionTextureIndex = khrTransmissionObject["transmissionTexture"]->GetObjectBB()["index"]->GetFloatBB();
-								std::string uri = m_CurImages[(uint32_t)m_CurTextures[transmissionTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
-
-								char* charPointer = (char*)malloc(uri.size());
-								strcpy(charPointer, uri.c_str());
-								a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialTransmission.transmissionTexture.path = charPointer;
-							}
+							ParseTexture(
+								khrTransmissionObject,
+								"transmissionTexture", "transmissionFactor",
+								&curPrimitiveMaterial.extensions.khrMaterialTransmission.transmissionTexture.path, &curPrimitiveMaterial.extensions.khrMaterialTransmission.transmissionFactor);
 						}
 
 						// EXTENSION: KHR_materials_volume
 						if (extensionsObject["KHR_materials_volume"])
 						{
 							JSONObject khrvolumeObject = extensionsObject["KHR_materials_volume"]->GetObjectBB();
-							a_CurNode->mesh.primative[primitiveIndex].Material.extensions.hasKhrMaterialVolume = true;
+							curPrimitiveMaterial.extensions.hasKhrMaterialVolume = true;
 
-							Mesh::Primative::Material::Extensions::KhrMaterialvolume& khrMaterialVolume = a_CurNode->mesh.primative[primitiveIndex].Material.extensions.khrMaterialVolume;
+							Mesh::Primative::Material::Extensions::KhrMaterialvolume& khrMaterialVolume = curPrimitiveMaterial.extensions.khrMaterialVolume;
 
 							khrMaterialVolume.thicknessFactor = 0;
 							if (khrvolumeObject["thicknessFactor"])

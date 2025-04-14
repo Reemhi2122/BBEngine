@@ -51,41 +51,41 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 				vertices[i].normals = gltfPrimitive.normals[i];
 			}
 
-			if (gltfPrimitive.Material.pbrMetallicRoughness.baseColorTexture.path)
+			if (gltfPrimitive.material.pbrMetallicRoughness.baseColorTexture.path)
 			{
 				char texturePath[_MAX_PATH] = "";
 				strcat(texturePath, a_File->gltfPath);
-				strcat(texturePath, gltfPrimitive.Material.pbrMetallicRoughness.baseColorTexture.path);
+				strcat(texturePath, gltfPrimitive.material.pbrMetallicRoughness.baseColorTexture.path);
 
 				modelPrimitive.m_Texture = new Texture(a_Gfx, texturePath);
 				modelPrimitive.m_Sampler = new Sampler(a_Gfx);
 			}
 			
-			if (gltfPrimitive.Material.pbrMetallicRoughness.baseColorTexture.path != nullptr)
+			if (gltfPrimitive.material.pbrMetallicRoughness.baseColorTexture.path != nullptr)
 			{
-				Vector4 FactorData = gltfPrimitive.Material.pbrMetallicRoughness.baseColorFactor;
+				Vector4 FactorData = gltfPrimitive.material.pbrMetallicRoughness.baseColorFactor;
 				modelPrimitive.m_MaterialConstant.baseColor = Vector4(1, 1, 1, 1);
 				modelPrimitive.m_MaterialConstant.hasBaseColorTexture = 1;
 			}
 			else
 			{
-				Vector4 FactorData = gltfPrimitive.Material.pbrMetallicRoughness.baseColorFactor;
+				Vector4 FactorData = gltfPrimitive.material.pbrMetallicRoughness.baseColorFactor;
 				modelPrimitive.m_MaterialConstant.baseColor = FactorData;
 				modelPrimitive.m_MaterialConstant.hasBaseColorTexture = 0;
 			}
 
-			if (gltfPrimitive.Material.extensions.hasKhrMaterialVolume)
+			if (gltfPrimitive.material.extensions.hasKhrMaterialVolume)
 			{
 				modelPrimitive.m_MaterialConstant.hasKhrVolume = 1;
-				modelPrimitive.m_MaterialConstant.khrThicknessFactor = gltfPrimitive.Material.extensions.khrMaterialVolume.thicknessFactor;
-				modelPrimitive.m_MaterialConstant.khrAttenuationDistance = gltfPrimitive.Material.extensions.khrMaterialVolume.attenuationDistance;
-				modelPrimitive.m_MaterialConstant.khrAttenuationColor = gltfPrimitive.Material.extensions.khrMaterialVolume.attenuationColor;
+				modelPrimitive.m_MaterialConstant.khrThicknessFactor = gltfPrimitive.material.extensions.khrMaterialVolume.thicknessFactor;
+				modelPrimitive.m_MaterialConstant.khrAttenuationDistance = gltfPrimitive.material.extensions.khrMaterialVolume.attenuationDistance;
+				modelPrimitive.m_MaterialConstant.khrAttenuationColor = gltfPrimitive.material.extensions.khrMaterialVolume.attenuationColor;
 
-				if (gltfPrimitive.Material.extensions.khrMaterialVolume.thicknessTexture.path)
+				if (gltfPrimitive.material.extensions.khrMaterialVolume.thicknessTexture.path)
 				{
 					char texturePath[_MAX_PATH] = "";
 					strcat(texturePath, a_File->gltfPath);
-					strcat(texturePath, gltfPrimitive.Material.extensions.khrMaterialVolume.thicknessTexture.path);
+					strcat(texturePath, gltfPrimitive.material.extensions.khrMaterialVolume.thicknessTexture.path);
 
 					modelPrimitive.m_MaterialConstant.hasKhrVolumeTexture = 1;
 					modelPrimitive.m_KhrVolumeTexture = new Texture(a_Gfx, texturePath, 5);
@@ -94,7 +94,7 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 
 			modelPrimitive.vBuffer = new VertexBuffer(a_Gfx, vertices, gltfPrimitive.vertexCount);
 			modelPrimitive.m_IndexBuffer = new IndexBuffer(a_Gfx, gltfPrimitive.indices, gltfPrimitive.indicesAmount, gltfPrimitive.indicesDataSize);
-			modelPrimitive.m_Blend = gltfPrimitive.Material.alphaMode;
+			modelPrimitive.m_Blend = gltfPrimitive.material.alphaMode;
 		}
 	}
 
