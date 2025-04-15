@@ -146,12 +146,12 @@ namespace BBE {
 						ParseTexture(
 							pbrMetallicRoughnessObj,
 							"baseColorTexture", nullptr,
-							&curPrimitiveMaterial.pbrMetallicRoughness.baseColorTexture.path, nullptr);
+							&curPrimitiveMaterial.pbrMetallicRoughness.baseColorTexture, nullptr);
 
 						ParseTexture(
 							pbrMetallicRoughnessObj,
 							"metallicRoughnessTexture", nullptr,
-							&curPrimitiveMaterial.pbrMetallicRoughness.metallicRoughnessTexture.path, nullptr);
+							&curPrimitiveMaterial.pbrMetallicRoughness.metallicRoughnessTexture, nullptr);
 
 						if (pbrMetallicRoughnessObj["metallicFactor"])
 						{
@@ -169,15 +169,15 @@ namespace BBE {
 					ParseTexture(
 						m_CurMaterials[materialIndex]->GetObjectBB(), 
 						"normalTexture", "scale", 
-						&curPrimitiveMaterial.normalTexture.path, &curPrimitiveMaterial.normalTextureScale);
+						&curPrimitiveMaterial.normalTexture, &curPrimitiveMaterial.normalTextureScale);
 					
 					ParseTexture(m_CurMaterials[materialIndex]->GetObjectBB(), 
 						"occlusionTexture", "strength", 
-						&curPrimitiveMaterial.occlusionTexture.path, &curPrimitiveMaterial.occlusionTextureStrength);
+						&curPrimitiveMaterial.occlusionTexture, &curPrimitiveMaterial.occlusionTextureStrength);
 
 					ParseTexture(m_CurMaterials[materialIndex]->GetObjectBB(),
 						"emissiveTexture", nullptr,
-						&curPrimitiveMaterial.emissiveTexture.path, nullptr);
+						&curPrimitiveMaterial.emissiveTexture, nullptr);
 					
 					if (m_CurMaterials[materialIndex]->GetObjectBB()["emissiveFactor"])
 					{
@@ -216,7 +216,7 @@ namespace BBE {
 							ParseTexture(
 								khrTransmissionObject,
 								"transmissionTexture", "transmissionFactor",
-								&khrMaterialTransmission.transmissionTexture.path, &khrMaterialTransmission.transmissionFactor);
+								&khrMaterialTransmission.transmissionTexture, &khrMaterialTransmission.transmissionFactor);
 						}
 
 						// EXTENSION: KHR_materials_volume
@@ -230,7 +230,7 @@ namespace BBE {
 							ParseTexture(
 								khrvolumeObject,
 								"thicknessTexture", "thicknessFactor",
-								&khrMaterialVolume.thicknessTexture.path, &khrMaterialVolume.thicknessFactor);
+								&khrMaterialVolume.thicknessTexture, &khrMaterialVolume.thicknessFactor);
 
 							khrMaterialVolume.attenuationDistance = +INFINITY;
 							if (khrvolumeObject["attenuationDistance"])
@@ -336,29 +336,32 @@ namespace BBE {
 		return bufferCount;
 	}
 
-	uint32_t GLTFParser::ParseTexture(JSONObject a_CurObject, char* a_TextureName, char* a_AdditionalValueName, char** a_PathOut, float* a_OutAditionalValue)
+	uint32_t GLTFParser::ParseTexture(JSONObject a_CurObject, char* a_TextureName, char* a_AdditionalValueName, TextureT* a_PathOut, float* a_OutAditionalValue)
 	{
 		if (a_CurObject[a_TextureName])
 		{
-			JSONObject normalTextureObject = a_CurObject[a_TextureName]->GetObjectBB();
+			JSONObject TextureObject = a_CurObject[a_TextureName]->GetObjectBB();
 
-			if (normalTextureObject["index"])
+			// Check index (Should always be there)
 			{
 				//Todo(Stan): Might want to look into just saving index and saving full textures seperate
-				uint32_t normalTextureIndex = normalTextureObject["index"]->GetFloatBB();
+				uint32_t normalTextureIndex = TextureObject["index"]->GetFloatBB();
 				std::string str = m_CurImages[(uint32_t)m_CurTextures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
 
 				char* charPointer = (char*)malloc(str.size());
 				strcpy(charPointer, str.c_str());
-				(*a_PathOut) = charPointer;
+				a_PathOut->path = charPointer;
 			}
 
-			if (normalTextureObject["scale"])
+			if (TextureObject["texCoord"])
 			{
-				(*a_OutAditionalValue) = normalTextureObject["scale"]->GetFloatBB();
+				a_PathOut->texCoordIndex= TextureObject["texCoord"]->GetFloatBB();
 			}
 
-			//Todo(Stan): Still need to add possiblility for texture coords here.
+			if (a_AdditionalValueName && TextureObject[a_AdditionalValueName])
+			{
+				(*a_OutAditionalValue) = TextureObject[a_AdditionalValueName]->GetFloatBB();
+			}
 		}
 
 		return 1;

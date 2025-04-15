@@ -15,7 +15,7 @@ namespace BBE {
 
 	private:
 		uint32_t ParseAttribute(void** a_Data, JSONObject& a_AttributeObject, const char* a_Attribute, uint8_t* a_DataSize = NULL);
-		uint32_t ParseTexture(JSONObject a_CurObject, char* a_TextureName, char* a_AdditionalValueName, char** a_PathOut, float* a_OutAditionalValue);
+		uint32_t ParseTexture(JSONObject a_CurObject, char* a_TextureName, char* a_AdditionalValueName, TextureT* a_TexureOut, float* a_OutAditionalValue);
 
 		BBSystem::BBFHANDLE m_BinFile;
 	
