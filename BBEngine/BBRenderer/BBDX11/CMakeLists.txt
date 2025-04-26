@@ -37,7 +37,7 @@ add_library (BBRenderer_DX11 STATIC
 
 target_include_directories(BBRenderer_DX11 PUBLIC
 "Include/"
-"Shader/"
+"../Shader/"
 )
 
 target_link_libraries(BBRenderer_DX11
