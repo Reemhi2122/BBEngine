@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.8)
 add_library (BBRenderer_DX12 STATIC 
 	"Source/test.cpp"
 	"Source/Graphics.cpp"
- )
+)
 
 #set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 

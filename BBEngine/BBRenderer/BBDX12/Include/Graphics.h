@@ -1,4 +1,5 @@
 #pragma once
+#include "BBWin.h"
 
 #include <DirectXMath.h>
 
@@ -9,5 +10,5 @@
 class Graphics
 {
 public:
-	Graphics();
+	Graphics(HWND a_HWnd);
 };

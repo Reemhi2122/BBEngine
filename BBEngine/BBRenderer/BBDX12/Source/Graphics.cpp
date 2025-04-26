@@ -1,6 +1,6 @@
 #include "Graphics.h"
 
-Graphics::Graphics()
+Graphics::Graphics(HWND a_HWnd)
 {
 
 }

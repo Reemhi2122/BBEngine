@@ -4,10 +4,6 @@
 cmake_minimum_required (VERSION 3.8)
 
 add_library (BBRenderer_DX11 STATIC 
-
-"DXERR/dxerr.cpp"
-
-"Source/BBException/BBException.cpp"
 "Source/Graphics/Graphics.cpp"
 "Source/Bindable/Topology.cpp" 
 "Source/Bindable/IndexBuffer.cpp" 
