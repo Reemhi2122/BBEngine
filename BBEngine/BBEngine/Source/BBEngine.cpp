@@ -52,6 +52,13 @@ namespace BBE
 
     int BBEngine::StartBBEngine()
     {
+        if (m_Graphics.Initialize())
+        {
+            printf("[FAILED] Failed to initialize renderer");
+            m_Graphics.Cleanup();
+            return 1;
+        }
+
         Initialize();
 
         try
@@ -81,6 +88,7 @@ namespace BBE
 
     void BBEngine::Initialize()
     {
+
         //GLTFParser parser;
         //parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
         //parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
