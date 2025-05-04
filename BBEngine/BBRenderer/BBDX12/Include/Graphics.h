@@ -26,6 +26,8 @@ public:
 	void WaitForPreviousFrame();
 
 private:
+	HWND						m_HWindow;
+	
 	ID3D12Device*				m_Device;
 	IDXGISwapChain3*			m_SwapChain; //Tripple buffering swap chain
 	ID3D12CommandQueue*			m_CommandQueue;
