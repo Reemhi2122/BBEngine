@@ -136,6 +136,35 @@ bool Graphics::Initialize()
 		rtvHandle.Offset(1, m_RTVDescriptorSize);
 	}
 
+	//Create the Command Buffer Allocators
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_CommandAllocator[i]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create Command Allocator!");
+			return false;
+		}
+	}
+
+	//Create the Command List
+	hres = m_Device->CreateCommandList(
+		0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		m_CommandAllocator[0],
+		NULL,
+		IID_PPV_ARGS(&m_CommandList)
+	);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create Command List!");
+		return false;
+	}
+
+	m_CommandList->Close();
+
+
+
 	return true;
 }
 
