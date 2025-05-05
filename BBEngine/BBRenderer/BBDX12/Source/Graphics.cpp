@@ -186,7 +186,38 @@ bool Graphics::Initialize()
 	return true;
 }
 
+void Graphics::Update()
+{
+	// Nothing yet
+}
+
+void Graphics::UpdatePipeline()
+{
+	HRESULT hres;
+
+	// Still have to implement the fence check
+	WaitForPreviousFrame();
+
+	hres = m_CommandAllocator[m_FrameIndex]->Reset();
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed reset the Command Allocator!");
+		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
+	}
+
+	//Puts command list into recording state
+	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], NULL);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed reset the Command list!");
+		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
+	}
+
+
+
+}
+
 void Graphics::Cleanup()
 {
-
+	// Nothing yet
 }
