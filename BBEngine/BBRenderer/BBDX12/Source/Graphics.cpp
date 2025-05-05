@@ -109,8 +109,8 @@ bool Graphics::Initialize()
 	//Create the RTV Descriptor Heap
 	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
 	descriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	descriptorHeapDesc.NumDescriptors = 3;
-	descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	descriptorHeapDesc.NumDescriptors = FRAME_BUFFER_COUNT;
+	descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	descriptorHeapDesc.NodeMask = 0;
 
 	hres = m_Device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&m_RTVDescriptorHeap));
@@ -118,6 +118,22 @@ bool Graphics::Initialize()
 	{
 		printf("[GFX]: Failed to create RTV descriptor heap!");
 		return false;
+	}
+
+	m_RTVDescriptorSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_SwapChain->GetBuffer(i, IID_PPV_ARGS(&m_RenderTargets[i]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to get RTV from Swap Chain!");
+			return false;
+		}
+
+		m_Device->CreateRenderTargetView(m_RenderTargets[i], nullptr, rtvHandle);
+		rtvHandle.Offset(1, m_RTVDescriptorSize);
 	}
 
 	return true;

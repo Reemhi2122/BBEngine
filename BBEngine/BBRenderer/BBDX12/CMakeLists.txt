@@ -10,6 +10,7 @@ add_library (BBRenderer_DX12 STATIC
 
 target_include_directories(BBRenderer_DX12 PUBLIC
 "Include/"
+"Common/"
 #"Shader/"
 )
 
