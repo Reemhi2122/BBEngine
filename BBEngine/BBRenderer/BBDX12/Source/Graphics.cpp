@@ -163,7 +163,25 @@ bool Graphics::Initialize()
 
 	m_CommandList->Close();
 
+	//Create fence values
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence[i]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create Fences!");
+			return false;
+		}
+		m_FenceValue[i] = 0;
+	}
 
+	//Create the actual fence event
+	m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);
+	if (!m_FenceEvent)
+	{
+		printf("[GFX]: Failed to create Fence Event!");
+		return false;
+	}
 
 	return true;
 }
