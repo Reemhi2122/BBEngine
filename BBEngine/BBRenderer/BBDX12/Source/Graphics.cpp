@@ -7,6 +7,8 @@
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
+#define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = 0; } }
+
 Graphics::Graphics(HWND a_HWnd)
  : m_HWindow(a_HWnd)
 {
@@ -219,8 +221,10 @@ void Graphics::UpdatePipeline()
 
 	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
-	FLOAT color[4]{ 1.0f, 0.0f, 0.0f, 1.0f };
+	FLOAT color[4]{ 0.0f, 0.0f, 1.0f, 1.0f };
 	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
 	hres = m_CommandList->Close();
 	if (FAILED(hres))
@@ -278,5 +282,22 @@ void Graphics::WaitForPreviousFrame()
 
 void Graphics::Cleanup()
 {
-	// Nothing yet
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		m_FrameIndex = i;
+		WaitForPreviousFrame();
+	}
+	
+	SAFE_RELEASE(m_Device);
+	SAFE_RELEASE(m_SwapChain);
+	SAFE_RELEASE(m_CommandQueue);
+	SAFE_RELEASE(m_RTVDescriptorHeap);
+	SAFE_RELEASE(m_CommandList);
+
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		SAFE_RELEASE(m_RenderTargets[i]);
+		SAFE_RELEASE(m_CommandAllocator[i]);
+		SAFE_RELEASE(m_Fence[i]);
+	}
 }
