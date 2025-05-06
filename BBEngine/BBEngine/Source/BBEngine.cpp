@@ -52,7 +52,7 @@ namespace BBE
 
     int BBEngine::StartBBEngine()
     {
-        if (m_Graphics.Initialize())
+        if (!m_Graphics.Initialize())
         {
             printf("[FAILED] Failed to initialize renderer");
             m_Graphics.Cleanup();
@@ -239,6 +239,8 @@ namespace BBE
     float incr = 0;
     void BBEngine::Update()
     {
+        m_Graphics.Render();
+
     //    m_Graphics.SetGameViewRenderTarget();
     //    m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
 

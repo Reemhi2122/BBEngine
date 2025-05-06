@@ -96,7 +96,7 @@ bool Graphics::Initialize()
 	swapChainDesc.Flags = 0;
 
 	IDXGISwapChain* tempSwapChain;
-	hres = dxgiFactory->CreateSwapChain(m_Device, &swapChainDesc, &tempSwapChain);
+	hres = dxgiFactory->CreateSwapChain(m_CommandQueue, &swapChainDesc, &tempSwapChain);
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed to create Swap Chain!");
