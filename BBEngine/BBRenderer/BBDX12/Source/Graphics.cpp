@@ -206,15 +206,74 @@ void Graphics::UpdatePipeline()
 	}
 
 	//Puts command list into recording state
-	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], NULL);
+	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], nullptr);
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed reset the Command list!");
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
+	
+	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_FrameIndex, m_RTVDescriptorSize);
 
+	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
+	FLOAT color[4]{ 1.0f, 0.0f, 0.0f, 1.0f };
+	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+
+	hres = m_CommandList->Close();
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to close the Command List!");
+		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
+	}
+}
+
+void Graphics::Render()
+{
+	HRESULT hres;
+
+	UpdatePipeline();
+
+	ID3D12CommandList* cmdLists[] = {m_CommandList};
+
+	m_CommandQueue->ExecuteCommandLists(1, cmdLists);
+	
+	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to signal the Command Queue!");
+		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
+	}
+
+	hres = m_SwapChain->Present(0, 0);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to present!");
+		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
+	}
+}
+
+void Graphics::WaitForPreviousFrame()
+{
+	HRESULT hres;
+
+	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
+
+	if (m_Fence[m_FrameIndex]->GetCompletedValue() < m_FenceValue[m_FrameIndex])
+	{
+		hres = m_Fence[m_FrameIndex]->SetEventOnCompletion(m_FenceValue[m_FrameIndex], m_FenceEvent);
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to set event on completion!");
+			//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
+		}
+
+		WaitForSingleObject(m_FenceEvent, INFINITE);
+	}
+
+	m_FenceValue[m_FrameIndex]++;
 }
 
 void Graphics::Cleanup()
