@@ -56,6 +56,10 @@ public:
 	Graphics& operator=(const Graphics&) = delete;
 	~Graphics();
 
+	bool Initialize() { return true; };
+	void Cleanup() {};
+	void Render() {};
+
 	void EndFrame();
 	void ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept;
 	void DrawTestTriangle(float a_Angle, float x, float y, struct Vertex* ver, unsigned short* indices);

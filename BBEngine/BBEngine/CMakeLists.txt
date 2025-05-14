@@ -42,6 +42,10 @@ add_library (BBEngine
 #"Source/GameLib/Components/LightComponents/PointLightComponent.cpp" 
 #"Source/GameLib/Components/LightComponents/SpotLightComponent.cpp"
 
+"Source/Lights/DirectionalLight.cpp"
+"Source/Lights/SpotLight.cpp"
+"Source/Lights/PointLight.cpp"
+
 #"Source/GameLib/Components/MeshComponent.cpp" 
 "Source/GameLib/Components/Transform.cpp"
 )
@@ -50,8 +54,8 @@ set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 
-BBRenderer_DX12
-#BBRenderer_DX11
+#BBRenderer_DX12
+BBRenderer_DX11
 BBMath
 ImGUI
 Common

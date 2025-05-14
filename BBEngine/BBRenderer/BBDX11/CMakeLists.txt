@@ -20,10 +20,6 @@ add_library (BBRenderer_DX11 STATIC
 "Source/Bindable/Sampler.cpp"
 "Source/Bindable/CubeMap.cpp"
 
-"Source/Lights/DirectionalLight.cpp"
-"Source/Lights/SpotLight.cpp"
-"Source/Lights/PointLight.cpp"
-
 "Source/Camera.cpp"
 "Source/Drawable/SkyBox.cpp"
 "Source/Drawable/Quad.cpp"
