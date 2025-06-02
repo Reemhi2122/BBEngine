@@ -34,7 +34,7 @@ bool Graphics::Initialize()
 	{
 		DXGI_ADAPTER_DESC1 desc;
 		dxgiAdapter->GetDesc1(&desc);
-		if(!(desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
+		if (!(desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
 		{
 			hres = D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
 			if (SUCCEEDED(hres))
@@ -82,7 +82,7 @@ bool Graphics::Initialize()
 	backBufferDesc.Width = 1600; // Width of the window
 	backBufferDesc.Height = 900; // Height of the window
 	backBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	
+
 	DXGI_SAMPLE_DESC sampleDesc{};
 	sampleDesc.Count = 1;
 	sampleDesc.Quality = 0;
@@ -124,7 +124,7 @@ bool Graphics::Initialize()
 
 	m_RTVDescriptorSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-	
+
 	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{
 		hres = m_SwapChain->GetBuffer(i, IID_PPV_ARGS(&m_RenderTargets[i]));
@@ -208,8 +208,8 @@ bool Graphics::Initialize()
 	//Compile Vertex Shader
 	ID3DBlob* errorBuf;
 	hres = D3DCompileFromFile(
-		L"Assets/DefaultVS.hlsl", nullptr, nullptr, 
-		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 
+		L"Assets/DefaultVS.hlsl", nullptr, nullptr,
+		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 		0, &m_VertexShader, &errorBuf);
 	if (FAILED(hres))
 	{
@@ -268,6 +268,14 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	TempVertex vertexList[] =
+	{
+		{{+0.0f, +0.5f, +0.5f}},
+		{{+0.5f, -0.5f, +0.5f}},
+		{{-0.5f, -0.5f, +0.5f}}
+	};
+
+	int vertexBufferSize = sizeof(vertexList);
 	return true;
 }
 
