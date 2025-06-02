@@ -185,7 +185,8 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	//Creating a Root Singature
+	//Note(Stan): Most of this code down here is for a temporary triangle
+	//Creating a Root Signature
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -204,19 +205,53 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	//Compile Vertex Shader
+	ID3DBlob* errorBuf;
+	hres = D3DCompileFromFile(
+		L"Assets/DefaultVS.hlsl", nullptr, nullptr, 
+		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION, 
+		0, &m_VertexShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	//Set the Vertex Shader Byte Code
+	m_VertexShaderByteCode = {};
+	m_VertexShaderByteCode.BytecodeLength = m_VertexShader->GetBufferSize();
+	m_VertexShaderByteCode.pShaderBytecode = m_VertexShader->GetBufferPointer();
+
+	//Compile the Vertex Shader
+	hres = D3DCompileFromFile(
+		L"Assets/DefaultPS.hlsl", nullptr, nullptr,
+		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0, &m_PixelShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	m_PixelShaderByteCode = {};
+	m_PixelShaderByteCode.BytecodeLength = m_PixelShader->GetBufferSize();
+	m_PixelShaderByteCode.pShaderBytecode = m_PixelShader->GetBufferPointer();
+
+
+
 	return true;
 }
 
 void Graphics::Update()
 {
-	// Nothing yet
+	//Nothing yet
 }
 
 void Graphics::UpdatePipeline()
 {
 	HRESULT hres;
 
-	// Still have to implement the fence check
+	//Still have to implement the fence check
 	WaitForPreviousFrame();
 
 	hres = m_CommandAllocator[m_FrameIndex]->Reset();

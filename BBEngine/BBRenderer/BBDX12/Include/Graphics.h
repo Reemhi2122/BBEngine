@@ -54,6 +54,13 @@ private:
 	ID3D12Resource*				m_VertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW	m_VertexBufferView;
 
+	//Shaders
+	ID3DBlob*	m_VertexShader;
+	D3D12_SHADER_BYTECODE m_VertexShaderByteCode;
+
+	ID3DBlob*	m_PixelShader;
+	D3D12_SHADER_BYTECODE m_PixelShaderByteCode;
+
 	//Fence values
 	ID3D12Fence*	m_Fence[FRAME_BUFFER_COUNT];
 	HANDLE			m_FenceEvent;
