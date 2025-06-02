@@ -12,7 +12,15 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
+#include "Vector3.h"
+
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
+
+//Note(stan): Temp vertext buffer for test triangle
+struct TempVertex
+{
+	Vector3 pos;
+};
 
 class Graphics
 {
@@ -38,6 +46,14 @@ private:
 	ID3D12CommandAllocator*		m_CommandAllocator[FRAME_BUFFER_COUNT];
 	ID3D12GraphicsCommandList*	m_CommandList;
 	
+	//Note(Stan): Used for rendering the first triangle, likely to change later
+	ID3D12PipelineState*		m_DefaultPipelineState;
+	ID3D12RootSignature*		m_RootSignature;
+	D3D12_VIEWPORT				m_Viewport;
+	D3D12_RECT					m_siccorRect;
+	ID3D12Resource*				m_VertexBuffer;
+	D3D12_VERTEX_BUFFER_VIEW	m_VertexBufferView;
+
 	//Fence values
 	ID3D12Fence*	m_Fence[FRAME_BUFFER_COUNT];
 	HANDLE			m_FenceEvent;

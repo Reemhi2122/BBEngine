@@ -185,6 +185,25 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	//Creating a Root Singature
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
+	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+	ID3DBlob* signature;
+	hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to serialize Root Signature!");
+		return false;
+	}
+
+	hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create Root Signature!");
+		return false;
+	}
+
 	return true;
 }
 
