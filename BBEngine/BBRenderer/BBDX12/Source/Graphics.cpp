@@ -163,8 +163,6 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	m_CommandList->Close();
-
 	//Create fence values
 	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{
@@ -276,6 +274,53 @@ bool Graphics::Initialize()
 	};
 
 	int vertexBufferSize = sizeof(vertexList);
+	
+	m_Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		IID_PPV_ARGS(&m_VertexBuffer)
+	);
+	m_VertexBuffer->SetName(L"Vertex Buffer Default Heap");
+
+	ID3D12Resource* vertexBufferUploadHeap;
+	m_Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&vertexBufferUploadHeap)
+	);
+	vertexBufferUploadHeap->SetName(L"Vertex Buffer Upload Heap");
+
+	D3D12_SUBRESOURCE_DATA vertexData = {};
+	vertexData.pData = reinterpret_cast<BYTE*>(vertexList);
+	vertexData.RowPitch = vertexBufferSize;
+	vertexData.SlicePitch = vertexBufferSize;
+
+	UpdateSubresources(m_CommandList, m_VertexBuffer, vertexBufferUploadHeap, 0, 0, 1, &vertexData);
+
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
+
+	m_CommandList->Close();
+	ID3D12CommandList* commandLists[] = { m_CommandList };
+	m_CommandQueue->ExecuteCommandLists(1, commandLists);
+
+	m_FenceValue[m_FrameIndex++];
+	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to signal the Command Queue Fence!");
+		return false;
+	}
+
+	m_VertexBufferView.BufferLocation = m_VertexBuffer->GetGPUVirtualAddress();
+	m_VertexBufferView.StrideInBytes = sizeof(TempVertex);
+	m_VertexBufferView.SizeInBytes = vertexBufferSize;
+
 	return true;
 }
 
