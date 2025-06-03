@@ -1,6 +1,5 @@
 #pragma once
 #include "BBMath.h"
-#include "Bindable/CubeMap.h"
 
 class PointLight {
 public:

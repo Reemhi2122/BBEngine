@@ -4,6 +4,7 @@
 #include <iostream>
 
 #pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
 
@@ -185,7 +186,7 @@ bool Graphics::Initialize()
 
 	//Note(Stan): Most of this code down here is for a temporary triangle
 	//Creating a Root Signature
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
 	rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
 	ID3DBlob* signature;
@@ -220,10 +221,10 @@ bool Graphics::Initialize()
 	m_VertexShaderByteCode.BytecodeLength = m_VertexShader->GetBufferSize();
 	m_VertexShaderByteCode.pShaderBytecode = m_VertexShader->GetBufferPointer();
 
-	//Compile the Vertex Shader
+	//Compile the Pixel Shader
 	hres = D3DCompileFromFile(
 		L"Assets/DefaultPS.hlsl", nullptr, nullptr,
-		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 		0, &m_PixelShader, &errorBuf);
 	if (FAILED(hres))
 	{
@@ -307,9 +308,9 @@ bool Graphics::Initialize()
 
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
-	m_CommandQueue->ExecuteCommandLists(1, commandLists);
+	m_CommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
 
-	m_FenceValue[m_FrameIndex++];
+	m_FenceValue[m_FrameIndex]++;
 	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
 	if (FAILED(hres))
 	{
@@ -328,10 +329,10 @@ bool Graphics::Initialize()
 	m_Viewport.MinDepth = 0.0f;
 	m_Viewport.MaxDepth = 1.0f;
 
-	m_siccorRect.left = 0;
-	m_siccorRect.top = 0;
-	m_siccorRect.right = WIND0W_WIDTH;
-	m_siccorRect.bottom = WIND0W_HEIGHT;
+	m_ScissorRect.top = 0;
+	m_ScissorRect.left = 0;
+	m_ScissorRect.right = WIND0W_WIDTH;
+	m_ScissorRect.bottom = WIND0W_HEIGHT;
 
 	return true;
 }
@@ -356,7 +357,7 @@ void Graphics::UpdatePipeline()
 	}
 
 	//Puts command list into recording state
-	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], nullptr);
+	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], m_DefaultPipelineState);
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed reset the Command list!");
@@ -369,12 +370,12 @@ void Graphics::UpdatePipeline()
 
 	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
-	FLOAT color[4]{ 0.0f, 0.0f, 1.0f, 1.0f };
+	FLOAT color[4]{ 1.0f, 0.0f, 0.0f, 1.0f };
 	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
 	m_CommandList->RSSetViewports(1, &m_Viewport);
-	m_CommandList->RSSetScissorRects(1, &m_siccorRect);
+	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
 	m_CommandList->DrawInstanced(3, 1, 0, 0);
