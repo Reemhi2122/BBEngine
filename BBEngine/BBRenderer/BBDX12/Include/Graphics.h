@@ -16,6 +16,9 @@
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
+constexpr uint16_t WIND0W_WIDTH = 1600;
+constexpr uint16_t WIND0W_HEIGHT = 800;
+
 //Note(stan): Temp vertext buffer for test triangle
 struct TempVertex
 {

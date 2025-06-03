@@ -79,8 +79,8 @@ bool Graphics::Initialize()
 
 	//Create the Back Buffer
 	DXGI_MODE_DESC backBufferDesc{};
-	backBufferDesc.Width = 1600; // Width of the window
-	backBufferDesc.Height = 900; // Height of the window
+	backBufferDesc.Width = WIND0W_WIDTH; // Width of the window
+	backBufferDesc.Height = WIND0W_HEIGHT; // Height of the window
 	backBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	DXGI_SAMPLE_DESC sampleDesc{};
@@ -321,6 +321,18 @@ bool Graphics::Initialize()
 	m_VertexBufferView.StrideInBytes = sizeof(TempVertex);
 	m_VertexBufferView.SizeInBytes = vertexBufferSize;
 
+	m_Viewport.TopLeftX = 0;
+	m_Viewport.TopLeftY = 0;
+	m_Viewport.Width = WIND0W_WIDTH; // Check window size
+	m_Viewport.Height = WIND0W_HEIGHT; // Check window size
+	m_Viewport.MinDepth = 0.0f;
+	m_Viewport.MaxDepth = 1.0f;
+
+	m_siccorRect.left = 0;
+	m_siccorRect.top = 0;
+	m_siccorRect.right = WIND0W_WIDTH;
+	m_siccorRect.bottom = WIND0W_HEIGHT;
+
 	return true;
 }
 
@@ -359,6 +371,13 @@ void Graphics::UpdatePipeline()
 
 	FLOAT color[4]{ 0.0f, 0.0f, 1.0f, 1.0f };
 	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+
+	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
+	m_CommandList->RSSetViewports(1, &m_Viewport);
+	m_CommandList->RSSetScissorRects(1, &m_siccorRect);
+	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
+	m_CommandList->DrawInstanced(3, 1, 0, 0);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
