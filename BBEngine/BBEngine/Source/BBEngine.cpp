@@ -88,6 +88,8 @@ namespace BBE
 
     void BBEngine::Initialize()
     {
+        __int64 test = 123;
+        printf("Testing this: %lld", test);
 
         //GLTFParser parser;
         //parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
