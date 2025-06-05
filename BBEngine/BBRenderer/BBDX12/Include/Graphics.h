@@ -13,6 +13,7 @@
 #include "imgui_impl_win32.h"
 
 #include "Vector3.h"
+#include "Vector4.h"
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
@@ -23,6 +24,7 @@ constexpr uint16_t WIND0W_HEIGHT = 800;
 struct TempVertex
 {
 	Vector3 pos;
+	Vector4 color;
 };
 
 class Graphics

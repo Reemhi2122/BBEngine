@@ -239,7 +239,8 @@ bool Graphics::Initialize()
 	//Create the Input Layout
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0}
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0}
 	};
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};
@@ -269,12 +270,12 @@ bool Graphics::Initialize()
 
 	TempVertex vertexList[] =
 	{
-		{{+0.0f, +0.5f, +0.0f}},
-		{{+0.5f, +0.5f, +0.0f}},
-		{{+0.5f, -0.5f, +0.0f}},
-		{{+0.0f, +0.5f, +0.0f}},
-		{{+0.5f, -0.5f, +0.0f}},
-		{{+0.0f, -0.5f, +0.0f}}
+		{{+0.0f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{+0.5f, +0.5f, +0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		{{+0.5f, -0.5f, +0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+		//{{+0.0f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		//{{+0.5f, -0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		//{{+0.0f, -0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}}
 	};
 
 	int vertexBufferSize = sizeof(vertexList);
@@ -373,7 +374,7 @@ void Graphics::UpdatePipeline()
 
 	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
-	FLOAT color[4]{ 1.0f, 0.0f, 0.0f, 1.0f };
+	FLOAT color[4]{ 0.0f, 0.0f, 0.0f, 1.0f };
 	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
@@ -381,7 +382,7 @@ void Graphics::UpdatePipeline()
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
-	m_CommandList->DrawInstanced(6, 1, 0, 0);
+	m_CommandList->DrawInstanced(3, 1, 0, 0);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
