@@ -56,8 +56,12 @@ private:
 	ID3D12RootSignature*		m_RootSignature;
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
+
 	ID3D12Resource*				m_VertexBuffer;
 	D3D12_VERTEX_BUFFER_VIEW	m_VertexBufferView;
+
+	ID3D12Resource*				m_IndexBuffer;
+	D3D12_INDEX_BUFFER_VIEW 	m_IndexBufferView;
 
 	//Shaders
 	ID3DBlob*	m_VertexShader;
