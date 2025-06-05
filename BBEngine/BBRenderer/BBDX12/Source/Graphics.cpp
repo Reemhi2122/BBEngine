@@ -344,7 +344,7 @@ bool Graphics::Initialize()
 
 	UpdateSubresources(m_CommandList, m_IndexBuffer, indexBufferUploadHeap, 0, 0, 1, &indexData);
 
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));
 
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
