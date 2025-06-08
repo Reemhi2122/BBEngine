@@ -285,9 +285,15 @@ bool Graphics::Initialize()
 	TempVertex vertexList[] =
 	{
 		{{-0.5f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{+0.5f, -0.5f, +0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-		{{-0.5f, -0.5f, +0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
-		{{+0.5f, +0.5f, +0.0f}, {1.0f, 0.0f, 1.0f, 1.0f}},
+		{{+0.5f, -0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{-0.5f, -0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{+0.5f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+
+		//Second quad for testing depth buffer
+		{{-0.75f, +0.75f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{+0.00f, +0.00f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{-0.75f, +0.00f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{+0.00f, +0.75f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
 	};
 
 	uint32_t vertexBufferSize = sizeof(vertexList);
@@ -359,6 +365,18 @@ bool Graphics::Initialize()
 	UpdateSubresources(m_CommandList, m_IndexBuffer, indexBufferUploadHeap, 0, 0, 1, &indexData);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));
+
+	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
+	dsvDesc.NumDescriptors = 1;
+	dsvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	
+	hres = m_Device->CreateDescriptorHeap(&dsvDesc, IID_PPV_ARGS(&m_DSDescriptorHeap));
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create DSV Descriptor Heap!");
+		return false;
+	}
 
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
