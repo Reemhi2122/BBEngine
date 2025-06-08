@@ -63,6 +63,9 @@ private:
 	ID3D12Resource*				m_IndexBuffer;
 	D3D12_INDEX_BUFFER_VIEW 	m_IndexBufferView;
 
+	ID3D12Resource*				m_DepthStenil;
+	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
+
 	//Shaders
 	ID3DBlob*	m_VertexShader;
 	D3D12_SHADER_BYTECODE m_VertexShaderByteCode;
