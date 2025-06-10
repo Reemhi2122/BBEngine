@@ -505,6 +505,7 @@ void Graphics::UpdatePipeline()
 	m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
 	m_CommandList->IASetIndexBuffer(&m_IndexBufferView);
 	m_CommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
+	m_CommandList->DrawIndexedInstanced(6, 1, 0, 4, 0);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
