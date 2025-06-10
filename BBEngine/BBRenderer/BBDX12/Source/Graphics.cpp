@@ -490,11 +490,13 @@ void Graphics::UpdatePipeline()
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 	
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_FrameIndex, m_RTVDescriptorSize);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE dsHandle(m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, &dsHandle);
 
 	FLOAT color[4]{ 0.32f, 0.40f, 0.45, 1.0f };
 	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
 	m_CommandList->RSSetViewports(1, &m_Viewport);
@@ -580,4 +582,12 @@ void Graphics::Cleanup()
 		SAFE_RELEASE(m_CommandAllocator[i]);
 		SAFE_RELEASE(m_Fence[i]);
 	}
+
+	SAFE_RELEASE(m_DefaultPipelineState);
+	SAFE_RELEASE(m_RootSignature);
+	SAFE_RELEASE(m_VertexBuffer);
+	SAFE_RELEASE(m_IndexBuffer);
+
+	SAFE_RELEASE(m_DepthStenil);
+	SAFE_RELEASE(m_DSDescriptorHeap);
 }
