@@ -19,15 +19,15 @@ Graphics::Graphics(HWND a_HWnd)
 bool Graphics::Initialize()
 {
 	HRESULT hres;
-
-	IDXGIFactory4* dxgiFactory;
+	
+	IDXGIFactory4* dxgiFactory = nullptr;
 	hres = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
 	if (FAILED(hres))
 	{
 		return false;
 	}
 
-	IDXGIAdapter1* dxgiAdapter;
+	IDXGIAdapter1* dxgiAdapter = nullptr;
 	uint32_t adapterIndex = 0;
 	bool adapterFound = false;
 
@@ -65,7 +65,7 @@ bool Graphics::Initialize()
 	}
 
 	//Create the Command Queue
-	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
+	D3D12_COMMAND_QUEUE_DESC commandQueueDesc = {};
 	commandQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 	commandQueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
 	commandQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
@@ -79,16 +79,16 @@ bool Graphics::Initialize()
 	}
 
 	//Create the Back Buffer
-	DXGI_MODE_DESC backBufferDesc{};
+	DXGI_MODE_DESC backBufferDesc = {};
 	backBufferDesc.Width = WIND0W_WIDTH; // Width of the window
 	backBufferDesc.Height = WIND0W_HEIGHT; // Height of the window
 	backBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
-	DXGI_SAMPLE_DESC sampleDesc{};
+	DXGI_SAMPLE_DESC sampleDesc = {};
 	sampleDesc.Count = 1;
 	sampleDesc.Quality = 0;
 
-	DXGI_SWAP_CHAIN_DESC  swapChainDesc{};
+	DXGI_SWAP_CHAIN_DESC  swapChainDesc = {};
 	swapChainDesc.BufferDesc = backBufferDesc;
 	swapChainDesc.SampleDesc = sampleDesc;
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -98,7 +98,7 @@ bool Graphics::Initialize()
 	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapChainDesc.Flags = 0;
 
-	IDXGISwapChain* tempSwapChain;
+	IDXGISwapChain* tempSwapChain = nullptr;
 	hres = dxgiFactory->CreateSwapChain(m_CommandQueue, &swapChainDesc, &tempSwapChain);
 	if (FAILED(hres))
 	{
@@ -110,7 +110,7 @@ bool Graphics::Initialize()
 	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
 
 	//Create the RTV Descriptor Heap
-	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc{};
+	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc = {};
 	descriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	descriptorHeapDesc.NumDescriptors = FRAME_BUFFER_COUNT;
 	descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
@@ -247,10 +247,10 @@ bool Graphics::Initialize()
 	inputLayoutDesc.NumElements = sizeof(inputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
 	inputLayoutDesc.pInputElementDescs = inputLayout;
 
-	//Note(Stan): Standard STENCILOP for now
+	//Note(Stan): Standard STENCIL_OP for now
 	const D3D12_DEPTH_STENCILOP_DESC defaultStencilOp = { D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_COMPARISON_FUNC_ALWAYS };
 
-	D3D12_DEPTH_STENCIL_DESC depthStencilDesc;
+	D3D12_DEPTH_STENCIL_DESC depthStencilDesc = {};
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
@@ -290,15 +290,15 @@ bool Graphics::Initialize()
 		{{+0.5f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
 
 		//Second quad for testing depth buffer
-		{{-0.75f, +0.75f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{+0.00f, +0.00f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{-0.75f, +0.00f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{+0.00f, +0.75f, +0.7f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{-0.75f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		{{+0.00f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		{{-0.75f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		{{+0.00f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
 	};
 
 	uint32_t vertexBufferSize = sizeof(vertexList);
 	
-	m_Device->CreateCommittedResource(
+	hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
@@ -307,9 +307,14 @@ bool Graphics::Initialize()
 		IID_PPV_ARGS(&m_VertexBuffer)
 	);
 	m_VertexBuffer->SetName(L"Vertex Buffer Default Heap");
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed create Vertex Buffer Default Heap!");
+		return false;
+	}
 
-	ID3D12Resource* vertexBufferUploadHeap;
-	m_Device->CreateCommittedResource(
+	ID3D12Resource* vertexBufferUploadHeap = {};
+	hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
@@ -318,6 +323,11 @@ bool Graphics::Initialize()
 		IID_PPV_ARGS(&vertexBufferUploadHeap)
 	);
 	vertexBufferUploadHeap->SetName(L"Vertex Buffer Upload Heap");
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed create Vertex Buffer Upload Heap!");
+		return false;
+	}
 
 	D3D12_SUBRESOURCE_DATA vertexData = {};
 	vertexData.pData = reinterpret_cast<BYTE*>(vertexList);
@@ -336,7 +346,7 @@ bool Graphics::Initialize()
 	
 	uint32_t indexBufferSize = sizeof(indexList);
 
-	m_Device->CreateCommittedResource(
+	hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize),
@@ -345,9 +355,14 @@ bool Graphics::Initialize()
 		IID_PPV_ARGS(&m_IndexBuffer)
 	);
 	m_IndexBuffer->SetName(L"Index Buffer Default Heap");
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed create Index Buffer Default Heap!");
+		return false;
+	}
 
 	ID3D12Resource* indexBufferUploadHeap;
-	m_Device->CreateCommittedResource(
+	hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize),
@@ -356,6 +371,11 @@ bool Graphics::Initialize()
 		IID_PPV_ARGS(&indexBufferUploadHeap)
 	);
 	indexBufferUploadHeap->SetName(L"Index Buffer Upload Heap");
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed create Index Buffer Upload Heap!");
+		return false;
+	}
 
 	D3D12_SUBRESOURCE_DATA indexData = {};
 	indexData.pData = reinterpret_cast<BYTE*>(indexList);
@@ -377,6 +397,33 @@ bool Graphics::Initialize()
 		printf("[GFX]: Failed to create DSV Descriptor Heap!");
 		return false;
 	}
+
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsViewDescription = {};
+	dsViewDescription.Format		= DXGI_FORMAT_D32_FLOAT;
+	dsViewDescription.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	dsViewDescription.Flags			= D3D12_DSV_FLAG_NONE;
+
+	D3D12_CLEAR_VALUE dsClearValue = {};
+	dsClearValue.Format = DXGI_FORMAT_D32_FLOAT;
+	dsClearValue.DepthStencil.Depth = 1.0f;
+	dsClearValue.DepthStencil.Stencil = 0.0f;
+
+	hres = m_Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, WIND0W_WIDTH, WIND0W_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL),
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		&dsClearValue,
+		IID_PPV_ARGS(&m_DepthStenil)
+	);
+	m_DepthStenil->SetName(L"Depth Stencil Buffer");
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed create Depth Stencil Buffer heap descriptor!");
+		return false;
+	}
+	
+	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
@@ -446,7 +493,7 @@ void Graphics::UpdatePipeline()
 
 	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
 
-	FLOAT color[4]{ 0.0f, 0.0f, 0.0f, 1.0f };
+	FLOAT color[4]{ 0.32f, 0.40f, 0.45, 1.0f };
 	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
