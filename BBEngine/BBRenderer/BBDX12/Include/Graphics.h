@@ -27,6 +27,12 @@ struct TempVertex
 	Vector4 color;
 };
 
+//Note(Stan): Temp constant buffer used for testing
+struct CBColorMultiply
+{
+	Vector4 colorMultiplier;
+};
+
 class Graphics
 {
 public:
@@ -65,6 +71,13 @@ private:
 
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
+
+	//Note(Stan): Temp constant buffer testing
+	ID3D12DescriptorHeap*		m_MainDescriptorHeap[FRAME_BUFFER_COUNT];
+	ID3D12Resource*				m_CBUploadHeap[FRAME_BUFFER_COUNT];
+	
+	CBColorMultiply				m_CBColorMultiplier;
+	uint8_t*					m_CBColorMultiplierGPUAdress[FRAME_BUFFER_COUNT];
 
 	//Shaders
 	ID3DBlob*	m_VertexShader;

@@ -184,6 +184,17 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	D3D12_DESCRIPTOR_RANGE cbDiscriptorRangeDesc[1];
+	cbDiscriptorRangeDesc[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	cbDiscriptorRangeDesc[0].NumDescriptors = 1;
+	cbDiscriptorRangeDesc[0].BaseShaderRegister = 0;
+	cbDiscriptorRangeDesc[0].RegisterSpace = 0;
+	cbDiscriptorRangeDesc[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+	cbDescriptorTable.NumDescriptorRanges = 1;
+	cbDescriptorTable.pDescriptorRanges = cbDiscriptorRangeDesc;
+
 	//Note(Stan): Most of this code down here is for a temporary triangle
 	//Creating a Root Signature
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
