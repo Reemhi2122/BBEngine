@@ -483,6 +483,10 @@ bool Graphics::Initialize()
 		m_Device->CreateConstantBufferView(&cbViewDesc, m_CBDescriptorHeap[i]->GetCPUDescriptorHandleForHeapStart());
 	
 		ZeroMemory(&m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
+
+		CD3DX12_RANGE readRange(0, 0);
+		hres = m_CBUploadHeap[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBColorMultiplierGPUAdress[i]));
+		memcpy(m_CBColorMultiplierGPUAdress[i], &m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
 	}
 
 	m_CommandList->Close();
@@ -522,7 +526,33 @@ bool Graphics::Initialize()
 
 void Graphics::Update()
 {
-	//Nothing yet
+	//Directly copied from the tut as its only for testing
+	static float rIncrementValue = 0.00002f;
+	static float gIncrementValue = 0.00002f;
+	static float bIncrementValue = 0.00002f;
+
+	m_CBColorMultiplier.colorMultiplier.x += rIncrementValue;
+	m_CBColorMultiplier.colorMultiplier.y += gIncrementValue;
+	m_CBColorMultiplier.colorMultiplier.z += bIncrementValue;
+	m_CBColorMultiplier.colorMultiplier.w = 1.0f;
+
+	if (m_CBColorMultiplier.colorMultiplier.x >= 1.0 || m_CBColorMultiplier.colorMultiplier.x <= 0.0)
+	{
+		m_CBColorMultiplier.colorMultiplier.x = m_CBColorMultiplier.colorMultiplier.x >= 1.0 ? 1.0 : 0.0;
+		rIncrementValue = -rIncrementValue;
+	}
+	if (m_CBColorMultiplier.colorMultiplier.y >= 1.0 || m_CBColorMultiplier.colorMultiplier.y <= 0.0)
+	{
+		m_CBColorMultiplier.colorMultiplier.y = m_CBColorMultiplier.colorMultiplier.y >= 1.0 ? 1.0 : 0.0;
+		gIncrementValue = -gIncrementValue;
+	}
+	if (m_CBColorMultiplier.colorMultiplier.z >= 1.0 || m_CBColorMultiplier.colorMultiplier.z <= 0.0)
+	{
+		m_CBColorMultiplier.colorMultiplier.z = m_CBColorMultiplier.colorMultiplier.z >= 1.0 ? 1.0 : 0.0;
+		bIncrementValue = -bIncrementValue;
+	}
+
+	memcpy(m_CBColorMultiplierGPUAdress[m_FrameIndex], &m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
 }
 
 void Graphics::UpdatePipeline()
@@ -559,6 +589,11 @@ void Graphics::UpdatePipeline()
 	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
+
+	ID3D12DescriptorHeap* descriptorHeaps[] { m_CBDescriptorHeap[m_FrameIndex] };
+	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
+	m_CommandList->SetGraphicsRootDescriptorTable(0, m_CBDescriptorHeap[m_FrameIndex]->GetGPUDescriptorHandleForHeapStart());
+
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
@@ -642,6 +677,9 @@ void Graphics::Cleanup()
 		SAFE_RELEASE(m_RenderTargets[i]);
 		SAFE_RELEASE(m_CommandAllocator[i]);
 		SAFE_RELEASE(m_Fence[i]);
+
+		SAFE_RELEASE(m_CBDescriptorHeap[i]);
+		SAFE_RELEASE(m_CBUploadHeap[i]);
 	}
 
 	SAFE_RELEASE(m_DefaultPipelineState);

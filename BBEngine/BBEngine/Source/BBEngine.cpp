@@ -238,6 +238,7 @@ namespace BBE
     float incr = 0;
     void BBEngine::Update()
     {
+        m_Graphics.Update();
         m_Graphics.Render();
 
     //    m_Graphics.SetGameViewRenderTarget();
