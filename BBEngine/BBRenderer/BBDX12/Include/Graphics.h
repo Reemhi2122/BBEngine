@@ -73,7 +73,7 @@ private:
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
 
 	//Note(Stan): Temp constant buffer testing
-	ID3D12DescriptorHeap*		m_MainDescriptorHeap[FRAME_BUFFER_COUNT];
+	ID3D12DescriptorHeap*		m_CBDescriptorHeap[FRAME_BUFFER_COUNT];
 	ID3D12Resource*				m_CBUploadHeap[FRAME_BUFFER_COUNT];
 	
 	CBColorMultiply				m_CBColorMultiplier;

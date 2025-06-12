@@ -110,13 +110,13 @@ bool Graphics::Initialize()
 	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
 
 	//Create the RTV Descriptor Heap
-	D3D12_DESCRIPTOR_HEAP_DESC descriptorHeapDesc = {};
-	descriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	descriptorHeapDesc.NumDescriptors = FRAME_BUFFER_COUNT;
-	descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	descriptorHeapDesc.NodeMask = 0;
+	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeap = {};
+	rtvDescriptorHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvDescriptorHeap.NumDescriptors = FRAME_BUFFER_COUNT;
+	rtvDescriptorHeap.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	rtvDescriptorHeap.NodeMask = 0;
 
-	hres = m_Device->CreateDescriptorHeap(&descriptorHeapDesc, IID_PPV_ARGS(&m_RTVDescriptorHeap));
+	hres = m_Device->CreateDescriptorHeap(&rtvDescriptorHeap, IID_PPV_ARGS(&m_RTVDescriptorHeap));
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed to create RTV descriptor heap!");
@@ -315,10 +315,10 @@ bool Graphics::Initialize()
 		{{+0.5f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
 
 		//Second quad for testing depth buffer
-		{{-0.75f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-		{{+0.00f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-		{{-0.75f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-		{{+0.00f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		//{{-0.75f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		//{{+0.00f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		//{{-0.75f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		//{{+0.00f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
 	};
 
 	uint32_t vertexBufferSize = sizeof(vertexList);
@@ -449,6 +449,41 @@ bool Graphics::Initialize()
 	}
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		D3D12_DESCRIPTOR_HEAP_DESC cbHeapDescriptor = {};
+		cbHeapDescriptor.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+		cbHeapDescriptor.NumDescriptors = 1;
+		cbHeapDescriptor.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+
+		hres = m_Device->CreateDescriptorHeap(&cbHeapDescriptor, IID_PPV_ARGS(&m_CBDescriptorHeap[i]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed create Constant Buffer Descriptor Heap!");
+			return false;
+		}
+	}
+
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&m_CBUploadHeap[i])
+		);
+		m_CBUploadHeap[i]->SetName(L"Constant Buffer Upload Heap");
+
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbViewDesc = {};
+		cbViewDesc.BufferLocation = m_CBUploadHeap[i]->GetGPUVirtualAddress();
+		cbViewDesc.SizeInBytes = ((sizeof(CBColorMultiply) + 255) & (~255));
+		m_Device->CreateConstantBufferView(&cbViewDesc, m_CBDescriptorHeap[i]->GetCPUDescriptorHandleForHeapStart());
+	
+		ZeroMemory(&m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
+	}
 
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
