@@ -72,7 +72,28 @@ private:
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
 
+	ConstantBufferPerObject		m_CBPerObject;
+	ID3D12Resource*				m_ConstantBufferUploadHeaps[FRAME_BUFFER_COUNT];
+	uint8_t*					m_CBVGPUAdress[FRAME_BUFFER_COUNT];
 
+	BBMath::Matrix4x4	m_CameraProjMatrix;
+	BBMath::Matrix4x4	m_CameraViewMatrix;
+
+	//Note(Stan): Temp, these will be replaced by the cam class
+	Vector4	m_CameraPos;
+	Vector4 m_CameraTarget;
+	Vector4 m_CameraUp;
+
+	//Note(Stan): Temp, these will be replaced by actual objects
+	BBMath::Matrix4x4	m_Cube1WorldMatrix;
+	BBMath::Matrix4x4	m_Cube1RotationMatrix;
+	Vector4				m_Cube1Pos;
+
+	BBMath::Matrix4x4	m_Cube2WorldMatrix;
+	BBMath::Matrix4x4	m_Cube2RotationMatrix;
+	Vector4				m_Cube2Pos;
+
+	uint32_t			m_NumOfCubeIndices;
 
 	//Shaders
 	ID3DBlob*	m_VertexShader;
