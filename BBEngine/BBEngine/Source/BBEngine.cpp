@@ -238,8 +238,8 @@ namespace BBE
     float incr = 0;
     void BBEngine::Update()
     {
-        //m_Graphics.Update();
-        //m_Graphics.Render();
+        m_Graphics.Update();
+        m_Graphics.Render();
 
     //    m_Graphics.SetGameViewRenderTarget();
     //    m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
