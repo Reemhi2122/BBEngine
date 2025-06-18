@@ -27,6 +27,8 @@ add_library (BBRenderer_DX11 STATIC
 
 #set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 
+add_compile_definitions(BBX11)
+
 target_include_directories(BBRenderer_DX11 PUBLIC
 "Include/"
 "../Shader/"
