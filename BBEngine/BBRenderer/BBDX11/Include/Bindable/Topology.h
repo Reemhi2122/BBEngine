@@ -1,5 +1,5 @@
 #pragma once
-#include "Bindable.h"
+#include "Bindable/Bindable.h"
 
 class Topology : public Bindable
 {

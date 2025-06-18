@@ -54,8 +54,8 @@ set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 
-BBRenderer_DX12
-#BBRenderer_DX11
+#BBRenderer_DX12
+BBRenderer_DX11
 BBMath
 ImGUI
 Common

@@ -1,5 +1,5 @@
 #pragma once
-#include "Bindable.h"
+#include "Bindable/Bindable.h"
 
 #define CUBEMAP_SIZE 6
 

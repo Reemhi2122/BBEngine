@@ -6,7 +6,7 @@ class Texture : public Bindable
 public:
 	Texture() = default;
 	Texture(Graphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot = 0u);
-	
+
 	void Bind(Graphics& a_Gfx) noexcept;
 	void UnBind(Graphics& a_Gfx) noexcept;
 
