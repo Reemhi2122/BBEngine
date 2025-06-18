@@ -19,7 +19,7 @@ VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal)
 {
     VSOut vso;
     
-    matrix WVP = mul(transform, ViewProjectionMatrix);
+    matrix WVP = mul(WorldMatrix, ViewProjectionMatrix);
     
     vso.pos = mul(float4(pos, 1.0f), WVP);
     vso.worldPos = mul(float4(pos, 1.0f), WorldMatrix);

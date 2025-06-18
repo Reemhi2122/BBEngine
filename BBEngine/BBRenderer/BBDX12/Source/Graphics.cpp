@@ -184,27 +184,27 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	D3D12_DESCRIPTOR_RANGE cbDiscriptorRangeDesc[1];
-	cbDiscriptorRangeDesc[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-	cbDiscriptorRangeDesc[0].NumDescriptors = 1;
-	cbDiscriptorRangeDesc[0].BaseShaderRegister = 0;
-	cbDiscriptorRangeDesc[0].RegisterSpace = 0;
-	cbDiscriptorRangeDesc[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	//D3D12_DESCRIPTOR_RANGE cbDiscriptorRangeDesc[1];
+	//cbDiscriptorRangeDesc[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+	//cbDiscriptorRangeDesc[0].NumDescriptors = 1;
+	//cbDiscriptorRangeDesc[0].BaseShaderRegister = 0;
+	//cbDiscriptorRangeDesc[0].RegisterSpace = 0;
+	//cbDiscriptorRangeDesc[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
-	cbDescriptorTable.NumDescriptorRanges = 1;
-	cbDescriptorTable.pDescriptorRanges = cbDiscriptorRangeDesc;
+	//D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+	//cbDescriptorTable.NumDescriptorRanges = 1;
+	//cbDescriptorTable.pDescriptorRanges = cbDiscriptorRangeDesc;
 
-	D3D12_ROOT_PARAMETER rootParam[1];
-	rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParam[0].DescriptorTable = cbDescriptorTable;
-	rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	//D3D12_ROOT_PARAMETER rootParam[1];
+	//rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	//rootParam[0].DescriptorTable = cbDescriptorTable;
+	//rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
 	//Note(Stan): Most of this code down here is for a temporary triangle
 	//Creating a Root Signature
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-	rootSignatureDesc.NumParameters = 1;
-	rootSignatureDesc.pParameters = rootParam;
+	rootSignatureDesc.NumParameters = 0;
+	rootSignatureDesc.pParameters = nullptr;
 	rootSignatureDesc.NumStaticSamplers = 0;
 	rootSignatureDesc.pStaticSamplers = nullptr;
 	rootSignatureDesc.Flags = 
@@ -450,44 +450,44 @@ bool Graphics::Initialize()
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	{
-		D3D12_DESCRIPTOR_HEAP_DESC cbHeapDescriptor = {};
-		cbHeapDescriptor.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-		cbHeapDescriptor.NumDescriptors = 1;
-		cbHeapDescriptor.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	//{
+	//	D3D12_DESCRIPTOR_HEAP_DESC cbHeapDescriptor = {};
+	//	cbHeapDescriptor.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	//	cbHeapDescriptor.NumDescriptors = 1;
+	//	cbHeapDescriptor.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 
-		hres = m_Device->CreateDescriptorHeap(&cbHeapDescriptor, IID_PPV_ARGS(&m_CBDescriptorHeap[i]));
-		if (FAILED(hres))
-		{
-			printf("[GFX]: Failed create Constant Buffer Descriptor Heap!");
-			return false;
-		}
-	}
+	//	hres = m_Device->CreateDescriptorHeap(&cbHeapDescriptor, IID_PPV_ARGS(&m_CBDescriptorHeap[i]));
+	//	if (FAILED(hres))
+	//	{
+	//		printf("[GFX]: Failed create Constant Buffer Descriptor Heap!");
+	//		return false;
+	//	}
+	//}
 
-	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	{
-		hres = m_Device->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&m_CBUploadHeap[i])
-		);
-		m_CBUploadHeap[i]->SetName(L"Constant Buffer Upload Heap");
+	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	//{
+	//	hres = m_Device->CreateCommittedResource(
+	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+	//		D3D12_HEAP_FLAG_NONE,
+	//		&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
+	//		D3D12_RESOURCE_STATE_GENERIC_READ,
+	//		nullptr,
+	//		IID_PPV_ARGS(&m_CBUploadHeap[i])
+	//	);
+	//	m_CBUploadHeap[i]->SetName(L"Constant Buffer Upload Heap");
 
-		D3D12_CONSTANT_BUFFER_VIEW_DESC cbViewDesc = {};
-		cbViewDesc.BufferLocation = m_CBUploadHeap[i]->GetGPUVirtualAddress();
-		cbViewDesc.SizeInBytes = ((sizeof(CBColorMultiply) + 255) & (~255));
-		m_Device->CreateConstantBufferView(&cbViewDesc, m_CBDescriptorHeap[i]->GetCPUDescriptorHandleForHeapStart());
-	
-		ZeroMemory(&m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
+	//	D3D12_CONSTANT_BUFFER_VIEW_DESC cbViewDesc = {};
+	//	cbViewDesc.BufferLocation = m_CBUploadHeap[i]->GetGPUVirtualAddress();
+	//	cbViewDesc.SizeInBytes = ((sizeof(CBColorMultiply) + 255) & (~255));
+	//	m_Device->CreateConstantBufferView(&cbViewDesc, m_CBDescriptorHeap[i]->GetCPUDescriptorHandleForHeapStart());
+	//
+	//	ZeroMemory(&m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
 
-		CD3DX12_RANGE readRange(0, 0);
-		hres = m_CBUploadHeap[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBColorMultiplierGPUAdress[i]));
-		memcpy(m_CBColorMultiplierGPUAdress[i], &m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
-	}
+	//	CD3DX12_RANGE readRange(0, 0);
+	//	hres = m_CBUploadHeap[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBColorMultiplierGPUAdress[i]));
+	//	memcpy(m_CBColorMultiplierGPUAdress[i], &m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
+	//}
 
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
@@ -526,33 +526,7 @@ bool Graphics::Initialize()
 
 void Graphics::Update()
 {
-	//Directly copied from the tut as its only for testing
-	static float rIncrementValue = 0.00002f;
-	static float gIncrementValue = 0.00002f;
-	static float bIncrementValue = 0.00002f;
 
-	m_CBColorMultiplier.colorMultiplier.x += rIncrementValue;
-	m_CBColorMultiplier.colorMultiplier.y += gIncrementValue;
-	m_CBColorMultiplier.colorMultiplier.z += bIncrementValue;
-	m_CBColorMultiplier.colorMultiplier.w = 1.0f;
-
-	if (m_CBColorMultiplier.colorMultiplier.x >= 1.0 || m_CBColorMultiplier.colorMultiplier.x <= 0.0)
-	{
-		m_CBColorMultiplier.colorMultiplier.x = m_CBColorMultiplier.colorMultiplier.x >= 1.0 ? 1.0 : 0.0;
-		rIncrementValue = -rIncrementValue;
-	}
-	if (m_CBColorMultiplier.colorMultiplier.y >= 1.0 || m_CBColorMultiplier.colorMultiplier.y <= 0.0)
-	{
-		m_CBColorMultiplier.colorMultiplier.y = m_CBColorMultiplier.colorMultiplier.y >= 1.0 ? 1.0 : 0.0;
-		gIncrementValue = -gIncrementValue;
-	}
-	if (m_CBColorMultiplier.colorMultiplier.z >= 1.0 || m_CBColorMultiplier.colorMultiplier.z <= 0.0)
-	{
-		m_CBColorMultiplier.colorMultiplier.z = m_CBColorMultiplier.colorMultiplier.z >= 1.0 ? 1.0 : 0.0;
-		bIncrementValue = -bIncrementValue;
-	}
-
-	memcpy(m_CBColorMultiplierGPUAdress[m_FrameIndex], &m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
 }
 
 void Graphics::UpdatePipeline()
@@ -590,9 +564,9 @@ void Graphics::UpdatePipeline()
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
 
-	ID3D12DescriptorHeap* descriptorHeaps[] { m_CBDescriptorHeap[m_FrameIndex] };
-	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
-	m_CommandList->SetGraphicsRootDescriptorTable(0, m_CBDescriptorHeap[m_FrameIndex]->GetGPUDescriptorHandleForHeapStart());
+	//ID3D12DescriptorHeap* descriptorHeaps[] { m_CBDescriptorHeap[m_FrameIndex] };
+	//m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
+	//m_CommandList->SetGraphicsRootDescriptorTable(0, m_CBDescriptorHeap[m_FrameIndex]->GetGPUDescriptorHandleForHeapStart());
 
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
@@ -677,9 +651,6 @@ void Graphics::Cleanup()
 		SAFE_RELEASE(m_RenderTargets[i]);
 		SAFE_RELEASE(m_CommandAllocator[i]);
 		SAFE_RELEASE(m_Fence[i]);
-
-		SAFE_RELEASE(m_CBDescriptorHeap[i]);
-		SAFE_RELEASE(m_CBUploadHeap[i]);
 	}
 
 	SAFE_RELEASE(m_DefaultPipelineState);

@@ -14,6 +14,7 @@
 
 #include "Vector3.h"
 #include "Vector4.h"
+#include "Matrix4x4.h"
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
@@ -23,14 +24,13 @@ constexpr uint16_t WIND0W_HEIGHT = 800;
 //Note(stan): Temp vertext buffer for test triangle
 struct TempVertex
 {
-	Vector3 pos;
+	Vector3 vertex;
 	Vector4 color;
 };
 
-//Note(Stan): Temp constant buffer used for testing
-struct CBColorMultiply
+struct ConstantBufferPerObject
 {
-	Vector4 colorMultiplier;
+	BBMath::Matrix4x4 colorMultiplier;
 };
 
 class Graphics
@@ -72,12 +72,7 @@ private:
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
 
-	//Note(Stan): Temp constant buffer testing
-	ID3D12DescriptorHeap*		m_CBDescriptorHeap[FRAME_BUFFER_COUNT];
-	ID3D12Resource*				m_CBUploadHeap[FRAME_BUFFER_COUNT];
-	
-	CBColorMultiply				m_CBColorMultiplier;
-	uint8_t*					m_CBColorMultiplierGPUAdress[FRAME_BUFFER_COUNT];
+
 
 	//Shaders
 	ID3DBlob*	m_VertexShader;
@@ -95,3 +90,11 @@ private:
 	uint32_t m_RTVDescriptorSize;
 
 };
+
+//Note(Stan): Old constant buffer code
+//Note(Stan): Temp constant buffer testing
+//ID3D12DescriptorHeap*		m_CBDescriptorHeap[FRAME_BUFFER_COUNT];
+//ID3D12Resource*				m_CBUploadHeap[FRAME_BUFFER_COUNT];
+//
+//CBColorMultiply				m_CBColorMultiplier;
+//uint8_t*					m_CBColorMultiplierGPUAdress[FRAME_BUFFER_COUNT];
