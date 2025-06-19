@@ -200,11 +200,20 @@ bool Graphics::Initialize()
 	//rootParam[0].DescriptorTable = cbDescriptorTable;
 	//rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
+	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+	rootCBVDescriptor.ShaderRegister = 0;
+	rootCBVDescriptor.RegisterSpace = 0;
+
+	D3D12_ROOT_PARAMETER rootParams[1];
+	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParams[0].Descriptor = rootCBVDescriptor;
+	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+
 	//Note(Stan): Most of this code down here is for a temporary triangle
 	//Creating a Root Signature
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-	rootSignatureDesc.NumParameters = 0;
-	rootSignatureDesc.pParameters = nullptr;
+	rootSignatureDesc.NumParameters = 1;
+	rootSignatureDesc.pParameters = rootParams;
 	rootSignatureDesc.NumStaticSamplers = 0;
 	rootSignatureDesc.pStaticSamplers = nullptr;
 	rootSignatureDesc.Flags = 
