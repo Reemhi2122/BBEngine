@@ -10,6 +10,8 @@
 
 #define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = 0; } }
 
+#define GET_CONSTANT_BUFFER_OFFSET(p) ((sizeof(p) + 255) % (~255))
+
 Graphics::Graphics(HWND a_HWnd)
  : m_HWindow(a_HWnd)
 {
@@ -318,16 +320,40 @@ bool Graphics::Initialize()
 
 	TempVertex vertexList[] =
 	{
-		{{-0.5f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{+0.5f, -0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{-0.5f, -0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
-		{{+0.5f, +0.5f, +0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+		{{ -0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
+		{{  0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
+		{{ -0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
+		{{  0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
 
-		//Second quad for testing depth buffer
-		//{{-0.75f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-		//{{+0.00f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-		//{{-0.75f, +0.00f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
-		//{{+0.00f, +0.75f, +0.7f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+		// right side face
+		{{  0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
+		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
+		{{  0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
+		{{  0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+
+		// left side face
+		{{ -0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
+		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
+		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
+		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+
+		// back face
+		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
+		{{ -0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
+		{{  0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
+		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+
+		// top face
+		{{ -0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
+		{{ 0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
+		{{ 0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
+		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+
+		// bottom face
+		{{  0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
+		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
+		{{  0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
+		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
 	};
 
 	uint32_t vertexBufferSize = sizeof(vertexList);
@@ -375,10 +401,32 @@ bool Graphics::Initialize()
 	uint32_t indexList[] =
 	{
 		0, 1, 2,
-		0, 3, 1
+		0, 3, 1,
+
+		// left face
+		4, 5, 6,
+		4, 7, 5,
+
+		// right face
+		8, 9, 10,
+		8, 11, 9,
+
+		// back face
+		12, 13, 14,
+		12, 15, 13,
+
+		// top face
+		16, 17, 18,
+		16, 19, 17,
+
+		// bottom face
+		20, 21, 22,
+		20, 23, 21,
 	};
 	
 	uint32_t indexBufferSize = sizeof(indexList);
+
+	m_NumOfCubeIndices = indexBufferSize / (sizeof(DWORD));
 
 	hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
@@ -458,6 +506,28 @@ bool Graphics::Initialize()
 	}
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
+		);
+		m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
+
+		ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
+
+		CD3DX12_RANGE readRange(0,0);
+
+		hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
+
+		memcpy(&m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
+		memcpy(&m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
+	}
 
 	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	//{
@@ -582,8 +652,7 @@ void Graphics::UpdatePipeline()
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
 	m_CommandList->IASetIndexBuffer(&m_IndexBufferView);
-	m_CommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
-	m_CommandList->DrawIndexedInstanced(6, 1, 0, 4, 0);
+	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 
