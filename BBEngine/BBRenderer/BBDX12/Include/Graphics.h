@@ -18,8 +18,8 @@
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
-constexpr uint16_t WIND0W_WIDTH = 1600;
-constexpr uint16_t WIND0W_HEIGHT = 800;
+constexpr uint16_t WINDOW_WIDTH = 1600;
+constexpr uint16_t WINDOW_HEIGHT = 800;
 
 //Note(stan): Temp vertext buffer for test triangle
 struct TempVertex
@@ -76,22 +76,22 @@ private:
 	ID3D12Resource*				m_ConstantBufferUploadHeaps[FRAME_BUFFER_COUNT];
 	uint8_t*					m_CBVGPUAdress[FRAME_BUFFER_COUNT];
 
-	BBMath::Matrix4x4	m_CameraProjMatrix;
-	BBMath::Matrix4x4	m_CameraViewMatrix;
+	DirectX::XMFLOAT4X4	m_CameraProjMatrix;
+	DirectX::XMFLOAT4X4	m_CameraViewMatrix;
 
 	//Note(Stan): Temp, these will be replaced by the cam class
-	Vector4	m_CameraPos;
-	Vector4 m_CameraTarget;
-	Vector4 m_CameraUp;
+	DirectX::XMFLOAT4	m_CameraPos;
+	DirectX::XMFLOAT4	m_CameraTarget;
+	DirectX::XMFLOAT4	m_CameraUp;
 
 	//Note(Stan): Temp, these will be replaced by actual objects
-	BBMath::Matrix4x4	m_Cube1WorldMatrix;
-	BBMath::Matrix4x4	m_Cube1RotationMatrix;
-	Vector4				m_Cube1Pos;
+	DirectX::XMFLOAT4X4	m_Cube1WorldMatrix;
+	DirectX::XMFLOAT4X4	m_Cube1RotationMatrix;
+	DirectX::XMFLOAT4	m_Cube1Pos;
 
-	BBMath::Matrix4x4	m_Cube2WorldMatrix;
-	BBMath::Matrix4x4	m_Cube2RotationMatrix;
-	Vector4				m_Cube2Pos;
+	DirectX::XMFLOAT4X4	m_Cube2WorldMatrix;
+	DirectX::XMFLOAT4X4	m_Cube2RotationMatrix;
+	DirectX::XMFLOAT4	m_Cube2PosOffset;
 
 	uint32_t			m_NumOfCubeIndices;
 

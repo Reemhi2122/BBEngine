@@ -82,8 +82,8 @@ bool Graphics::Initialize()
 
 	//Create the Back Buffer
 	DXGI_MODE_DESC backBufferDesc = {};
-	backBufferDesc.Width = WIND0W_WIDTH; // Width of the window
-	backBufferDesc.Height = WIND0W_HEIGHT; // Height of the window
+	backBufferDesc.Width = WINDOW_WIDTH; // Width of the window
+	backBufferDesc.Height = WINDOW_HEIGHT; // Height of the window
 	backBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 
 	DXGI_SAMPLE_DESC sampleDesc = {};
@@ -493,7 +493,7 @@ bool Graphics::Initialize()
 	hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, WIND0W_WIDTH, WIND0W_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL),
+		&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL),
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&dsClearValue,
 		IID_PPV_ARGS(&m_DepthStenil)
@@ -528,6 +528,36 @@ bool Graphics::Initialize()
 		memcpy(&m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
 		memcpy(&m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
 	}
+
+	//Note(Stan): Temp camera structure and cube positions for testing
+	float fov = 45.0f * (3.14f / 180.f);
+	float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
+	DirectX::XMMATRIX tempMatrix = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 1000.0f);
+	DirectX::XMStoreFloat4x4(&m_CameraProjMatrix, tempMatrix);
+
+	m_CameraPos =		DirectX::XMFLOAT4(0.0f, 2.0f, -4.0f, 0.0f);
+	m_CameraTarget =	DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_CameraUp =		DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+
+	DirectX::XMVECTOR cPos = DirectX::XMLoadFloat4(&m_CameraPos);
+	DirectX::XMVECTOR cTarg = DirectX::XMLoadFloat4(&m_CameraTarget);
+	DirectX::XMVECTOR cUp = DirectX::XMLoadFloat4(&m_CameraUp);
+	tempMatrix = DirectX::XMMatrixLookAtLH(cPos, cTarg, cUp);
+	DirectX::XMStoreFloat4x4(&m_CameraViewMatrix, tempMatrix);
+
+	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
+
+	tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
+	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, tempMatrix);
+
+	m_Cube2PosOffset = DirectX::XMFLOAT4(1.5f, 0.0f, 0.0f, 0.0f);
+	posVec = DirectX::XMVectorAdd(DirectX::XMLoadFloat4(&m_Cube1Pos), DirectX::XMLoadFloat4(&m_Cube2PosOffset));
+
+	tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
+	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, tempMatrix);
 
 	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	//{
