@@ -30,7 +30,7 @@ struct TempVertex
 
 struct ConstantBufferPerObject
 {
-	BBMath::Matrix4x4 colorMultiplier;
+	DirectX::XMFLOAT4X4 WVPMatrix;
 };
 
 class Graphics

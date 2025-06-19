@@ -620,22 +620,60 @@ bool Graphics::Initialize()
 
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;
-	m_Viewport.Width = WIND0W_WIDTH; // Check window size
-	m_Viewport.Height = WIND0W_HEIGHT; // Check window size
+	m_Viewport.Width = WINDOW_WIDTH; // Check window size
+	m_Viewport.Height = WINDOW_HEIGHT; // Check window size
 	m_Viewport.MinDepth = 0.0f;
 	m_Viewport.MaxDepth = 1.0f;
 
 	m_ScissorRect.top = 0;
 	m_ScissorRect.left = 0;
-	m_ScissorRect.right = WIND0W_WIDTH;
-	m_ScissorRect.bottom = WIND0W_HEIGHT;
+	m_ScissorRect.right = WINDOW_WIDTH;
+	m_ScissorRect.bottom = WINDOW_HEIGHT;
 
 	return true;
 }
 
 void Graphics::Update()
 {
+	DirectX::XMMATRIX rotMatX = DirectX::XMMatrixRotationX(0.0001f);
+	DirectX::XMMATRIX rotMatY = DirectX::XMMatrixRotationY(0.0002f);
+	DirectX::XMMATRIX rotMatZ = DirectX::XMMatrixRotationZ(0.0003f);
 
+	DirectX::XMMATRIX rotMat = DirectX::XMLoadFloat4x4(&m_Cube1RotationMatrix) + rotMatX + rotMatY + rotMatZ;
+	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, rotMat);
+
+	DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube1Pos));
+	DirectX::XMMATRIX worldMatrix = rotMat * translationMatrix;
+
+	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, worldMatrix);
+
+	DirectX::XMMATRIX viewMat = XMLoadFloat4x4(&m_CameraViewMatrix);
+	DirectX::XMMATRIX projMat = XMLoadFloat4x4(&m_CameraProjMatrix);
+	DirectX::XMMATRIX wvpMat = XMLoadFloat4x4(&m_Cube1WorldMatrix) * viewMat * projMat;
+	DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(wvpMat);
+	DirectX::XMStoreFloat4x4(&m_CBPerObject.WVPMatrix, transposed);
+
+	memcpy(m_CBVGPUAdress[m_FrameIndex], &m_CBPerObject, sizeof(m_CBPerObject));
+
+	rotMatX = DirectX::XMMatrixRotationX(0.0003f);
+	rotMatY = DirectX::XMMatrixRotationY(0.0002f);
+	rotMatZ = DirectX::XMMatrixRotationZ(0.0001f);
+
+	rotMat = DirectX::XMLoadFloat4x4(&m_Cube2RotationMatrix) + rotMatX + rotMatY + rotMatZ;
+	DirectX::XMStoreFloat4x4(&m_Cube2RotationMatrix, rotMat);
+
+	translationMatrix = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube2PosOffset));
+	DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
+
+	worldMatrix = scaleMat * translationMatrix * rotMat * translationMatrix;
+
+	wvpMat = XMLoadFloat4x4(&m_Cube2WorldMatrix) * viewMat * projMat;
+	transposed = DirectX::XMMatrixTranspose(wvpMat);
+	DirectX::XMStoreFloat4x4(&m_CBPerObject.WVPMatrix, transposed);
+
+	memcpy(m_CBVGPUAdress[m_FrameIndex] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
+
+	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, worldMatrix);
 }
 
 void Graphics::UpdatePipeline()
