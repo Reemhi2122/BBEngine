@@ -10,7 +10,7 @@
 
 #define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = 0; } }
 
-#define GET_CONSTANT_BUFFER_OFFSET(p) ((sizeof(p) + 255) % (~255))
+#define GET_CONSTANT_BUFFER_OFFSET(p) ((sizeof(p) + 255) & (~255))
 
 Graphics::Graphics(HWND a_HWnd)
  : m_HWindow(a_HWnd)
@@ -525,8 +525,8 @@ bool Graphics::Initialize()
 
 		hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
 
-		memcpy(&m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
-		memcpy(&m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
+		memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
+		memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
 	}
 
 	//Note(Stan): Temp camera structure and cube positions for testing
@@ -639,7 +639,7 @@ void Graphics::Update()
 	DirectX::XMMATRIX rotMatY = DirectX::XMMatrixRotationY(0.0002f);
 	DirectX::XMMATRIX rotMatZ = DirectX::XMMatrixRotationZ(0.0003f);
 
-	DirectX::XMMATRIX rotMat = DirectX::XMLoadFloat4x4(&m_Cube1RotationMatrix) + rotMatX + rotMatY + rotMatZ;
+	DirectX::XMMATRIX rotMat = DirectX::XMLoadFloat4x4(&m_Cube1RotationMatrix) * rotMatX * rotMatY * rotMatZ;
 	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, rotMat);
 
 	DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube1Pos));
@@ -659,13 +659,13 @@ void Graphics::Update()
 	rotMatY = DirectX::XMMatrixRotationY(0.0002f);
 	rotMatZ = DirectX::XMMatrixRotationZ(0.0001f);
 
-	rotMat = DirectX::XMLoadFloat4x4(&m_Cube2RotationMatrix) + rotMatX + rotMatY + rotMatZ;
+	rotMat = rotMatZ * DirectX::XMLoadFloat4x4(&m_Cube2RotationMatrix) * (rotMatX * rotMatY);
 	DirectX::XMStoreFloat4x4(&m_Cube2RotationMatrix, rotMat);
 
-	translationMatrix = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube2PosOffset));
+	DirectX::XMMATRIX translationOffsetMat = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube2PosOffset));
 	DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
 
-	worldMatrix = scaleMat * translationMatrix * rotMat * translationMatrix;
+	worldMatrix = scaleMat * translationOffsetMat /** rotMat */* translationMatrix;
 
 	wvpMat = XMLoadFloat4x4(&m_Cube2WorldMatrix) * viewMat * projMat;
 	transposed = DirectX::XMMatrixTranspose(wvpMat);
@@ -720,6 +720,11 @@ void Graphics::UpdatePipeline()
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
 	m_CommandList->IASetIndexBuffer(&m_IndexBufferView);
+
+	m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBufferUploadHeaps[m_FrameIndex]->GetGPUVirtualAddress());
+	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
+
+	m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBufferUploadHeaps[m_FrameIndex]->GetGPUVirtualAddress() + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject));
 	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -797,6 +802,7 @@ void Graphics::Cleanup()
 		SAFE_RELEASE(m_RenderTargets[i]);
 		SAFE_RELEASE(m_CommandAllocator[i]);
 		SAFE_RELEASE(m_Fence[i]);
+		SAFE_RELEASE(m_ConstantBufferUploadHeaps[i])
 	}
 
 	SAFE_RELEASE(m_DefaultPipelineState);
