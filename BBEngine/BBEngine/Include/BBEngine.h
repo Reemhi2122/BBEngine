@@ -9,6 +9,8 @@
 #include "Containers/FixedArray.h"
 #include "Containers/Vector.h"
 
+#include "Camera.h"
+
 //Graphics includes
 //#include "Drawable/Skybox.h"
 //#include "Drawable/DrawToTexture.h"
@@ -92,8 +94,8 @@ namespace BBE {
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();
 
-		//Camera m_Cam1;
-		//Camera m_Cam2;
+		Camera m_Cam1;
+		Camera m_Cam2;
 
 		//Skybox* m_Skybox;
 

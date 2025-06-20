@@ -20,7 +20,7 @@ add_library (BBRenderer_DX11 STATIC
 "Source/Bindable/Sampler.cpp"
 "Source/Bindable/CubeMap.cpp"
 
-"Source/Camera.cpp"
+"../AgnosticLayer/Camera.cpp"
 "Source/Drawable/SkyBox.cpp"
 "Source/Drawable/Quad.cpp"
 )

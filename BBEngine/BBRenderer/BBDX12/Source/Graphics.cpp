@@ -530,25 +530,25 @@ bool Graphics::Initialize()
 	}
 
 	//Note(Stan): Temp camera structure and cube positions for testing
-	float fov = 45.0f * (3.14f / 180.f);
-	float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
-	DirectX::XMMATRIX tempMatrix = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 1000.0f);
-	DirectX::XMStoreFloat4x4(&m_CameraProjMatrix, tempMatrix);
+	//float fov = 45.0f * (3.14f / 180.f);
+	//float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
+	//DirectX::XMMATRIX tempMatrix = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 1000.0f);
+	//DirectX::XMStoreFloat4x4(&m_CameraProjMatrix, tempMatrix);
 
-	m_CameraPos =		DirectX::XMFLOAT4(0.0f, 2.0f, -4.0f, 0.0f);
-	m_CameraTarget =	DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	m_CameraUp =		DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+	//m_CameraPos =		DirectX::XMFLOAT4(0.0f, 2.0f, -4.0f, 0.0f);
+	//m_CameraTarget =	DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	//m_CameraUp =		DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
 
-	DirectX::XMVECTOR cPos = DirectX::XMLoadFloat4(&m_CameraPos);
-	DirectX::XMVECTOR cTarg = DirectX::XMLoadFloat4(&m_CameraTarget);
-	DirectX::XMVECTOR cUp = DirectX::XMLoadFloat4(&m_CameraUp);
-	tempMatrix = DirectX::XMMatrixLookAtLH(cPos, cTarg, cUp);
-	DirectX::XMStoreFloat4x4(&m_CameraViewMatrix, tempMatrix);
+	//DirectX::XMVECTOR cPos = DirectX::XMLoadFloat4(&m_CameraPos);
+	//DirectX::XMVECTOR cTarg = DirectX::XMLoadFloat4(&m_CameraTarget);
+	//DirectX::XMVECTOR cUp = DirectX::XMLoadFloat4(&m_CameraUp);
+	//tempMatrix = DirectX::XMMatrixLookAtLH(cPos, cTarg, cUp);
+	//DirectX::XMStoreFloat4x4(&m_CameraViewMatrix, tempMatrix);
 
 	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
 
-	tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
+	DirectX::XMMATRIX tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
 	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, DirectX::XMMatrixIdentity());
 	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, tempMatrix);
 
@@ -556,8 +556,8 @@ bool Graphics::Initialize()
 	posVec = DirectX::XMVectorAdd(DirectX::XMLoadFloat4(&m_Cube1Pos), DirectX::XMLoadFloat4(&m_Cube2PosOffset));
 
 	tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
-	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, DirectX::XMMatrixIdentity());
-	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, tempMatrix);
+	DirectX::XMStoreFloat4x4(&m_Cube2RotationMatrix, DirectX::XMMatrixIdentity());
+	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, tempMatrix);
 
 	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	//{
@@ -630,6 +630,8 @@ bool Graphics::Initialize()
 	m_ScissorRect.right = WINDOW_WIDTH;
 	m_ScissorRect.bottom = WINDOW_HEIGHT;
 
+	m_Camera = new Camera();
+
 	return true;
 }
 
@@ -647,9 +649,7 @@ void Graphics::Update()
 
 	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, worldMatrix);
 
-	DirectX::XMMATRIX viewMat = XMLoadFloat4x4(&m_CameraViewMatrix);
-	DirectX::XMMATRIX projMat = XMLoadFloat4x4(&m_CameraProjMatrix);
-	DirectX::XMMATRIX wvpMat = XMLoadFloat4x4(&m_Cube1WorldMatrix) * viewMat * projMat;
+	DirectX::XMMATRIX wvpMat = XMLoadFloat4x4(&m_Cube1WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
 	DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(wvpMat);
 	DirectX::XMStoreFloat4x4(&m_CBPerObject.WVPMatrix, transposed);
 
@@ -665,9 +665,9 @@ void Graphics::Update()
 	DirectX::XMMATRIX translationOffsetMat = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube2PosOffset));
 	DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
 
-	worldMatrix = scaleMat * translationOffsetMat /** rotMat */* translationMatrix;
+	worldMatrix = scaleMat * translationOffsetMat * rotMat * translationMatrix;
 
-	wvpMat = XMLoadFloat4x4(&m_Cube2WorldMatrix) * viewMat * projMat;
+	wvpMat = XMLoadFloat4x4(&m_Cube2WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
 	transposed = DirectX::XMMatrixTranspose(wvpMat);
 	DirectX::XMStoreFloat4x4(&m_CBPerObject.WVPMatrix, transposed);
 

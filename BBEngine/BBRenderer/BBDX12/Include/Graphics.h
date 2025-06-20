@@ -16,6 +16,8 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 
+#include "Camera.h"
+
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
 constexpr uint16_t WINDOW_WIDTH = 1600;
@@ -46,9 +48,13 @@ public:
 	void Cleanup();
 	void WaitForPreviousFrame();
 
+	Camera* GetCamera();
+	void SetCamera(Camera* a_Camera);
+
 private:
 	HWND						m_HWindow;
-	
+	Camera*						m_Camera;
+
 	ID3D12Device*				m_Device;
 	IDXGISwapChain3*			m_SwapChain; //Tripple buffering swap chain
 	ID3D12CommandQueue*			m_CommandQueue;
@@ -76,13 +82,13 @@ private:
 	ID3D12Resource*				m_ConstantBufferUploadHeaps[FRAME_BUFFER_COUNT];
 	uint8_t*					m_CBVGPUAdress[FRAME_BUFFER_COUNT];
 
-	DirectX::XMFLOAT4X4	m_CameraProjMatrix;
-	DirectX::XMFLOAT4X4	m_CameraViewMatrix;
+	//DirectX::XMFLOAT4X4	m_CameraProjMatrix;
+	//DirectX::XMFLOAT4X4	m_CameraViewMatrix;
 
 	//Note(Stan): Temp, these will be replaced by the cam class
-	DirectX::XMFLOAT4	m_CameraPos;
-	DirectX::XMFLOAT4	m_CameraTarget;
-	DirectX::XMFLOAT4	m_CameraUp;
+	//DirectX::XMFLOAT4	m_CameraPos;
+	//DirectX::XMFLOAT4	m_CameraTarget;
+	//DirectX::XMFLOAT4	m_CameraUp;
 
 	//Note(Stan): Temp, these will be replaced by actual objects
 	DirectX::XMFLOAT4X4	m_Cube1WorldMatrix;
@@ -111,6 +117,16 @@ private:
 	uint32_t m_RTVDescriptorSize;
 
 };
+
+inline Camera* Graphics::GetCamera()
+{
+	return m_Camera;
+}
+
+inline void Graphics::SetCamera(Camera* a_Camera)
+{
+	m_Camera = a_Camera;
+}
 
 //Note(Stan): Old constant buffer code
 //Note(Stan): Temp constant buffer testing

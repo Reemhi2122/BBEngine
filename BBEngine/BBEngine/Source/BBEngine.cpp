@@ -29,7 +29,6 @@
 
 //#include "UserInterface.h"
 
-//#include "Camera.h"
 //#include "FileLoaders/Image/BMPLoader.h"
 
 namespace BBE
@@ -224,14 +223,17 @@ namespace BBE
         //m_GameObjects.push_back(pointLightObject);
 
         ////Cameras
-        //m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
-        //m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 3.0f / 4.0f, 0.5f, 100.f));
+        m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
 
-        //m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
-        //m_Cam2.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 100.f));
+        float fov = 45.0f * (3.14f / 180.f);
+        float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
+        m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 1000.0f));
 
-        //m_Cam2.SetViewPort(1024, 1024);
-        //m_Graphics.SetCamera(&m_Cam1);
+        m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+        m_Cam2.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 100.f));
+
+        m_Cam2.SetViewPort(1024, 1024);
+        m_Graphics.SetCamera(&m_Cam1);
     }
 
     bool show_demo_window = true;
@@ -240,11 +242,12 @@ namespace BBE
     {
         m_Graphics.Update();
         m_Graphics.Render();
+        
+        CheckInput();
 
     //    m_Graphics.SetGameViewRenderTarget();
     //    m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
 
-    //    CheckInput();
     //    m_Skybox->Draw(m_Graphics);
 
     //    cbPerFrame FrameConstantBuffer;
@@ -422,48 +425,48 @@ namespace BBE
 
     void BBEngine::CheckInput()
     {
-        /*Camera* cam = m_Graphics.GetCamera();
+        Camera* cam = m_Graphics.GetCamera();
         Keyboard& kBoard = m_Window.m_Keyboard;
 
         if (kBoard.KeyIsPressed('W'))
         {
-            cam->camForwardMove += 0.1f;
+            cam->camForwardMove += 0.001f;
         }
         if (kBoard.KeyIsPressed('S'))
         {
-            cam->camForwardMove += -0.1f;
+            cam->camForwardMove += -0.001f;
         }
         if (kBoard.KeyIsPressed('A'))
         {
-            cam->camRightMove += -0.1f;
+            cam->camRightMove += -0.001f;
         }
         if (kBoard.KeyIsPressed('D'))
         {
-            cam->camRightMove += 0.1f;
+            cam->camRightMove += 0.001f;
         }
         if (kBoard.KeyIsPressed(VK_NUMPAD1))
         {
-            cam->camUpMove = 0.1f;
+            cam->camUpMove = 0.001f;
         }
         if (kBoard.KeyIsPressed(VK_NUMPAD0))
         {
-            cam->camUpMove = -0.1f;
+            cam->camUpMove = -0.001f;
         }
         if (kBoard.KeyIsPressed(VK_LEFT))
         {
-            cam->camYaw += -0.025f;
+            cam->camYaw += -0.00025f;
         }
         if (kBoard.KeyIsPressed(VK_RIGHT))
         {
-            cam->camYaw += 0.025f;
+            cam->camYaw += 0.00025f;
         }
         if (kBoard.KeyIsPressed(VK_UP))
         {
-            cam->camPitch += -0.025f;
+            cam->camPitch += -0.00025f;
         }
         if (kBoard.KeyIsPressed(VK_DOWN))
         {
-            cam->camPitch += 0.025f;
+            cam->camPitch += 0.00025f;
         }
 
         if (kBoard.KeyIsPressed('1')) {
@@ -474,6 +477,6 @@ namespace BBE
             m_Graphics.SetCamera(&m_Cam2);
         }
 
-        cam->Update();*/
+        cam->Update();
     }
 }
