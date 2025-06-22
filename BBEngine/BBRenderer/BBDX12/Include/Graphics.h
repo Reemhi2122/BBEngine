@@ -82,14 +82,6 @@ private:
 	ID3D12Resource*				m_ConstantBufferUploadHeaps[FRAME_BUFFER_COUNT];
 	uint8_t*					m_CBVGPUAdress[FRAME_BUFFER_COUNT];
 
-	//DirectX::XMFLOAT4X4	m_CameraProjMatrix;
-	//DirectX::XMFLOAT4X4	m_CameraViewMatrix;
-
-	//Note(Stan): Temp, these will be replaced by the cam class
-	//DirectX::XMFLOAT4	m_CameraPos;
-	//DirectX::XMFLOAT4	m_CameraTarget;
-	//DirectX::XMFLOAT4	m_CameraUp;
-
 	//Note(Stan): Temp, these will be replaced by actual objects
 	DirectX::XMFLOAT4X4	m_Cube1WorldMatrix;
 	DirectX::XMFLOAT4X4	m_Cube1RotationMatrix;
@@ -127,11 +119,3 @@ inline void Graphics::SetCamera(Camera* a_Camera)
 {
 	m_Camera = a_Camera;
 }
-
-//Note(Stan): Old constant buffer code
-//Note(Stan): Temp constant buffer testing
-//ID3D12DescriptorHeap*		m_CBDescriptorHeap[FRAME_BUFFER_COUNT];
-//ID3D12Resource*				m_CBUploadHeap[FRAME_BUFFER_COUNT];
-//
-//CBColorMultiply				m_CBColorMultiplier;
-//uint8_t*					m_CBColorMultiplierGPUAdress[FRAME_BUFFER_COUNT];

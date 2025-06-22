@@ -529,22 +529,6 @@ bool Graphics::Initialize()
 		memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
 	}
 
-	//Note(Stan): Temp camera structure and cube positions for testing
-	//float fov = 45.0f * (3.14f / 180.f);
-	//float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
-	//DirectX::XMMATRIX tempMatrix = DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 1000.0f);
-	//DirectX::XMStoreFloat4x4(&m_CameraProjMatrix, tempMatrix);
-
-	//m_CameraPos =		DirectX::XMFLOAT4(0.0f, 2.0f, -4.0f, 0.0f);
-	//m_CameraTarget =	DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	//m_CameraUp =		DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
-
-	//DirectX::XMVECTOR cPos = DirectX::XMLoadFloat4(&m_CameraPos);
-	//DirectX::XMVECTOR cTarg = DirectX::XMLoadFloat4(&m_CameraTarget);
-	//DirectX::XMVECTOR cUp = DirectX::XMLoadFloat4(&m_CameraUp);
-	//tempMatrix = DirectX::XMMatrixLookAtLH(cPos, cTarg, cUp);
-	//DirectX::XMStoreFloat4x4(&m_CameraViewMatrix, tempMatrix);
-
 	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
 
@@ -558,45 +542,6 @@ bool Graphics::Initialize()
 	tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
 	DirectX::XMStoreFloat4x4(&m_Cube2RotationMatrix, DirectX::XMMatrixIdentity());
 	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, tempMatrix);
-
-	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	//{
-	//	D3D12_DESCRIPTOR_HEAP_DESC cbHeapDescriptor = {};
-	//	cbHeapDescriptor.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	//	cbHeapDescriptor.NumDescriptors = 1;
-	//	cbHeapDescriptor.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-
-	//	hres = m_Device->CreateDescriptorHeap(&cbHeapDescriptor, IID_PPV_ARGS(&m_CBDescriptorHeap[i]));
-	//	if (FAILED(hres))
-	//	{
-	//		printf("[GFX]: Failed create Constant Buffer Descriptor Heap!");
-	//		return false;
-	//	}
-	//}
-
-	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	//{
-	//	hres = m_Device->CreateCommittedResource(
-	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-	//		D3D12_HEAP_FLAG_NONE,
-	//		&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
-	//		D3D12_RESOURCE_STATE_GENERIC_READ,
-	//		nullptr,
-	//		IID_PPV_ARGS(&m_CBUploadHeap[i])
-	//	);
-	//	m_CBUploadHeap[i]->SetName(L"Constant Buffer Upload Heap");
-
-	//	D3D12_CONSTANT_BUFFER_VIEW_DESC cbViewDesc = {};
-	//	cbViewDesc.BufferLocation = m_CBUploadHeap[i]->GetGPUVirtualAddress();
-	//	cbViewDesc.SizeInBytes = ((sizeof(CBColorMultiply) + 255) & (~255));
-	//	m_Device->CreateConstantBufferView(&cbViewDesc, m_CBDescriptorHeap[i]->GetCPUDescriptorHandleForHeapStart());
-	//
-	//	ZeroMemory(&m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
-
-	//	CD3DX12_RANGE readRange(0, 0);
-	//	hres = m_CBUploadHeap[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBColorMultiplierGPUAdress[i]));
-	//	memcpy(m_CBColorMultiplierGPUAdress[i], &m_CBColorMultiplier, sizeof(m_CBColorMultiplier));
-	//}
 
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
@@ -710,10 +655,6 @@ void Graphics::UpdatePipeline()
 	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
-
-	//ID3D12DescriptorHeap* descriptorHeaps[] { m_CBDescriptorHeap[m_FrameIndex] };
-	//m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
-	//m_CommandList->SetGraphicsRootDescriptorTable(0, m_CBDescriptorHeap[m_FrameIndex]->GetGPUDescriptorHandleForHeapStart());
 
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
