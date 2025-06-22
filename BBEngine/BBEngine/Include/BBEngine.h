@@ -11,6 +11,8 @@
 
 #include "Camera.h"
 
+#include "FileLoaders/Models/GLTFParser.h"
+
 //Graphics includes
 //#include "Drawable/Skybox.h"
 //#include "Drawable/DrawToTexture.h"
@@ -79,7 +81,7 @@ namespace BBE {
 		//ID3D11DepthStencilView* m_SLTextureDepthStencilViews[120];
 		//ID3D11DepthStencilView* m_DLTextureDepthStencilView;
 
-		//GLTFFile m_SponzaFile;
+		GLTFFile m_SponzaFile;
 		//GLTFFile m_LanternFile;
 		//GLTFFile m_CarFile;
 		//GLTFFile m_ABeautifulGameFile;

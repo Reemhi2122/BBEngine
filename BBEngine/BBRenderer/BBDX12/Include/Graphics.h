@@ -18,6 +18,9 @@
 
 #include "Camera.h"
 
+//Temp testing bindables
+#include "Bindable/VertexBuffer.h"
+
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
 constexpr uint16_t WINDOW_WIDTH = 1600;
@@ -108,6 +111,8 @@ private:
 	uint32_t m_FrameIndex;
 	uint32_t m_RTVDescriptorSize;
 
+	//Temp testing bindables
+	VertexBuffer* m_CubeVertexBuffer;
 };
 
 inline Camera* Graphics::GetCamera()

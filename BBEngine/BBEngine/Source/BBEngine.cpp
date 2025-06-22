@@ -4,7 +4,6 @@
 
 #include "Utility/BBMemory.h"
 #include "Thread/ThreadPool.h"
-//#include "FileLoaders/Models/GLTFParser.h"
 #include "Vector4.h"
 
 #include "System/FileHandler.h"
@@ -87,8 +86,8 @@ namespace BBE
 
     void BBEngine::Initialize()
     {
-        //GLTFParser parser;
-        //parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
+        GLTFParser parser;
+        parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
         //parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
         //parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         //parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);

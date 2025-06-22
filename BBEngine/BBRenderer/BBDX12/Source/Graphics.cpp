@@ -358,7 +358,9 @@ bool Graphics::Initialize()
 
 	uint32_t vertexBufferSize = sizeof(vertexList);
 	
-	hres = m_Device->CreateCommittedResource(
+	m_CubeVertexBuffer = new VertexBuffer(this, vertexList, vertexBufferSize);
+
+	/*hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
@@ -396,7 +398,7 @@ bool Graphics::Initialize()
 
 	UpdateSubresources(m_CommandList, m_VertexBuffer, vertexBufferUploadHeap, 0, 0, 1, &vertexData);
 
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));*/
 
 	uint32_t indexList[] =
 	{
