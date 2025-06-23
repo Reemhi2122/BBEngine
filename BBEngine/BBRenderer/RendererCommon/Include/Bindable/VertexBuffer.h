@@ -1,21 +1,21 @@
 #pragma once
 #include "Bindable.h"
 //#include <vector>
-#include "AgnosticDefinitions.h"
+//#include "AgnosticDefinitions.h"
 
 class VertexBuffer : public Bindable 
 {
 public:
-	VertexBuffer(Graphics& a_Gfx, void* a_Vertices, const uint32_t a_Count);
+	VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t a_Count);
 
-	//void BindConstantBuffer(const ID3D11Buffer* a_buffer);
-	
-	void Bind(Graphics& a_Gfx) noexcept override;
+	void BindConstantBuffer(const ID3D11Buffer* a_buffer);
+
+	void Bind(IGraphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 
 	//void CreateInstanceBuffer(Graphics& a_Gfx, const void* a_Consts, const uint32_t a_DataSize, const uint32_t a_Count);
 
-private:
+	private:
 	//Microsoft::WRL::ComPtr<ID3D11Buffer> vertex_buffer;
 
 	//Microsoft::WRL::ComPtr<ID3D11Buffer> m_InstanceBuffer;

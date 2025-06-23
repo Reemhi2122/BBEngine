@@ -53,7 +53,7 @@ namespace BBE
         if (!m_Graphics.Initialize())
         {
             printf("[FAILED] Failed to initialize renderer");
-            m_Graphics.Cleanup();
+            m_Graphics.ShutDown();
             return 1;
         }
 

@@ -358,16 +358,9 @@ bool Graphics::Initialize()
 
 	uint32_t vertexBufferSize = sizeof(vertexList);
 	
-	m_CubeVertexBuffer = new VertexBuffer(this, vertexList, vertexBufferSize);
+	//m_CubeVertexBuffer = new VertexBuffer(this, vertexList, vertexBufferSize);
 
-	/*hres = m_Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
-		D3D12_RESOURCE_STATE_COPY_DEST,
-		nullptr,
-		IID_PPV_ARGS(&m_VertexBuffer)
-	);
+	
 	m_VertexBuffer->SetName(L"Vertex Buffer Default Heap");
 	if (FAILED(hres))
 	{
@@ -726,7 +719,7 @@ void Graphics::WaitForPreviousFrame()
 	m_FenceValue[m_FrameIndex]++;
 }
 
-void Graphics::Cleanup()
+void Graphics::ShutDown()
 {
 	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{

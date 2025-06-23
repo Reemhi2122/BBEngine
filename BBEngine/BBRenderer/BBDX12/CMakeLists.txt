@@ -5,7 +5,6 @@ add_library (BBRenderer_DX12 STATIC
 	"Source/test.cpp"
 	"Source/Graphics.cpp"
 	"Source/Bindable/DX12Texture.cpp"
-	"../AgnosticLayer/Camera.cpp"
 	"Source/Bindable/DX12VertexBuffer.cpp"
 )
 
@@ -17,7 +16,6 @@ target_include_directories(BBRenderer_DX12 PUBLIC
 "Include/"
 "Common/"
 #"Shader/"
-"../AgnosticLayer/"
 )
 
 target_link_libraries(BBRenderer_DX12 
@@ -25,4 +23,5 @@ ImGUI
 BBMath
 stb_image
 Common
+RendererCommon
 )

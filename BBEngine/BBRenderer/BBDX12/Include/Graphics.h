@@ -18,6 +18,8 @@
 
 #include "Camera.h"
 
+#include "IGraphics.h"
+
 //Temp testing bindables
 #include "Bindable/VertexBuffer.h"
 
@@ -38,22 +40,22 @@ struct ConstantBufferPerObject
 	DirectX::XMFLOAT4X4 WVPMatrix;
 };
 
-class Graphics
+class Graphics : public IGraphics
 {
 public:
 	Graphics(HWND a_HWnd);
 
 	//Note(Stan): Some starter funtions gotten from DX12 tut
-	bool Initialize();
-	void Update();
-	void UpdatePipeline();
-	void Render();
-	void Cleanup();
-	void WaitForPreviousFrame();
+	bool Initialize() override;
+	void Update() override;
+	void UpdatePipeline() override;
+	void Render() override;
+	void ShutDown() override;
+	void WaitForPreviousFrame() override;
 
-	Camera* GetCamera();
-	void SetCamera(Camera* a_Camera);
-
+	Camera* GetCamera() override;
+	void SetCamera(Camera* a_Camera) override;
+	
 private:
 	HWND						m_HWindow;
 	Camera*						m_Camera;
