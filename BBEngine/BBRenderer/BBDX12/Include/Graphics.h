@@ -53,11 +53,13 @@ public:
 	void ShutDown() override;
 	void WaitForPreviousFrame() override;
 
-	Camera* GetCamera() override;
+	Camera* GetCamera() const override;
 	void SetCamera(Camera* a_Camera) override;
 
-	ID3D12Device* GetDevice() override;
+	ID3D12Device* GetDevice() const override;
 	
+	ID3D12GraphicsCommandList* GetCommandList() const;
+
 private:
 	HWND						m_HWindow;
 	Camera*						m_Camera;
@@ -76,8 +78,8 @@ private:
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
-	ID3D12Resource*				m_VertexBuffer;
-	D3D12_VERTEX_BUFFER_VIEW	m_VertexBufferView;
+	//ID3D12Resource*				m_VertexBuffer;
+	//D3D12_VERTEX_BUFFER_VIEW	m_VertexBufferView;
 
 	ID3D12Resource*				m_IndexBuffer;
 	D3D12_INDEX_BUFFER_VIEW 	m_IndexBufferView;
@@ -119,12 +121,17 @@ private:
 	VertexBuffer* m_CubeVertexBuffer;
 };
 
-inline ID3D12Device* Graphics::GetDevice()
+inline ID3D12Device* Graphics::GetDevice() const
 {
 	return m_Device;
 }
 
-inline Camera* Graphics::GetCamera()
+inline ID3D12GraphicsCommandList* Graphics::GetCommandList() const
+{
+	return m_CommandList;
+}
+
+inline Camera* Graphics::GetCamera() const
 {
 	return m_Camera;
 }

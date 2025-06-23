@@ -356,12 +356,21 @@ bool Graphics::Initialize()
 		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
 	};
 
-	uint32_t vertexBufferSize = sizeof(vertexList);
+	//uint32_t vertexBufferSize = sizeof(vertexList);
+	uint32_t vertexBufferCount = sizeof(vertexList) / sizeof(TempVertex);
 	
-	//m_CubeVertexBuffer = new VertexBuffer(this, vertexList, vertexBufferSize);
+	m_CubeVertexBuffer = new VertexBuffer(*this, reinterpret_cast<void*>(vertexList), sizeof(TempVertex), vertexBufferCount);
+	
+	//hres = m_Device->CreateCommittedResource(
+	//	&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+	//	D3D12_HEAP_FLAG_NONE,
+	//	&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
+	//	D3D12_RESOURCE_STATE_COPY_DEST,
+	//	nullptr,
+	//	IID_PPV_ARGS(&m_VertexBuffer)
+	//);
 
-	
-	m_VertexBuffer->SetName(L"Vertex Buffer Default Heap");
+	/*m_VertexBuffer->SetName(L"Vertex Buffer Default Heap");
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed create Vertex Buffer Default Heap!");
@@ -391,7 +400,7 @@ bool Graphics::Initialize()
 
 	UpdateSubresources(m_CommandList, m_VertexBuffer, vertexBufferUploadHeap, 0, 0, 1, &vertexData);
 
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));*/
 
 	uint32_t indexList[] =
 	{
@@ -550,10 +559,6 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	m_VertexBufferView.BufferLocation = m_VertexBuffer->GetGPUVirtualAddress();
-	m_VertexBufferView.StrideInBytes = sizeof(TempVertex);
-	m_VertexBufferView.SizeInBytes = vertexBufferSize;
-
 	m_IndexBufferView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
 	m_IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	m_IndexBufferView.SizeInBytes = indexBufferSize;
@@ -654,7 +659,10 @@ void Graphics::UpdatePipeline()
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
+	//m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
+
+	m_CubeVertexBuffer->Bind(*this);
+	
 	m_CommandList->IASetIndexBuffer(&m_IndexBufferView);
 
 	m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBufferUploadHeaps[m_FrameIndex]->GetGPUVirtualAddress());
@@ -743,7 +751,7 @@ void Graphics::ShutDown()
 
 	SAFE_RELEASE(m_DefaultPipelineState);
 	SAFE_RELEASE(m_RootSignature);
-	SAFE_RELEASE(m_VertexBuffer);
+	//SAFE_RELEASE(m_VertexBuffer);
 	SAFE_RELEASE(m_IndexBuffer);
 
 	SAFE_RELEASE(m_DepthStenil);
