@@ -1,5 +1,6 @@
 #pragma once
 #include "Camera.h"
+#include "RenderDefinitions.h"
 
 class IGraphics
 {
@@ -13,4 +14,6 @@ public:
 
 	virtual Camera* GetCamera() = 0;
 	virtual void SetCamera(Camera* a_Camera) = 0;
+
+	virtual BBRenderDevice* GetDevice() = 0;
 };

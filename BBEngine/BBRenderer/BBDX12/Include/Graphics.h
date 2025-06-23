@@ -55,6 +55,8 @@ public:
 
 	Camera* GetCamera() override;
 	void SetCamera(Camera* a_Camera) override;
+
+	ID3D12Device* GetDevice() override;
 	
 private:
 	HWND						m_HWindow;
@@ -116,6 +118,11 @@ private:
 	//Temp testing bindables
 	VertexBuffer* m_CubeVertexBuffer;
 };
+
+inline ID3D12Device* Graphics::GetDevice()
+{
+	return m_Device;
+}
 
 inline Camera* Graphics::GetCamera()
 {

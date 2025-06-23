@@ -31,7 +31,6 @@ add_compile_definitions(BBX11)
 target_include_directories(BBRenderer_DX11 PUBLIC
 "Include/"
 "../Shader/"
-"../AgnosticLayer/"
 )
 
 target_link_libraries(BBRenderer_DX11
@@ -39,4 +38,5 @@ ImGUI
 BBMath
 stb_image
 Common
+RendererCommon
 )
