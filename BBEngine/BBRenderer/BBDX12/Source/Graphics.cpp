@@ -359,8 +359,9 @@ bool Graphics::Initialize()
 	//uint32_t vertexBufferSize = sizeof(vertexList);
 	uint32_t vertexBufferCount = sizeof(vertexList) / sizeof(TempVertex);
 	
-	m_CubeVertexBuffer = new VertexBuffer(*this, reinterpret_cast<void*>(vertexList), sizeof(TempVertex), vertexBufferCount);
-	
+	m_CubeVertexBuffer = new DX12VertexBuffer();
+	m_CubeVertexBuffer->Create(*this, reinterpret_cast<void*>(vertexList), sizeof(TempVertex), vertexBufferCount);
+
 	//hres = m_Device->CreateCommittedResource(
 	//	&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 	//	D3D12_HEAP_FLAG_NONE,

@@ -1,10 +1,10 @@
-#include "Bindable/VertexBuffer.h"
+#include "Bindable/DX12VertexBuffer.h"
 
-VertexBuffer::VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
-	: m_Count(a_Count)
+void DX12VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
 {
 	HRESULT hres;
 
+	m_Count = a_Count;
 	uint32_t vbTotalSize = (vbSize * a_Count);
 
 	hres = a_Gfx.GetDevice()->CreateCommittedResource(
@@ -51,12 +51,12 @@ VertexBuffer::VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vb
 	m_VertexBufferView.SizeInBytes = vbTotalSize;
 }
 
-void VertexBuffer::Bind(IGraphics& a_Gfx) noexcept
+void DX12VertexBuffer::Bind(IGraphics& a_Gfx) noexcept
 {
 	a_Gfx.GetCommandList()->IASetVertexBuffers(0, 1, &m_VertexBufferView);
 }
 
-UINT VertexBuffer::GetCount() const noexcept
+UINT DX12VertexBuffer::GetCount() const noexcept
 {
 	return 0;
 }

@@ -21,7 +21,7 @@
 #include "IGraphics.h"
 
 //Temp testing bindables
-#include "Bindable/VertexBuffer.h"
+#include "Bindable/DX12VertexBuffer.h"
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
@@ -118,7 +118,7 @@ private:
 	uint32_t m_RTVDescriptorSize;
 
 	//Temp testing bindables
-	VertexBuffer* m_CubeVertexBuffer;
+	IVertexBuffer* m_CubeVertexBuffer;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const
