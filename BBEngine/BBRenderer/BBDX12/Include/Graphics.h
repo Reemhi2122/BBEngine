@@ -22,6 +22,7 @@
 
 //Temp testing bindables
 #include "Bindable/DX12VertexBuffer.h"
+#include "Bindable/DX12IndexBuffer.h"
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
@@ -81,8 +82,8 @@ private:
 	//ID3D12Resource*				m_VertexBuffer;
 	//D3D12_VERTEX_BUFFER_VIEW	m_VertexBufferView;
 
-	ID3D12Resource*				m_IndexBuffer;
-	D3D12_INDEX_BUFFER_VIEW 	m_IndexBufferView;
+	//ID3D12Resource*				m_IndexBuffer;
+	//D3D12_INDEX_BUFFER_VIEW 	m_IndexBufferView;
 
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
@@ -119,6 +120,7 @@ private:
 
 	//Temp testing bindables
 	IVertexBuffer* m_CubeVertexBuffer;
+	IIndexBuffer* m_CubeIndexBuffer;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const

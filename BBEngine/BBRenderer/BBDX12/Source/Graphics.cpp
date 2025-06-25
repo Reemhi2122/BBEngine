@@ -403,7 +403,7 @@ bool Graphics::Initialize()
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));*/
 
-	uint32_t indexList[] =
+	uint8_t indexList[] =
 	{
 		0, 1, 2,
 		0, 3, 1,
@@ -431,9 +431,9 @@ bool Graphics::Initialize()
 	
 	uint32_t indexBufferSize = sizeof(indexList);
 
-	m_NumOfCubeIndices = indexBufferSize / (sizeof(DWORD));
+	m_NumOfCubeIndices = indexBufferSize / (sizeof(uint8_t));
 
-	hres = m_Device->CreateCommittedResource(
+	/*hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,
 		&CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize),
@@ -471,7 +471,10 @@ bool Graphics::Initialize()
 
 	UpdateSubresources(m_CommandList, m_IndexBuffer, indexBufferUploadHeap, 0, 0, 1, &indexData);
 
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));*/
+
+	m_CubeIndexBuffer = new DX12IndexBuffer();
+	m_CubeIndexBuffer->Create(*this, indexList, m_NumOfCubeIndices, sizeof(uint8_t));
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
 	dsvDesc.NumDescriptors = 1;
@@ -560,9 +563,9 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	m_IndexBufferView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
-	m_IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
-	m_IndexBufferView.SizeInBytes = indexBufferSize;
+	//m_IndexBufferView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
+	//m_IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
+	//m_IndexBufferView.SizeInBytes = indexBufferSize;
 
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;
@@ -664,7 +667,9 @@ void Graphics::UpdatePipeline()
 
 	m_CubeVertexBuffer->Bind(*this);
 	
-	m_CommandList->IASetIndexBuffer(&m_IndexBufferView);
+	//m_CommandList->IASetIndexBuffer(&m_IndexBufferView);
+
+	m_CubeIndexBuffer->Bind(*this);
 
 	m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBufferUploadHeaps[m_FrameIndex]->GetGPUVirtualAddress());
 	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
@@ -753,7 +758,7 @@ void Graphics::ShutDown()
 	SAFE_RELEASE(m_DefaultPipelineState);
 	SAFE_RELEASE(m_RootSignature);
 	//SAFE_RELEASE(m_VertexBuffer);
-	SAFE_RELEASE(m_IndexBuffer);
+	//SAFE_RELEASE(m_IndexBuffer);
 
 	SAFE_RELEASE(m_DepthStenil);
 	SAFE_RELEASE(m_DSDescriptorHeap);
