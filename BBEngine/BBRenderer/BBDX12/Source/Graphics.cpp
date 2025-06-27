@@ -356,52 +356,10 @@ bool Graphics::Initialize()
 		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
 	};
 
-	//uint32_t vertexBufferSize = sizeof(vertexList);
 	uint32_t vertexBufferCount = sizeof(vertexList) / sizeof(TempVertex);
 	
 	m_CubeVertexBuffer = new DX12VertexBuffer();
 	m_CubeVertexBuffer->Create(*this, reinterpret_cast<void*>(vertexList), sizeof(TempVertex), vertexBufferCount);
-
-	//hres = m_Device->CreateCommittedResource(
-	//	&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-	//	D3D12_HEAP_FLAG_NONE,
-	//	&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
-	//	D3D12_RESOURCE_STATE_COPY_DEST,
-	//	nullptr,
-	//	IID_PPV_ARGS(&m_VertexBuffer)
-	//);
-
-	/*m_VertexBuffer->SetName(L"Vertex Buffer Default Heap");
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed create Vertex Buffer Default Heap!");
-		return false;
-	}
-
-	ID3D12Resource* vertexBufferUploadHeap = {};
-	hres = m_Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vertexBufferUploadHeap)
-	);
-	vertexBufferUploadHeap->SetName(L"Vertex Buffer Upload Heap");
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed create Vertex Buffer Upload Heap!");
-		return false;
-	}
-
-	D3D12_SUBRESOURCE_DATA vertexData = {};
-	vertexData.pData = reinterpret_cast<BYTE*>(vertexList);
-	vertexData.RowPitch = vertexBufferSize;
-	vertexData.SlicePitch = vertexBufferSize;
-
-	UpdateSubresources(m_CommandList, m_VertexBuffer, vertexBufferUploadHeap, 0, 0, 1, &vertexData);
-
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));*/
 
 	uint32_t indexList[] =
 	{
@@ -432,46 +390,6 @@ bool Graphics::Initialize()
 	uint32_t indexBufferSize = sizeof(indexList);
 
 	m_NumOfCubeIndices = indexBufferSize / (sizeof(uint32_t));
-
-	/*hres = m_Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize),
-		D3D12_RESOURCE_STATE_COPY_DEST,
-		nullptr,
-		IID_PPV_ARGS(&m_IndexBuffer)
-	);
-	m_IndexBuffer->SetName(L"Index Buffer Default Heap");
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed create Index Buffer Default Heap!");
-		return false;
-	}
-
-	ID3D12Resource* indexBufferUploadHeap;
-	hres = m_Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(indexBufferSize),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&indexBufferUploadHeap)
-	);
-	indexBufferUploadHeap->SetName(L"Index Buffer Upload Heap");
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed create Index Buffer Upload Heap!");
-		return false;
-	}
-
-	D3D12_SUBRESOURCE_DATA indexData = {};
-	indexData.pData = reinterpret_cast<BYTE*>(indexList);
-	indexData.RowPitch = indexBufferSize;
-	indexData.SlicePitch = indexBufferSize;
-
-	UpdateSubresources(m_CommandList, m_IndexBuffer, indexBufferUploadHeap, 0, 0, 1, &indexData);
-
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));*/
 
 	m_CubeIndexBuffer = new DX12IndexBuffer();
 	m_CubeIndexBuffer->Create(*this, reinterpret_cast<uint8_t*>(indexList), m_NumOfCubeIndices, sizeof(uint32_t));
@@ -663,12 +581,8 @@ void Graphics::UpdatePipeline()
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//m_CommandList->IASetVertexBuffers(0, 1, &m_VertexBufferView);
 
 	m_CubeVertexBuffer->Bind(*this);
-	
-	//m_CommandList->IASetIndexBuffer(&m_IndexBufferView);
-
 	m_CubeIndexBuffer->Bind(*this);
 
 	m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBufferUploadHeaps[m_FrameIndex]->GetGPUVirtualAddress());
