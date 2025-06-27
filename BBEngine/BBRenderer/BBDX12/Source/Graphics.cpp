@@ -403,7 +403,7 @@ bool Graphics::Initialize()
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_VertexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER));*/
 
-	uint8_t indexList[] =
+	uint32_t indexList[] =
 	{
 		0, 1, 2,
 		0, 3, 1,
@@ -431,7 +431,7 @@ bool Graphics::Initialize()
 	
 	uint32_t indexBufferSize = sizeof(indexList);
 
-	m_NumOfCubeIndices = indexBufferSize / (sizeof(uint8_t));
+	m_NumOfCubeIndices = indexBufferSize / (sizeof(uint32_t));
 
 	/*hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
@@ -474,7 +474,7 @@ bool Graphics::Initialize()
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));*/
 
 	m_CubeIndexBuffer = new DX12IndexBuffer();
-	m_CubeIndexBuffer->Create(*this, indexList, m_NumOfCubeIndices, sizeof(uint8_t));
+	m_CubeIndexBuffer->Create(*this, reinterpret_cast<uint8_t*>(indexList), m_NumOfCubeIndices, sizeof(uint32_t));
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
 	dsvDesc.NumDescriptors = 1;

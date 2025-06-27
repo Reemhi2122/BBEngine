@@ -4,7 +4,7 @@ void DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_
 {
 	HRESULT hres;
 
-	uint32_t indexBufferSize = a_Count * sizeof(uint8_t);
+	uint32_t indexBufferSize = a_Count * a_IndexDataSize;
 
 	hres = a_Gfx.GetDevice()->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
@@ -44,8 +44,22 @@ void DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_
 
 	a_Gfx.GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_IndexBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_INDEX_BUFFER));
 
+	DXGI_FORMAT format;
+	switch (a_IndexDataSize)
+	{
+	case 2:
+		format = DXGI_FORMAT_R16_UINT;
+		break;
+	case 4:
+		format = DXGI_FORMAT_R32_UINT;
+		break;
+	default:
+		format = DXGI_FORMAT_R32_UINT;
+		break;
+	}
+
 	m_IndexBufferView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
-	m_IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
+	m_IndexBufferView.Format = format;
 	m_IndexBufferView.SizeInBytes = indexBufferSize;
 }
 
