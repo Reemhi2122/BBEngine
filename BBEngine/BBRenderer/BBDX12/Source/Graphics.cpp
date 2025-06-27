@@ -186,44 +186,57 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	//D3D12_DESCRIPTOR_RANGE cbDiscriptorRangeDesc[1];
-	//cbDiscriptorRangeDesc[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-	//cbDiscriptorRangeDesc[0].NumDescriptors = 1;
-	//cbDiscriptorRangeDesc[0].BaseShaderRegister = 0;
-	//cbDiscriptorRangeDesc[0].RegisterSpace = 0;
-	//cbDiscriptorRangeDesc[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
+	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorTableRange[0].NumDescriptors = 1;
+	descriptorTableRange[0].BaseShaderRegister = 0;
+	descriptorTableRange[0].RegisterSpace = 0;
+	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	//D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
-	//cbDescriptorTable.NumDescriptorRanges = 1;
-	//cbDescriptorTable.pDescriptorRanges = cbDiscriptorRangeDesc;
-
-	//D3D12_ROOT_PARAMETER rootParam[1];
-	//rootParam[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	//rootParam[0].DescriptorTable = cbDescriptorTable;
-	//rootParam[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+	cbDescriptorTable.NumDescriptorRanges = 1;
+	cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
 
 	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 	rootCBVDescriptor.ShaderRegister = 0;
 	rootCBVDescriptor.RegisterSpace = 0;
 
-	D3D12_ROOT_PARAMETER rootParams[1];
+	D3D12_ROOT_PARAMETER rootParams[2];
 	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParams[0].Descriptor = rootCBVDescriptor;
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
+	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParams[1].DescriptorTable = cbDescriptorTable;
+	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+	staticSamplers[0].MipLODBias = 0;
+	staticSamplers[0].MaxAnisotropy = 0;
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+	staticSamplers[0].MinLOD = 0;
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+	staticSamplers[0].ShaderRegister = 0;
+	staticSamplers[0].RegisterSpace = 0;
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
 	//Note(Stan): Most of this code down here is for a temporary triangle
 	//Creating a Root Signature
 	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-	rootSignatureDesc.NumParameters = 1;
+	rootSignatureDesc.NumParameters = 2;
 	rootSignatureDesc.pParameters = rootParams;
-	rootSignatureDesc.NumStaticSamplers = 0;
-	rootSignatureDesc.pStaticSamplers = nullptr;
+	rootSignatureDesc.NumStaticSamplers = 1;
+	rootSignatureDesc.pStaticSamplers = staticSamplers;
 	rootSignatureDesc.Flags = 
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS;
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
 	ID3DBlob* signature;
 	hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
@@ -320,40 +333,40 @@ bool Graphics::Initialize()
 
 	TempVertex vertexList[] =
 	{
-		{{ -0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
-		{{  0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
-		{{ -0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
-		{{  0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 0.0f}},
+		{{  0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
+		{{ -0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
+		{{  0.5f,  0.5f, -0.5f}, {1.0f, 0.0f}},
 
 		// right side face
-		{{  0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
-		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
-		{{  0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
-		{{  0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+		{{  0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
+		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
+		{{  0.5f, -0.5f,  0.5f}, {1.0f, 1.0f}},
+		{{  0.5f,  0.5f, -0.5f}, {1.0f, 0.0f}},
 
 		// left side face
-		{{ -0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
-		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
-		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
-		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+		{{ -0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
+		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
+		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 0.0f}},
+		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 1.0f}},
 
 		// back face
-		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
-		{{ -0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
-		{{  0.5f, -0.5f,  0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
-		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+		{{  0.5f,  0.5f,  0.5f}, {0.0f, 0.0f}},
+		{{ -0.5f, -0.5f,  0.5f}, {1.0f, 1.0f}},
+		{{  0.5f, -0.5f,  0.5f}, {0.0f, 1.0f}},
+		{{ -0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
 
 		// top face
-		{{ -0.5f,  0.5f, -0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
-		{{ 0.5f,  0.5f,  0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
-		{{ 0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
-		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 1.0f}},
+		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
+		{{  0.5f,  0.5f, -0.5f}, {1.0f, 1.0f}},
+		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 0.0f}},
 
 		// bottom face
-		{{  0.5f, -0.5f,  0.5f}, {1.0f, 0.0f, 0.0f, 1.0f }},
-		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 1.0f, 1.0f }},
-		{{  0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, 1.0f, 1.0f }},
-		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 1.0f, 0.0f, 1.0f }},
+		{{  0.5f, -0.5f,  0.5f}, {0.0f, 0.0f}},
+		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
+		{{  0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
+		{{ -0.5f, -0.5f,  0.5f}, {1.0f, 0.0f}},
 	};
 
 	uint32_t vertexBufferCount = sizeof(vertexList) / sizeof(TempVertex);
@@ -480,10 +493,6 @@ bool Graphics::Initialize()
 		printf("[GFX]: Failed to signal the Command Queue Fence!");
 		return false;
 	}
-
-	//m_IndexBufferView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
-	//m_IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
-	//m_IndexBufferView.SizeInBytes = indexBufferSize;
 
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;

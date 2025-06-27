@@ -30,10 +30,15 @@ constexpr uint16_t WINDOW_WIDTH = 1600;
 constexpr uint16_t WINDOW_HEIGHT = 800;
 
 //Note(stan): Temp vertext buffer for test triangle
+struct UV
+{
+	float u, v;
+};
+
 struct TempVertex
 {
 	Vector3 vertex;
-	Vector4 color;
+	UV		texCoord;
 };
 
 struct ConstantBufferPerObject
@@ -79,11 +84,10 @@ private:
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
-	//ID3D12Resource*				m_VertexBuffer;
-	//D3D12_VERTEX_BUFFER_VIEW	m_VertexBufferView;
+	ID3D12Resource*				m_TextureBuffer;
 
-	//ID3D12Resource*				m_IndexBuffer;
-	//D3D12_INDEX_BUFFER_VIEW 	m_IndexBufferView;
+	ID3D12DescriptorHeap*		m_TextureDescriptorHeap;
+	ID3D12Resource*				m_TextureUploadBufferHeap;
 
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
