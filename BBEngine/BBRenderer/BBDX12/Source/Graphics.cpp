@@ -472,6 +472,7 @@ bool Graphics::Initialize()
 	
 	int xSize, ySize, channelcount;
 	unsigned char* img = stbi_load("Assets/Textures/testtexture.jpg", &xSize, &ySize, &channelcount, 4);
+	uint32_t imageBytesPerRow = ((xSize * channelcount) * sizeof(uint8_t));
 
 	D3D12_RESOURCE_DESC textureDescription = {};
 	textureDescription.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -519,6 +520,35 @@ bool Graphics::Initialize()
 		return false;
 	}
 	m_TextureUploadBufferHeap->SetName(L"Texture Upload Heap");
+
+	D3D12_SUBRESOURCE_DATA textureData = {};
+	textureData.pData = &textureData;
+	textureData.RowPitch = imageBytesPerRow;
+	textureData.SlicePitch = imageBytesPerRow * ySize;
+
+	UpdateSubresources(m_CommandList, m_TextureBuffer, m_TextureUploadBufferHeap, 0, 0, 1, &textureData);
+
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+
+	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc;
+	srvDescriptorHeapDesc.NumDescriptors = 1;
+	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	m_Device->CreateDescriptorHeap(&srvDescriptorHeapDesc, IID_PPV_ARGS(&m_MainDescriptorHeap));
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		return false;
+	}
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	m_Device->CreateShaderResourceView(m_TextureBuffer, &srvDesc, m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);

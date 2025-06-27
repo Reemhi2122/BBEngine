@@ -86,7 +86,7 @@ private:
 
 	ID3D12Resource*				m_TextureBuffer;
 
-	ID3D12DescriptorHeap*		m_TextureDescriptorHeap;
+	ID3D12DescriptorHeap* m_MainDescriptorHeap;
 	ID3D12Resource*				m_TextureUploadBufferHeap;
 
 	ID3D12Resource*				m_DepthStenil;
