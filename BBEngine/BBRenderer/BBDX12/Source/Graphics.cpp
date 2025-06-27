@@ -2,6 +2,7 @@
 
 #include "combaseapi.h"
 #include <iostream>
+#include <stb_image.h>
 
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxguid.lib")
@@ -289,7 +290,7 @@ bool Graphics::Initialize()
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
-		{"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0}
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0}
 	};
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};
@@ -467,6 +468,57 @@ bool Graphics::Initialize()
 		memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
 		memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
 	}
+
+	
+	int xSize, ySize, channelcount;
+	unsigned char* img = stbi_load("Assets/Textures/testtexture.jpg", &xSize, &ySize, &channelcount, 4);
+
+	D3D12_RESOURCE_DESC textureDescription = {};
+	textureDescription.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	textureDescription.Alignment = 0;
+	textureDescription.Width = xSize;
+	textureDescription.Height = ySize;
+	textureDescription.DepthOrArraySize = 1;
+	textureDescription.MipLevels = 1;
+	textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	textureDescription.SampleDesc.Count = 1;
+	textureDescription.SampleDesc.Quality = 0;
+	textureDescription.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	textureDescription.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+	hres = m_Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&textureDescription,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		IID_PPV_ARGS(&m_TextureBuffer)
+	);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create Texture Default Heap!");
+		return false;
+	}
+	m_TextureBuffer->SetName(L"Texture Default Heap");
+
+
+	UINT64 textureUploadBufferSize = 0;
+	m_Device->GetCopyableFootprints(&textureDescription, 0, 1, 0, nullptr, nullptr, nullptr, &textureUploadBufferSize);
+
+	hres = m_Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(textureUploadBufferSize),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&m_TextureUploadBufferHeap)
+	);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create Texture Upload Heap!");
+		return false;
+	}
+	m_TextureUploadBufferHeap->SetName(L"Texture Upload Heap");
 
 	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
