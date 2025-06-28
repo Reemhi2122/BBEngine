@@ -2,6 +2,7 @@
 
 #include "combaseapi.h"
 #include <iostream>
+#define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #pragma comment(lib, "d3d12.lib")
@@ -343,13 +344,13 @@ bool Graphics::Initialize()
 		{{  0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
 		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
 		{{  0.5f, -0.5f,  0.5f}, {1.0f, 1.0f}},
-		{{  0.5f,  0.5f, -0.5f}, {1.0f, 0.0f}},
+		{{  0.5f,  0.5f, -0.5f}, {0.0f, 0.0f}},
 
 		// left side face
-		{{ -0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
-		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 0.0f}},
-		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 0.0f}},
-		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 1.0f}},
+		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 0.0f}},
+		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
+		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 1.0f}},
+		{{ -0.5f,  0.5f, -0.5f}, {1.0f, 0.0f}},
 
 		// back face
 		{{  0.5f,  0.5f,  0.5f}, {0.0f, 0.0f}},
@@ -471,8 +472,7 @@ bool Graphics::Initialize()
 
 	
 	int xSize, ySize, channelcount;
-	unsigned char* img = stbi_load("Assets/Textures/testtexture.jpg", &xSize, &ySize, &channelcount, 4);
-	uint32_t imageBytesPerRow = ((xSize * channelcount) * sizeof(uint8_t));
+	unsigned char* imgData = stbi_load("Assets/Textures/testtexture.jpg", &xSize, &ySize, &channelcount, 4);
 
 	D3D12_RESOURCE_DESC textureDescription = {};
 	textureDescription.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -504,7 +504,8 @@ bool Graphics::Initialize()
 
 
 	UINT64 textureUploadBufferSize = 0;
-	m_Device->GetCopyableFootprints(&textureDescription, 0, 1, 0, nullptr, nullptr, nullptr, &textureUploadBufferSize);
+	UINT64 rowSizeInBytes = 0;
+	m_Device->GetCopyableFootprints(&textureDescription, 0, 1, 0, nullptr, nullptr, &rowSizeInBytes, &textureUploadBufferSize);
 
 	hres = m_Device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -522,15 +523,15 @@ bool Graphics::Initialize()
 	m_TextureUploadBufferHeap->SetName(L"Texture Upload Heap");
 
 	D3D12_SUBRESOURCE_DATA textureData = {};
-	textureData.pData = &textureData;
-	textureData.RowPitch = imageBytesPerRow;
-	textureData.SlicePitch = imageBytesPerRow * ySize;
+	textureData.pData = &imgData[0];
+	textureData.RowPitch = rowSizeInBytes;
+	textureData.SlicePitch = rowSizeInBytes * ySize;
 
 	UpdateSubresources(m_CommandList, m_TextureBuffer, m_TextureUploadBufferHeap, 0, 0, 1, &textureData);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
-	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc;
+	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
 	srvDescriptorHeapDesc.NumDescriptors = 1;
 	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
@@ -542,13 +543,13 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Texture2D.MipLevels = 1;
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
+	srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDescriptorDesc.Texture2D.MipLevels = 1;
 
-	m_Device->CreateShaderResourceView(m_TextureBuffer, &srvDesc, m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	m_Device->CreateShaderResourceView(m_TextureBuffer, &srvDescriptorDesc, m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
@@ -575,6 +576,8 @@ bool Graphics::Initialize()
 		printf("[GFX]: Failed to signal the Command Queue Fence!");
 		return false;
 	}
+
+	delete imgData;
 
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;
@@ -668,6 +671,11 @@ void Graphics::UpdatePipeline()
 	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
+
+	ID3D12DescriptorHeap* descriptorHeaps[] = { m_MainDescriptorHeap };
+	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
+
+	m_CommandList->SetGraphicsRootDescriptorTable(1, m_MainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);

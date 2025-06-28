@@ -2,13 +2,13 @@
 struct VS_IN
 {
     float3 pos : POSITION;
-    float4 color : COLOR;
+    float2 texCoords : TEXCOORD;
 };
 
 struct VS_OUT
 {
     float4 pos : SV_POSITION;
-    float4 color : COLOR;
+    float2 texCoords : TEXCOORD;
 };
 
 cbuffer ConstantBuffer : register(b0)
@@ -20,6 +20,6 @@ VS_OUT main(VS_IN vsin)
 {
     VS_OUT vsout;
     vsout.pos = mul(float4(vsin.pos, 1.0f), WVPMatrix);
-    vsout.color = vsin.color;
+    vsout.texCoords = vsin.texCoords;
     return vsout;
 }
