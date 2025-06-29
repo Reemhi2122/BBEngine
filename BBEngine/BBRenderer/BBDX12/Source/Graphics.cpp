@@ -457,27 +457,27 @@ bool Graphics::Initialize()
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	{
-		hres = m_Device->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
-		);
-		m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
+	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	//{
+	//	hres = m_Device->CreateCommittedResource(
+	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+	//		D3D12_HEAP_FLAG_NONE,
+	//		&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
+	//		D3D12_RESOURCE_STATE_GENERIC_READ,
+	//		nullptr,
+	//		IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
+	//	);
+	//	m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
 
-		ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
+	//	ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
 
-		CD3DX12_RANGE readRange(0,0);
+	//	CD3DX12_RANGE readRange(0,0);
 
-		hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
+	//	hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
 
-		memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
-		memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
-	}
+	//	memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
+	//	memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
+	//}
 
 	m_Texture = new DX12Texture();
 	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);

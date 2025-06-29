@@ -25,7 +25,6 @@
 #include "Bindable/DX12IndexBuffer.h"
 #include "Bindable/DX12Texture.h"
 
-constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
 constexpr uint16_t WINDOW_WIDTH = 1600;
 constexpr uint16_t WINDOW_HEIGHT = 800;
@@ -66,6 +65,8 @@ public:
 	ID3D12Device* GetDevice() const override;
 	
 	ID3D12GraphicsCommandList* GetCommandList() const;
+
+	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
 
 private:
 	HWND						m_HWindow;
