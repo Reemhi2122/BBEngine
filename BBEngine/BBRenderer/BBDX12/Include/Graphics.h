@@ -23,6 +23,7 @@
 //Temp testing bindables
 #include "Bindable/DX12VertexBuffer.h"
 #include "Bindable/DX12IndexBuffer.h"
+#include "Bindable/DX12Texture.h"
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 
@@ -84,10 +85,7 @@ private:
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
-	ID3D12Resource*				m_TextureBuffer;
-
 	ID3D12DescriptorHeap*		m_MainDescriptorHeap;
-	ID3D12Resource*				m_TextureUploadBufferHeap;
 
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
@@ -125,6 +123,7 @@ private:
 	//Temp testing bindables
 	IVertexBuffer* m_CubeVertexBuffer;
 	IIndexBuffer* m_CubeIndexBuffer;
+	ITexture* m_Texture;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const
