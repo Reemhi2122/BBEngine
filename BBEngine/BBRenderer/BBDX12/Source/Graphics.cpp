@@ -21,6 +21,7 @@ Graphics::Graphics(HWND a_HWnd)
 bool Graphics::Initialize()
 {
 	HRESULT hres;
+	bool res = true;
 	
 	IDXGIFactory4* dxgiFactory = nullptr;
 	hres = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
@@ -372,7 +373,12 @@ bool Graphics::Initialize()
 	uint32_t vertexBufferCount = sizeof(vertexList) / sizeof(TempVertex);
 	
 	m_CubeVertexBuffer = new DX12VertexBuffer();
-	m_CubeVertexBuffer->Create(*this, reinterpret_cast<void*>(vertexList), sizeof(TempVertex), vertexBufferCount);
+	res = m_CubeVertexBuffer->Create(*this, reinterpret_cast<void*>(vertexList), sizeof(TempVertex), vertexBufferCount);
+	if (!res)
+	{
+		printf("[GFX]: Failed to create Vertex Buffer!");
+		return false;
+	}
 
 	uint32_t indexList[] =
 	{
@@ -405,7 +411,12 @@ bool Graphics::Initialize()
 	m_NumOfCubeIndices = indexBufferSize / (sizeof(uint32_t));
 
 	m_CubeIndexBuffer = new DX12IndexBuffer();
-	m_CubeIndexBuffer->Create(*this, reinterpret_cast<uint8_t*>(indexList), m_NumOfCubeIndices, sizeof(uint32_t));
+	res = m_CubeIndexBuffer->Create(*this, reinterpret_cast<uint8_t*>(indexList), m_NumOfCubeIndices, sizeof(uint32_t));
+	if (!res)
+	{
+		printf("[GFX]: Failed to create Index Buffer!");
+		return false;
+	}
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
 	dsvDesc.NumDescriptors = 1;
@@ -469,7 +480,12 @@ bool Graphics::Initialize()
 	}
 
 	m_Texture = new DX12Texture();
-	m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
+	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
+	if (!res)
+	{
+		printf("[GFX]: Failed to create Texture!");
+		return false;
+	}
 
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
 	srvDescriptorHeapDesc.NumDescriptors = 1;

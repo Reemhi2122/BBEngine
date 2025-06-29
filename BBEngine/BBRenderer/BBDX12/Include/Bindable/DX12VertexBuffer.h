@@ -7,7 +7,7 @@ public:
 	DX12VertexBuffer() = default;
 	~DX12VertexBuffer() = default;
 
-	void Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count) override;
+	bool Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count) override;
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept override;
 

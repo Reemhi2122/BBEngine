@@ -7,7 +7,7 @@ public:
 	DX12IndexBuffer() = default;
 	~DX12IndexBuffer() = default;
 
-	void Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize);
+	bool Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize);
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 

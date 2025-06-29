@@ -1,6 +1,6 @@
 #include "Bindable/DX12VertexBuffer.h"
 
-void DX12VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
+bool DX12VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
 {
 	HRESULT hres;
 
@@ -19,7 +19,8 @@ void DX12VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t
 	m_VertexBuffer->SetName(L"Vertex Buffer Default Heap");
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed create Vertex Buffer Default Heap!");
+		printf("[GFX::DX12:VERTEXBUFFER]: Failed create Vertex Buffer Default Heap!");
+		return false;
 	}
 
 	ID3D12Resource* vertexBufferUploadHeap = {};
@@ -34,7 +35,8 @@ void DX12VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t
 	vertexBufferUploadHeap->SetName(L"Vertex Buffer Upload Heap");
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed create Vertex Buffer Upload Heap!");
+		printf("[GFX::DX12:VERTEXBUFFER]: Failed create Vertex Buffer Upload Heap!");
+		return false;
 	}
 
 	D3D12_SUBRESOURCE_DATA vertexData = {};
@@ -49,6 +51,8 @@ void DX12VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t
 	m_VertexBufferView.BufferLocation = m_VertexBuffer->GetGPUVirtualAddress();
 	m_VertexBufferView.StrideInBytes = vbSize;
 	m_VertexBufferView.SizeInBytes = vbTotalSize;
+
+	return true;
 }
 
 void DX12VertexBuffer::Bind(IGraphics& a_Gfx) noexcept

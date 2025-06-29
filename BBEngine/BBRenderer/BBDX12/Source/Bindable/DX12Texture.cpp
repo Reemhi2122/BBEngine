@@ -41,7 +41,7 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 	);
 	if (FAILED(hres))
 	{
-		printf("[DX12:TEXTURE]: Failed to create Texture Default Heap!");
+		printf("[GFX::DX12:TEXTURE]: Failed to create Texture Default Heap!");
 		return false;
 	}
 	m_TextureBuffer->SetName(L"Texture Default Heap");
@@ -60,7 +60,7 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 	);
 	if (FAILED(hres))
 	{
-		printf("[DX12:TEXTURE]: Failed to create Texture Upload Heap!");
+		printf("[GFX::DX12:TEXTURE]: Failed to create Texture Upload Heap!");
 		return false;
 	}
 	m_TextureUploadBufferHeap->SetName(L"Texture Upload Heap");
@@ -75,6 +75,7 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 	a_Gfx.GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 	
 	delete imgData;
+	return true;
 }
 
 void DX12Texture::Bind(IGraphics& a_Gfx) noexcept

@@ -1,6 +1,6 @@
 #include "Bindable/DX12IndexBuffer.h"
 
-void DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
+bool DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
 {
 	HRESULT hres;
 
@@ -17,7 +17,8 @@ void DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_
 	m_IndexBuffer->SetName(L"Index Buffer Default Heap");
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed create Index Buffer Default Heap!");
+		printf("[GFX::DX12:INDEXBUFFER]: Failed create Index Buffer Default Heap!");
+		return false;
 	}
 
 	ID3D12Resource* indexBufferUploadHeap;
@@ -32,7 +33,8 @@ void DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_
 	indexBufferUploadHeap->SetName(L"Index Buffer Upload Heap");
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed create Index Buffer Upload Heap!");
+		printf("[GFX::DX12:INDEXBUFFER]: Failed create Index Buffer Upload Heap!");
+		return false;
 	}
 
 	D3D12_SUBRESOURCE_DATA indexData = {};
@@ -61,6 +63,8 @@ void DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_
 	m_IndexBufferView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
 	m_IndexBufferView.Format = format;
 	m_IndexBufferView.SizeInBytes = indexBufferSize;
+
+	return true;
 }
 
 void DX12IndexBuffer::Bind(IGraphics& a_Gfx) noexcept
