@@ -1,7 +1,6 @@
 #pragma once
 #include "Bindable/IConstantBuffer.h"
 #include "Graphics.h"
-#include "tesing.h"
 
 struct ConstantUploadBufferReference
 {

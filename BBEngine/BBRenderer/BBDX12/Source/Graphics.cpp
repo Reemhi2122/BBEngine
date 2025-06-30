@@ -738,7 +738,7 @@ void Graphics::ShutDown()
 	SAFE_RELEASE(m_DSDescriptorHeap);
 }
 
-bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference* a_ConstBufferReference)
+bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference& a_ConstBufferReference)
 {
 	HRESULT hres;
 
@@ -787,11 +787,11 @@ bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32
 		return false;
 	}
 
-	a_ConstBufferReference->uploadHeapOffset = curRootCBV->curOffset;
+	a_ConstBufferReference.uploadHeapOffset = curRootCBV->curOffset;
 	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{
-		a_ConstBufferReference->cbvGPUAdress[i] = (curRootCBV->cbvGPUAdress[i] + curRootCBV->curOffset);
-		a_ConstBufferReference->uploadHeaps[i] = curRootCBV->uploadHeaps[i];
+		a_ConstBufferReference.cbvGPUAdress[i] = (curRootCBV->cbvGPUAdress[i] + curRootCBV->curOffset);
+		a_ConstBufferReference.uploadHeaps[i] = curRootCBV->uploadHeaps[i];
 	}
 	
 	curRootCBV->curOffset += GET_CONSTANT_BUFFER_OFFSET_SIZE(a_SizeOfCB);

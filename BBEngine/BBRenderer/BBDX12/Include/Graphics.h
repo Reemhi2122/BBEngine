@@ -17,7 +17,6 @@
 #include "Matrix4x4.h"
 
 #include "Camera.h"
-
 #include "IGraphics.h"
 
 //Temp testing bindables
@@ -77,7 +76,7 @@ public:
 	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
 	uint8_t GetCurrentFrame() const override { return m_FrameIndex; };
 
-	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference* a_ConstBufferReference);
+	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
 
 private:
 	HWND						m_HWindow;
@@ -137,8 +136,8 @@ private:
 	IIndexBuffer* m_CubeIndexBuffer;
 	ITexture* m_Texture;
 
-	RootConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube1;
-	RootConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;
+	IConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube1;
+	IConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const

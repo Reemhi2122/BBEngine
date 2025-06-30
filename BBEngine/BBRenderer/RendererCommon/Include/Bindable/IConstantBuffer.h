@@ -12,4 +12,6 @@ public:
 	virtual void Update(IGraphics& a_Gfx, T& a_ConstantBuffer) = 0;
 	virtual void Update(IGraphics& a_Gfx) = 0;
 	virtual void Bind(IGraphics& a_Gfx) noexcept = 0;
+
+	virtual T* GetConstantBuffer() = 0;
 };
