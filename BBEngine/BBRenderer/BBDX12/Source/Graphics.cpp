@@ -458,26 +458,32 @@ bool Graphics::Initialize()
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	{
-		hres = m_Device->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
-		);
-		m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
+	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	//{
+	//	hres = m_Device->CreateCommittedResource(
+	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+	//		D3D12_HEAP_FLAG_NONE,
+	//		&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
+	//		D3D12_RESOURCE_STATE_GENERIC_READ,
+	//		nullptr,
+	//		IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
+	//	);
+	//	m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
 
-		ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
+	//	ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
 
-		CD3DX12_RANGE readRange(0,0);
-		hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
+	//	CD3DX12_RANGE readRange(0,0);
+	//	hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
 
-		memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
-		memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET_TYPE(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
-	}
+	//	memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
+	//	memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET_TYPE(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
+	//}
+
+	m_ConstantBufferCube1 = new DX12ConstantBuffer<ConstantBufferPerObject>();
+	m_ConstantBufferCube1->Create(*this);
+
+	m_ConstantBufferCube2 = new DX12ConstantBuffer<ConstantBufferPerObject>();
+	m_ConstantBufferCube2->Create(*this);
 
 	m_Texture = new DX12Texture();
 	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
@@ -567,9 +573,9 @@ void Graphics::Update()
 
 	DirectX::XMMATRIX wvpMat = XMLoadFloat4x4(&m_Cube1WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
 	DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(wvpMat);
-	DirectX::XMStoreFloat4x4(&m_CBPerObject.WVPMatrix, transposed);
+	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube1->GetConstantBuffer()->WVPMatrix, transposed);
 
-	memcpy(m_CBVGPUAdress[m_FrameIndex], &m_CBPerObject, sizeof(m_CBPerObject));
+	memcpy(m_ConstantBufferCube1->GetConstantUploadBufferReference()->m_CBVGPUAdress[m_FrameIndex], m_ConstantBufferCube1->GetConstantBuffer(), sizeof(ConstantBufferPerObject));
 
 	rotMatX = DirectX::XMMatrixRotationX(0.0003f);
 	rotMatY = DirectX::XMMatrixRotationY(0.0002f);
@@ -585,9 +591,9 @@ void Graphics::Update()
 
 	wvpMat = XMLoadFloat4x4(&m_Cube2WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
 	transposed = DirectX::XMMatrixTranspose(wvpMat);
-	DirectX::XMStoreFloat4x4(&m_CBPerObject.WVPMatrix, transposed);
+	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube2->GetConstantBuffer()->WVPMatrix, transposed);
 
-	memcpy(m_CBVGPUAdress[m_FrameIndex] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
+	memcpy(m_ConstantBufferCube2->GetConstantUploadBufferReference()->m_CBVGPUAdress[m_FrameIndex], m_ConstantBufferCube2->GetConstantBuffer(), sizeof(ConstantBufferPerObject));
 
 	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, worldMatrix);
 }
@@ -639,10 +645,10 @@ void Graphics::UpdatePipeline()
 	m_CubeVertexBuffer->Bind(*this);
 	m_CubeIndexBuffer->Bind(*this);
 
-	m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBufferUploadHeaps[m_FrameIndex]->GetGPUVirtualAddress());
+	m_CommandList->SetGraphicsRootConstantBufferView(0, m_RootCBV[0]->m_UploadHeaps[m_FrameIndex]->GetGPUVirtualAddress());
 	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 
-	m_CommandList->SetGraphicsRootConstantBufferView(0, m_ConstantBufferUploadHeaps[m_FrameIndex]->GetGPUVirtualAddress() + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject));
+	m_CommandList->SetGraphicsRootConstantBufferView(0, m_RootCBV[0]->m_UploadHeaps[m_FrameIndex]->GetGPUVirtualAddress() + GET_CONSTANT_BUFFER_OFFSET_TYPE(ConstantBufferPerObject));
 	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -744,32 +750,49 @@ bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32
 
 	if (a_SizeOfCB <= 0)
 	{
-		printf("[GFX::GetRootConstantUploadBufferView]: Cannot create / get root CBV upload buffer for CB with size of 0!!");
+		printf("[GFX::GetRootConstantUploadBufferView]: Cannot create / get root CBV upload buffer for CB with size of 0!");
 		return false;
 	}
 
 	UploadHeap* curRootCBV = m_RootCBV[a_RootParamIndex];
-	if (curRootCBV != nullptr)
+
+	if (curRootCBV == nullptr)
 	{
-		a_ConstBufferReference.m_ConstantBufferUploadHeaps = m_RootCBV[a_RootParamIndex];
-		a_ConstBufferReference.m_Offset = m_RootCBV[a_RootParamIndex]->m_CurOffset;
-		m_RootCBV[a_RootParamIndex]->m_CurOffset += GET_CONSTANT_BUFFER_OFFSET_SIZE(a_SizeOfCB);
-		return true;
+		curRootCBV = new UploadHeap();
+		for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+		{
+			hres = m_Device->CreateCommittedResource(
+				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+				D3D12_HEAP_FLAG_NONE,
+				&CD3DX12_RESOURCE_DESC::Buffer(m_StandardCBSize),
+				D3D12_RESOURCE_STATE_GENERIC_READ,
+				nullptr,
+				IID_PPV_ARGS(&curRootCBV->m_UploadHeaps[i])
+			);
+			curRootCBV->m_UploadHeaps[i]->SetName(L"Root sig CB Upload Resource Heap");
+			curRootCBV->m_CurOffset = 0;
+			curRootCBV->m_Size = m_StandardCBSize;
+
+
+			CD3DX12_RANGE readRange(0, 0);
+			hres = curRootCBV->m_UploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&curRootCBV->m_CBVGPUAdress[i]));
+		}
+
+		m_RootCBV[a_RootParamIndex] = curRootCBV;
 	}
 
-	curRootCBV = new UploadHeap();
+	if ((curRootCBV->m_CurOffset + a_SizeOfCB) > curRootCBV->m_Size)
+	{
+		printf("[GFX::GetRootConstantUploadBufferView]: CBV heap at index [%d] is full!", a_RootParamIndex);
+		return false;
+	}
+
 	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{
-		hres = m_Device->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(m_StandardCBSize),
-			D3D12_RESOURCE_STATE_GENERIC_READ,
-			nullptr,
-			IID_PPV_ARGS(&curRootCBV->m_UploadHeaps[i])
-		);
-		curRootCBV->m_UploadHeaps[i]->SetName(L"Root sig CB Upload Resource Heap");
+		a_ConstBufferReference.m_CBVGPUAdress[i] = (curRootCBV->m_CBVGPUAdress[i] + curRootCBV->m_CurOffset);
 	}
 
-	return m_RootCBV[a_RootParamIndex];
+	curRootCBV->m_CurOffset += GET_CONSTANT_BUFFER_OFFSET_SIZE(a_SizeOfCB);
+
+	return true;
 }

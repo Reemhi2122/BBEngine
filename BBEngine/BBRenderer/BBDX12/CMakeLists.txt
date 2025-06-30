@@ -8,7 +8,7 @@ add_library (BBRenderer_DX12 STATIC
 	"Source/Bindable/DX12VertexBuffer.cpp"
 	"Source/Bindable/DX12VertexBuffer.cpp" 
 	"Source/Bindable/DX12IndexBuffer.cpp"
- "Include/Bindable/DX12ConstantBuffer.h" "Source/Bindable/DX12ConstantBuffer.cpp")
+	)
 
 #set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 

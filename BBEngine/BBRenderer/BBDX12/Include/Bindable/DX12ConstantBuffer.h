@@ -1,46 +1,42 @@
 #include "Bindable/IConstantBuffer.h"
 
+struct ConstantUploadBufferReference
+{
+	uint8_t* m_CBVGPUAdress[FRAME_BUFFER_COUNT];
+};
+
 template<typename T>
-class DX12ConstantBuffer : public IConstantBuffer
+class DX12ConstantBuffer : public IConstantBuffer<T>
 {
 public:
 	DX12ConstantBuffer() = default;
 	~DX12ConstantBuffer() = default;
 
-	bool Create(IGraphics& a_Gfx, const T& a_Consts, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
+	bool Create(IGraphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u) override
 	{
 		HRESULT hres;
 
+		Graphics* gfx = static_cast<Graphics*>(&a_Gfx);
+		gfx->GetRootConstantUploadBufferView(a_StartSlot, sizeof(T), m_ConstantBufferHeaps);
+
 		for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 		{
-			hres = a_Gfx.GetDevice()->CreateCommittedResource(
-				&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-				D3D12_HEAP_FLAG_NONE,
-				&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
-				D3D12_RESOURCE_STATE_GENERIC_READ,
-				nullptr,
-				IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
-			);
-			m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
-
-			ZeroMemory(&a_Consts, sizeof(a_Consts));
-
-			CD3DX12_RANGE readRange(0, 0);
-
-			hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
-
-			memcpy(m_CBVGPUAdress[i], &a_Consts, sizeof(a_Consts));
-			memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &a_Consts, sizeof(a_Consts));
+			ZeroMemory(m_ConstantBufferHeaps.m_CBVGPUAdress[i], sizeof(T));
+			memcpy(m_ConstantBufferHeaps.m_CBVGPUAdress[i], &m_ConstantBuffer, sizeof(m_ConstantBuffer));
 		}
 
 		return true;
 	}
 
+	ConstantUploadBufferReference* GetConstantUploadBufferReference() noexcept { return &m_ConstantBufferHeaps; };
+	T* GetConstantBuffer() noexcept { return &m_ConstantBuffer; };
 
-	void Bind() override;
-	void UnBind() override;
+	void Bind(IGraphics& a_Gfx) noexcept override
+	{
+		return; 
+	};
 
 private:
-	ID3D12Resource* m_ConstantBufferUploadHeaps[FRAME_BUFFER_COUNT];
-	uint8_t* m_CBVGPUAdress[FRAME_BUFFER_COUNT];
+	ConstantUploadBufferReference m_ConstantBufferHeaps;
+	T m_ConstantBuffer;
 };

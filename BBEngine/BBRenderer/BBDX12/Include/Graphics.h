@@ -24,7 +24,7 @@
 #include "Bindable/DX12VertexBuffer.h"
 #include "Bindable/DX12IndexBuffer.h"
 #include "Bindable/DX12Texture.h"
-
+#include "Bindable/DX12ConstantBuffer.h"
 
 constexpr uint16_t WINDOW_WIDTH = 1600;
 constexpr uint16_t WINDOW_HEIGHT = 800;
@@ -49,14 +49,9 @@ struct ConstantBufferPerObject
 struct UploadHeap
 {
 	ID3D12Resource* m_UploadHeaps[FRAME_BUFFER_COUNT];
+	uint8_t* m_CBVGPUAdress[FRAME_BUFFER_COUNT];
 	uint32_t m_CurOffset;
 	uint32_t m_Size;
-};
-
-struct ConstantUploadBufferReference
-{
-	UploadHeap* m_ConstantBufferUploadHeaps;
-	uint32_t m_Offset;
 };
 
 class Graphics : public IGraphics
@@ -111,7 +106,7 @@ private:
 
 	uint32_t m_StandardCBSize = (1024 * 64);
 	uint32_t m_MaxRootCBV = 1;
-	UploadHeap* m_RootCBV[1];
+	UploadHeap* m_RootCBV[1] = { nullptr };
 
 	//Note(Stan): Temp, these will be replaced by actual objects
 	DirectX::XMFLOAT4X4	m_Cube1WorldMatrix;
@@ -143,6 +138,9 @@ private:
 	IVertexBuffer* m_CubeVertexBuffer;
 	IIndexBuffer* m_CubeIndexBuffer;
 	ITexture* m_Texture;
+
+	DX12ConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube1;
+	DX12ConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const
