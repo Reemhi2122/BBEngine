@@ -46,6 +46,19 @@ struct ConstantBufferPerObject
 	DirectX::XMFLOAT4X4 WVPMatrix;
 };
 
+struct UploadHeap
+{
+	ID3D12Resource* m_UploadHeaps[FRAME_BUFFER_COUNT];
+	uint32_t m_CurOffset;
+	uint32_t m_Size;
+};
+
+struct ConstantUploadBufferReference
+{
+	UploadHeap* m_ConstantBufferUploadHeaps;
+	uint32_t m_Offset;
+};
+
 class Graphics : public IGraphics
 {
 public:
@@ -67,6 +80,8 @@ public:
 	ID3D12GraphicsCommandList* GetCommandList() const;
 
 	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
+
+	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference& a_ConstBufferReference);
 
 private:
 	HWND						m_HWindow;
@@ -91,9 +106,12 @@ private:
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
 
-	ConstantBufferPerObject		m_CBPerObject;
-	ID3D12Resource*				m_ConstantBufferUploadHeaps[FRAME_BUFFER_COUNT];
-	uint8_t*					m_CBVGPUAdress[FRAME_BUFFER_COUNT];
+	//ConstantBufferPerObject		m_CBPerObject;
+	//uint8_t*					m_CBVGPUAdress[FRAME_BUFFER_COUNT];
+
+	uint32_t m_StandardCBSize = (1024 * 64);
+	uint32_t m_MaxRootCBV = 1;
+	UploadHeap* m_RootCBV[1];
 
 	//Note(Stan): Temp, these will be replaced by actual objects
 	DirectX::XMFLOAT4X4	m_Cube1WorldMatrix;

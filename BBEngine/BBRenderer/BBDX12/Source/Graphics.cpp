@@ -10,7 +10,8 @@
 
 #define SAFE_RELEASE(p) { if ( (p) ) { (p)->Release(); (p) = 0; } }
 
-#define GET_CONSTANT_BUFFER_OFFSET(p) ((sizeof(p) + 255) & (~255))
+#define GET_CONSTANT_BUFFER_OFFSET_TYPE(p) ((sizeof(p) + 255) & (~255))
+#define GET_CONSTANT_BUFFER_OFFSET_SIZE(p) ((p + 255) & (~255))
 
 Graphics::Graphics(HWND a_HWnd)
  : m_HWindow(a_HWnd)
@@ -457,27 +458,26 @@ bool Graphics::Initialize()
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	//{
-	//	hres = m_Device->CreateCommittedResource(
-	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-	//		D3D12_HEAP_FLAG_NONE,
-	//		&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
-	//		D3D12_RESOURCE_STATE_GENERIC_READ,
-	//		nullptr,
-	//		IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
-	//	);
-	//	m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
+		);
+		m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
 
-	//	ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
+		ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
 
-	//	CD3DX12_RANGE readRange(0,0);
+		CD3DX12_RANGE readRange(0,0);
+		hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
 
-	//	hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
-
-	//	memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
-	//	memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
-	//}
+		memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
+		memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET_TYPE(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
+	}
 
 	m_Texture = new DX12Texture();
 	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
@@ -720,7 +720,7 @@ void Graphics::ShutDown()
 		SAFE_RELEASE(m_RenderTargets[i]);
 		SAFE_RELEASE(m_CommandAllocator[i]);
 		SAFE_RELEASE(m_Fence[i]);
-		SAFE_RELEASE(m_ConstantBufferUploadHeaps[i])
+		//SAFE_RELEASE(m_ConstantBufferUploadHeaps[i])
 	}
 
 	SAFE_RELEASE(m_DefaultPipelineState);
@@ -730,4 +730,46 @@ void Graphics::ShutDown()
 
 	SAFE_RELEASE(m_DepthStenil);
 	SAFE_RELEASE(m_DSDescriptorHeap);
+}
+
+bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference& a_ConstBufferReference)
+{
+	HRESULT hres;
+
+	if (a_RootParamIndex > m_MaxRootCBV)
+	{
+		printf("[GFX::GetRootConstantUploadBufferView]: No root CBV upload heap at [%d] available!", a_RootParamIndex);
+		return false;
+	}
+
+	if (a_SizeOfCB <= 0)
+	{
+		printf("[GFX::GetRootConstantUploadBufferView]: Cannot create / get root CBV upload buffer for CB with size of 0!!");
+		return false;
+	}
+
+	UploadHeap* curRootCBV = m_RootCBV[a_RootParamIndex];
+	if (curRootCBV != nullptr)
+	{
+		a_ConstBufferReference.m_ConstantBufferUploadHeaps = m_RootCBV[a_RootParamIndex];
+		a_ConstBufferReference.m_Offset = m_RootCBV[a_RootParamIndex]->m_CurOffset;
+		m_RootCBV[a_RootParamIndex]->m_CurOffset += GET_CONSTANT_BUFFER_OFFSET_SIZE(a_SizeOfCB);
+		return true;
+	}
+
+	curRootCBV = new UploadHeap();
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(m_StandardCBSize),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&curRootCBV->m_UploadHeaps[i])
+		);
+		curRootCBV->m_UploadHeaps[i]->SetName(L"Root sig CB Upload Resource Heap");
+	}
+
+	return m_RootCBV[a_RootParamIndex];
 }
