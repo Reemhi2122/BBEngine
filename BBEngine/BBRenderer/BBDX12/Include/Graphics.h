@@ -48,10 +48,10 @@ struct ConstantBufferPerObject
 
 struct UploadHeap
 {
-	ID3D12Resource* m_UploadHeaps[FRAME_BUFFER_COUNT];
-	uint8_t* m_CBVGPUAdress[FRAME_BUFFER_COUNT];
-	uint32_t m_CurOffset;
-	uint32_t m_Size;
+	ID3D12Resource* uploadHeaps[FRAME_BUFFER_COUNT];
+	uint8_t* cbvGPUAdress[FRAME_BUFFER_COUNT];
+	uint32_t curOffset;
+	uint32_t size;
 };
 
 class Graphics : public IGraphics
@@ -75,6 +75,7 @@ public:
 	ID3D12GraphicsCommandList* GetCommandList() const;
 
 	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
+	uint8_t GetCurrentFrame() const override { return m_FrameIndex; };
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference& a_ConstBufferReference);
 

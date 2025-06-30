@@ -479,10 +479,10 @@ bool Graphics::Initialize()
 	//	memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET_TYPE(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
 	//}
 
-	m_ConstantBufferCube1 = new DX12ConstantBuffer<ConstantBufferPerObject>();
+	m_ConstantBufferCube1 = new RootConstantBuffer<ConstantBufferPerObject>();
 	m_ConstantBufferCube1->Create(*this);
 
-	m_ConstantBufferCube2 = new DX12ConstantBuffer<ConstantBufferPerObject>();
+	m_ConstantBufferCube2 = new RootConstantBuffer<ConstantBufferPerObject>();
 	m_ConstantBufferCube2->Create(*this);
 
 	m_Texture = new DX12Texture();
@@ -575,7 +575,7 @@ void Graphics::Update()
 	DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(wvpMat);
 	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube1->GetConstantBuffer()->WVPMatrix, transposed);
 
-	memcpy(m_ConstantBufferCube1->GetConstantUploadBufferReference()->m_CBVGPUAdress[m_FrameIndex], m_ConstantBufferCube1->GetConstantBuffer(), sizeof(ConstantBufferPerObject));
+	m_ConstantBufferCube1->Update(*this);
 
 	rotMatX = DirectX::XMMatrixRotationX(0.0003f);
 	rotMatY = DirectX::XMMatrixRotationY(0.0002f);
@@ -593,7 +593,7 @@ void Graphics::Update()
 	transposed = DirectX::XMMatrixTranspose(wvpMat);
 	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube2->GetConstantBuffer()->WVPMatrix, transposed);
 
-	memcpy(m_ConstantBufferCube2->GetConstantUploadBufferReference()->m_CBVGPUAdress[m_FrameIndex], m_ConstantBufferCube2->GetConstantBuffer(), sizeof(ConstantBufferPerObject));
+	m_ConstantBufferCube2->Update(*this);
 
 	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, worldMatrix);
 }
@@ -645,10 +645,10 @@ void Graphics::UpdatePipeline()
 	m_CubeVertexBuffer->Bind(*this);
 	m_CubeIndexBuffer->Bind(*this);
 
-	m_CommandList->SetGraphicsRootConstantBufferView(0, m_RootCBV[0]->m_UploadHeaps[m_FrameIndex]->GetGPUVirtualAddress());
+	m_ConstantBufferCube1->Bind(*this);
 	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 
-	m_CommandList->SetGraphicsRootConstantBufferView(0, m_RootCBV[0]->m_UploadHeaps[m_FrameIndex]->GetGPUVirtualAddress() + GET_CONSTANT_BUFFER_OFFSET_TYPE(ConstantBufferPerObject));
+	m_ConstantBufferCube2->Bind(*this);
 	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
@@ -767,32 +767,33 @@ bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32
 				&CD3DX12_RESOURCE_DESC::Buffer(m_StandardCBSize),
 				D3D12_RESOURCE_STATE_GENERIC_READ,
 				nullptr,
-				IID_PPV_ARGS(&curRootCBV->m_UploadHeaps[i])
+				IID_PPV_ARGS(&curRootCBV->uploadHeaps[i])
 			);
-			curRootCBV->m_UploadHeaps[i]->SetName(L"Root sig CB Upload Resource Heap");
-			curRootCBV->m_CurOffset = 0;
-			curRootCBV->m_Size = m_StandardCBSize;
+			curRootCBV->uploadHeaps[i]->SetName(L"Root sig CB Upload Resource Heap");
+			curRootCBV->curOffset = 0;
+			curRootCBV->size = m_StandardCBSize;
 
 
 			CD3DX12_RANGE readRange(0, 0);
-			hres = curRootCBV->m_UploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&curRootCBV->m_CBVGPUAdress[i]));
+			hres = curRootCBV->uploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&curRootCBV->cbvGPUAdress[i]));
 		}
 
 		m_RootCBV[a_RootParamIndex] = curRootCBV;
 	}
 
-	if ((curRootCBV->m_CurOffset + a_SizeOfCB) > curRootCBV->m_Size)
+	if ((curRootCBV->curOffset + a_SizeOfCB) > curRootCBV->size)
 	{
 		printf("[GFX::GetRootConstantUploadBufferView]: CBV heap at index [%d] is full!", a_RootParamIndex);
 		return false;
 	}
 
+	a_ConstBufferReference.uploadHeapOffset = curRootCBV->curOffset;
 	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{
-		a_ConstBufferReference.m_CBVGPUAdress[i] = (curRootCBV->m_CBVGPUAdress[i] + curRootCBV->m_CurOffset);
+		a_ConstBufferReference.cbvGPUAdress[i] = (curRootCBV->cbvGPUAdress[i] + curRootCBV->curOffset);
+		a_ConstBufferReference.uploadHeaps[i] = curRootCBV->uploadHeaps[i];
 	}
-
-	curRootCBV->m_CurOffset += GET_CONSTANT_BUFFER_OFFSET_SIZE(a_SizeOfCB);
-
+	
+	curRootCBV->curOffset += GET_CONSTANT_BUFFER_OFFSET_SIZE(a_SizeOfCB);
 	return true;
 }

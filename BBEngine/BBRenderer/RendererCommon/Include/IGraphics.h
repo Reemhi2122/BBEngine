@@ -23,4 +23,6 @@ public:
 	virtual BBRenderDevice* GetDevice() const = 0;
 	virtual ID3D12GraphicsCommandList* GetCommandList() const = 0;
 	virtual uint8_t GetFrameCount() const = 0;
+
+	virtual uint8_t GetCurrentFrame() const = 0;
 };
