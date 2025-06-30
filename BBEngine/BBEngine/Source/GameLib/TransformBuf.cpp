@@ -1,11 +1,12 @@
-#include "Bindable/TransformBuf.h"
+#include "GameLib/TransformBuf.h"
 
-TransformBuf::TransformBuf(Graphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale)
+TransformBuf::TransformBuf(IGraphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale)
 {
 	UpdateTransform(a_LocalTranslation, a_LocalRotation, a_LocalScale);
 
 	if (!m_VCB) {
-		m_VCB = new VertexConstantBuffer<perObjectBuffer>(a_Gfx);
+		m_VCB = new RootConstantBuffer<perObjectBuffer>();
+		m_VCB->Create(a_Gfx);
 	}
 }
 
@@ -30,7 +31,7 @@ void TransformBuf::SetParentTransform(Vector3 a_ParentTranslation, Vector4 a_Par
 		DirectX::XMMatrixTranslation(a_ParentTranslation.x, a_ParentTranslation.y, a_ParentTranslation.z);
 }
 
-void TransformBuf::Bind(Graphics& a_Gfx) noexcept
+void TransformBuf::Bind(IGraphics& a_Gfx) noexcept
 {
 	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * m_ParentTransform; 
 
@@ -43,7 +44,7 @@ void TransformBuf::Bind(Graphics& a_Gfx) noexcept
 	m_VCB->Bind(a_Gfx);
 }
 
-void TransformBuf::Bind(Graphics& a_Gfx, DirectX::XMMATRIX a_ObjTransform) noexcept
+void TransformBuf::Bind(IGraphics& a_Gfx, DirectX::XMMATRIX a_ObjTransform) noexcept
 {
 	DirectX::XMMATRIX finalMatrix = m_LocalMatrix * a_ObjTransform * m_ParentTransform;
 
@@ -56,4 +57,4 @@ void TransformBuf::Bind(Graphics& a_Gfx, DirectX::XMMATRIX a_ObjTransform) noexc
 	m_VCB->Bind(a_Gfx);
 }
 
-VertexConstantBuffer<perObjectBuffer>* TransformBuf::m_VCB;
+RootConstantBuffer<perObjectBuffer>* TransformBuf::m_VCB;

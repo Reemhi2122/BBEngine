@@ -1,4 +1,7 @@
+#pragma once
 #include "Bindable/IConstantBuffer.h"
+#include "Graphics.h"
+#include "tesing.h"
 
 struct ConstantUploadBufferReference
 {
@@ -34,12 +37,12 @@ public:
 
 	void Update(IGraphics& a_Gfx, T& a_ConstantBuffer) override
 	{
-		memcpy(m_ConstantBufferHeaps.cbvGPUAdress[a_Gfx.GetCurrentFrame()], &a_ConstantBuffer, sizeof(ConstantBufferPerObject));
+		memcpy(m_ConstantBufferHeaps.cbvGPUAdress[a_Gfx.GetCurrentFrame()], &a_ConstantBuffer, sizeof(T));
 	}
 
 	void Update(IGraphics& a_Gfx) override
 	{
-		memcpy(m_ConstantBufferHeaps.cbvGPUAdress[a_Gfx.GetCurrentFrame()], &m_ConstantBuffer, sizeof(ConstantBufferPerObject));
+		memcpy(m_ConstantBufferHeaps.cbvGPUAdress[a_Gfx.GetCurrentFrame()], &m_ConstantBuffer, sizeof(T));
 	}
 
 	ConstantUploadBufferReference* GetConstantUploadBufferReference() noexcept { return &m_ConstantBufferHeaps; };
@@ -55,8 +58,9 @@ protected:
 template<typename T>
 class RootConstantBuffer : public DX12ConstantBuffer<T>
 {
+public:
 	void Bind(IGraphics& a_Gfx) noexcept override
 	{
 		a_Gfx.GetCommandList()->SetGraphicsRootConstantBufferView(0, m_ConstantBufferHeaps.uploadHeaps[a_Gfx.GetCurrentFrame()]->GetGPUVirtualAddress() + m_ConstantBufferHeaps.uploadHeapOffset);
-	};
+	}
 };

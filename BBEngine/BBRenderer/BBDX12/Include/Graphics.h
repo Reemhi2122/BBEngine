@@ -77,7 +77,7 @@ public:
 	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
 	uint8_t GetCurrentFrame() const override { return m_FrameIndex; };
 
-	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference& a_ConstBufferReference);
+	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference* a_ConstBufferReference);
 
 private:
 	HWND						m_HWindow;
@@ -101,9 +101,6 @@ private:
 
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
-
-	//ConstantBufferPerObject		m_CBPerObject;
-	//uint8_t*					m_CBVGPUAdress[FRAME_BUFFER_COUNT];
 
 	uint32_t m_StandardCBSize = (1024 * 64);
 	uint32_t m_MaxRootCBV = 1;
@@ -140,8 +137,8 @@ private:
 	IIndexBuffer* m_CubeIndexBuffer;
 	ITexture* m_Texture;
 
-	DX12ConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube1;
-	DX12ConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;
+	RootConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube1;
+	RootConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const

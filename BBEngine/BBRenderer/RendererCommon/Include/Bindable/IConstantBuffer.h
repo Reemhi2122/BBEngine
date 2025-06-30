@@ -1,3 +1,4 @@
+#pragma once
 #include "Bindable.h"
 
 template<typename T>

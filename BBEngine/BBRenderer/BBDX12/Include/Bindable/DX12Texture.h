@@ -1,3 +1,4 @@
+#pragma once
 #include "Bindable/ITexture.h"
 
 class DX12Texture : public ITexture

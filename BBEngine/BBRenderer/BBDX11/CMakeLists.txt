@@ -13,7 +13,6 @@ add_library (BBRenderer_DX11 STATIC
 "Source/Bindable/InputLayout.cpp"
 "Source/Drawable/Drawable.cpp"
 "Source/Drawable/DrawToTexture.cpp"
-"Source/Bindable/TransformBuf.cpp"
 "Source/Drawable/Box.cpp"
 "Source/Drawable/Model.cpp"
 "Source/Bindable/Texture.cpp"
