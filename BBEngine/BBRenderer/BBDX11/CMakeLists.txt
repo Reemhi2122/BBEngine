@@ -11,7 +11,6 @@ add_library (BBRenderer_DX11 STATIC
 "Source/Bindable/PixelShader.cpp"
 "Source/Bindable/VertexShader.cpp"
 "Source/Bindable/InputLayout.cpp"
-"Source/Drawable/Drawable.cpp"
 "Source/Drawable/DrawToTexture.cpp"
 "Source/Drawable/Box.cpp"
 "Source/Drawable/Model.cpp"
@@ -22,8 +21,6 @@ add_library (BBRenderer_DX11 STATIC
 "Source/Drawable/SkyBox.cpp"
 "Source/Drawable/Quad.cpp"
 )
-
-#set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 
 add_compile_definitions(BBX11)
 
@@ -37,5 +34,5 @@ ImGUI
 BBMath
 stb_image
 Common
-RendererCommon
+#RendererCommon
 )

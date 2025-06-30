@@ -16,7 +16,7 @@ add_compile_definitions(BBDX12)
 target_include_directories(BBRenderer_DX12 PUBLIC
 "Include/"
 "Common/"
-#"Shader/"
+"../Shader/"
 )
 
 target_link_libraries(BBRenderer_DX12 
