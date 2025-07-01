@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindable/IVertexBuffer.h"
+#include "Graphics.h"
 
 class DX12VertexBuffer : public IVertexBuffer
 {

@@ -11,8 +11,6 @@ add_library (BBRenderer_DX12 STATIC
 
 #set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
 
-add_compile_definitions(BBDX12)
-
 target_include_directories(BBRenderer_DX12 PUBLIC
 "Include/"
 "Common/"

@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindable/IIndexBuffer.h"
+#include "Graphics.h"
 
 class DX12IndexBuffer : public IIndexBuffer
 {

@@ -21,7 +21,7 @@ public:
 	//Note(Stan): These should be in DX11 / DX12 specific grpahics classes
 	//				But for now and testing I'm just hardcoding it here
 	virtual BBRenderDevice* GetDevice() const = 0;
-	virtual ID3D12GraphicsCommandList* GetCommandList() const = 0;
+	virtual BBGraphicsCommandList* GetCommandList() const = 0;
 	virtual uint8_t GetFrameCount() const = 0;
 
 	virtual uint8_t GetCurrentFrame() const = 0;

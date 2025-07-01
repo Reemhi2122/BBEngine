@@ -26,7 +26,7 @@ void Drawable::Draw(IGraphics& a_Gfx) noexcept
 
 void Drawable::AddBind(Bindable* a_Bind) noexcept
 {
-	assert(typeid(*a_Bind) != typeid(IndexBuffer) && "*Must* use AddIndexBuffer to bind index buffer!");
+	//assert(typeid(*a_Bind) != typeid(IndexBuffer) && "*Must* use AddIndexBuffer to bind index buffer!");
 	m_Binds.push_back(a_Bind);
 }
 

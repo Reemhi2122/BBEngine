@@ -9,3 +9,7 @@ add_library (RendererCommon STATIC
 target_include_directories(RendererCommon PUBLIC 
     "Include/"
 )
+
+target_link_libraries(RendererCommon 
+BBMath
+)

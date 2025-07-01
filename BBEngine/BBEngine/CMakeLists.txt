@@ -54,8 +54,6 @@ add_library (BBEngine
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 
-add_compile_definitions(BBDX12)
-
 # TODO: Add tests and install targets if needed.
 target_link_libraries(BBEngine 
 BBRenderer_DX12
