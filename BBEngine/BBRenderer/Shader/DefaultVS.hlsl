@@ -14,6 +14,7 @@ struct VS_OUT
 cbuffer ConstantBuffer : register(b0)
 {
     float4x4 WVPMatrix;
+    float4x4 Transform;
 };
 
 VS_OUT main(VS_IN vsin)

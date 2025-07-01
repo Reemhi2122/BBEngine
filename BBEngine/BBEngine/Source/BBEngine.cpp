@@ -221,6 +221,8 @@ namespace BBE
         //pointLightObject->AddComponent(pointLightComponent);
         //m_GameObjects.push_back(pointLightObject);
 
+        m_Graphics.CloseInit();
+
         ////Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, -10, 0));
 

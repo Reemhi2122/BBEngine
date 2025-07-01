@@ -43,6 +43,7 @@ struct TempVertex
 struct ConstantBufferPerObject
 {
 	DirectX::XMFLOAT4X4 WVPMatrix;
+	DirectX::XMFLOAT4X4 Transform;
 };
 
 struct UploadHeap
@@ -60,6 +61,8 @@ public:
 
 	//Note(Stan): Some starter funtions gotten from DX12 tut
 	bool Initialize() override;
+	bool CloseInit() override;
+
 	void Update() override;
 
 	void StartFrame() override;

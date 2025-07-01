@@ -291,7 +291,8 @@ bool Graphics::Initialize()
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0}
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+		{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc = {};
@@ -528,18 +529,6 @@ bool Graphics::Initialize()
 	DirectX::XMStoreFloat4x4(&m_Cube2RotationMatrix, DirectX::XMMatrixIdentity());
 	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, tempMatrix);
 
-	m_CommandList->Close();
-	ID3D12CommandList* commandLists[] = { m_CommandList };
-	m_CommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
-
-	m_FenceValue[m_FrameIndex]++;
-	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to signal the Command Queue Fence!");
-		return false;
-	}
-
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;
 	m_Viewport.Width = WINDOW_WIDTH; // Check window size
@@ -553,6 +542,25 @@ bool Graphics::Initialize()
 	m_ScissorRect.bottom = WINDOW_HEIGHT;
 
 	m_Camera = new Camera();
+
+	return true;
+}
+
+bool Graphics::CloseInit()
+{
+	HRESULT hres;
+
+	m_CommandList->Close();
+	ID3D12CommandList* commandLists[] = { m_CommandList };
+	m_CommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
+
+	m_FenceValue[m_FrameIndex]++;
+	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to signal the Command Queue Fence!");
+		return false;
+	}
 
 	return true;
 }
@@ -709,7 +717,7 @@ void Graphics::WaitForPreviousFrame()
 
 void Graphics::DrawIndexed(uint32_t a_IndexCount)
 {
-	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
+	m_CommandList->DrawIndexedInstanced(a_IndexCount, 1, 0, 0, 0);
 }
 
 void Graphics::ShutDown()

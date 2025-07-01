@@ -4,6 +4,7 @@ bool DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_
 {
 	HRESULT hres;
 
+	m_Count = a_Count;
 	uint32_t indexBufferSize = a_Count * a_IndexDataSize;
 
 	hres = a_Gfx.GetDevice()->CreateCommittedResource(
