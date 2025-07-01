@@ -16,7 +16,7 @@
 //Graphics includes
 //#include "Drawable/Skybox.h"
 //#include "Drawable/DrawToTexture.h"
-//#include "Drawable/Model.h"
+#include "GameLib/Drawable/Model.h"
 //#include "Drawable/Quad.h"
 //
 //#include "DepthStencil.h"
@@ -57,7 +57,7 @@ namespace BBE {
 		BBTimer m_Timer;
 
 		std::vector<BBObject*> m_GameObjects;
-		//std::vector<Model*> m_Models;
+		std::vector<Model*> m_Models;
 		//DrawToTexture* m_DrawToTexture;
 
 		uint32_t m_VertexShader;

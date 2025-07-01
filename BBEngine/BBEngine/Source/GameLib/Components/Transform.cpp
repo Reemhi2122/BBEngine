@@ -9,7 +9,7 @@ Transform::Transform(Vector3 a_Position, Vector3 a_Rotation, Vector3 a_Scale)
 	m_Transform = DirectX::XMMatrixIdentity();
 }
 
-void Transform::Update(Graphics& a_Graphics)
+void Transform::Update(IGraphics& a_Graphics)
 {
 	DirectX::XMMATRIX objTransform =
 		DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *

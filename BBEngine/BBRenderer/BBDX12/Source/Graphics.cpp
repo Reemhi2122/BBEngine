@@ -654,23 +654,21 @@ void Graphics::Render()
 
 	m_ConstantBufferCube2->Bind(*this);
 	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
-
-	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
-
-	hres = m_CommandList->Close();
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to close the Command List!");
-		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
-	}
 }
 
 void Graphics::EndFrame()
 {
 	HRESULT hres;
 
+	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
+	hres = m_CommandList->Close();
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to close the Command List!");
+		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
+	}
+	
 	ID3D12CommandList* cmdLists[] = {m_CommandList};
-
 	m_CommandQueue->ExecuteCommandLists(1, cmdLists);
 	
 	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);

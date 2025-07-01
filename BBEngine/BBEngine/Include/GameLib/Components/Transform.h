@@ -8,8 +8,8 @@ public:
 	Transform(Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
 	~Transform() = default;
 
-	void Update(Graphics& a_Graphics) override;
-	void Draw(Graphics& a_Graphics) override {};
+	void Update(IGraphics& a_Graphics) override;
+	void Draw(IGraphics& a_Graphics) override {};
 
 	void InspectorDrawUI() override;
 

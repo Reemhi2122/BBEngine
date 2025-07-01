@@ -9,7 +9,7 @@
 #include "System/FileHandler.h"
 
 #include "GameLib/Components/Transform.h"
-//#include "GameLib/Components/MeshComponent.h"
+#include "GameLib/Components/MeshComponent.h"
 //#include "GameLib/Components/LightComponents/DirectionalLightComponent.h"
 //#include "GameLib/Components/LightComponents/PointLightComponent.h"
 //#include "GameLib/Components/LightComponents/SpotLightComponent.h"
@@ -156,8 +156,8 @@ namespace BBE
         //m_PSSpotLightShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl", "SpotLightPS");
 
         ////Models
-        //Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, "Sponza", &m_SponzaFile, m_VertexShader, m_PixelShader);
-        //m_Models.push_back(Sponza);
+        Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, "Sponza", &m_SponzaFile, m_VertexShader, m_PixelShader);
+        m_Models.push_back(Sponza);
         //Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(lantern);
         //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
@@ -171,17 +171,17 @@ namespace BBE
         //m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
         ////Objects
-        //int XSize = 2, YSize = 2;
-        //for (size_t i = 0; i < XSize; i++) {
-        //    for (size_t y = 0; y < YSize; y++) {
-        //        BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
-        //        Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
-        //        MeshComponent* sponzaMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, Sponza, sponzaTransform);
-        //        obj->AddComponent(sponzaTransform);
-        //        obj->AddComponent(sponzaMesh);
-        //        m_GameObjects.push_back(obj);
-        //    }
-        //}
+        int XSize = 1, YSize = 1;
+        for (size_t i = 0; i < XSize; i++) {
+            for (size_t y = 0; y < YSize; y++) {
+                BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
+                Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
+                MeshComponent* sponzaMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, Sponza, sponzaTransform);
+                obj->AddComponent(sponzaTransform);
+                obj->AddComponent(sponzaMesh);
+                m_GameObjects.push_back(obj);
+            }
+        }
 
         //BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
         //Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
@@ -222,7 +222,7 @@ namespace BBE
         //m_GameObjects.push_back(pointLightObject);
 
         ////Cameras
-        m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
+        m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, -10, 0));
 
         float fov = 45.0f * (3.14f / 180.f);
         float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
@@ -241,7 +241,11 @@ namespace BBE
     {
         m_Graphics.StartFrame();
         m_Graphics.Update();
+
         m_Graphics.Render();
+
+        m_GameObjects[0]->Draw(m_Graphics);
+
         m_Graphics.EndFrame();
         
         CheckInput();

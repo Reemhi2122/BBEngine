@@ -2,18 +2,18 @@
 
 namespace BBE
 {
-	MeshComponent::MeshComponent(Graphics& a_Graphics, Model* a_Model, Transform* a_Transform)
+	MeshComponent::MeshComponent(IGraphics& a_Graphics, Model* a_Model, Transform* a_Transform)
 	{
 		m_Transform = a_Transform;
 		m_Model = a_Model;
 	}
 
-	void MeshComponent::Update(Graphics& a_Graphics)
+	void MeshComponent::Update(IGraphics& a_Graphics)
 	{
 		m_Model->Update(0.0f);
 	}
 
-	void MeshComponent::Draw(Graphics& a_Graphics)
+	void MeshComponent::Draw(IGraphics& a_Graphics)
 	{
 		m_Model->SetTransform(&m_Transform->GetTransform());
 		m_Model->Draw(a_Graphics);

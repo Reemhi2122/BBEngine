@@ -106,8 +106,8 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 		}
 	}
 
-	m_ModelPixelBuffer = new RootConstantBuffer<MaterialConstant>();
-	m_ModelPixelBuffer->Create(a_Gfx, 2, 1);
+	//m_ModelPixelBuffer = new RootConstantBuffer<MaterialConstant>();
+	//m_ModelPixelBuffer->Create(a_Gfx, 2, 1);
 
 	m_VertexShader = m_CurVertexShader = a_VertexShader;
 	m_PixelShader = m_CurPixelShader = a_PixelShader;
@@ -150,7 +150,7 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 //				Only fixed for textures right now.
 void Model::Draw(IGraphics& a_Gfx) noexcept
 {
-	m_ModelPixelBuffer->Bind(a_Gfx);
+	//m_ModelPixelBuffer->Bind(a_Gfx);
 
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
@@ -172,12 +172,12 @@ void Model::Draw(IGraphics& a_Gfx) noexcept
 
 			//a_Gfx.SetBlendState(curPrimitive.m_Blend);
 
-			m_ModelPixelBuffer->Update(a_Gfx, curPrimitive.m_MaterialConstant);
+			//m_ModelPixelBuffer->Update(a_Gfx, curPrimitive.m_MaterialConstant);
 
 			curPrimitive.vBuffer->Bind(a_Gfx);
 			curPrimitive.m_IndexBuffer->Bind(a_Gfx);
 
-			//SetIndexBuffer(curPrimitive.m_IndexBuffer);
+			SetIndexBuffer(curPrimitive.m_IndexBuffer);
 			Drawable::Draw(a_Gfx);
 
 
@@ -190,35 +190,35 @@ void Model::Draw(IGraphics& a_Gfx) noexcept
 		}
 	}
 
-	m_ModelPixelBuffer->UnBind(a_Gfx);
+	//m_ModelPixelBuffer->UnBind(a_Gfx);
 }
 
-//void Model::DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept
-//{
-//	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
-//	{
-//		m_Nodes[curNode].transformBuf->Bind(a_Gfx);
-//		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
-//		{
-//			if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
-//			{
-//				m_Nodes[curNode].primitives[i].m_Texture->Bind(a_Gfx);
-//				m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
-//			}
-//
-//			a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
-//			a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
-//
-//			m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(DirectX::XMMATRIX), m_InstanceBuffer.size());
-//			m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
-//			m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
-//
-//			SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
-//			Drawable::DrawInstanced(a_Gfx, m_InstanceBuffer.size());
-//		}
-//	}
-//
-//	m_InstanceBuffer.clear();
-//}
+void Model::DrawInstanced(IGraphics& a_Gfx, uint32_t a_InstanceCount) noexcept
+{
+	//for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
+	//{
+	//	m_Nodes[curNode].transformBuf->Bind(a_Gfx);
+	//	for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
+	//	{
+	//		if (m_Nodes[curNode].primitives[i].m_Texture != nullptr)
+	//		{
+	//			m_Nodes[curNode].primitives[i].m_Texture->Bind(a_Gfx);
+	//			m_Nodes[curNode].primitives[i].m_Sampler->Bind(a_Gfx);
+	//		}
+
+	//		a_Gfx.BindShader(ShaderType::VertexShader, m_CurVertexShader);
+	//		a_Gfx.BindShader(ShaderType::PixelShader, m_CurPixelShader);
+
+	//		m_Nodes[curNode].primitives[i].vBuffer->CreateInstanceBuffer(a_Gfx, m_InstanceBuffer.data(), sizeof(DirectX::XMMATRIX), m_InstanceBuffer.size());
+	//		m_Nodes[curNode].primitives[i].vBuffer->Bind(a_Gfx);
+	//		m_Nodes[curNode].primitives[i].m_IndexBuffer->Bind(a_Gfx);
+
+	//		SetIndexBuffer(m_Nodes[curNode].primitives[i].m_IndexBuffer);
+	//		Drawable::DrawInstanced(a_Gfx, m_InstanceBuffer.size());
+	//	}
+	//}
+
+	//m_InstanceBuffer.clear();
+}
 
 void Model::Update(float a_DeltaTime) noexcept {}

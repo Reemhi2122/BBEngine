@@ -46,9 +46,10 @@ add_library (BBEngine
 "Source/Lights/SpotLight.cpp"
 "Source/Lights/PointLight.cpp"
 
-#"Source/GameLib/Components/MeshComponent.cpp" 
+"Source/GameLib/Components/MeshComponent.cpp" 
 "Source/GameLib/Components/Transform.cpp"
 "Source/GameLib/Drawable/Model.cpp"
+"Source/GameLib/Drawable/Drawable.cpp"
 "Source/GameLib/TransformBuf.cpp"
 )
 

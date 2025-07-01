@@ -4,8 +4,8 @@
 #include <vector>
 #include "BBMath.h"
 
-class Bindable;
-class IndexBuffer;
+#include "Bindable/Bindable.h"
+#include "Bindable/IIndexBuffer.h"
 
 class Drawable {
 public:
@@ -28,20 +28,20 @@ public:
 	//virtual const std::vector<Bindable*>& GetStaticBinds() const noexcept { return std::vector<Bindable*>(); };
 
 protected:
-	IndexBuffer* GetIndexBuffer() const;
-	void SetIndexBuffer(IndexBuffer* a_Buffer);
+	IIndexBuffer* GetIndexBuffer() const;
+	void SetIndexBuffer(IIndexBuffer* a_Buffer);
 
 private:
-	IndexBuffer* m_IndexBuffer = nullptr;
+	IIndexBuffer* m_IndexBuffer = nullptr;
 	std::vector<Bindable*> m_Binds;
 };
 
-inline void Drawable::SetIndexBuffer(IndexBuffer* a_Buffer)
+inline void Drawable::SetIndexBuffer(IIndexBuffer* a_Buffer)
 {
 	m_IndexBuffer = a_Buffer;
 }
 
-inline IndexBuffer* Drawable::GetIndexBuffer() const
+inline IIndexBuffer* Drawable::GetIndexBuffer() const
 {
 	return m_IndexBuffer;
 }
