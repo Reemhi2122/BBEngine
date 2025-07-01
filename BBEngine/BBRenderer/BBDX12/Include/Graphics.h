@@ -84,6 +84,9 @@ public:
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
 
+	ID3D12DescriptorHeap* GetMainDescriptorHeap() { return m_MainDescriptorHeap; };
+	uint32_t& GetMainDescriptorHeapIndex() { return m_DescriptorHeapIndex; };
+
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
 private:
@@ -104,6 +107,7 @@ private:
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
+	uint32_t					m_DescriptorHeapIndex = 0;
 	ID3D12DescriptorHeap*		m_MainDescriptorHeap;
 
 	ID3D12Resource*				m_DepthStenil;

@@ -190,7 +190,7 @@ bool Graphics::Initialize()
 
 	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorTableRange[0].NumDescriptors = 1;
+	descriptorTableRange[0].NumDescriptors = 50;
 	descriptorTableRange[0].BaseShaderRegister = 0;
 	descriptorTableRange[0].RegisterSpace = 0;
 	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -486,16 +486,8 @@ bool Graphics::Initialize()
 	m_ConstantBufferCube2 = new RootConstantBuffer<ConstantBufferPerObject>();
 	m_ConstantBufferCube2->Create(*this);
 
-	m_Texture = new DX12Texture();
-	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
-	if (!res)
-	{
-		printf("[GFX]: Failed to create Texture!");
-		return false;
-	}
-
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
-	srvDescriptorHeapDesc.NumDescriptors = 1;
+	srvDescriptorHeapDesc.NumDescriptors = 50;
 	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
@@ -506,14 +498,22 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
-	srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDescriptorDesc.Texture2D.MipLevels = 1;
+	m_Texture = new DX12Texture();
+	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
+	if (!res)
+	{
+		printf("[GFX]: Failed to create Texture!");
+		return false;
+	}
 
-	DX12Texture* tex = static_cast<DX12Texture*>(m_Texture);
-	m_Device->CreateShaderResourceView(tex->GetTextureBuffer(), &srvDescriptorDesc, m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
+	//srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	//srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	//srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	//srvDescriptorDesc.Texture2D.MipLevels = 1;
+
+	//DX12Texture* tex = static_cast<DX12Texture*>(m_Texture);
+	//m_Device->CreateShaderResourceView(tex->GetTextureBuffer(), &srvDescriptorDesc, m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
@@ -653,6 +653,8 @@ void Graphics::Render()
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	m_Texture->Bind(*this);
 
 	m_CubeVertexBuffer->Bind(*this);
 	m_CubeIndexBuffer->Bind(*this);

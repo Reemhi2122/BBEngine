@@ -17,4 +17,6 @@ public:
 private:
 	ID3D12Resource* m_TextureBuffer;
 	ID3D12Resource* m_TextureUploadBufferHeap;
+
+	D3D12_GPU_DESCRIPTOR_HANDLE m_SRVHandle;
 };

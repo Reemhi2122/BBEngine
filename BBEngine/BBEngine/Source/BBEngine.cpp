@@ -228,10 +228,10 @@ namespace BBE
 
         float fov = 45.0f * (3.14f / 180.f);
         float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
-        m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 1000.0f));
+        m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 10000.0f));
 
         m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));
-        m_Cam2.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 100.f));
+        m_Cam2.SetProjection(DirectX::XMMatrixPerspectiveLH(1.0f, 1.0f, 0.5f, 1000.f));
 
         m_Cam2.SetViewPort(1024, 1024);
         m_Graphics.SetCamera(&m_Cam1);
