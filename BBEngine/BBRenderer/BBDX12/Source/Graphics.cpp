@@ -598,11 +598,10 @@ void Graphics::Update()
 	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, worldMatrix);
 }
 
-void Graphics::UpdatePipeline()
+void Graphics::StartFrame()
 {
 	HRESULT hres;
 
-	//Still have to implement the fence check
 	WaitForPreviousFrame();
 
 	hres = m_CommandAllocator[m_FrameIndex]->Reset();
@@ -621,7 +620,7 @@ void Graphics::UpdatePipeline()
 	}
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
-	
+
 	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_FrameIndex, m_RTVDescriptorSize);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE dsHandle(m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
@@ -632,6 +631,11 @@ void Graphics::UpdatePipeline()
 	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
+}
+
+void Graphics::Render()
+{
+	HRESULT hres;
 
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_MainDescriptorHeap };
 	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
@@ -661,11 +665,9 @@ void Graphics::UpdatePipeline()
 	}
 }
 
-void Graphics::Render()
+void Graphics::EndFrame()
 {
 	HRESULT hres;
-
-	UpdatePipeline();
 
 	ID3D12CommandList* cmdLists[] = {m_CommandList};
 
@@ -705,6 +707,11 @@ void Graphics::WaitForPreviousFrame()
 	}
 
 	m_FenceValue[m_FrameIndex]++;
+}
+
+void Graphics::DrawIndexed(uint32_t a_IndexCount)
+{
+	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 }
 
 void Graphics::ShutDown()

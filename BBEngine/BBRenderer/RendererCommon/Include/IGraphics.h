@@ -10,8 +10,11 @@ class IGraphics
 public:
 	virtual bool Initialize() = 0;
 	virtual void Update() = 0;
-	virtual void UpdatePipeline() = 0;
+	
+	virtual void StartFrame() = 0;
 	virtual void Render() = 0;
+	virtual void EndFrame() = 0;
+	
 	virtual void ShutDown() = 0;
 	virtual void WaitForPreviousFrame() = 0;
 
@@ -25,4 +28,6 @@ public:
 	virtual uint8_t GetFrameCount() const = 0;
 
 	virtual uint8_t GetCurrentFrame() const = 0;
+
+	virtual void DrawIndexed(uint32_t a_IndexCount) = 0;
 };

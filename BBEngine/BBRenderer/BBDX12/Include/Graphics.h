@@ -61,8 +61,11 @@ public:
 	//Note(Stan): Some starter funtions gotten from DX12 tut
 	bool Initialize() override;
 	void Update() override;
-	void UpdatePipeline() override;
+
+	void StartFrame() override;
 	void Render() override;
+	void EndFrame() override;
+
 	void ShutDown() override;
 	void WaitForPreviousFrame() override;
 
@@ -77,6 +80,8 @@ public:
 	uint8_t GetCurrentFrame() const override { return m_FrameIndex; };
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
+
+	void DrawIndexed(uint32_t a_IndexCount) override;
 
 private:
 	HWND						m_HWindow;
