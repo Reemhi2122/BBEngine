@@ -13,23 +13,25 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 	{
 		BBE::Node& curNode = a_File->nodes[nodeIndex];
 
-		m_Nodes[nodeIndex].position = curNode.translation;
-		m_Nodes[nodeIndex].rotation = curNode.rotation;
-		m_Nodes[nodeIndex].scale = curNode.scale;
-
-		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx,
-			curNode.translation,
-			curNode.rotation,
-			curNode.scale);
-
+		m_Nodes[nodeIndex].objectTransform = { curNode.translation, curNode.rotation, curNode.scale };
 		if (curNode.Parent)
 		{
-			m_Nodes[nodeIndex].transformBuf->SetParentTransform(
-				curNode.Parent->translation,
-				curNode.Parent->rotation,
-				curNode.Parent->scale
-			);
+			m_Nodes[nodeIndex].parentTransform = { curNode.Parent->translation, curNode.Parent->rotation, curNode.Parent->scale };
 		}
+
+		//m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx,
+		//	curNode.translation,
+		//	curNode.rotation,
+		//	curNode.scale);
+
+		//if (curNode.Parent)
+		//{
+		//	m_Nodes[nodeIndex].transformBuf->SetParentTransform(
+		//		curNode.Parent->translation,
+		//		curNode.Parent->rotation,
+		//		curNode.Parent->scale
+		//	);
+		//}
 
 		m_Nodes[nodeIndex].primitiveCount = curNode.mesh.primitiveCount;
 		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNodes::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNodes::ModelPrimitive)));
@@ -153,7 +155,7 @@ void Model::Draw(IGraphics& a_Gfx) noexcept
 
 	for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
 	{
-		m_Nodes[curNode].transformBuf->Bind(a_Gfx, *m_CurTransform);
+		m_CurTransform->Bind(a_Gfx);
 		for (size_t i = 0; i < m_Nodes[curNode].primitiveCount; i++)
 		{
 			ModelNodes::ModelPrimitive& curPrimitive = m_Nodes[curNode].primitives[i];

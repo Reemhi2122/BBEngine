@@ -15,7 +15,7 @@ namespace BBE
 
 	void MeshComponent::Draw(IGraphics& a_Graphics)
 	{
-		m_Model->SetTransform(&m_Transform->GetTransform());
+		m_Model->SetTransform(m_Transform->GetTransformBuf());
 		m_Model->Draw(a_Graphics);
 	}
 

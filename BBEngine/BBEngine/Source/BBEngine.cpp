@@ -171,11 +171,11 @@ namespace BBE
         //m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
         ////Objects
-        int XSize = 1, YSize = 1;
+        int XSize = 2, YSize = 2;
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
-                Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50), Vector3(0, 0, 0), Vector3(0.5f, 0.5f, 0.5f));
+                Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(m_Graphics, Sponza, Vector3(i * 50, 0, y * 50), Vector3(0, 0, 0), Vector3(0.5f, 0.5f, 0.5f));
                 MeshComponent* sponzaMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, Sponza, sponzaTransform);
                 obj->AddComponent(sponzaTransform);
                 obj->AddComponent(sponzaMesh);
@@ -251,7 +251,10 @@ namespace BBE
             m_GameObjects[i]->Update(m_Graphics);
         }
 
-        m_GameObjects[0]->Draw(m_Graphics);
+        for (size_t i = 0; i < m_GameObjects.size(); i++)
+        {
+            m_GameObjects[i]->Draw(m_Graphics);
+        }
 
         m_Graphics.EndFrame();
         

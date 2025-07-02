@@ -1,22 +1,21 @@
 #include "GameLib/Components/Transform.h"
+#include "GameLib/Drawable/Model.h"
 
-Transform::Transform(Vector3 a_Position, Vector3 a_Rotation, Vector3 a_Scale)
+Transform::Transform(IGraphics& a_Graphics, Model* a_Model, Vector3 a_Position, Vector3 a_Rotation, Vector3 a_Scale)
 {
+	ModelTransform modTransform = a_Model->GetNodes().data[0].objectTransform;
+	m_TransformBuf = new TransformBuf(a_Graphics, modTransform.position, modTransform.rotation, modTransform.scale);
+	
 	m_Position = a_Position;
 	m_Rotation = a_Rotation;
 	m_Scale = a_Scale;
 
-	m_Transform = DirectX::XMMatrixIdentity();
+	m_TransformBuf->SetObjectTransform(m_Position, m_Rotation, m_Scale);
 }
 
 void Transform::Update(IGraphics& a_Graphics)
 {
-	DirectX::XMMATRIX objTransform =
-		DirectX::XMMatrixScaling(m_Scale.x, m_Scale.y, m_Scale.z) *
-		DirectX::XMMatrixRotationRollPitchYaw(m_Rotation.x, m_Rotation.y, m_Rotation.z) *
-		DirectX::XMMatrixTranslation(m_Position.x, m_Position.y, m_Position.z);
-
-	m_Transform = objTransform;
+	m_TransformBuf->SetObjectTransform(m_Position, m_Rotation, m_Scale);
 }
 
 void Transform::InspectorDrawUI()

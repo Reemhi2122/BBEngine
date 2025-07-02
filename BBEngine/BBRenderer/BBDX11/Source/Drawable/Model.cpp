@@ -17,10 +17,10 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 		m_Nodes[nodeIndex].rotation = curNode.rotation;
 		m_Nodes[nodeIndex].scale	= curNode.scale;
 			
-		m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
-			curNode.translation,
-			curNode.rotation,
-			curNode.scale);
+		//m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
+		//	curNode.translation,
+		//	curNode.rotation,
+		//	curNode.scale);
 
 		if (curNode.Parent) {
 			m_Nodes[nodeIndex].transformBuf->SetParentTransform(

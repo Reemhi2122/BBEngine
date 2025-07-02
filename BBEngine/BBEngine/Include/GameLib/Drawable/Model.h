@@ -13,15 +13,21 @@
 #include "Vector3.h"
 #include "Materials.h"
 
+struct ModelTransform
+{
+	Vector3 position;
+	Vector4 rotation;
+	Vector3 scale;
+};
+
 struct ModelNodes
 {
 	uint32_t primitiveCount = 0;
 
-	Vector3 position;
-	Vector4 rotation;
-	Vector3 scale;
-
-	TransformBuf* transformBuf = nullptr;
+	ModelTransform objectTransform;
+	ModelTransform parentTransform;
+	
+	//TransformBuf* transformBuf = nullptr;
 
 	struct ModelPrimitive
 	{
@@ -59,7 +65,7 @@ public:
 	void DrawInstanced(IGraphics& a_Gfx, uint32_t a_InstanceCount) noexcept override;
 	void Update(float a_DeltaTime) noexcept override;
 
-	void SetTransform(DirectX::XMMATRIX* a_Transform) { m_CurTransform = a_Transform; }
+	void SetTransform(TransformBuf* a_TransformBuf) { m_CurTransform = a_TransformBuf; }
 
 	NodeContainer GetNodes() { return { m_Nodes, m_nodeCount }; };
 
@@ -72,7 +78,7 @@ private:
 	char m_Name[255] = "Undefined Model";
 
 	std::vector<DirectX::XMMATRIX> m_InstanceBuffer;
-	DirectX::XMMATRIX* m_CurTransform = nullptr;
+	TransformBuf* m_CurTransform = nullptr;
 
 	ModelNodes* m_Nodes = nullptr;
 
