@@ -77,25 +77,24 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 				modelPrimitive.m_MaterialConstant.hasBaseColorTexture = 0;
 			}
 
-			if (gltfPrimitive.material.extensions.hasKhrMaterialVolume)
-			{
-				modelPrimitive.m_MaterialConstant.hasKhrVolume = 1;
-				modelPrimitive.m_MaterialConstant.khrThicknessFactor = gltfPrimitive.material.extensions.khrMaterialVolume.thicknessFactor;
-				modelPrimitive.m_MaterialConstant.khrAttenuationDistance = gltfPrimitive.material.extensions.khrMaterialVolume.attenuationDistance;
-				modelPrimitive.m_MaterialConstant.khrAttenuationColor = gltfPrimitive.material.extensions.khrMaterialVolume.attenuationColor;
+			//if (gltfPrimitive.material.extensions.hasKhrMaterialVolume)
+			//{
+			//	modelPrimitive.m_MaterialConstant.hasKhrVolume = 1;
+			//	modelPrimitive.m_MaterialConstant.khrThicknessFactor = gltfPrimitive.material.extensions.khrMaterialVolume.thicknessFactor;
+			//	modelPrimitive.m_MaterialConstant.khrAttenuationDistance = gltfPrimitive.material.extensions.khrMaterialVolume.attenuationDistance;
+			//	modelPrimitive.m_MaterialConstant.khrAttenuationColor = gltfPrimitive.material.extensions.khrMaterialVolume.attenuationColor;
 
-				if (gltfPrimitive.material.extensions.khrMaterialVolume.thicknessTexture.path)
-				{
-					char texturePath[_MAX_PATH] = "";
-					strcat(texturePath, a_File->gltfPath);
-					strcat(texturePath, gltfPrimitive.material.extensions.khrMaterialVolume.thicknessTexture.path);
+			//	if (gltfPrimitive.material.extensions.khrMaterialVolume.thicknessTexture.path)
+			//	{
+			//		char texturePath[_MAX_PATH] = "";
+			//		strcat(texturePath, a_File->gltfPath);
+			//		strcat(texturePath, gltfPrimitive.material.extensions.khrMaterialVolume.thicknessTexture.path);
 
-					modelPrimitive.m_MaterialConstant.hasKhrVolumeTexture = 1;
-					modelPrimitive.m_KhrVolumeTexture = new DX12Texture();
-					modelPrimitive.m_KhrVolumeTexture->Create(a_Gfx, texturePath, 5);
-
-				}
-			}
+			//		modelPrimitive.m_MaterialConstant.hasKhrVolumeTexture = 1;
+			//		modelPrimitive.m_KhrVolumeTexture = new DX12Texture();
+			//		modelPrimitive.m_KhrVolumeTexture->Create(a_Gfx, texturePath, 5);
+			//	}
+			//}
 
 			modelPrimitive.vBuffer = new DX12VertexBuffer();
 			modelPrimitive.vBuffer->Create(a_Gfx, vertices, sizeof(BBE::Vertex), gltfPrimitive.vertexCount);
@@ -165,10 +164,10 @@ void Model::Draw(IGraphics& a_Gfx) noexcept
 				//curPrimitive.m_Sampler->Bind(a_Gfx);
 			}
 
-			if (curPrimitive.m_KhrVolumeTexture != nullptr)
-			{
-				curPrimitive.m_KhrVolumeTexture->Bind(a_Gfx);
-			}
+			//if (curPrimitive.m_KhrVolumeTexture != nullptr)
+			//{
+			//	curPrimitive.m_KhrVolumeTexture->Bind(a_Gfx);
+			//}
 
 			//a_Gfx.SetBlendState(curPrimitive.m_Blend);
 
