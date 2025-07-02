@@ -84,10 +84,12 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 
 	uint32_t test = gfx->GetMainDescriptorHeapIndex();
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE srvCPUHandle(gfx->GetMainDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), test);
+	uint32_t offsetSize = a_Gfx.GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE srvCPUHandle(gfx->GetMainDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), test, offsetSize);
 	a_Gfx.GetDevice()->CreateShaderResourceView(m_TextureBuffer, &srvDescriptorDesc, srvCPUHandle);
 	
-	m_SRVHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(gfx->GetMainDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), test);
+	m_SRVHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(gfx->GetMainDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), test, offsetSize);
 
 	gfx->GetMainDescriptorHeapIndex()++;
 

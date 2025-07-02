@@ -190,7 +190,7 @@ bool Graphics::Initialize()
 
 	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorTableRange[0].NumDescriptors = 50;
+	descriptorTableRange[0].NumDescriptors = 150;
 	descriptorTableRange[0].BaseShaderRegister = 0;
 	descriptorTableRange[0].RegisterSpace = 0;
 	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -487,7 +487,7 @@ bool Graphics::Initialize()
 	m_ConstantBufferCube2->Create(*this);
 
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
-	srvDescriptorHeapDesc.NumDescriptors = 50;
+	srvDescriptorHeapDesc.NumDescriptors = 150;
 	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
@@ -582,6 +582,7 @@ void Graphics::Update()
 	DirectX::XMMATRIX wvpMat = XMLoadFloat4x4(&m_Cube1WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
 	DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(wvpMat);
 	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube1->GetConstantBuffer()->WVPMatrix, transposed);
+	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube1->GetConstantBuffer()->Transform, DirectX::XMMatrixIdentity());
 
 	m_ConstantBufferCube1->Update(*this);
 
@@ -600,6 +601,7 @@ void Graphics::Update()
 	wvpMat = XMLoadFloat4x4(&m_Cube2WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
 	transposed = DirectX::XMMatrixTranspose(wvpMat);
 	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube2->GetConstantBuffer()->WVPMatrix, transposed);
+	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube2->GetConstantBuffer()->Transform, DirectX::XMMatrixIdentity());
 
 	m_ConstantBufferCube2->Update(*this);
 

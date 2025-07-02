@@ -20,7 +20,10 @@ cbuffer ConstantBuffer : register(b0)
 VS_OUT main(VS_IN vsin)
 {
     VS_OUT vsout;
-    vsout.pos = mul(float4(vsin.pos, 1.0f), WVPMatrix);
+    
+    float4x4 pos = mul(Transform, WVPMatrix);
+    
+    vsout.pos = mul(float4(vsin.pos, 1.0f), pos);
     vsout.texCoords = vsin.texCoords;
     return vsout;
 }

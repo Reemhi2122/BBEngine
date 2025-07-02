@@ -175,7 +175,7 @@ namespace BBE
         for (size_t i = 0; i < XSize; i++) {
             for (size_t y = 0; y < YSize; y++) {
                 BBObject* obj = BBNew(m_StackAllocator, BBObject)("Sponza");
-                Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50));
+                Transform* sponzaTransform = BBNew(m_StackAllocator, Transform)(Vector3(i * 50, 0, y * 50), Vector3(0, 0, 0), Vector3(0.5f, 0.5f, 0.5f));
                 MeshComponent* sponzaMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, Sponza, sponzaTransform);
                 obj->AddComponent(sponzaTransform);
                 obj->AddComponent(sponzaMesh);
@@ -245,6 +245,11 @@ namespace BBE
         m_Graphics.Update();
 
         m_Graphics.Render();
+
+        for (size_t i = 0; i < m_GameObjects.size(); i++)
+        {
+            m_GameObjects[i]->Update(m_Graphics);
+        }
 
         m_GameObjects[0]->Draw(m_Graphics);
 
