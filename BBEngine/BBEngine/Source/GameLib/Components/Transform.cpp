@@ -10,12 +10,12 @@ Transform::Transform(IGraphics& a_Graphics, Model* a_Model, Vector3 a_Position, 
 	m_Rotation = a_Rotation;
 	m_Scale = a_Scale;
 
-	m_TransformBuf->SetObjectTransform(m_Position, m_Rotation, m_Scale);
+	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
 }
 
 void Transform::Update(IGraphics& a_Graphics)
 {
-	m_TransformBuf->SetObjectTransform(m_Position, m_Rotation, m_Scale);
+	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
 }
 
 void Transform::InspectorDrawUI()

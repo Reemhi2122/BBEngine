@@ -8,6 +8,13 @@ struct perObjectBuffer {
 	DirectX::XMMATRIX transform;
 };
 
+enum class TransformType
+{
+	LOCAL,
+	OBJECT,
+	PARENT
+};
+
 class TransformBuf : public Bindable {
 public:
 	TransformBuf(IGraphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
@@ -15,13 +22,11 @@ public:
 	void Bind(IGraphics& a_Gfx) noexcept;
 	//void Bind(IGraphics& a_Gfx, DirectX::XMMATRIX a_ObjTransform) noexcept;
 
-	void SetLocalTransform(Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
-	void SetObjectTransform(Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
-	void SetObjectTransform(Vector3 a_LocalTranslation, Vector3 a_LocalRotation, Vector3 a_LocalScale);
-	void SetParentTransform(Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
+	void SetTransform(TransformType type, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
+	void SetTransformRPY(TransformType type, Vector3 a_LocalTranslation, Vector3 a_LocalRotation, Vector3 a_LocalScale);
 
 private:
-	void SetTransform(DirectX::XMMATRIX& matrix, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
+	DirectX::XMMATRIX& GetMatrix(TransformType type);
 
 	RootConstantBuffer<perObjectBuffer>* m_VCB;
 	DirectX::XMMATRIX m_LocalMatrix = DirectX::XMMatrixIdentity();
