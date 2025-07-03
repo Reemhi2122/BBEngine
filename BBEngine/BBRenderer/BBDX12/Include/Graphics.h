@@ -15,6 +15,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include "Matrix4x4.h"
+#include <queue>
 
 #include "Camera.h"
 #include "IGraphics.h"
@@ -27,6 +28,8 @@
 
 constexpr uint16_t WINDOW_WIDTH = 1600;
 constexpr uint16_t WINDOW_HEIGHT = 800;
+
+#define MAX_TEXTURES 1024
 
 //Note(stan): Temp vertext buffer for test triangle
 struct UV
@@ -44,6 +47,12 @@ struct ConstantBufferPerObject
 {
 	DirectX::XMFLOAT4X4 WVPMatrix;
 	DirectX::XMFLOAT4X4 Transform;
+};
+
+struct SRVDescriptorInfo
+{
+	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandle;
+	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
 };
 
 struct UploadHeap
@@ -85,9 +94,9 @@ public:
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
 
 	ID3D12DescriptorHeap* GetMainDescriptorHeap() { return m_MainDescriptorHeap; };
-	uint32_t& GetMainDescriptorHeapIndex() { return m_DescriptorHeapIndex; };
 
-	void CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& desc, ID3D12Resource* a_Resource, struct SRVDescriptorInfo& descriptorInfo);
+	void CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& a_Desc, ID3D12DescriptorHeap* a_Heap, uint32_t offsetIndex, ID3D12Resource* a_Resource, struct SRVDescriptorInfo& a_DescriptorInfo);
+	SRVDescriptorInfo* GetAvailableSRVDescriptor();
 
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
@@ -109,7 +118,6 @@ private:
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
-	uint32_t					m_DescriptorHeapIndex = 0;
 	ID3D12DescriptorHeap*		m_MainDescriptorHeap;
 
 	ID3D12Resource*				m_DepthStenil;
@@ -149,6 +157,9 @@ private:
 	IVertexBuffer* m_CubeVertexBuffer;
 	IIndexBuffer* m_CubeIndexBuffer;
 	ITexture* m_Texture;
+
+	SRVDescriptorInfo m_TextureDescriptors[MAX_TEXTURES];
+	std::queue<SRVDescriptorInfo*> m_AvailableTextureDescriptors;
 
 	IConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube1;
 	IConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;

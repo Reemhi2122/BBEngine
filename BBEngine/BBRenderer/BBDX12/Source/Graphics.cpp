@@ -13,8 +13,6 @@
 #define GET_CONSTANT_BUFFER_OFFSET_TYPE(p) ((sizeof(p) + 255) & (~255))
 #define GET_CONSTANT_BUFFER_OFFSET_SIZE(p) ((p + 255) & (~255))
 
-#define MAX_TEXTURE 1024
-
 Graphics::Graphics(HWND a_HWnd)
  : m_HWindow(a_HWnd)
 {
@@ -191,7 +189,7 @@ bool Graphics::Initialize()
 
 	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorTableRange[0].NumDescriptors = MAX_TEXTURE;
+	descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
 	descriptorTableRange[0].BaseShaderRegister = 0;
 	descriptorTableRange[0].RegisterSpace = 0;
 	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -460,27 +458,6 @@ bool Graphics::Initialize()
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	//for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	//{
-	//	hres = m_Device->CreateCommittedResource(
-	//		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-	//		D3D12_HEAP_FLAG_NONE,
-	//		&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64),
-	//		D3D12_RESOURCE_STATE_GENERIC_READ,
-	//		nullptr,
-	//		IID_PPV_ARGS(&m_ConstantBufferUploadHeaps[i])
-	//	);
-	//	m_ConstantBufferUploadHeaps[i]->SetName(L"CB Upload Resource Heap");
-
-	//	ZeroMemory(&m_CBPerObject, sizeof(m_CBPerObject));
-
-	//	CD3DX12_RANGE readRange(0,0);
-	//	hres = m_ConstantBufferUploadHeaps[i]->Map(0, &readRange, reinterpret_cast<void**>(&m_CBVGPUAdress[i]));
-
-	//	memcpy(m_CBVGPUAdress[i], &m_CBPerObject, sizeof(m_CBPerObject));
-	//	memcpy(m_CBVGPUAdress[i] + GET_CONSTANT_BUFFER_OFFSET_TYPE(ConstantBufferPerObject), &m_CBPerObject, sizeof(m_CBPerObject));
-	//}
-
 	m_ConstantBufferCube1 = new RootConstantBuffer<ConstantBufferPerObject>();
 	m_ConstantBufferCube1->Create(*this);
 
@@ -488,7 +465,7 @@ bool Graphics::Initialize()
 	m_ConstantBufferCube2->Create(*this);
 
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
-	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURE;
+	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURES;
 	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
@@ -499,6 +476,19 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+
+	for (uint32_t i = 0; i < MAX_TEXTURES; i++)
+	{
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
+		srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDescriptorDesc.Texture2D.MipLevels = 1;
+
+		CreateSRVDescriptor(srvDescriptorDesc, m_MainDescriptorHeap, i, nullptr, m_TextureDescriptors[i]);
+		m_AvailableTextureDescriptors.push(&m_TextureDescriptors[i]);
+	}
+
 	m_Texture = new DX12Texture();
 	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
 	if (!res)
@@ -506,15 +496,6 @@ bool Graphics::Initialize()
 		printf("[GFX]: Failed to create Texture!");
 		return false;
 	}
-
-	//D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
-	//srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	//srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	//srvDescriptorDesc.Texture2D.MipLevels = 1;
-
-	//DX12Texture* tex = static_cast<DX12Texture*>(m_Texture);
-	//m_Device->CreateShaderResourceView(tex->GetTextureBuffer(), &srvDescriptorDesc, m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
@@ -816,12 +797,21 @@ bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32
 	return true;
 }
 
-void Graphics::CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& desc, ID3D12Resource* a_Resource, SRVDescriptorInfo& descriptorInfo)
+void Graphics::CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& a_Desc, ID3D12DescriptorHeap* a_Heap, uint32_t offsetIndex, ID3D12Resource* a_Resource, SRVDescriptorInfo& a_DescriptorInfo)
 {
 	uint32_t offsetSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	a_DescriptorInfo.cpuDescHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(a_Heap->GetCPUDescriptorHandleForHeapStart(), offsetIndex, offsetSize);
+	a_DescriptorInfo.gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(a_Heap->GetGPUDescriptorHandleForHeapStart(), offsetIndex, offsetSize);
+	m_Device->CreateShaderResourceView(a_Resource, &a_Desc, a_DescriptorInfo.cpuDescHandle);
+}
 
-	descriptorInfo.cpuDescHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_DescriptorHeapIndex, offsetSize);
-	descriptorInfo.gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_MainDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), m_DescriptorHeapIndex, offsetSize);
-	m_Device->CreateShaderResourceView(a_Resource, &desc, descriptorInfo.cpuDescHandle);
-	m_DescriptorHeapIndex++;
+SRVDescriptorInfo* Graphics::GetAvailableSRVDescriptor()
+{
+	SRVDescriptorInfo* descriptor = nullptr;
+	if (!m_AvailableTextureDescriptors.empty())
+	{
+		descriptor = m_AvailableTextureDescriptors.front();
+		m_AvailableTextureDescriptors.pop();
+	}
+	return descriptor;
 }

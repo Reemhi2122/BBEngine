@@ -2,12 +2,6 @@
 #include "Bindable/ITexture.h"
 #include "Graphics.h"
 
-struct SRVDescriptorInfo
-{
-	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandle;
-	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
-};
-
 class DX12Texture : public ITexture
 {
 public:
@@ -24,7 +18,5 @@ private:
 	ID3D12Resource* m_TextureBuffer;
 	ID3D12Resource* m_TextureUploadBufferHeap;
 
-	//D3D12_GPU_DESCRIPTOR_HANDLE m_SRVHandle;
-
-	SRVDescriptorInfo m_DescriptorInfo;
+	class SRVDescriptorInfo* m_DescriptorInfo;
 };
