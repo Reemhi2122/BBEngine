@@ -82,16 +82,7 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 
 	Graphics* gfx = static_cast<Graphics*>(&a_Gfx);
 
-	uint32_t test = gfx->GetMainDescriptorHeapIndex();
-
-	uint32_t offsetSize = a_Gfx.GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	CD3DX12_CPU_DESCRIPTOR_HANDLE srvCPUHandle(gfx->GetMainDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(), test, offsetSize);
-	a_Gfx.GetDevice()->CreateShaderResourceView(m_TextureBuffer, &srvDescriptorDesc, srvCPUHandle);
-	
-	m_SRVHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(gfx->GetMainDescriptorHeap()->GetGPUDescriptorHandleForHeapStart(), test, offsetSize);
-
-	gfx->GetMainDescriptorHeapIndex()++;
+	gfx->CreateSRVDescriptor(srvDescriptorDesc, m_TextureBuffer, m_DescriptorInfo);
 
 	delete imgData;
 	return true;
@@ -99,7 +90,7 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 
 void DX12Texture::Bind(IGraphics& a_Gfx) noexcept
 {
-	a_Gfx.GetCommandList()->SetGraphicsRootDescriptorTable(1, m_SRVHandle);
+	a_Gfx.GetCommandList()->SetGraphicsRootDescriptorTable(1, m_DescriptorInfo.gpuDescHandle);
 }
 
 void DX12Texture::UnBind(IGraphics& a_Gfx) noexcept

@@ -87,6 +87,8 @@ public:
 	ID3D12DescriptorHeap* GetMainDescriptorHeap() { return m_MainDescriptorHeap; };
 	uint32_t& GetMainDescriptorHeapIndex() { return m_DescriptorHeapIndex; };
 
+	void CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& desc, ID3D12Resource* a_Resource, struct SRVDescriptorInfo& descriptorInfo);
+
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
 private:

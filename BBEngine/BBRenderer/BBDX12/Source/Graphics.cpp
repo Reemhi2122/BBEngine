@@ -13,6 +13,8 @@
 #define GET_CONSTANT_BUFFER_OFFSET_TYPE(p) ((sizeof(p) + 255) & (~255))
 #define GET_CONSTANT_BUFFER_OFFSET_SIZE(p) ((p + 255) & (~255))
 
+#define MAX_TEXTURE 1024
+
 Graphics::Graphics(HWND a_HWnd)
  : m_HWindow(a_HWnd)
 {
@@ -57,7 +59,6 @@ bool Graphics::Initialize()
 		printf("[GFX]: No DX12 compatible device found!");
 		return false;
 	}
-
 
 	//Create the graphics device
 	hres = D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
@@ -190,7 +191,7 @@ bool Graphics::Initialize()
 
 	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorTableRange[0].NumDescriptors = 150;
+	descriptorTableRange[0].NumDescriptors = MAX_TEXTURE;
 	descriptorTableRange[0].BaseShaderRegister = 0;
 	descriptorTableRange[0].RegisterSpace = 0;
 	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -487,7 +488,7 @@ bool Graphics::Initialize()
 	m_ConstantBufferCube2->Create(*this);
 
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
-	srvDescriptorHeapDesc.NumDescriptors = 150;
+	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURE;
 	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
@@ -813,4 +814,14 @@ bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32
 	
 	curRootCBV->curOffset += GET_CONSTANT_BUFFER_OFFSET_SIZE(a_SizeOfCB);
 	return true;
+}
+
+void Graphics::CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& desc, ID3D12Resource* a_Resource, SRVDescriptorInfo& descriptorInfo)
+{
+	uint32_t offsetSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+	descriptorInfo.cpuDescHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(m_MainDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_DescriptorHeapIndex, offsetSize);
+	descriptorInfo.gpuDescHandle = CD3DX12_GPU_DESCRIPTOR_HANDLE(m_MainDescriptorHeap->GetGPUDescriptorHandleForHeapStart(), m_DescriptorHeapIndex, offsetSize);
+	m_Device->CreateShaderResourceView(a_Resource, &desc, descriptorInfo.cpuDescHandle);
+	m_DescriptorHeapIndex++;
 }
