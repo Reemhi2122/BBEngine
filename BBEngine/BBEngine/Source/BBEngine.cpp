@@ -88,7 +88,7 @@ namespace BBE
     {
         GLTFParser parser;
         parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
-        //parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
+        parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
         //parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
         //parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
         //parser.Parse("Assets/Models/GlassVaseFlowers/glTF/", "GlassVaseFlowers.gltf", &m_GlassVase);
@@ -158,8 +158,8 @@ namespace BBE
         ////Models
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, "Sponza", &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
-        //Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
-        //m_Models.push_back(lantern);
+        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
+        m_Models.push_back(lantern);
         //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
         //m_Models.push_back(car);
         //Model* glassVase = BBNew(m_StackAllocator, Model)(m_Graphics, "GlassVase", &m_GlassVase, m_VertexShader, m_PixelShader);
@@ -183,12 +183,12 @@ namespace BBE
             }
         }
 
-        //BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
-        //Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 0, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
-        //lanternBBObj->AddComponent(lanternTransform);
-        //lanternBBObj->AddComponent(lanternMesh);
-        //m_GameObjects.push_back(lanternBBObj);
+        BBObject* lanternBBObj = BBNew(m_StackAllocator, BBObject)("Lantern");
+        Transform* lanternTransform = BBNew(m_StackAllocator, Transform)(m_Graphics, lantern, Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.1f, 0.1f, 0.1f));
+        MeshComponent* lanternMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, lantern, lanternTransform);
+        lanternBBObj->AddComponent(lanternTransform);
+        lanternBBObj->AddComponent(lanternMesh);
+        m_GameObjects.push_back(lanternBBObj);
 
         //BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
         //Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-4, 2, 0), Vector3(0, 90, 0), Vector3(5.0f, 5.0f, 5.0f));
@@ -246,20 +246,6 @@ namespace BBE
 
         m_Graphics.Render();
 
-        for (size_t i = 0; i < m_GameObjects.size(); i++)
-        {
-            m_GameObjects[i]->Update(m_Graphics);
-        }
-
-        for (size_t i = 0; i < m_GameObjects.size(); i++)
-        {
-            m_GameObjects[i]->Draw(m_Graphics);
-        }
-
-        m_Graphics.EndFrame();
-        
-        CheckInput();
-
     //    m_Graphics.SetGameViewRenderTarget();
     //    m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
 
@@ -281,21 +267,21 @@ namespace BBE
 
     //    m_PerFrameBuffer.Update(m_Graphics, FrameConstantBuffer);
 
-    //    for (size_t i = 0; i < m_GameObjects.size(); i++)
-    //    {
-    //        m_GameObjects[i]->Update(m_Graphics);
-    //    }
+        for (size_t i = 0; i < m_GameObjects.size(); i++)
+        {
+            m_GameObjects[i]->Update(m_Graphics);
+        }
     //   
     //    m_Graphics.BindDepthSampler();
     //    m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
     //    m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
     //    m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
-    //    for (size_t i = 0; i < m_GameObjects.size(); i++) {
-    //        m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
-    //        m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
-    //        m_GameObjects[i]->Draw(m_Graphics);
-    //    }
+        for (size_t i = 0; i < m_GameObjects.size(); i++) {
+            //m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
+            //m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
+            m_GameObjects[i]->Draw(m_Graphics);
+        }
 
     //    //m_Quad->Draw(m_Graphics);
 
@@ -308,7 +294,9 @@ namespace BBE
     //   
     //    BBE:UI::UpdateUI(m_Graphics);
 
-    //    m_Graphics.EndFrame();
+        m_Graphics.EndFrame();
+
+        CheckInput();
     }
 
     //void BBEngine::DrawAllModels()

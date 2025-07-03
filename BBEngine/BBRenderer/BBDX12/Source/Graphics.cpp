@@ -553,7 +553,7 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, -8.0f, 0.0f);
 	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
 
 	DirectX::XMMATRIX tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);

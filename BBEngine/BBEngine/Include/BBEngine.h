@@ -82,10 +82,10 @@ namespace BBE {
 		//ID3D11DepthStencilView* m_DLTextureDepthStencilView;
 
 		GLTFFile m_SponzaFile;
-		//GLTFFile m_LanternFile;
-		//GLTFFile m_CarFile;
-		//GLTFFile m_ABeautifulGameFile;
-		//GLTFFile m_GlassVase;
+		GLTFFile m_LanternFile;
+		GLTFFile m_CarFile;
+		GLTFFile m_ABeautifulGameFile;
+		GLTFFile m_GlassVase;
 
 		//DirectionalLight m_DirectionalLight;
 		//Vector<SpotLight> m_SpotLights;
