@@ -476,6 +476,62 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	//Creating a debug texture
+	{
+		D3D12_RESOURCE_DESC textureDescription = {};
+		textureDescription.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		textureDescription.Alignment = 0;
+		textureDescription.Width = 1;
+		textureDescription.Height = 1;
+		textureDescription.DepthOrArraySize = 1;
+		textureDescription.MipLevels = 1;
+		textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		textureDescription.SampleDesc.Count = 1;
+		textureDescription.SampleDesc.Quality = 0;
+		textureDescription.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		textureDescription.Flags = D3D12_RESOURCE_FLAG_NONE;
+
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			&textureDescription,
+			D3D12_RESOURCE_STATE_COPY_DEST,
+			nullptr,
+			IID_PPV_ARGS(&m_DebugTexture)
+		);
+		if (FAILED(hres))
+		{
+			printf("[GFX::DX12:TEXTURE]: Failed to create Texture Default Heap!");
+			return false;
+		}
+		m_DebugTexture->SetName(L"Debug Texture Heap");
+
+		ID3D12Resource* debugTextureUploadHeap;
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Buffer(4),
+			D3D12_RESOURCE_STATE_GENERIC_READ,
+			nullptr,
+			IID_PPV_ARGS(&debugTextureUploadHeap)
+		);
+		if (FAILED(hres))
+		{
+			printf("[GFX::DX12:TEXTURE]: Failed to create Texture Upload Heap!");
+			return false;
+		}
+		debugTextureUploadHeap->SetName(L"Texture Upload Heap");
+
+		uint32_t debugTexture[1]{ 0xFF00FF };
+
+		D3D12_SUBRESOURCE_DATA textureData = {};
+		textureData.pData = debugTexture;
+		textureData.RowPitch = 4;
+		textureData.SlicePitch = 4;
+
+		UpdateSubresources(m_CommandList, m_DebugTexture, debugTextureUploadHeap, 0, 0, 1, &textureData);
+		m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_DebugTexture, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+	}
 
 	for (uint32_t i = 0; i < MAX_TEXTURES; i++)
 	{
@@ -485,7 +541,7 @@ bool Graphics::Initialize()
 		srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srvDescriptorDesc.Texture2D.MipLevels = 1;
 
-		CreateSRVDescriptor(srvDescriptorDesc, m_MainDescriptorHeap, i, nullptr, m_TextureDescriptors[i]);
+		CreateSRVDescriptor(srvDescriptorDesc, m_MainDescriptorHeap, i, m_DebugTexture, m_TextureDescriptors[i]);
 		m_AvailableTextureDescriptors.push(&m_TextureDescriptors[i]);
 	}
 

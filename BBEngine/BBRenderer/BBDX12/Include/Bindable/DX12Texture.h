@@ -8,7 +8,7 @@ public:
 	DX12Texture() = default;
 	~DX12Texture() = default;
 
-	bool Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot = 0u) override;
+	bool Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot = 0u, bool CreateRSV = true) override;
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	void UnBind(IGraphics& a_Gfx) noexcept override;
 

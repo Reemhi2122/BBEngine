@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
-bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
+bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot, bool CreateRSV)
 {
 	HRESULT hres;
 
@@ -17,7 +17,6 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 		printf("[DX12:TEXTURE]: Failed to create Texture from file!");
 		return false;
 	}
-
 	D3D12_RESOURCE_DESC textureDescription = {};
 	textureDescription.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	textureDescription.Alignment = 0;
@@ -74,16 +73,19 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 
 	a_Gfx.GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
-	Graphics* gfx = static_cast<Graphics*>(&a_Gfx);
-	m_DescriptorInfo = gfx->GetAvailableSRVDescriptor();
+	if (CreateRSV)
+	{
+		Graphics* gfx = static_cast<Graphics*>(&a_Gfx);
+		m_DescriptorInfo = gfx->GetAvailableSRVDescriptor();
 
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
-	srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDescriptorDesc.Texture2D.MipLevels = 1;
+		//D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
+		//srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		//srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		//srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		//srvDescriptorDesc.Texture2D.MipLevels = 1;
 
-	gfx->GetDevice()->CreateShaderResourceView(m_TextureBuffer, &srvDescriptorDesc, m_DescriptorInfo->cpuDescHandle);
+		//gfx->GetDevice()->CreateShaderResourceView(m_TextureBuffer, &srvDescriptorDesc, m_DescriptorInfo->cpuDescHandle);
+	}
 
 	delete imgData;
 	return true;

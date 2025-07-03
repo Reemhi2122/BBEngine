@@ -123,6 +123,8 @@ private:
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
 
+	ID3D12Resource*				m_DebugTexture;
+
 	uint32_t m_StandardCBSize = (1024 * 64);
 	uint32_t m_MaxRootCBV = 1;
 	UploadHeap* m_RootCBV[1] = { nullptr };
