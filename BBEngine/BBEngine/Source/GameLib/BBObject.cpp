@@ -1,6 +1,9 @@
 #include "GameLib/BBObject.h"
+#include "GameLib/Drawable/Model.h"
+#include "GameLib/Components/MeshComponent.h"
+#include "GameLib/Components/Transform.h"
 
-BBObject::BBObject(const char* a_Name, bool a_InitializeDefault)
+BBObject::BBObject(const char* a_Name)
 {
 	strcpy(m_Name, a_Name);
 }
@@ -38,4 +41,18 @@ bool BBObject::AddComponent(BBComponent* a_Component)
 {
 	m_Components.Push_Back(a_Component);
 	return true;
+}
+
+void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vector<BBObject*>* m_Objects, Vector3 pos, Vector3 rot, Vector3 scale)
+{
+	NodeContainer nodes = a_Model->GetNodes();
+	for (uint32_t nodeIndex = 0; nodeIndex < nodes.count; nodeIndex++)
+	{
+		BBObject* obj = new BBObject("test");
+		Transform* sponzaTransform = new Transform(a_Gfx, &nodes.data[nodeIndex], pos, rot, scale);
+		BBE::MeshComponent* sponzaMesh = new BBE::MeshComponent(a_Gfx, a_Model, nodeIndex, sponzaTransform);
+		obj->AddComponent(sponzaTransform);
+		obj->AddComponent(sponzaMesh);
+		m_Objects->push_back(obj);
+	}
 }
