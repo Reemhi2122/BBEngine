@@ -17,6 +17,7 @@ enum class TransformType
 
 class TransformBuf : public Bindable {
 public:
+	TransformBuf() = default;
 	TransformBuf(IGraphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale);
 	~TransformBuf();
 	void Bind(IGraphics& a_Gfx) noexcept;

@@ -8,7 +8,7 @@ namespace BBE
 	class MeshComponent : public BBComponent
 	{
 	public:
-		MeshComponent(IGraphics& a_Graphics, Model* a_Model, Transform* a_Transform);
+		MeshComponent(IGraphics& a_Graphics, Model* a_Model, uint32_t a_NodeIndex, Transform* a_Transform);
 		~MeshComponent() = default;
 
 		virtual void Update(IGraphics& a_Graphics) override;
@@ -20,6 +20,7 @@ namespace BBE
 		bool SetModel(Model* a_Model);
 
 	private:
+		uint32_t m_NodeIndex;
 		Model* m_Model;
 		Transform* m_Transform;
 	};

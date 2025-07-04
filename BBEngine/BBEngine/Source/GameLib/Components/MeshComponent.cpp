@@ -2,10 +2,11 @@
 
 namespace BBE
 {
-	MeshComponent::MeshComponent(IGraphics& a_Graphics, Model* a_Model, Transform* a_Transform)
+	MeshComponent::MeshComponent(IGraphics& a_Graphics, Model* a_Model, uint32_t a_NodeIndex, Transform* a_Transform)
 	{
 		m_Transform = a_Transform;
 		m_Model = a_Model;
+		m_NodeIndex = a_NodeIndex;
 	}
 
 	void MeshComponent::Update(IGraphics& a_Graphics)
@@ -16,7 +17,7 @@ namespace BBE
 	void MeshComponent::Draw(IGraphics& a_Graphics)
 	{
 		m_Model->SetTransform(m_Transform->GetTransformBuf());
-		m_Model->Draw(a_Graphics);
+		m_Model->Draw(a_Graphics, m_NodeIndex);
 	}
 
 	bool MeshComponent::SetModel(Model* a_Model)

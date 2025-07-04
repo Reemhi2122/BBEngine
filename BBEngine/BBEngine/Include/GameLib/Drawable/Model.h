@@ -61,7 +61,7 @@ public:
 
 	void AddToDraw(DirectX::XMMATRIX a_Transform);
 
-	void Draw(IGraphics& a_Gfx) noexcept override;
+	void Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept override;
 	void DrawInstanced(IGraphics& a_Gfx, uint32_t a_InstanceCount) noexcept override;
 	void Update(float a_DeltaTime) noexcept override;
 

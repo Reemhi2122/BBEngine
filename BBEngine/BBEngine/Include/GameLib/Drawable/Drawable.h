@@ -17,6 +17,7 @@ public:
 	virtual Vector3 GetPosition() const { return Vector3(); };
 	
 	virtual void Draw(IGraphics& a_Gfx) noexcept;
+	virtual void Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept {};
 	virtual void DrawInstanced(IGraphics& a_Gfx, uint32_t a_InstanceCount) noexcept;
 	virtual void Update(float dt) noexcept = 0;
 
