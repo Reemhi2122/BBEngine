@@ -8,7 +8,8 @@ class ModelNodes;
 class Transform : public BBComponent
 {
 public:
-	Transform(IGraphics& a_Graphics, ModelNodes* a_Model, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
+	Transform(IGraphics& a_Graphics, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
+	Transform(IGraphics& a_Graphics, ModelNodes* a_Model, Transform* a_ParentTransform);
 	~Transform() = default;
 
 	void Update(IGraphics& a_Graphics) override;

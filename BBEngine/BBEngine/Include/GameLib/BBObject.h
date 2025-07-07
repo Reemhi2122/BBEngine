@@ -9,7 +9,7 @@ class Model;
 class BBObject
 {
 public:
-	BBObject(const char* a_Name);
+	BBObject(const char* a_Name, BBObject* a_ParentObject);
 	~BBObject() = default;
 
 	void Update(Graphics& a_Graphics);
@@ -27,4 +27,6 @@ private:
 
 	//Note(Stan): Would have to make this ECS, for testing I'm just doing it like this.
 	BBE::Vector<BBComponent*> m_Components;
+
+	BBObject* m_ParentObject;
 };
