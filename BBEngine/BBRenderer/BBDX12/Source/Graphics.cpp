@@ -187,6 +187,28 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	ImGui_ImplDX12_InitInfo imguiInitInfo;
+	imguiInitInfo.Device =				m_Device;
+	imguiInitInfo.CommandQueue =		m_CommandQueue;
+	imguiInitInfo.NumFramesInFlight =	FRAME_BUFFER_COUNT;
+	imguiInitInfo.RTVFormat =			DXGI_FORMAT_R8G8B8A8_UNORM;
+	imguiInitInfo.DSVFormat =			DXGI_FORMAT_D32_FLOAT;
+
+	imguiInitInfo.SrvDescriptorHeap = nullptr; //Note(Stan): Create a SRV descriptor heap for ImGui
+	imguiInitInfo.SrvDescriptorAllocFn = nullptr;
+	imguiInitInfo.SrvDescriptorFreeFn = nullptr;
+
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplWin32_Init(m_HWindow);
+	ImGui_ImplDX12_Init(&imguiInitInfo);
+
 	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
@@ -679,6 +701,10 @@ void Graphics::StartFrame()
 	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
+
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 }
 
 void Graphics::Render()
@@ -718,9 +744,12 @@ void Graphics::EndFrame()
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 	
+	ImGui::Render();
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_CommandList);
+
 	ID3D12CommandList* cmdLists[] = {m_CommandList};
 	m_CommandQueue->ExecuteCommandLists(1, cmdLists);
-	
+
 	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
 	if (FAILED(hres))
 	{

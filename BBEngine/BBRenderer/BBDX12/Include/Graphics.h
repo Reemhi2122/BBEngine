@@ -9,7 +9,7 @@
 #include "D3DX12/d3dx12.h"
 
 #include "imgui.h"
-#include "imgui_impl_dx11.h"
+#include "imgui_impl_dx12.h"
 #include "imgui_impl_win32.h"
 
 #include "Vector3.h"

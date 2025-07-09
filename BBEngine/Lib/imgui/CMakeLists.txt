@@ -8,6 +8,7 @@ add_library(ImGUI STATIC
 	"imgui_tables.cpp"
 	"backends/imgui_impl_win32.cpp"
 	"backends/imgui_impl_dx11.cpp"
+	"backends/imgui_impl_dx12.cpp"
 )
 
 target_include_directories(ImGUI PUBLIC 
