@@ -187,39 +187,6 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	ImGui_ImplDX12_InitInfo imguiInitInfo;
-	imguiInitInfo.Device =				m_Device;
-	imguiInitInfo.CommandQueue =		m_CommandQueue;
-	imguiInitInfo.NumFramesInFlight =	FRAME_BUFFER_COUNT;
-	imguiInitInfo.RTVFormat =			DXGI_FORMAT_R8G8B8A8_UNORM;
-	imguiInitInfo.DSVFormat =			DXGI_FORMAT_D32_FLOAT;
-
-	imguiInitInfo.UserData = reinterpret_cast<void*>(&m_MainDescriptorFreeList);
-
-	imguiInitInfo.SrvDescriptorHeap = m_MainDescriptorFreeList.GetHeap(); //Note(Stan): Create a SRV descriptor heap for ImGui
-	
-	imguiInitInfo.SrvDescriptorAllocFn = 
-		[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle) 
-		{ 
-			reinterpret_cast<DescriptorFreeList*>(info->UserData)->Alloc(a_CPUHandle, a_GPUHandle);
-		};
-
-	imguiInitInfo.SrvDescriptorFreeFn = 
-		[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE a_GPUHandle)
-		{
-			reinterpret_cast<DescriptorFreeList*>(info->UserData)->Free(a_CPUHandle, a_GPUHandle);
-		};
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-	ImGui::StyleColorsDark();
-
-	ImGui_ImplWin32_Init(m_HWindow);
-	ImGui_ImplDX12_Init(&imguiInitInfo);
-
 	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
@@ -614,6 +581,43 @@ bool Graphics::Initialize()
 	m_ScissorRect.left = 0;
 	m_ScissorRect.right = WINDOW_WIDTH;
 	m_ScissorRect.bottom = WINDOW_HEIGHT;
+
+	//Init ImGui
+	{
+		ImGui_ImplDX12_InitInfo imguiInitInfo;
+		imguiInitInfo.Device = m_Device;
+		imguiInitInfo.CommandQueue = m_CommandQueue;
+		imguiInitInfo.NumFramesInFlight = FRAME_BUFFER_COUNT;
+		imguiInitInfo.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+		imguiInitInfo.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+
+		imguiInitInfo.UserData = reinterpret_cast<void*>(&m_MainDescriptorFreeList);
+
+		imguiInitInfo.SrvDescriptorHeap = m_MainDescriptorFreeList.GetHeap(); //Note(Stan): Create a SRV descriptor heap for ImGui
+
+		imguiInitInfo.SrvDescriptorAllocFn =
+			[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle)
+			{
+				DescriptorFreeList* descriptorFreeList = reinterpret_cast<DescriptorFreeList*>(info->UserData);
+				descriptorFreeList->Alloc(a_CPUHandle, a_GPUHandle);
+			};
+
+		imguiInitInfo.SrvDescriptorFreeFn =
+			[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE a_GPUHandle)
+			{
+				reinterpret_cast<DescriptorFreeList*>(info->UserData)->Free(a_CPUHandle, a_GPUHandle);
+			};
+
+		IMGUI_CHECKVERSION();
+		ImGui::CreateContext();
+		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+		ImGui::StyleColorsDark();
+
+		ImGui_ImplWin32_Init(m_HWindow);
+		ImGui_ImplDX12_Init(&imguiInitInfo);
+	}
 
 	m_Camera = new Camera();
 
