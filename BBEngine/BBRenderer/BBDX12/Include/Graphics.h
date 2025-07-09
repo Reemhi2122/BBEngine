@@ -20,6 +20,8 @@
 #include "Camera.h"
 #include "IGraphics.h"
 
+#include "DescriptorFreeList.h"
+
 //Temp testing bindables
 #include "Bindable/DX12VertexBuffer.h"
 #include "Bindable/DX12IndexBuffer.h"
@@ -93,7 +95,7 @@ public:
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
 
-	ID3D12DescriptorHeap* GetMainDescriptorHeap() { return m_MainDescriptorHeap; };
+	//ID3D12DescriptorHeap* GetMainDescriptorHeap() { return m_MainDescriptorHeap; };
 
 	void CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& a_Desc, ID3D12DescriptorHeap* a_Heap, uint32_t offsetIndex, ID3D12Resource* a_Resource, struct SRVDescriptorInfo& a_DescriptorInfo);
 	SRVDescriptorInfo* GetAvailableSRVDescriptor();
@@ -118,7 +120,8 @@ private:
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
-	ID3D12DescriptorHeap*		m_MainDescriptorHeap;
+	//ID3D12DescriptorHeap*		m_MainDescriptorHeap;
+	DescriptorFreeList			m_MainDescriptorFreeList;
 
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;

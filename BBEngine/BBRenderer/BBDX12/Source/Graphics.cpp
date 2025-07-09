@@ -198,7 +198,6 @@ bool Graphics::Initialize()
 	imguiInitInfo.SrvDescriptorAllocFn = nullptr;
 	imguiInitInfo.SrvDescriptorFreeFn = nullptr;
 
-
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -491,8 +490,9 @@ bool Graphics::Initialize()
 	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
-	m_Device->CreateDescriptorHeap(&srvDescriptorHeapDesc, IID_PPV_ARGS(&m_MainDescriptorHeap));
-	if (FAILED(hres))
+	//m_Device->CreateDescriptorHeap(&srvDescriptorHeapDesc, IID_PPV_ARGS(&m_MainDescriptorHeap));
+	res = m_MainDescriptorFreeList.Create(m_Device, &srvDescriptorHeapDesc);
+	if (!res)
 	{
 		printf("[GFX]: Failed to Create SRV Resource Heap!");
 		return false;
@@ -563,8 +563,10 @@ bool Graphics::Initialize()
 		srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 		srvDescriptorDesc.Texture2D.MipLevels = 1;
 
-		CreateSRVDescriptor(srvDescriptorDesc, m_MainDescriptorHeap, i, m_DebugTexture, m_TextureDescriptors[i]);
-		m_AvailableTextureDescriptors.push(&m_TextureDescriptors[i]);
+		CD3DX12_CPU_DESCRIPTOR_HANDLE cpuHandle;
+		CD3DX12_GPU_DESCRIPTOR_HANDLE gpuHandle;
+		m_MainDescriptorFreeList.Alloc(&cpuHandle, &gpuHandle);
+		m_Device->CreateShaderResourceView(m_DebugTexture, &srvDescriptorDesc, cpuHandle);
 	}
 
 	m_Texture = new DX12Texture();
@@ -711,10 +713,10 @@ void Graphics::Render()
 {
 	HRESULT hres;
 
-	ID3D12DescriptorHeap* descriptorHeaps[] = { m_MainDescriptorHeap };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { m_MainDescriptorFreeList.GetHeap() };
 	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
 
-	m_CommandList->SetGraphicsRootDescriptorTable(1, m_MainDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
+	m_CommandList->SetGraphicsRootDescriptorTable(1, m_MainDescriptorFreeList.GetGPUHandleStart());
 
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
