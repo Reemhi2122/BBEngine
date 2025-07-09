@@ -9,7 +9,7 @@ public:
 
 	bool Create(ID3D12Device* a_Device, D3D12_DESCRIPTOR_HEAP_DESC* a_Desc);
 	bool Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle_out, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle_out);
-	bool Free(D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle);
+	bool Free(D3D12_CPU_DESCRIPTOR_HANDLE a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE a_GPUHandle);
 
 	ID3D12DescriptorHeap* GetHeap() const { return m_Heap; };
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandleStart() const { return m_StartCPUHandle; };

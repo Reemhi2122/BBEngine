@@ -16,7 +16,7 @@ bool DescriptorFreeList::Create(ID3D12Device* a_Device, D3D12_DESCRIPTOR_HEAP_DE
 	m_DescriptorCapacity = a_Desc->NumDescriptors;
 	m_IncrementSize = a_Device->GetDescriptorHandleIncrementSize(a_Desc->Type);
 	
-	for (uint32_t i = a_Desc->NumDescriptors; i > 0; i--)
+	for (int32_t i = a_Desc->NumDescriptors - 1; i >= 0; i--)
 	{
 		m_AvailableIndices.push(i);
 	}
@@ -41,10 +41,10 @@ bool DescriptorFreeList::Alloc(D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle_out, D3D
 	return true;
 }
 
-bool DescriptorFreeList::Free(D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle)
+bool DescriptorFreeList::Free(D3D12_CPU_DESCRIPTOR_HANDLE a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE a_GPUHandle)
 {
-	uint32_t cpuIndex = (a_CPUHandle->ptr - m_StartCPUHandle.ptr) / m_IncrementSize;
-	uint32_t gpuIndex = (a_GPUHandle->ptr - m_StartGPUHandle.ptr) / m_IncrementSize;
+	uint32_t cpuIndex = (a_CPUHandle.ptr - m_StartCPUHandle.ptr) / m_IncrementSize;
+	uint32_t gpuIndex = (a_GPUHandle.ptr - m_StartGPUHandle.ptr) / m_IncrementSize;
 
 	if (cpuIndex != gpuIndex)
 	{

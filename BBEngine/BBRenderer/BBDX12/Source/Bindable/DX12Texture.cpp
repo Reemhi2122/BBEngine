@@ -73,10 +73,12 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 
 	a_Gfx.GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
+	m_DescriptorInfo = new SRVDescriptorInfo();
+
 	if (CreateRSV)
 	{
 		Graphics* gfx = static_cast<Graphics*>(&a_Gfx);
-		m_DescriptorInfo = gfx->GetAvailableSRVDescriptor();
+		gfx->GetMainDescriptorHeap()->Alloc(&m_DescriptorInfo->cpuDescHandle, &m_DescriptorInfo->gpuDescHandle);
 
 		D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
 		srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;

@@ -95,10 +95,7 @@ public:
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
 
-	//ID3D12DescriptorHeap* GetMainDescriptorHeap() { return m_MainDescriptorHeap; };
-
-	void CreateSRVDescriptor(D3D12_SHADER_RESOURCE_VIEW_DESC& a_Desc, ID3D12DescriptorHeap* a_Heap, uint32_t offsetIndex, ID3D12Resource* a_Resource, struct SRVDescriptorInfo& a_DescriptorInfo);
-	SRVDescriptorInfo* GetAvailableSRVDescriptor();
+	DescriptorFreeList* GetMainDescriptorHeap() { return &m_MainDescriptorFreeList; };
 
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
