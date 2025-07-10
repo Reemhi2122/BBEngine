@@ -34,7 +34,7 @@ add_library (BBEngine
 "Source/FileLoaders/Models/GLTFParser.cpp" 
 
 "Source/GameLib/BBObject.cpp"
-#"Source/UserInterface.cpp" 
+"Source/UserInterface.cpp" 
 "Source/GameLib/BBComponent.cpp"
 
 #components

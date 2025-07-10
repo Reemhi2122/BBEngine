@@ -26,7 +26,7 @@
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
 
-//#include "UserInterface.h"
+#include "UserInterface.h"
 
 //#include "FileLoaders/Image/BMPLoader.h"
 
@@ -93,7 +93,7 @@ namespace BBE
         //parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
         //parser.Parse("Assets/Models/GlassVaseFlowers/glTF/", "GlassVaseFlowers.gltf", &m_GlassVase);
 
-        //BBE:UI::InitializeUI(m_Graphics, &m_GameObjects);
+        BBE:UI::InitializeUI(m_Graphics, &m_GameObjects);
 
         //m_Window.m_Keyboard.EnableAutorepeat();
 
@@ -282,7 +282,7 @@ namespace BBE
 
     //    m_Graphics.ResetRenderTarget();
     //   
-    //    BBE:UI::UpdateUI(m_Graphics);
+        BBE:UI::UpdateUI(m_Graphics);
 
         m_Graphics.EndFrame();
 

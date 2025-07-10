@@ -754,6 +754,9 @@ void Graphics::EndFrame()
 {
 	HRESULT hres;
 
+	ImGui::Render();
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_CommandList);
+
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 	hres = m_CommandList->Close();
 	if (FAILED(hres))
@@ -761,9 +764,6 @@ void Graphics::EndFrame()
 		printf("[GFX]: Failed to close the Command List!");
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
-	
-	ImGui::Render();
-	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_CommandList);
 
 	ID3D12CommandList* cmdLists[] = {m_CommandList};
 	m_CommandQueue->ExecuteCommandLists(1, cmdLists);

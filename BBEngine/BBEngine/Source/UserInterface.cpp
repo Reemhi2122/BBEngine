@@ -1,7 +1,7 @@
 #include "UserInterface.h"
 #include "Graphics.h"
 #include "System/FileHandler.h"
-#include "Bindable/Texture.h"
+//#include "Bindable/Texture.h"
 
 #include "GameLib/BBObject.h"
 
@@ -29,16 +29,16 @@ namespace BBE
         //Note(Stan): Local objects reference, look into changing this?
         static std::vector<BBObject*>* m_GameObjectsPointer;
 
-        static Texture m_EmptyFolderTexture;
-        static Texture m_FileTexture;
+        //static Texture m_EmptyFolderTexture;
+        //static Texture m_FileTexture;
 
         void InitializeUI(Graphics& a_Graphics, std::vector<BBObject*>* a_GameObjectListPointer)
         {
             //Note(Stan): Not a big fan of doing it like this, prob want to just request it from engine when needed.
             m_GameObjectsPointer = a_GameObjectListPointer;
 
-            m_EmptyFolderTexture = Texture(a_Graphics, "Assets/Image/Icons/closed_folder.png");
-            m_FileTexture = Texture(a_Graphics, "Assets/Image/Icons/file.png");
+            //m_EmptyFolderTexture = Texture(a_Graphics, "Assets/Image/Icons/closed_folder.png");
+            //m_FileTexture = Texture(a_Graphics, "Assets/Image/Icons/file.png");
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         }
 
@@ -109,7 +109,7 @@ namespace BBE
 
         void DrawAssetBrowser(Graphics& a_Graphics)
         {
-            ImGuiWindowFlags AssetBrowserFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
+           /* ImGuiWindowFlags AssetBrowserFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
             if (ImGui::Begin("Assets Browser"), true, AssetBrowserFlags)
             {
                 BBE::BBSystem::BBDIRECTORY dir;
@@ -184,7 +184,7 @@ namespace BBE
                     elementIndex++;
                 }
             }
-            ImGui::End();
+            ImGui::End();*/
         }
 
         void DrawInspector(Graphics& a_Graphics)
@@ -201,32 +201,32 @@ namespace BBE
 
         void DrawRandomUI(Graphics& a_Graphics)
         {
-            ImGui::Begin("ShadowMapWindow");
-            {
-                if (ImGui::TreeNode("Point Light"))
-                {
-                    for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-                    {
-                        ImGui::Image((ImTextureID)(void*)a_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
-                    }
-                    ImGui::TreePop();
-                }
+            //ImGui::Begin("ShadowMapWindow");
+            //{
+            //    if (ImGui::TreeNode("Point Light"))
+            //    {
+            //        for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+            //        {
+            //            ImGui::Image((ImTextureID)(void*)a_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+            //        }
+            //        ImGui::TreePop();
+            //    }
 
-                if (ImGui::TreeNode("Spot Light"))
-                {
-                    ImGui::Image((ImTextureID)(void*)a_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-                    ImGui::TreePop();
-                }
+            //    if (ImGui::TreeNode("Spot Light"))
+            //    {
+            //        ImGui::Image((ImTextureID)(void*)a_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
+            //        ImGui::TreePop();
+            //    }
 
-                if (ImGui::TreeNode("Directional Light"))
-                {
-                    ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
-                    ImGui::TreePop();
-                }
-            }
-            ImGui::End();
+            //    if (ImGui::TreeNode("Directional Light"))
+            //    {
+            //        ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+            //        ImGui::TreePop();
+            //    }
+            //}
+            //ImGui::End();
 
-            if (ImGui::Begin("Game Options"))
+            /*if (ImGui::Begin("Game Options"))
             {
                 static int curVShader = 0;
                 std::vector<const char*> vShaders;
@@ -258,15 +258,15 @@ namespace BBE
                     a_Graphics.ReloadShader(ShaderType::PixelShader, curPShader);
                 }
             }
-            ImGui::End();
+            ImGui::End();*/
 
-            ImGui::Begin("GameWindow");
-            {
-                ImVec2 size = ImGui::GetWindowSize();
-                ImGui::Image((ImTextureID)(void*)a_Graphics.GetGameViewRSV(), size);
+            //ImGui::Begin("GameWindow");
+            //{
+            //    ImVec2 size = ImGui::GetWindowSize();
+            //    ImGui::Image((ImTextureID)(void*)a_Graphics.GetGameViewRSV(), size);
 
-            }
-            ImGui::End();
+            //}
+            //ImGui::End();
         }
     }
 }
