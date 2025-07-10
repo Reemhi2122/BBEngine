@@ -4,6 +4,8 @@
 
 //constexpr uint8_t FRAME_BUFFER_COUNT = 3;
 #define FRAME_BUFFER_COUNT 3
+#define FRAME_TEXTURE_TARGET 3
+#define TOTAL_RENDER_TARGETS 6
 
 class IGraphics
 {

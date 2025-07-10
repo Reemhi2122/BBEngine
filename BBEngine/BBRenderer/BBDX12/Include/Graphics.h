@@ -93,6 +93,9 @@ public:
 	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
 	uint8_t GetCurrentFrame() const override { return m_FrameIndex; };
 
+	CD3DX12_CPU_DESCRIPTOR_HANDLE GetCurrentViewHandle() { return m_GRTVShaderResourceView[m_FrameIndex].cpuDescHandle; };
+	void SetSwapBuffer();
+
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
 
 	DescriptorFreeList* GetMainDescriptorHeap() { return &m_MainDescriptorFreeList; };
@@ -107,7 +110,12 @@ private:
 	IDXGISwapChain3*			m_SwapChain; //Tripple buffering swap chain
 	ID3D12CommandQueue*			m_CommandQueue;
 	ID3D12DescriptorHeap*		m_RTVDescriptorHeap;
+	
+	SRVDescriptorInfo			m_GRTVShaderResourceView[FRAME_BUFFER_COUNT];
+	ID3D12Resource*				m_GameViewTarget[FRAME_BUFFER_COUNT];
+	
 	ID3D12Resource*				m_RenderTargets[FRAME_BUFFER_COUNT];
+
 	ID3D12CommandAllocator*		m_CommandAllocator[FRAME_BUFFER_COUNT];
 	ID3D12GraphicsCommandList*	m_CommandList;
 	

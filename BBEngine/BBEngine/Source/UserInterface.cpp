@@ -260,13 +260,13 @@ namespace BBE
             }
             ImGui::End();*/
 
-            //ImGui::Begin("GameWindow");
-            //{
-            //    ImVec2 size = ImGui::GetWindowSize();
-            //    ImGui::Image((ImTextureID)(void*)a_Graphics.GetGameViewRSV(), size);
-
-            //}
-            //ImGui::End();
+            ImGui::Begin("GameWindow");
+            {
+                ImVec2 size = ImGui::GetWindowSize();
+                ImGui::Image((ImTextureID)a_Graphics.GetCurrentViewHandle().ptr, size);
+                //ImGui::Image((ImTextureID)(void*)a_Graphics.GetGameViewRSV(), size);
+            }
+            ImGui::End();
         }
     }
 }

@@ -282,6 +282,9 @@ namespace BBE
 
     //    m_Graphics.ResetRenderTarget();
     //   
+        
+        m_Graphics.SetSwapBuffer();
+
         BBE:UI::UpdateUI(m_Graphics);
 
         m_Graphics.EndFrame();
