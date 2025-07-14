@@ -1,7 +1,8 @@
 #include "UserInterface.h"
 #include "Graphics.h"
 #include "System/FileHandler.h"
-//#include "Bindable/Texture.h"
+#include "Bindable/ITexture.h"
+#include "Bindable/DX12Texture.h"
 
 #include "GameLib/BBObject.h"
 
@@ -29,16 +30,18 @@ namespace BBE
         //Note(Stan): Local objects reference, look into changing this?
         static std::vector<BBObject*>* m_GameObjectsPointer;
 
-        //static Texture m_EmptyFolderTexture;
-        //static Texture m_FileTexture;
+        static ITexture* m_EmptyFolderTexture;
+        static ITexture* m_FileTexture;
 
         void InitializeUI(Graphics& a_Graphics, std::vector<BBObject*>* a_GameObjectListPointer)
         {
             //Note(Stan): Not a big fan of doing it like this, prob want to just request it from engine when needed.
             m_GameObjectsPointer = a_GameObjectListPointer;
 
-            //m_EmptyFolderTexture = Texture(a_Graphics, "Assets/Image/Icons/closed_folder.png");
-            //m_FileTexture = Texture(a_Graphics, "Assets/Image/Icons/file.png");
+            m_EmptyFolderTexture = new DX12Texture();
+            m_EmptyFolderTexture->Create(a_Graphics, "Assets/Image/Icons/closed_folder.png");
+            m_FileTexture = new DX12Texture();
+            m_FileTexture->Create(a_Graphics, "Assets/Image/Icons/file.png");
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         }
 
@@ -109,7 +112,7 @@ namespace BBE
 
         void DrawAssetBrowser(Graphics& a_Graphics)
         {
-           /* ImGuiWindowFlags AssetBrowserFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
+            ImGuiWindowFlags AssetBrowserFlags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoCollapse;
             if (ImGui::Begin("Assets Browser"), true, AssetBrowserFlags)
             {
                 BBE::BBSystem::BBDIRECTORY dir;
@@ -144,7 +147,7 @@ namespace BBE
                     ImGui::BeginGroup();
                     ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
 
-                    if (ImGui::ImageButton("Folder", (ImTextureID)m_EmptyFolderTexture.GetRSV(), ImVec2(imgSize, imgSize)))
+                    if (ImGui::ImageButton("Folder", (ImTextureID)reinterpret_cast<DX12Texture*>(m_EmptyFolderTexture)->GetSRVGPUHandle().ptr, ImVec2(imgSize, imgSize)))
                     {
                         history.push(curPath);
                         curPath.append(dir.directories[i].name + "\\");
@@ -170,7 +173,7 @@ namespace BBE
                     ImGui::BeginGroup();
                     ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
 
-                    if (ImGui::ImageButton("Files", (ImTextureID)m_FileTexture.GetRSV(), ImVec2(imgSize, imgSize)))
+                    if (ImGui::ImageButton("Files", reinterpret_cast<DX12Texture*>(m_FileTexture)->GetSRVGPUHandle().ptr, ImVec2(imgSize, imgSize)))
                     {
                         std::string result(curPath + dir.files[i].name);
                         ShellExecute(0, 0, result.c_str(), 0, 0, SW_SHOW);
@@ -184,7 +187,7 @@ namespace BBE
                     elementIndex++;
                 }
             }
-            ImGui::End();*/
+            ImGui::End();
         }
 
         void DrawInspector(Graphics& a_Graphics)

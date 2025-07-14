@@ -2,6 +2,8 @@
 #include "Bindable/ITexture.h"
 #include "Graphics.h"
 
+class SRVDescriptorInfo;
+
 class DX12Texture : public ITexture
 {
 public:
@@ -12,11 +14,13 @@ public:
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	void UnBind(IGraphics& a_Gfx) noexcept override;
 
+	CD3DX12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle();
+
 	ID3D12Resource* GetTextureBuffer() const noexcept { return m_TextureBuffer; };
 
 private:
 	ID3D12Resource* m_TextureBuffer;
 	ID3D12Resource* m_TextureUploadBufferHeap;
 
-	class SRVDescriptorInfo* m_DescriptorInfo;
+	SRVDescriptorInfo* m_DescriptorInfo;
 };
