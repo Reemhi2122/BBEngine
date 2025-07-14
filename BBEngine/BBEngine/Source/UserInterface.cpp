@@ -263,7 +263,7 @@ namespace BBE
             ImGui::Begin("GameWindow");
             {
                 ImVec2 size = ImGui::GetWindowSize();
-                ImGui::Image(a_Graphics.GetCurrentViewHandle()->ptr, size);
+                ImGui::Image(a_Graphics.GetCurrentViewHandle().ptr, size);
                 //ImGui::Image((ImTextureID)(void*)a_Graphics.GetGameViewRSV(), size);
             }
             ImGui::End();

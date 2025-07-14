@@ -93,7 +93,7 @@ public:
 	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
 	uint8_t GetCurrentFrame() const override { return m_FrameIndex; };
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE* GetCurrentViewHandle() { return &m_GRTVShaderResourceView[m_FrameIndex].cpuDescHandle; };
+	CD3DX12_GPU_DESCRIPTOR_HANDLE GetCurrentViewHandle() { return m_GRTVShaderResourceView[m_FrameIndex].gpuDescHandle; };
 	void SetSwapBuffer();
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
