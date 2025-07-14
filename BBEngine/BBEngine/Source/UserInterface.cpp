@@ -84,6 +84,8 @@ namespace BBE
             {
                 for (uint32_t i = 0; i < m_GameObjectsPointer->size(); i++)
                 {
+                    BBObject* curObject = (*m_GameObjectsPointer)[i];
+
                     ImGuiTreeNodeFlags flags = baseFlags;
                     if (i == selectedObjectNum)
                     {
@@ -91,17 +93,22 @@ namespace BBE
                     }
 
                     ImGui::PushID(i);
-                    bool isOpen = ImGui::TreeNodeEx("Hierarchy Object", flags, (*m_GameObjectsPointer)[i]->GetName());
+                    bool isOpen = ImGui::TreeNodeEx("Hierarchy Object", flags, curObject->GetName());
                     if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
                     {
-                        g_InspectedObj = (*m_GameObjectsPointer)[i];
+                        g_InspectedObj = curObject;
                         selectedObjectNum = i;
                     }
 
                     if (isOpen)
                     {
-                        ImGui::Text("FakeChild1");
-                        ImGui::Text("FakeChild2");
+                        for (uint32_t i = 0; i < curObject->GetChildren()->size(); i++)
+                        {
+                            ImGui::PushID(i);
+                            ImGui::TreeNode((*curObject->GetChildren())[i]->GetName());
+                            ImGui::PopID();
+                        }
+
                         ImGui::TreePop();
                     }
                     ImGui::PopID();
