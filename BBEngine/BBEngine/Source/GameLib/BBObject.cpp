@@ -6,6 +6,7 @@
 BBObject::BBObject(const char* a_Name)
 {
 	strcpy(m_Name, a_Name);
+	m_UUID = UUID;
 }
 
 void BBObject::Update(Graphics& a_Graphics)

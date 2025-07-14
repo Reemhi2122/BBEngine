@@ -20,11 +20,13 @@ namespace BBE
         void DrawHierarchy(Graphics& a_Graphics);
         void DrawInspector(Graphics& a_Graphics);
         void DrawAssetBrowser(Graphics& a_Graphics);
+        void GetHierarchyChildren(std::vector<BBObject*>* a_CurList, uint32_t a_Depth = 0);
+        void SetSelectedHieracyObject(BBObject* a_CurObject, uint32_t a_UUID);
 
         void DrawRandomUI(Graphics& a_Graphics);
 
         static BBObject* g_InspectedObj = nullptr;
-        static int selectedObjectNum = -1;
+        static int g_SelectedObjectUUID = -1;
         ImGuiTreeNodeFlags baseFlags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 
         //Note(Stan): Local objects reference, look into changing this?
@@ -81,40 +83,54 @@ namespace BBE
         void DrawHierarchy(Graphics& a_Graphics)
         {
             ImGui::Begin("Hierarchy");
-            {
-                for (uint32_t i = 0; i < m_GameObjectsPointer->size(); i++)
-                {
-                    BBObject* curObject = (*m_GameObjectsPointer)[i];
-
-                    ImGuiTreeNodeFlags flags = baseFlags;
-                    if (i == selectedObjectNum)
-                    {
-                        flags |= ImGuiTreeNodeFlags_Selected;
-                    }
-
-                    ImGui::PushID(i);
-                    bool isOpen = ImGui::TreeNodeEx("Hierarchy Object", flags, curObject->GetName());
-                    if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
-                    {
-                        g_InspectedObj = curObject;
-                        selectedObjectNum = i;
-                    }
-
-                    if (isOpen)
-                    {
-                        for (uint32_t i = 0; i < curObject->GetChildren()->size(); i++)
-                        {
-                            ImGui::PushID(i);
-                            ImGui::TreeNode((*curObject->GetChildren())[i]->GetName());
-                            ImGui::PopID();
-                        }
-
-                        ImGui::TreePop();
-                    }
-                    ImGui::PopID();
-                }
-            }
+            GetHierarchyChildren(m_GameObjectsPointer);
             ImGui::End();
+        }
+
+        void GetHierarchyChildren(std::vector<BBObject*>* a_CurList, uint32_t a_Depth)
+        {
+            ImGui::PushID(a_Depth);
+            for (uint32_t index = 0; index < a_CurList->size(); index++)
+            {
+                ImGui::PushID(index);
+                BBObject* childObject = (*a_CurList)[index];
+                
+                uint32_t uuid = childObject->GetUUID();
+                ImGuiTreeNodeFlags flags = baseFlags;
+                if (uuid == g_SelectedObjectUUID)
+                {
+                    flags |= ImGuiTreeNodeFlags_Selected;
+                }
+
+                uint32_t childCount = childObject->GetChildren()->size();
+                if (childCount <= 0)
+                {
+                    flags |= ImGuiTreeNodeFlags_Leaf;
+                }
+                
+                bool isOpen = ImGui::TreeNodeEx("Hierachy child object", flags, childObject->GetName());
+                if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
+                {
+                    SetSelectedHieracyObject(childObject, uuid);
+                }
+
+                if (isOpen)
+                {
+                    if (childCount > 0)
+                    {
+                        GetHierarchyChildren(childObject->GetChildren(), a_Depth++);
+                    }
+                    ImGui::TreePop();
+                }
+                ImGui::PopID();
+            }
+            ImGui::PopID();
+        }
+
+        void SetSelectedHieracyObject(BBObject* a_SelectedObject, uint32_t a_UUID)
+        {
+            g_SelectedObjectUUID = a_UUID;
+            g_InspectedObj = a_SelectedObject;
         }
 
         void DrawAssetBrowser(Graphics& a_Graphics)

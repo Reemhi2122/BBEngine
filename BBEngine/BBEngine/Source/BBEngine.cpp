@@ -215,6 +215,7 @@ namespace BBE
 
         ////Cameras
         m_Cam1.SetPosition(DirectX::XMVectorSet(0, 0, -10, 0));
+        m_Cam2.SetViewPort(1600, 900);
 
         float fov = 45.0f * (3.14f / 180.f);
         float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
