@@ -29,7 +29,7 @@
 #include "Bindable/DX12ConstantBuffer.h"
 
 constexpr uint16_t WINDOW_WIDTH = 1600;
-constexpr uint16_t WINDOW_HEIGHT = 800;
+constexpr uint16_t WINDOW_HEIGHT = 900;
 
 #define MAX_TEXTURES 1024
 

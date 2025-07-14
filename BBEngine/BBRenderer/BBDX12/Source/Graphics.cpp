@@ -511,7 +511,7 @@ bool Graphics::Initialize()
 		textureDescription.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		textureDescription.Alignment = 0;
 		textureDescription.Width = 1600;
-		textureDescription.Height = 800;
+		textureDescription.Height = 900;
 		textureDescription.DepthOrArraySize = 1;
 		textureDescription.MipLevels = 1;
 		textureDescription.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -577,7 +577,7 @@ bool Graphics::Initialize()
 	//}
 
 	m_Texture = new DX12Texture();
-	res = m_Texture->Create(*this, "Assets/Textures/testtexture.jpg", 0);
+	res = m_Texture->Create(*this, "Assets/Textures/zoomStan.jpg", 0);
 	if (!res)
 	{
 		printf("[GFX]: Failed to create Texture!");
