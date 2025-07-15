@@ -66,6 +66,14 @@ namespace BBE {
 		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
 		a_CurNode->mesh = {};
 
+
+		strcpy(a_CurNode->name, "Unnamed");
+		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["name"])
+		{
+			std::string meshName = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["name"]->GetStringBB();
+			strcpy(a_CurNode->name, meshName.c_str());
+		}
+
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"])
 		{
 			BBE::JSONList list = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["translation"]->GetListBB();
@@ -90,11 +98,11 @@ namespace BBE {
 			
 			//Note(Stan):	This only works when doing it indirectly,
 			//				Look into a way of fixing this.
-			a_CurNode->mesh.name = "Unnamed";
+			strcpy(a_CurNode->mesh.name, "Unnamed");
 			if (curMesh["name"])
 			{
 				std::string meshName = curMesh["name"]->GetStringBB();
-				a_CurNode->mesh.name = meshName.c_str();
+				strcpy(a_CurNode->mesh.name, meshName.c_str());
 			}
 
 			//Go over all primitives

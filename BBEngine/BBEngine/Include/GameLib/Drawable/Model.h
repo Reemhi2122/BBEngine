@@ -22,6 +22,7 @@ struct ModelTransform
 
 struct ModelNodes
 {
+	char name[255] = "Undefined Model";
 	uint32_t primitiveCount = 0;
 
 	ModelTransform objectTransform;

@@ -23,7 +23,8 @@ Transform::Transform(IGraphics& a_Graphics, ModelNodes* a_Model, Transform* a_Pa
 
 	if (a_ParentTransform)
 	{
-		m_TransformBuf->SetTransformRPY(TransformType::PARENT, a_ParentTransform->GetPosition(), a_ParentTransform->GetRotation(), a_ParentTransform->GetScale());
+		m_ParentTransform = a_ParentTransform;
+		m_TransformBuf->SetTransformRPY(TransformType::PARENT, m_ParentTransform->GetPosition(), m_ParentTransform->GetRotation(), m_ParentTransform->GetScale());
 	}
 
 	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
@@ -32,6 +33,11 @@ Transform::Transform(IGraphics& a_Graphics, ModelNodes* a_Model, Transform* a_Pa
 void Transform::Update(IGraphics& a_Graphics)
 {
 	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
+
+	if (m_ParentTransform)
+	{
+		m_TransformBuf->SetTransformRPY(TransformType::PARENT, m_ParentTransform->GetPosition(), m_ParentTransform->GetRotation(), m_ParentTransform->GetScale());
+	}
 }
 
 void Transform::InspectorDrawUI()

@@ -74,7 +74,7 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vec
 
 	for (uint32_t nodeIndex = 0; nodeIndex < nodes.count; nodeIndex++)
 	{
-		BBObject* obj = new BBObject("test");
+		BBObject* obj = new BBObject(a_Model->GetNodes().data[nodeIndex].name);
 		Transform* TransformComp = new Transform(a_Gfx, &nodes.data[nodeIndex], parentTransformComp);
 		BBE::MeshComponent* MeshComp = new BBE::MeshComponent(a_Gfx, a_Model, nodeIndex, TransformComp);
 		obj->AddComponent(TransformComp);

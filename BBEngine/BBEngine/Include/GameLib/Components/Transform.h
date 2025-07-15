@@ -36,5 +36,6 @@ private:
 	Vector3 m_Rotation;
 	Vector3 m_Scale;
 
-	TransformBuf* m_TransformBuf;
+	TransformBuf* m_TransformBuf = nullptr;
+	Transform* m_ParentTransform = nullptr;
 };

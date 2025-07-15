@@ -3,6 +3,8 @@
 #include "Vector4.h"
 #include <stdint.h>
 
+#define MAX_NAME 256
+
 //Note(Stan):	Doubting if these are even supposed to be
 //				in the SharedRenderTypes because they could
 //				be part of the normal engine as well..
@@ -36,7 +38,7 @@ namespace BBE {
 
 	struct Mesh 
 	{
-		const char*	name;
+		char name[MAX_NAME];
 		uint32_t primitiveCount;
 		
 		struct Primative
@@ -130,6 +132,7 @@ namespace BBE {
 
 	struct Node
 	{
+		char name[MAX_NAME];
 		Node* Children;
 		Node* Parent;
 		Mesh mesh;
