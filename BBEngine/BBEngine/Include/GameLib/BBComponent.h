@@ -1,6 +1,8 @@
 #pragma once
 #include "Graphics.h"
 
+class BBObject;
+
 class BBComponent
 {
 public:

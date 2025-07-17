@@ -53,6 +53,7 @@ bool BBObject::SetParent(BBObject* a_Parent)
 
 bool BBObject::SetChild(BBObject* a_Child)
 {
+	assert(false, "Not supported for now!");
 	m_Children.push_back(a_Child);
 	return true;
 }
@@ -62,20 +63,11 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vec
 	NodeContainer nodes = a_Model->GetNodes();
 
 	BBObject* parentObj = nullptr;
-	Transform* parentTransformComp = nullptr;
-	//if(nodes.count > 0)
-	//{
-	//	parentObj = new BBObject("Parent Node");
-	//	parentTransformComp = new Transform(a_Gfx, a_Pos, a_Rot, a_Scale);
-	//	parentObj->AddComponent(parentTransformComp);
-	//	a_AllObjects->push_back(parentObj);
-	//	a_RootObjects->push_back(parentObj);
-	//}
 
 	for (uint32_t nodeIndex = 0; nodeIndex < nodes.count; nodeIndex++)
 	{
 		BBObject* obj = new BBObject(a_Model->GetNodes().data[nodeIndex].name);
-		Transform* TransformComp = new Transform(a_Gfx, &nodes.data[nodeIndex], parentTransformComp);
+		Transform* TransformComp = new Transform(a_Gfx, &nodes.data[nodeIndex].objectTransform, nullptr);
 		BBE::MeshComponent* MeshComp = new BBE::MeshComponent(a_Gfx, a_Model, nodeIndex, TransformComp);
 		obj->AddComponent(TransformComp);
 		obj->AddComponent(MeshComp);

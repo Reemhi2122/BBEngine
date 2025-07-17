@@ -26,7 +26,6 @@ struct ModelNode
 	uint32_t primitiveCount = 0;
 
 	ModelTransform objectTransform;
-	ModelTransform parentTransform;
 
 	ModelNode* parent;
 	std::vector<ModelNode*> children;

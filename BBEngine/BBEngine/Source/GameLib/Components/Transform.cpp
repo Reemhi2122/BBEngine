@@ -12,10 +12,9 @@ Transform::Transform(IGraphics& a_Graphics, Vector3 a_Position, Vector3 a_Rotati
 	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
 }
 
-Transform::Transform(IGraphics& a_Graphics, ModelNode* a_Model, Transform* a_ParentTransform)
+Transform::Transform(IGraphics& a_Graphics, ModelTransform* a_Transform, Transform* a_ParentTransform)
 {
-	ModelTransform modTransform = a_Model->objectTransform;
-	m_TransformBuf = new TransformBuf(a_Graphics, modTransform.position, modTransform.rotation, modTransform.scale);
+	m_TransformBuf = new TransformBuf(a_Graphics, a_Transform->position, a_Transform->rotation, a_Transform->scale);
 
 	m_Position = Vector3(0, 0, 0);
 	m_Rotation = Vector3(0, 0, 0);

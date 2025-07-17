@@ -3,13 +3,13 @@
 #include "GameLib/TransformBuf.h"
 #include "Vector3.h"
 
-class ModelNode;
+class ModelTransform;
 
 class Transform : public BBComponent
 {
 public:
 	Transform(IGraphics& a_Graphics, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
-	Transform(IGraphics& a_Graphics, ModelNode* a_Model, Transform* a_ParentTransform);
+	Transform(IGraphics& a_Graphics, ModelTransform* a_Transform, Transform* a_ParentTransform);
 	~Transform() = default;
 
 	void Update(IGraphics& a_Graphics) override;

@@ -23,7 +23,6 @@ public:
 	bool AddComponent(BBComponent* a_Component);
 	bool SetParent(BBObject* a_Parent);
 
-	bool SetChild(BBObject* a_Child);
 	std::vector<BBObject*>* GetChildren() { return &m_Children; };
 
 	const uint32_t GetUUID() { return m_UUID; };
@@ -31,7 +30,12 @@ public:
 
 	static void CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Vector3 a_Pos, Vector3 a_Rot, Vector3 a_Scale);
 
+protected:
+	//Note(Stan): For now set child is connected to support a unified way of setting parent / child relation.
+	bool SetChild(BBObject* a_Child);
+
 private:
+
 	char m_Name[BBE::MAX_NAME_LENGTH] = "BBObject";
 
 	uint32_t m_UUID = 0;
