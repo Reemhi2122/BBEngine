@@ -20,16 +20,17 @@ struct ModelTransform
 	Vector3 scale;
 };
 
-struct ModelNodes
+struct ModelNode
 {
 	char name[255] = "Undefined Model";
 	uint32_t primitiveCount = 0;
 
 	ModelTransform objectTransform;
 	ModelTransform parentTransform;
-	
-	//TransformBuf* transformBuf = nullptr;
 
+	ModelNode* parent;
+	std::vector<ModelNode*> children;
+	
 	struct ModelPrimitive
 	{
 		IVertexBuffer* vBuffer;
@@ -47,7 +48,7 @@ struct ModelNodes
 
 struct NodeContainer
 {
-	ModelNodes* data;
+	ModelNode* data;
 	uint32_t count;
 };
 
@@ -81,7 +82,7 @@ private:
 	std::vector<DirectX::XMMATRIX> m_InstanceBuffer;
 	TransformBuf* m_CurTransform = nullptr;
 
-	ModelNodes* m_Nodes = nullptr;
+	ModelNode* m_Nodes = nullptr;
 
 	//InputLayout* m_InputLayout;
 	//Topology* m_Topology;

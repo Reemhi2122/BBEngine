@@ -2,6 +2,7 @@
 #include "Vector3.h"
 #include "Vector4.h"
 #include <stdint.h>
+#include <vector>
 
 #define MAX_NAME 256
 
@@ -133,8 +134,11 @@ namespace BBE {
 	struct Node
 	{
 		char name[MAX_NAME];
-		Node* Children;
-		Node* Parent;
+
+		//Note(Stan): Change this to BB specific container
+		std::vector<int> Children;
+		int Parent = -1;
+		
 		Mesh mesh;
 		Vector3 translation;
 		Vector4 rotation;

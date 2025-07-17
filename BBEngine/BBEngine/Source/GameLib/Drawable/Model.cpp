@@ -5,8 +5,8 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 {
 	strcpy(m_Name, a_Name);
 
-	m_Nodes = reinterpret_cast<ModelNodes*>(malloc(a_File->nodeAmount * sizeof(ModelNodes)));
-	memset(m_Nodes, 0, a_File->nodeAmount * sizeof(ModelNodes));
+	m_Nodes = reinterpret_cast<ModelNode*>(malloc(a_File->nodeAmount * sizeof(ModelNode)));
+	memset(m_Nodes, 0, a_File->nodeAmount * sizeof(ModelNode));
 
 	m_nodeCount = a_File->nodeAmount;
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
@@ -14,6 +14,8 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 		BBE::Node& curNode = a_File->nodes[nodeIndex];
 
 		strcpy(m_Nodes[nodeIndex].name, curNode.name);
+
+		m_Nodes[nodeIndex].parent = &m_Nodes[curNode.Parent];
 
 		m_Nodes[nodeIndex].objectTransform = { 
 			curNode.translation, 
@@ -24,21 +26,21 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 		if (curNode.Parent)
 		{
 			m_Nodes[nodeIndex].parentTransform = { 
-				curNode.Parent->translation, 
-				curNode.Parent->rotation, 
-				curNode.Parent->scale 
+				a_File->nodes[curNode.Parent].translation,
+				a_File->nodes[curNode.Parent].rotation,
+				a_File->nodes[curNode.Parent].scale
 			};
 		}
 
 		m_Nodes[nodeIndex].primitiveCount = curNode.mesh.primitiveCount;
-		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNodes::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNodes::ModelPrimitive)));
+		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNode::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNode::ModelPrimitive)));
 
 		for (size_t primitiveIndex = 0; primitiveIndex < curNode.mesh.primitiveCount; primitiveIndex++)
 		{
 			BBE::Mesh::Primative& gltfPrimitive = curNode.mesh.primative[primitiveIndex];
 			BBE::Vertex* vertices = reinterpret_cast<BBE::Vertex*>(malloc(gltfPrimitive.vertexCount * sizeof(BBE::Vertex)));
 
-			ModelNodes::ModelPrimitive& modelPrimitive = m_Nodes[nodeIndex].primitives[primitiveIndex];
+			ModelNode::ModelPrimitive& modelPrimitive = m_Nodes[nodeIndex].primitives[primitiveIndex];
 			modelPrimitive = {};
 
 			if (vertices == nullptr)
@@ -154,7 +156,7 @@ void Model::Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept
 		m_CurTransform->Bind(a_Gfx);
 		for (size_t i = 0; i < m_Nodes[a_NodeIndex].primitiveCount; i++)
 		{
-			ModelNodes::ModelPrimitive& curPrimitive = m_Nodes[a_NodeIndex].primitives[i];
+			ModelNode::ModelPrimitive& curPrimitive = m_Nodes[a_NodeIndex].primitives[i];
 
 			if (curPrimitive.m_Texture != nullptr)
 			{

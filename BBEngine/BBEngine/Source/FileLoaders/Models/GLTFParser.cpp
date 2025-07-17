@@ -270,6 +270,7 @@ namespace BBE {
 			}
 		}
 
+		int parentIndex = a_CurNodeIndex;
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"])
 		{
 			BBE::JSONList childNodes = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["children"]->GetListBB();
@@ -277,7 +278,8 @@ namespace BBE {
 			{
 				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
 				BBE::Node* node = &m_GLTFFile->nodes[a_CurNodeIndex];
-				node->Parent = a_CurNode;
+				a_CurNode->Children.push_back(a_CurNodeIndex);
+				node->Parent = parentIndex;
 				CalculateNode(node, a_CurNodeIndex);
 			}
 		}

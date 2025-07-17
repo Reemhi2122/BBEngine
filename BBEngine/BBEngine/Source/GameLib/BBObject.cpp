@@ -63,14 +63,14 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vec
 
 	BBObject* parentObj = nullptr;
 	Transform* parentTransformComp = nullptr;
-	if(nodes.count > 0)
-	{
-		parentObj = new BBObject("Parent Node");
-		parentTransformComp = new Transform(a_Gfx, a_Pos, a_Rot, a_Scale);
-		parentObj->AddComponent(parentTransformComp);
-		a_AllObjects->push_back(parentObj);
-		a_RootObjects->push_back(parentObj);
-	}
+	//if(nodes.count > 0)
+	//{
+	//	parentObj = new BBObject("Parent Node");
+	//	parentTransformComp = new Transform(a_Gfx, a_Pos, a_Rot, a_Scale);
+	//	parentObj->AddComponent(parentTransformComp);
+	//	a_AllObjects->push_back(parentObj);
+	//	a_RootObjects->push_back(parentObj);
+	//}
 
 	for (uint32_t nodeIndex = 0; nodeIndex < nodes.count; nodeIndex++)
 	{
@@ -80,7 +80,8 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vec
 		obj->AddComponent(TransformComp);
 		obj->AddComponent(MeshComp);
 
-		obj->SetParent(parentObj);
+		//obj->SetParent(parentObj);
 		a_AllObjects->push_back(obj);
+		a_RootObjects->push_back(obj);
 	}
 }
