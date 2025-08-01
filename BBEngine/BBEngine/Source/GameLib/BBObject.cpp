@@ -65,7 +65,7 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BB
 	{
 		//Create the object
 		BBObject* obj = new BBObject(a_GLTFFile->nodes[nodeIndex].name);
-		TransformComponent* TransformComp = new TransformComponent(a_Gfx, &a_Model->GetNode(nodeIndex).objectTransform, nullptr);
+		TransformComponent* TransformComp = new TransformComponent(a_Gfx, &a_Model->GetNode(nodeIndex).objectTransform, a_Pos, a_Rot, a_Scale, nullptr);
 		BBE::MeshComponent* MeshComp = new BBE::MeshComponent(a_Gfx, a_Model, nodeIndex, TransformComp);
 		obj->AddComponent(TransformComp);
 		obj->AddComponent(MeshComp);
