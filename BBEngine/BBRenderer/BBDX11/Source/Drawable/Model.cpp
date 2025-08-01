@@ -13,23 +13,6 @@ Model::Model(Graphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_
 	{
 		BBE::Node& curNode = a_File->nodes[nodeIndex];
 
-		m_Nodes[nodeIndex].position = curNode.translation;
-		m_Nodes[nodeIndex].rotation = curNode.rotation;
-		m_Nodes[nodeIndex].scale	= curNode.scale;
-			
-		//m_Nodes[nodeIndex].transformBuf = new TransformBuf(a_Gfx, 
-		//	curNode.translation,
-		//	curNode.rotation,
-		//	curNode.scale);
-
-		if (curNode.Parent) {
-			m_Nodes[nodeIndex].transformBuf->SetParentTransform(
-				curNode.Parent->translation,
-				curNode.Parent->rotation,
-				curNode.Parent->scale
-			);
-		}
-
 		m_Nodes[nodeIndex].primitiveCount = curNode.mesh.primitiveCount;
 		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNodes::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNodes::ModelPrimitive)));
 

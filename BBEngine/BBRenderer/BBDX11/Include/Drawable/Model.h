@@ -13,8 +13,6 @@ struct ModelNodes
 	Vector4 rotation;
 	Vector3 scale;
 
-	TransformBuf* transformBuf = nullptr;
-
 	struct ModelPrimitive
 	{
 		VertexBuffer* vBuffer;
