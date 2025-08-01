@@ -82,6 +82,7 @@ private:
 	TransformBuf* m_CurTransform = nullptr;
 
 	ModelNode* m_Nodes = nullptr;
+	ModelNode* m_RootNodes = nullptr;
 
 	//InputLayout* m_InputLayout;
 	//Topology* m_Topology;

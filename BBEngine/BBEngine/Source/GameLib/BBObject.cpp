@@ -1,7 +1,7 @@
 #include "GameLib/BBObject.h"
 #include "GameLib/Drawable/Model.h"
 #include "GameLib/Components/MeshComponent.h"
-#include "GameLib/Components/Transform.h"
+#include "GameLib/Components/TransformComponent.h"
 
 BBObject::BBObject(const char* a_Name)
 {
@@ -67,12 +67,11 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vec
 	for (uint32_t nodeIndex = 0; nodeIndex < nodes.count; nodeIndex++)
 	{
 		BBObject* obj = new BBObject(a_Model->GetNodes().data[nodeIndex].name);
-		Transform* TransformComp = new Transform(a_Gfx, &nodes.data[nodeIndex].objectTransform, nullptr);
+		TransformComponent* TransformComp = new TransformComponent(a_Gfx, &nodes.data[nodeIndex].objectTransform, nullptr);
 		BBE::MeshComponent* MeshComp = new BBE::MeshComponent(a_Gfx, a_Model, nodeIndex, TransformComp);
 		obj->AddComponent(TransformComp);
 		obj->AddComponent(MeshComp);
 
-		//obj->SetParent(parentObj);
 		a_AllObjects->push_back(obj);
 		a_RootObjects->push_back(obj);
 	}

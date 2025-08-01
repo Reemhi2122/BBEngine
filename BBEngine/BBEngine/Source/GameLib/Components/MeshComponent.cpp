@@ -2,7 +2,7 @@
 
 namespace BBE
 {
-	MeshComponent::MeshComponent(IGraphics& a_Graphics, Model* a_Model, uint32_t a_NodeIndex, Transform* a_Transform)
+	MeshComponent::MeshComponent(IGraphics& a_Graphics, Model* a_Model, uint32_t a_NodeIndex, TransformComponent* a_Transform)
 	{
 		m_Transform = a_Transform;
 		m_Model = a_Model;

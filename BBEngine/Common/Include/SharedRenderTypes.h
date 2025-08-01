@@ -33,7 +33,7 @@ namespace BBE {
 	//TODO(Stan):	Add support for MIME type images
 	struct TextureT 
 	{
-		char* path = nullptr;
+		const char* path = nullptr;
 		uint32_t texCoordIndex;
 	};
 
@@ -148,6 +148,7 @@ namespace BBE {
 	struct GLTFFile {
 		Node* nodes;
 		uint32_t nodeAmount;
+		uint32_t rootNodeAmount;
 		char* gltfPath;
 		
 		uint32_t totalVertexCount;

@@ -1,14 +1,14 @@
 #pragma once
 #include "GameLib/Drawable/Model.h"
 #include "GameLib/BBComponent.h"
-#include "GameLib/Components/Transform.h"
+#include "GameLib/Components/TransformComponent.h"
 
 namespace BBE 
 {
 	class MeshComponent : public BBComponent
 	{
 	public:
-		MeshComponent(IGraphics& a_Graphics, Model* a_Model, uint32_t a_NodeIndex, Transform* a_Transform);
+		MeshComponent(IGraphics& a_Graphics, Model* a_Model, uint32_t a_NodeIndex, TransformComponent* a_Transform);
 		~MeshComponent() = default;
 
 		virtual void Update(IGraphics& a_Graphics) override;
@@ -22,6 +22,6 @@ namespace BBE
 	private:
 		uint32_t m_NodeIndex;
 		Model* m_Model;
-		Transform* m_Transform;
+		TransformComponent* m_Transform;
 	};
 }

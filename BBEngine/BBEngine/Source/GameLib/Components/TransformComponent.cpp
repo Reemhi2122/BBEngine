@@ -1,7 +1,7 @@
-#include "GameLib/Components/Transform.h"
+#include "GameLib/Components/TransformComponent.h"
 #include "GameLib/Drawable/Model.h"
 
-Transform::Transform(IGraphics& a_Graphics, Vector3 a_Position, Vector3 a_Rotation, Vector3 a_Scale)
+TransformComponent::TransformComponent(IGraphics& a_Graphics, Vector3 a_Position, Vector3 a_Rotation, Vector3 a_Scale)
 {
 	m_TransformBuf = new TransformBuf(a_Graphics, m_Position, Vector4(0, 0, 0, 0), m_Scale);
 
@@ -12,7 +12,7 @@ Transform::Transform(IGraphics& a_Graphics, Vector3 a_Position, Vector3 a_Rotati
 	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
 }
 
-Transform::Transform(IGraphics& a_Graphics, ModelTransform* a_Transform, Transform* a_ParentTransform)
+TransformComponent::TransformComponent(IGraphics& a_Graphics, ModelTransform* a_Transform, TransformComponent* a_ParentTransform)
 {
 	m_TransformBuf = new TransformBuf(a_Graphics, a_Transform->position, a_Transform->rotation, a_Transform->scale);
 
@@ -29,7 +29,7 @@ Transform::Transform(IGraphics& a_Graphics, ModelTransform* a_Transform, Transfo
 	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
 }
 
-void Transform::Update(IGraphics& a_Graphics)
+void TransformComponent::Update(IGraphics& a_Graphics)
 {
 	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
 
@@ -39,7 +39,7 @@ void Transform::Update(IGraphics& a_Graphics)
 	}
 }
 
-void Transform::InspectorDrawUI()
+void TransformComponent::InspectorDrawUI()
 {
 	if (ImGui::TreeNode("Transform"))
 	{

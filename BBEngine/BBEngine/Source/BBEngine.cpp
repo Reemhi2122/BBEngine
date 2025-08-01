@@ -8,7 +8,7 @@
 
 #include "System/FileHandler.h"
 
-#include "GameLib/Components/Transform.h"
+#include "GameLib/Components/TransformComponent.h"
 #include "GameLib/Components/MeshComponent.h"
 //#include "GameLib/Components/LightComponents/DirectionalLightComponent.h"
 //#include "GameLib/Components/LightComponents/PointLightComponent.h"

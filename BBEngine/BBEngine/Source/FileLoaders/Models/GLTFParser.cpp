@@ -47,6 +47,7 @@ namespace BBE {
 		for (uint32_t curScene = 0; curScene < sceneList.size(); curScene++)
 		{
 			BBE::JSONList& sceneNodesList = sceneList[curScene]->GetObjectBB()["nodes"]->GetListBB();
+			m_GLTFFile->rootNodeAmount = sceneNodesList.size();
 			for (uint32_t sceneHeadNodeIndex = 0; sceneHeadNodeIndex < sceneNodesList.size(); sceneHeadNodeIndex++)
 			{
 				uint32_t curIndex = sceneNodesList[sceneHeadNodeIndex]->GetFloatBB();

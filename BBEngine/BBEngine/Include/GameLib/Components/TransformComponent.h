@@ -5,12 +5,12 @@
 
 class ModelTransform;
 
-class Transform : public BBComponent
+class TransformComponent : public BBComponent
 {
 public:
-	Transform(IGraphics& a_Graphics, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
-	Transform(IGraphics& a_Graphics, ModelTransform* a_Transform, Transform* a_ParentTransform);
-	~Transform() = default;
+	TransformComponent(IGraphics& a_Graphics, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
+	TransformComponent(IGraphics& a_Graphics, ModelTransform* a_Transform, TransformComponent* a_ParentTransform);
+	~TransformComponent() = default;
 
 	void Update(IGraphics& a_Graphics) override;
 	void Draw(IGraphics& a_Graphics) override {};
@@ -37,5 +37,5 @@ private:
 	Vector3 m_Scale;
 
 	TransformBuf* m_TransformBuf = nullptr;
-	Transform* m_ParentTransform = nullptr;
+	TransformComponent* m_ParentTransform = nullptr;
 };
