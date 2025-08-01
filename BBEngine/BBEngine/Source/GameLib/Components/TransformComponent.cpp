@@ -12,13 +12,13 @@ TransformComponent::TransformComponent(IGraphics& a_Graphics, Vector3 a_Position
 	m_TransformBuf->SetTransformRPY(TransformType::OBJECT, m_Position, m_Rotation, m_Scale);
 }
 
-TransformComponent::TransformComponent(IGraphics& a_Graphics, ModelTransform* a_ModelTransform, Vector3 a_Pos, Vector3 a_Rot, Vector3 a_Scale, TransformComponent* a_ParentTransform)
+TransformComponent::TransformComponent(IGraphics& a_Graphics, Transform& a_LocalTransform, Transform& a_ObjectTransform, TransformComponent* a_ParentTransform)
 {
-	m_TransformBuf = new TransformBuf(a_Graphics, a_ModelTransform->position, a_ModelTransform->rotation, a_ModelTransform->scale);
+	m_TransformBuf = new TransformBuf(a_Graphics, a_LocalTransform.GetPosition(), a_LocalTransform.GetRotationV4(), a_LocalTransform.GetScale());
 
-	m_Position = a_Pos;
-	m_Rotation = a_Rot;
-	m_Scale = a_Scale;
+	m_Position = a_ObjectTransform.GetPosition();
+	m_Rotation = a_ObjectTransform.GetRotationV3();
+	m_Scale = a_ObjectTransform.GetScale();
 
 	if (a_ParentTransform)
 	{

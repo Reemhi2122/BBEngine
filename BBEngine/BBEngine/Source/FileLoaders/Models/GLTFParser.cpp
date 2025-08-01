@@ -277,7 +277,6 @@ namespace BBE {
 			for (size_t childNodeIndex = 0; childNodeIndex < childNodes.size(); childNodeIndex++)
 			{
 				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
-				
 				BBE::Node* node = &m_GLTFFile->nodes[a_CurNodeIndex];
 				a_CurNode->Children.push_back(a_CurNodeIndex);
 				CalculateNode(node, a_CurNodeIndex);

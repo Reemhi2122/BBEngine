@@ -53,7 +53,7 @@ add_library (BBEngine
 "Source/GameLib/Drawable/Drawable.cpp"
 
 "Source/GameLib/TransformBuf.cpp"
-)
+"Source/GameLib/Transform.cpp")
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 

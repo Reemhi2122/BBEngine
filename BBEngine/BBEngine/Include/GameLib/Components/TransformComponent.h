@@ -1,6 +1,7 @@
 #pragma once
 #include "GameLib/BBComponent.h"
 #include "GameLib/TransformBuf.h"
+#include "GameLib/Transform.h"
 #include "Vector3.h"
 
 class ModelTransform;
@@ -9,7 +10,7 @@ class TransformComponent : public BBComponent
 {
 public:
 	TransformComponent(IGraphics& a_Graphics, Vector3 a_Position = Vector3(0, 0, 0), Vector3 a_Rotation = Vector3(0, 0, 0), Vector3 a_Scale = Vector3(1, 1, 1));
-	TransformComponent(IGraphics& a_Graphics, ModelTransform* a_ModelTransform, Vector3 a_Pos, Vector3 a_Rot, Vector3 a_Scale, TransformComponent* a_ParentTransform);
+	TransformComponent(IGraphics& a_Graphics, Transform& a_LocalTransform, Transform& a_ObjectTransform, TransformComponent* a_ParentTransform);
 	~TransformComponent() = default;
 
 	void Update(IGraphics& a_Graphics) override;

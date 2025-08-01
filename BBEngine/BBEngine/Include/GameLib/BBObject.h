@@ -2,6 +2,7 @@
 #include <System/BBString.h>
 #include <Containers/Vector.h>
 #include "SharedRenderTypes.h"
+#include "GameLib/Transform.h"
 #include "Graphics.h"
 #include "BBComponent.h"
 
@@ -29,7 +30,7 @@ public:
 	const uint32_t GetUUID() { return m_UUID; };
 	const char* GetName() { return m_Name; };
 
-	static void CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BBE::GLTFFile* a_GLTFFile, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Vector3 a_Pos, Vector3 a_Rot, Vector3 a_Scale);
+	static void CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BBE::GLTFFile* a_GLTFFile, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Transform& a_ObjectTransform);
 
 protected:
 	//Note(Stan): For now set child is connected to support a unified way of setting parent / child relation.
