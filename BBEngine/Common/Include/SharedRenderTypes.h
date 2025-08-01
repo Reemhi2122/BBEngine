@@ -154,5 +154,4 @@ namespace BBE {
 		uint32_t totalVertexCount;
 		uint32_t PrimitiveCount;
 	};
-
 }

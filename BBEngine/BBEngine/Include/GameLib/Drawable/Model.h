@@ -45,11 +45,11 @@ struct ModelNode
 	}*primitives = nullptr;
 };
 
-struct NodeContainer
-{
-	ModelNode* data;
-	uint32_t count;
-};
+//struct NodeContainer
+//{
+//	ModelNode* data;
+//	uint32_t count;
+//};
 
 class Model : public Drawable
 {
@@ -68,7 +68,7 @@ public:
 
 	void SetTransform(TransformBuf* a_TransformBuf) { m_CurTransform = a_TransformBuf; }
 
-	NodeContainer GetNodes() { return { m_Nodes, m_nodeCount }; };
+	ModelNode GetNode(uint32_t m_Index) { return m_Nodes[m_Index]; };
 
 	//const std::vector<Bindable*>& GetStaticBinds() const noexcept override
 	//{

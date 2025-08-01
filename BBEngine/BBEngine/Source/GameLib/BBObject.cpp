@@ -58,16 +58,14 @@ bool BBObject::SetChild(BBObject* a_Child)
 	return true;
 }
 
-void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Vector3 a_Pos, Vector3 a_Rot, Vector3 a_Scale)
+void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BBE::GLTFFile* a_GLTFFile, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Vector3 a_Pos, Vector3 a_Rot, Vector3 a_Scale)
 {
-	NodeContainer nodes = a_Model->GetNodes();
-
 	BBObject* parentObj = nullptr;
-
-	for (uint32_t nodeIndex = 0; nodeIndex < nodes.count; nodeIndex++)
+	for (uint32_t nodeIndex = 0; nodeIndex < a_GLTFFile->nodeAmount; nodeIndex++)
 	{
-		BBObject* obj = new BBObject(a_Model->GetNodes().data[nodeIndex].name);
-		TransformComponent* TransformComp = new TransformComponent(a_Gfx, &nodes.data[nodeIndex].objectTransform, nullptr);
+		//Create the object
+		BBObject* obj = new BBObject(a_GLTFFile->nodes[nodeIndex].name);
+		TransformComponent* TransformComp = new TransformComponent(a_Gfx, &a_Model->GetNode(nodeIndex).objectTransform, nullptr);
 		BBE::MeshComponent* MeshComp = new BBE::MeshComponent(a_Gfx, a_Model, nodeIndex, TransformComp);
 		obj->AddComponent(TransformComp);
 		obj->AddComponent(MeshComp);
