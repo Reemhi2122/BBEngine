@@ -61,11 +61,10 @@ bool BBObject::SetChild(BBObject* a_Child)
 void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BBE::GLTFFile* a_GLTFFile, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Transform& a_ObjectTransform)
 {
 	BBObject* parentObj = nullptr;
+
 	for (uint32_t nodeIndex = 0; nodeIndex < a_GLTFFile->nodeAmount; nodeIndex++)
 	{
-		//Create the object
 		BBE::Node* curNode = &a_GLTFFile->nodes[nodeIndex];
-
 		BBObject* obj = new BBObject(curNode->name);
 		Transform localTransform = Transform(curNode->translation, curNode->rotation, curNode->scale);
 		TransformComponent* TransformComp = new TransformComponent(a_Gfx, localTransform, a_ObjectTransform, nullptr);
@@ -74,6 +73,5 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BB
 		obj->AddComponent(MeshComp);
 
 		a_AllObjects->push_back(obj);
-		a_RootObjects->push_back(obj);
 	}
 }

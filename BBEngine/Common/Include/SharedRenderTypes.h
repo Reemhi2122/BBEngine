@@ -5,6 +5,7 @@
 #include <vector>
 
 #define MAX_NAME 256
+#define INVALID_PARENT -1
 
 //Note(Stan):	Doubting if these are even supposed to be
 //				in the SharedRenderTypes because they could
@@ -137,7 +138,7 @@ namespace BBE {
 
 		//Note(Stan): Change this to BB specific container
 		std::vector<int> Children;
-		int Parent = -1;
+		int Parent = INVALID_PARENT;
 		
 		Mesh mesh;
 		Vector3 translation;
@@ -146,7 +147,8 @@ namespace BBE {
 	};
 
 	struct GLTFFile {
-		Node* nodes;
+		Node* nodes = nullptr;
+		Node* rootNode = nullptr;
 		uint32_t nodeAmount;
 		uint32_t rootNodeAmount;
 		char* gltfPath;

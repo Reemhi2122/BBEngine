@@ -52,7 +52,7 @@ namespace BBE {
 			{
 				uint32_t curIndex = sceneNodesList[sceneHeadNodeIndex]->GetFloatBB();
 				BBE::Node* curNode = &m_GLTFFile->nodes[curIndex];
-
+				a_GLTFFile->rootNode = curNode;
 				CalculateNode(curNode, curIndex);
 			}
 		}
@@ -62,6 +62,7 @@ namespace BBE {
 
 	void GLTFParser::CalculateNode(BBE::Node* a_CurNode, uint32_t a_CurNodeIndex)
 	{
+		a_CurNode->Parent = INVALID_PARENT;
 		a_CurNode->translation = Vector3(0.0, 0.0, 0.0);
 		a_CurNode->rotation = Vector4(0.0, 0.0, 0.0, 1.0);
 		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
@@ -279,6 +280,7 @@ namespace BBE {
 				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
 				BBE::Node* node = &m_GLTFFile->nodes[a_CurNodeIndex];
 				a_CurNode->Children.push_back(a_CurNodeIndex);
+				node->Parent = a_CurNodeIndex;
 				CalculateNode(node, a_CurNodeIndex);
 			}
 		}
