@@ -138,7 +138,7 @@ namespace BBE {
 
 		//Note(Stan): Change this to BB specific container
 		std::vector<GLTFNode*> Children;
-		int Parent = INVALID_INDEX;
+		GLTFNode* Parent = nullptr;
 		int NodeIndex = INVALID_INDEX;
 
 		Mesh mesh;
@@ -152,7 +152,7 @@ namespace BBE {
 		GLTFNode* rootNode = nullptr;
 		uint32_t nodeAmount;
 		uint32_t rootNodeAmount;
-		char* gltfPath;
+		const char* gltfPath;
 		
 		uint32_t totalVertexCount;
 		uint32_t PrimitiveCount;

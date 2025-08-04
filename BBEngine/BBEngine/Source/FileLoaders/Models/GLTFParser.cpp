@@ -7,22 +7,31 @@ namespace BBE {
 
 	//TODO(Stan):	Convert this function to using custom allocation
 	//				and look into best way of giving the file
-	bool GLTFParser::Parse(char* a_GLTFPath, char* a_GLTFName, GLTFFile* a_GLTFFile) 
+	bool GLTFParser::Parse(const char* a_GLTFPath, const char* a_GLTFName, GLTFFile* a_GLTFFile) 
 	{
 		if (a_GLTFFile == nullptr)
+		{
+			printf("[GLTF Parser]: GLTF file is a nullptr!");
 			return false;
+		}
+
+		if (a_GLTFPath == nullptr)
+		{
+			printf("[GLTF Parser]: GLTF path is a nullptr!");
+			return false;
+		}
 
 		m_GLTFFile = a_GLTFFile;
 		m_GLTFFile->gltfPath = a_GLTFPath;
 
-		char GLTFPath[64] = "";
+		char GLTFPath[FILE_PATH_SIZE] = "";
 		strcat(GLTFPath, a_GLTFPath);
 		strcat(GLTFPath, a_GLTFName);
 		
 		m_Parser.Clear();
 		m_Parser.Parse(GLTFPath);
 
-		char binPath[64] = "";
+		char binPath[FILE_PATH_SIZE] = "";
 		strcat(binPath, a_GLTFPath);
 		strcat(binPath, m_Parser.GetRootNode()["buffers"]->GetListBB()[0]->GetObjectBB()["uri"]->GetStringBB().c_str());
 		m_BinFile = BBSystem::OpenFileReadBB(binPath);
@@ -68,12 +77,11 @@ namespace BBE {
 
 	void GLTFParser::CalculateNode(BBE::GLTFNode* a_CurNode, uint32_t a_CurNodeIndex)
 	{
-		a_CurNode->Parent = INVALID_INDEX;
+		a_CurNode->Parent = nullptr;
 		a_CurNode->translation = Vector3(0.0, 0.0, 0.0);
 		a_CurNode->rotation = Vector4(0.0, 0.0, 0.0, 1.0);
 		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
 		a_CurNode->mesh = {};
-
 
 		strcpy(a_CurNode->name, "Unnamed");
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["name"])
@@ -113,7 +121,6 @@ namespace BBE {
 				strcpy(a_CurNode->mesh.name, meshName.c_str());
 			}
 
-			//Go over all primitives
 			BBE::JSONList& primitiveList = curMesh["primitives"]->GetListBB();
 			a_CurNode->mesh.primitiveCount = primitiveList.size();
 			a_CurNode->mesh.primative = reinterpret_cast<Mesh::Primative*>(malloc(a_CurNode->mesh.primitiveCount * sizeof(Mesh::Primative)));
@@ -286,7 +293,7 @@ namespace BBE {
 				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
 				BBE::GLTFNode* childNode = &m_GLTFFile->nodes[a_CurNodeIndex];
 				childNode->NodeIndex = a_CurNodeIndex;
-				childNode->Parent = a_CurNodeIndex;
+				childNode->Parent = a_CurNode;
 				a_CurNode->Children.push_back(childNode);
 				CalculateNode(childNode, a_CurNodeIndex);
 			}
@@ -326,8 +333,8 @@ namespace BBE {
 
 		if (a_AttributeObject[a_Attribute])
 		{
-			accessorIndex = static_cast<int>(a_AttributeObject[a_Attribute]->GetFloatBB());
-			bufferViewIndex = static_cast<int>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
+			accessorIndex = static_cast<uint32_t>(a_AttributeObject[a_Attribute]->GetFloatBB());
+			bufferViewIndex = static_cast<uint32_t>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["bufferView"]->GetFloatBB());
 
 			if (a_DataSize)
 			{
@@ -335,16 +342,16 @@ namespace BBE {
 			}
 
 			if (m_CurAccessorsList[accessorIndex]->GetObjectBB()["byteOffset"]) {
-				accessorByteOffset = static_cast<int>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+				accessorByteOffset = static_cast<uint32_t>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 			}
 
-			bufferCount = static_cast<int>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
+			bufferCount = static_cast<uint32_t>(m_CurAccessorsList[accessorIndex]->GetObjectBB()["count"]->GetFloatBB());
 
-			byteLength = static_cast<int>(m_CurBufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
+			byteLength = static_cast<uint32_t>(m_CurBufferViews[bufferViewIndex]->GetObjectBB()["byteLength"]->GetFloatBB());
 
 			if (m_CurBufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"])
 			{
-				byteOffset = static_cast<int>(m_CurBufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
+				byteOffset = static_cast<uint32_t>(m_CurBufferViews[bufferViewIndex]->GetObjectBB()["byteOffset"]->GetFloatBB());
 			}
 
 			*a_Data = malloc(byteLength);
@@ -354,7 +361,7 @@ namespace BBE {
 		return bufferCount;
 	}
 
-	uint32_t GLTFParser::ParseTexture(JSONObject a_CurObject, char* a_TextureName, char* a_AdditionalValueName, TextureT* a_PathOut, float* a_OutAditionalValue)
+	uint32_t GLTFParser::ParseTexture(JSONObject a_CurObject, const char* a_TextureName, const char* a_AdditionalValueName, TextureT* a_PathOut, float* a_OutAditionalValue)
 	{
 		if (a_CurObject[a_TextureName])
 		{
