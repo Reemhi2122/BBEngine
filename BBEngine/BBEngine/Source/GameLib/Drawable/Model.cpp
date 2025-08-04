@@ -15,14 +15,6 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 
 		strcpy(m_Nodes[nodeIndex].name, curNode.name);
 
-		m_Nodes[nodeIndex].parent = &m_Nodes[curNode.Parent];
-
-		m_Nodes[nodeIndex].objectTransform = { 
-			curNode.translation, 
-			curNode.rotation, 
-			curNode.scale 
-		};
-
 		m_Nodes[nodeIndex].primitiveCount = curNode.mesh.primitiveCount;
 		m_Nodes[nodeIndex].primitives = reinterpret_cast<ModelNode::ModelPrimitive*>(malloc(m_Nodes[nodeIndex].primitiveCount * sizeof(ModelNode::ModelPrimitive)));
 

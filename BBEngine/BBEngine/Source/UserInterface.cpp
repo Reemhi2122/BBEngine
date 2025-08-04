@@ -111,7 +111,8 @@ namespace BBE
                 bool isOpen = ImGui::TreeNodeEx("Hierachy child object", flags, childObject->GetName());
                 if (ImGui::IsItemClicked() && !ImGui::IsItemToggledOpen())
                 {
-                    SetSelectedHieracyObject(childObject, uuid);
+                    g_SelectedObjectUUID = uuid;
+                    g_InspectedObj = childObject;
                 }
 
                 if (isOpen)
@@ -125,12 +126,6 @@ namespace BBE
                 ImGui::PopID();
             }
             ImGui::PopID();
-        }
-
-        void SetSelectedHieracyObject(BBObject* a_SelectedObject, uint32_t a_UUID)
-        {
-            g_SelectedObjectUUID = a_UUID;
-            g_InspectedObj = a_SelectedObject;
         }
 
         void DrawAssetBrowser(Graphics& a_Graphics)

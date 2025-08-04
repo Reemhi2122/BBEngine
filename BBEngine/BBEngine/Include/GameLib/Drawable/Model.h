@@ -13,23 +13,11 @@
 #include "Vector3.h"
 #include "Materials.h"
 
-struct ModelTransform
-{
-	Vector3 position;
-	Vector4 rotation;
-	Vector3 scale;
-};
-
 struct ModelNode
 {
 	char name[255] = "Undefined Model";
 	uint32_t primitiveCount = 0;
 
-	ModelTransform objectTransform;
-
-	ModelNode* parent;
-	std::vector<ModelNode*> children;
-	
 	struct ModelPrimitive
 	{
 		IVertexBuffer* vBuffer;
@@ -44,12 +32,6 @@ struct ModelNode
 		MaterialConstant m_MaterialConstant;
 	}*primitives = nullptr;
 };
-
-//struct NodeContainer
-//{
-//	ModelNode* data;
-//	uint32_t count;
-//};
 
 class Model : public Drawable
 {
@@ -69,11 +51,6 @@ public:
 	void SetTransform(TransformBuf* a_TransformBuf) { m_CurTransform = a_TransformBuf; }
 
 	ModelNode GetNode(uint32_t m_Index) { return m_Nodes[m_Index]; };
-
-	//const std::vector<Bindable*>& GetStaticBinds() const noexcept override
-	//{
-	//	return std::vector<Bindable*>();
-	//}
 
 private:
 	char m_Name[255] = "Undefined Model";
