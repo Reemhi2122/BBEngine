@@ -62,9 +62,15 @@ void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BB
 {
 	BBObject* parentObj = nullptr;
 
+	//Parent node
+
+	//Children node
+
+	//Bind children to parent
+
 	for (uint32_t nodeIndex = 0; nodeIndex < a_GLTFFile->nodeAmount; nodeIndex++)
 	{
-		BBE::Node* curNode = &a_GLTFFile->nodes[nodeIndex];
+		BBE::GLTFNode* curNode = &a_GLTFFile->nodes[nodeIndex];
 		BBObject* obj = new BBObject(curNode->name);
 		Transform localTransform = Transform(curNode->translation, curNode->rotation, curNode->scale);
 		TransformComponent* TransformComp = new TransformComponent(a_Gfx, localTransform, a_ObjectTransform, nullptr);

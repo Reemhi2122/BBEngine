@@ -124,7 +124,7 @@ namespace BBE {
 		}* primative;
 	};
 
-	//Removed sampler for simplicty rn
+	//Note(Stan): Removed sampler for simplicty rn
 	//struct {
 	//	uint32_t magFilter;
 	//	uint32_t minFilter;
@@ -132,14 +132,14 @@ namespace BBE {
 	//	uint32_t warpT;
 	//} sampler;
 
-	struct Node
+	struct GLTFNode
 	{
 		char name[MAX_NAME];
 
 		//Note(Stan): Change this to BB specific container
 		std::vector<int> Children;
 		int Parent = INVALID_PARENT;
-		
+
 		Mesh mesh;
 		Vector3 translation;
 		Vector4 rotation;
@@ -147,8 +147,8 @@ namespace BBE {
 	};
 
 	struct GLTFFile {
-		Node* nodes = nullptr;
-		Node* rootNode = nullptr;
+		GLTFNode* nodes = nullptr;
+		GLTFNode* rootNode = nullptr;
 		uint32_t nodeAmount;
 		uint32_t rootNodeAmount;
 		char* gltfPath;

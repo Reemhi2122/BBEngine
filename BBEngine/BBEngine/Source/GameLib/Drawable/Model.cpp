@@ -11,7 +11,7 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 	m_nodeCount = a_File->nodeAmount;
 	for (size_t nodeIndex = 0; nodeIndex < a_File->nodeAmount; nodeIndex++)
 	{
-		BBE::Node& curNode = a_File->nodes[nodeIndex];
+		BBE::GLTFNode& curNode = a_File->nodes[nodeIndex];
 
 		strcpy(m_Nodes[nodeIndex].name, curNode.name);
 
