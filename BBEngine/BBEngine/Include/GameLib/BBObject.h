@@ -31,13 +31,13 @@ public:
 	const char* GetName() { return m_Name; };
 
 	static void CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BBE::GLTFFile* a_GLTFFile, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Transform& a_ObjectTransform);
+	static BBObject* CreateObject(IGraphics& a_Gfx, BBE::GLTFNode* Node, Model* a_Model, Transform& a_ObjectTransform);
 
 protected:
 	//Note(Stan): For now set child is connected to support a unified way of setting parent / child relation.
 	bool SetChild(BBObject* a_Child);
 
 private:
-
 	char m_Name[BBE::MAX_NAME_LENGTH] = "BBObject";
 
 	uint32_t m_UUID = 0;

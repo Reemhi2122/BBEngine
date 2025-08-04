@@ -29,8 +29,13 @@ namespace BBE {
 
 		m_AllNodes = m_Parser.GetRootNode()["nodes"]->GetListBB();
 		m_GLTFFile->nodes = reinterpret_cast<GLTFNode*>(malloc(m_AllNodes.size() * sizeof(GLTFNode)));
-		memset(m_GLTFFile->nodes, 0, m_AllNodes.size() * sizeof(GLTFNode));
+		if (!m_GLTFFile->nodes)
+		{
+			printf("[GLTF Parser]: Failed to allocate memory for %lli amount of nodes", m_AllNodes.size());
+			return false;
+		}
 
+		memset(m_GLTFFile->nodes, 0, m_AllNodes.size() * sizeof(GLTFNode));
 		m_GLTFFile->nodeAmount = m_AllNodes.size();
 		m_GLTFFile->PrimitiveCount = 0;
 
@@ -52,6 +57,7 @@ namespace BBE {
 			{
 				uint32_t curIndex = sceneNodesList[sceneHeadNodeIndex]->GetFloatBB();
 				BBE::GLTFNode* curNode = &m_GLTFFile->nodes[curIndex];
+				curNode->NodeIndex = curIndex;
 				a_GLTFFile->rootNode = curNode;
 				CalculateNode(curNode, curIndex);
 			}
@@ -62,7 +68,7 @@ namespace BBE {
 
 	void GLTFParser::CalculateNode(BBE::GLTFNode* a_CurNode, uint32_t a_CurNodeIndex)
 	{
-		a_CurNode->Parent = INVALID_PARENT;
+		a_CurNode->Parent = INVALID_INDEX;
 		a_CurNode->translation = Vector3(0.0, 0.0, 0.0);
 		a_CurNode->rotation = Vector4(0.0, 0.0, 0.0, 1.0);
 		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
@@ -278,10 +284,11 @@ namespace BBE {
 			for (size_t childNodeIndex = 0; childNodeIndex < childNodes.size(); childNodeIndex++)
 			{
 				a_CurNodeIndex = childNodes[childNodeIndex]->GetFloatBB();
-				BBE::GLTFNode* node = &m_GLTFFile->nodes[a_CurNodeIndex];
-				a_CurNode->Children.push_back(a_CurNodeIndex);
-				node->Parent = a_CurNodeIndex;
-				CalculateNode(node, a_CurNodeIndex);
+				BBE::GLTFNode* childNode = &m_GLTFFile->nodes[a_CurNodeIndex];
+				childNode->NodeIndex = a_CurNodeIndex;
+				childNode->Parent = a_CurNodeIndex;
+				a_CurNode->Children.push_back(childNode);
+				CalculateNode(childNode, a_CurNodeIndex);
 			}
 		}
 	}
@@ -359,9 +366,12 @@ namespace BBE {
 				uint32_t normalTextureIndex = TextureObject["index"]->GetFloatBB();
 				std::string str = m_CurImages[(uint32_t)m_CurTextures[normalTextureIndex]->GetObjectBB()["source"]->GetFloatBB()]->GetObjectBB()["uri"]->GetStringBB();
 
-				char* charPointer = (char*)malloc(str.size());
-				strcpy(charPointer, str.c_str());
-				a_PathOut->path = charPointer;
+				char* charPointer = reinterpret_cast<char*>(malloc(str.size()));
+				if (charPointer)
+				{
+					strcpy(charPointer, str.c_str());
+					a_PathOut->path = charPointer;
+				}
 			}
 
 			if (TextureObject["texCoord"])

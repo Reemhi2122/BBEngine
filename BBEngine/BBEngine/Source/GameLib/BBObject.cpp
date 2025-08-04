@@ -60,24 +60,29 @@ bool BBObject::SetChild(BBObject* a_Child)
 
 void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BBE::GLTFFile* a_GLTFFile, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Transform& a_ObjectTransform)
 {
-	BBObject* parentObj = nullptr;
+	BBE::GLTFNode* parentNode = a_GLTFFile->rootNode;
+	BBObject* parentObj = CreateObject(a_Gfx, parentNode, a_Model, a_ObjectTransform);
+	a_AllObjects->push_back(parentObj);
+	a_RootObjects->push_back(parentObj);
 
-	//Parent node
-
-	//Children node
-
-	//Bind children to parent
-
-	for (uint32_t nodeIndex = 0; nodeIndex < a_GLTFFile->nodeAmount; nodeIndex++)
+	uint32_t childSize = parentNode->Children.size();
+	for (uint32_t childIndex = 0; childIndex < childSize; childIndex++)
 	{
-		BBE::GLTFNode* curNode = &a_GLTFFile->nodes[nodeIndex];
-		BBObject* obj = new BBObject(curNode->name);
-		Transform localTransform = Transform(curNode->translation, curNode->rotation, curNode->scale);
-		TransformComponent* TransformComp = new TransformComponent(a_Gfx, localTransform, a_ObjectTransform, nullptr);
-		BBE::MeshComponent* MeshComp = new BBE::MeshComponent(a_Gfx, a_Model, nodeIndex, TransformComp);
-		obj->AddComponent(TransformComp);
-		obj->AddComponent(MeshComp);
-
-		a_AllObjects->push_back(obj);
+		BBE::GLTFNode* curNode = parentNode->Children[childIndex];
+		BBObject* childObject = CreateObject(a_Gfx, curNode, a_Model, a_ObjectTransform);
+		parentObj->m_Children.push_back(childObject);
+		a_AllObjects->push_back(childObject);
 	}
+}
+
+BBObject* BBObject::CreateObject(IGraphics& a_Gfx, BBE::GLTFNode* Node, Model* a_Model, Transform& a_ObjectTransform)
+{
+	BBObject* obj = new BBObject(Node->name);
+	Transform localTransform = Transform(Node->translation, Node->rotation, Node->scale);
+	TransformComponent* TransformComp = new TransformComponent(a_Gfx, localTransform, a_ObjectTransform, nullptr);
+	BBE::MeshComponent* MeshComp = new BBE::MeshComponent(a_Gfx, a_Model, Node->NodeIndex, TransformComp);
+	obj->AddComponent(TransformComp);
+	obj->AddComponent(MeshComp);
+
+	return obj;
 }

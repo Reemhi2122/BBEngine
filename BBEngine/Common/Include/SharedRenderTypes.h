@@ -5,7 +5,7 @@
 #include <vector>
 
 #define MAX_NAME 256
-#define INVALID_PARENT -1
+#define INVALID_INDEX -1
 
 //Note(Stan):	Doubting if these are even supposed to be
 //				in the SharedRenderTypes because they could
@@ -137,8 +137,9 @@ namespace BBE {
 		char name[MAX_NAME];
 
 		//Note(Stan): Change this to BB specific container
-		std::vector<int> Children;
-		int Parent = INVALID_PARENT;
+		std::vector<GLTFNode*> Children;
+		int Parent = INVALID_INDEX;
+		int NodeIndex = INVALID_INDEX;
 
 		Mesh mesh;
 		Vector3 translation;
