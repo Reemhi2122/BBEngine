@@ -176,12 +176,12 @@ namespace BBE
             for (size_t y = 0; y < YSize; y++) {
 
                 Transform sponzaTransform = Transform(Vector3(i * 50, 0, y * 50), Vector3(0, 0, 0), Vector3(0.5f, 0.5f, 0.5f));
-                BBObject::CreateObjectsFromModel(m_Graphics, Sponza, &m_SponzaFile, &m_GameObjects, &m_RootObjects, sponzaTransform);
+                BBObject::CreateObjectsFromModel(m_Graphics, Sponza, &m_SponzaFile, &m_GameObjects, &m_RootObjects, sponzaTransform, "Sponza");
             }
         }
 
         Transform lanternTransform = Transform(Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.1f, 0.1f, 0.1f));
-        BBObject::CreateObjectsFromModel(m_Graphics, lantern, &m_LanternFile, &m_GameObjects, &m_RootObjects, lanternTransform);
+        BBObject::CreateObjectsFromModel(m_Graphics, lantern, &m_LanternFile, &m_GameObjects, &m_RootObjects, lanternTransform, "Lantern");
 
         //BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
         //Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-4, 2, 0), Vector3(0, 90, 0), Vector3(5.0f, 5.0f, 5.0f));
