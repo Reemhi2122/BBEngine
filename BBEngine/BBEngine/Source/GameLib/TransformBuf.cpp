@@ -1,5 +1,11 @@
 #include "GameLib/TransformBuf.h"
 
+#ifdef DX12
+#include "Bindable/DX12ConstantBuffer.h"
+#else
+#include "Bindable/DX11ConstantBuffer.h"
+#endif
+
 TransformBuf::TransformBuf(IGraphics& a_Gfx, Vector3 a_LocalTranslation, Vector4 a_LocalRotation, Vector3 a_LocalScale)
 {
 	SetTransform(TransformType::LOCAL, a_LocalTranslation, a_LocalRotation, a_LocalScale);

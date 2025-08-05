@@ -3,10 +3,10 @@
 #include "Utils/GraphicsThrowMacros.h"
 
 template<typename T>
-class ConstantBuffer : public Bindable
+class DX11ConstantBuffer : public Bindable
 {
 public:
-	ConstantBuffer() = default;
+	DX11ConstantBuffer() = default;
 
 	//ConstantBuffer(Graphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
 	//	: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
@@ -23,7 +23,7 @@ public:
 	//	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
 	//}
 
-	ConstantBuffer(Graphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
+	DX11ConstantBuffer(Graphics& a_Gfx, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
 		: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
 	{
 		INFOMAN;
@@ -38,7 +38,7 @@ public:
 		GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&cbd, nullptr, &m_ConstantBuffer));
 	}
 
-	ConstantBuffer(Graphics& a_Gfx, const T& a_Consts, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
+	DX11ConstantBuffer(Graphics& a_Gfx, const T& a_Consts, uint32_t a_StartSlot = 0u, uint32_t a_NumBuffer = 1u)
 		: m_StartSlot(a_StartSlot), m_NumBuffers(a_NumBuffer)
 	{
 		INFOMAN;
@@ -88,11 +88,15 @@ protected:
 	uint32_t m_NumBuffers;
 };
 
+
 template<typename T>
-class VertexConstantBuffer : public ConstantBuffer<T>
+using RootConstantBuffer = VertexConstantBuffer<T>;
+
+template<typename T>
+class VertexConstantBuffer : public DX11ConstantBuffer<T>
 {
 public:
-	using ConstantBuffer<T>::ConstantBuffer;
+	using DX11ConstantBuffer<T>::DX11ConstantBuffer;
 	void Bind(Graphics& a_Gfx) noexcept override
 	{
 		a_Gfx.GetContext()->VSSetConstantBuffers(m_StartSlot, m_NumBuffers, m_ConstantBuffer.GetAddressOf());
@@ -105,10 +109,10 @@ public:
 };
 
 template<typename T>
-class PixelConstantBuffer : public ConstantBuffer<T>
+class PixelConstantBuffer : public DX11ConstantBuffer<T>
 {
 public:
-	using ConstantBuffer<T>::ConstantBuffer;
+	using DX11ConstantBuffer<T>::DX11ConstantBuffer;
 	void Bind(Graphics& a_Gfx) noexcept override
 	{
 		a_Gfx.GetContext()->PSSetConstantBuffers(m_StartSlot, m_NumBuffers, m_ConstantBuffer.GetAddressOf());
