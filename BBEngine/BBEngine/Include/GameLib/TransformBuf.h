@@ -1,5 +1,5 @@
 #pragma once
-#include "Bindable/DX12ConstantBuffer.h"
+#include "Bindable/IConstantBuffer.h"
 #include <DirectXMath.h>
 #include "BBMath.h"
 
@@ -29,7 +29,7 @@ public:
 private:
 	DirectX::XMMATRIX& GetMatrix(TransformType type);
 
-	RootConstantBuffer<perObjectBuffer>* m_VCB;
+	IConstantBuffer<perObjectBuffer>* m_VCB;
 	DirectX::XMMATRIX m_LocalMatrix = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX m_ObjTransform = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX m_ParentTransform = DirectX::XMMatrixIdentity();

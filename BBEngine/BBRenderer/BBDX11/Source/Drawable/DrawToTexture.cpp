@@ -1,3 +1,4 @@
+#if 0
 #include "Drawable/DrawToTexture.h"
 
 DrawToTexture::DrawToTexture(Graphics& a_Graphics, uint32_t a_VertexShader, uint32_t a_PixelShader)
@@ -43,3 +44,4 @@ void DrawToTexture::Update(float a_DeltaTime) noexcept
 {
 
 }
+#endif

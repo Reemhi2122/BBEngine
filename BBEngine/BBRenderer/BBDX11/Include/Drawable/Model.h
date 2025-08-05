@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "SharedRenderTypes.h"
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"
@@ -79,3 +80,4 @@ private:
 
 	uint32_t m_nodeCount;
 };
+#endif

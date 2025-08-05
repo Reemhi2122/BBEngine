@@ -1,3 +1,4 @@
+#if 0
 #include "Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
 
@@ -198,3 +199,4 @@ void Model::DrawInstanced(Graphics& a_Gfx, uint32_t a_InstanceCount) noexcept
 }
 
 void Model::Update(float a_DeltaTime) noexcept {}
+#endif

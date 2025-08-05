@@ -1,3 +1,4 @@
+#if 0
 #include "Drawable/Drawable.h"
 #include "Drawable/Skybox.h"
 #include "Utils/GraphicsThrowMacros.h"
@@ -70,3 +71,4 @@ void Skybox::Draw(Graphics& a_Gfx) noexcept
 	a_Gfx.BindShader(ShaderType::PixelShader, pShader);
 	Drawable::Draw(a_Gfx);
 }
+#endif

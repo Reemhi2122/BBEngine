@@ -1,3 +1,4 @@
+#if 0
 #include "Drawable/Drawable.h"
 #include "Drawable/Quad.h"
 #include "Utils/GraphicsThrowMacros.h"
@@ -57,3 +58,4 @@ void Quad::Draw(Graphics& a_Gfx) noexcept
 
 	Drawable::Draw(a_Gfx);
 }
+#endif

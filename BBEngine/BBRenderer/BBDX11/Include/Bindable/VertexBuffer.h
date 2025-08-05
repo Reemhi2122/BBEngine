@@ -1,5 +1,5 @@
 #pragma once
-#include "Bindable.h"
+#include "Bindable/Bindable.h"
 //#include <vector>
 
 class VertexBuffer : public Bindable 

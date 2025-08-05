@@ -1,4 +1,7 @@
 #pragma once
+
+#if 0
+
 #include "Bindable/BindableInclude.h"
 #include "Drawable/DrawableBase.h"
 
@@ -19,3 +22,5 @@ public:
 private:
 	Graphics* m_Graphics;
 };
+
+#endif

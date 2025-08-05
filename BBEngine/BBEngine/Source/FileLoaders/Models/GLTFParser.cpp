@@ -83,7 +83,7 @@ namespace BBE {
 		a_CurNode->scale = Vector3(1.0, 1.0, 1.0);
 		a_CurNode->mesh = {};
 
-		strcpy(a_CurNode->name, "Unnamed");
+		strcpy(a_CurNode->name, "BBObject");
 		if (m_AllNodes[a_CurNodeIndex]->GetObjectBB()["name"])
 		{
 			std::string meshName = m_AllNodes[a_CurNodeIndex]->GetObjectBB()["name"]->GetStringBB();

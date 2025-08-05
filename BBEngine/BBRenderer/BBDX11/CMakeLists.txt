@@ -34,5 +34,5 @@ ImGUI
 BBMath
 stb_image
 Common
-#RendererCommon
+RendererCommon
 )

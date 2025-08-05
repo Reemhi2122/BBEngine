@@ -1,3 +1,4 @@
+#if 0
 #include "Drawable/Drawable.h"
 #include "Drawable/Box.h"
 #include "Utils/GraphicsThrowMacros.h"
@@ -80,3 +81,4 @@ void Box::Draw(Graphics& a_Gfx) noexcept
 
 	Drawable::Draw(a_Gfx);
 }
+#endif

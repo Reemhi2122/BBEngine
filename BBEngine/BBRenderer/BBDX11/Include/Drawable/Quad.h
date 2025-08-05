@@ -1,4 +1,6 @@
 #pragma once
+
+#if 0
 #include "Drawable/DrawableBase.h"
 #include "Bindable/BindableInclude.h"
 
@@ -21,3 +23,4 @@ private:
 	Sampler* m_Sampler;
 	Texture* m_Texture;
 };
+#endif

@@ -1,4 +1,5 @@
 #pragma once
+#if 0
 #include "Drawable/DrawableBase.h"
 #include "Bindable/BindableInclude.h"
 
@@ -21,3 +22,4 @@ private:
 	CubeMap*		m_CubeMap;
 	Sampler*		m_Sampler;
 };
+#endif

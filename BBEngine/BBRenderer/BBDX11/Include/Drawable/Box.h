@@ -1,4 +1,7 @@
 #pragma once
+
+#if 0
+
 #include "Drawable/DrawableBase.h"
 #include <random>
 #include "Bindable/BindableInclude.h"
@@ -32,3 +35,5 @@ private:
 	Sampler*		m_Sampler;
 	PixelConstantBuffer<ConstantBufferColor>* cCB;
 };
+
+#endif
