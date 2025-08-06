@@ -11,11 +11,11 @@ public:
 	void Bind(IGraphics& a_Gfx) noexcept;
 	void UnBind(IGraphics& a_Gfx) noexcept;
 
-	BBShaderResourceView* GetRSV() { return m_ShaderResourceView.Get(); };
+	BBShaderResourceView* GetRSV() { return m_ShaderResourceView; };
 
 private:
-	Microsoft::WRL::ComPtr<BBShaderResourceView> m_ShaderResourceView;
-	Microsoft::WRL::ComPtr<BBTexture2D> m_Texture;
+	BBShaderResourceView* m_ShaderResourceView;
+	BBTexture2D* m_Texture;
 
 	uint32_t m_StartSlot;
 };

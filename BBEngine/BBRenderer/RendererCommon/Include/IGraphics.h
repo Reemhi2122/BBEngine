@@ -27,15 +27,15 @@ public:
 
 	//Note(Stan): These should be in DX11 / DX12 specific grpahics classes
 	//				But for now and testing I'm just hardcoding it here
-	virtual BBRenderDevice* GetDevice() const = 0;
-	virtual BBGraphicsCommandList* GetCommandList() const = 0;
-	virtual uint8_t GetFrameCount() const = 0;
+	virtual BBRenderDevice* GetDevice() const noexcept = 0;
 
-	virtual uint8_t GetCurrentFrame() const = 0;
+	virtual BBGraphicsCommandList* GetCommandList() const {};
+	virtual uint8_t GetFrameCount() const {};
+	virtual uint8_t GetCurrentFrame() const {};
 
 	virtual void DrawIndexed(uint32_t a_IndexCount) = 0;
 
 	//Note(Stan): DX11 specific
-	virtual BBRenderContext* GetContext() const = 0;
+	virtual BBRenderContext* GetContext() const noexcept = 0;
 	//End DX11 specific
 };

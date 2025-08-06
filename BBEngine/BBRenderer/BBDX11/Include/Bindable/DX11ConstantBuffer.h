@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindable/IConstantBuffer.h"
+#include "BBException.h"
 #include "Utils/GraphicsThrowMacros.h"
 
 template<typename T>

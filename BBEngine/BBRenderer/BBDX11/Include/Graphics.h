@@ -13,6 +13,8 @@
 #include "Vertexconstant.h"
 #include "Materials.h"
 
+#include "IGraphics.h"
+
 #include <vector>
 
 typedef uint32_t TMPHANDLE;
@@ -46,28 +48,35 @@ struct PixelShader
 	std::string									m_Path;
 };
 
-class Graphics {
+class Graphics : public IGraphics {
 public:
-	ID3D11DeviceContext* GetContext() const noexcept;
-	ID3D11Device* GetDevice() const noexcept;
+	ID3D11DeviceContext* GetContext() const noexcept override;
+	ID3D11Device* GetDevice() const noexcept override;
 
 	Graphics(HWND a_HWnd);
 	Graphics(const Graphics&) = delete;
 	Graphics& operator=(const Graphics&) = delete;
 	~Graphics();
 
-	bool Initialize() { return true; };
-	void Cleanup() {};
-	void Render() {};
+	bool Initialize() override { return true; };
+	bool CloseInit() override { return true; };
 
-	void EndFrame();
+	void Update() override {};
+
+	void StartFrame() override;
+	void Render() override {};
+	void EndFrame() override;
+
+	void WaitForPreviousFrame() override {};
+	void ShutDown() override {};
+
 	void ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept;
 	void DrawTestTriangle(float a_Angle, float x, float y, struct Vertex* ver, unsigned short* indices);
 	void DrawIndexed(UINT a_Count) noexcept;
 	void DrawIndexedInstanced(UINT a_IndexCount, UINT a_InstanceCount) noexcept;
 	
-	Camera* GetCamera();
-	void SetCamera(Camera* a_Camera);
+	Camera* GetCamera() const override;
+	void SetCamera(Camera* a_Camera) override;
 
 	void ResetRenderTarget();
 	void SetGameViewRenderTarget();

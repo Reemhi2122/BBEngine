@@ -1,7 +1,7 @@
 #include "Bindable/Texture.h"
 #include "stb_image.h"
 
-Texture::Texture(Graphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
+Texture::Texture(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
 	: m_StartSlot(a_StartSlot)
 {
 	int sizeX, sizeY, Channels;
@@ -33,15 +33,16 @@ Texture::Texture(Graphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
 	image_rsv_desc.Texture2D.MostDetailedMip = 0;
 	image_rsv_desc.Texture2D.MipLevels = 1;
 
-	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture.Get(), &image_rsv_desc, &m_ShaderResourceView);
+	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture, &image_rsv_desc, &m_ShaderResourceView);
 }
 
-void Texture::Bind(Graphics& a_Gfx) noexcept
+void Texture::Bind(IGraphics& a_Gfx) noexcept
 {
-	a_Gfx.GetContext()->PSSetShaderResources(m_StartSlot, 1, m_ShaderResourceView.GetAddressOf());
+	BBShaderResourceView* resourceViews[]{ m_ShaderResourceView };
+	a_Gfx.GetContext()->PSSetShaderResources(m_StartSlot, 1, resourceViews);
 }
 
-void Texture::UnBind(Graphics& a_Gfx) noexcept
+void Texture::UnBind(IGraphics& a_Gfx) noexcept
 {
 	ID3D11ShaderResourceView* nullSRV[1]{ nullptr };
 	a_Gfx.GetContext()->PSSetShaderResources(m_StartSlot, 1, nullSRV);

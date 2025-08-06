@@ -1,7 +1,8 @@
 #include "Bindable/IndexBuffer.h"
 #include "Utils/GraphicsThrowMacros.h"
+#include "BBException.h"
 
-IndexBuffer::IndexBuffer(Graphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
+IndexBuffer::IndexBuffer(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
 	: m_Count(a_Count)
 {
 	INFOMAN;
@@ -37,9 +38,9 @@ IndexBuffer::IndexBuffer(Graphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_C
 	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&ibd, &isd, &m_CPIndexBuffer));
 }
 
-void IndexBuffer::Bind(Graphics& a_Gfx) noexcept
+void IndexBuffer::Bind(IGraphics& a_Gfx) noexcept
 {
-	a_Gfx.GetContext()->IASetIndexBuffer(m_CPIndexBuffer.Get(), m_IndexBufferFormat, 0u);
+	a_Gfx.GetContext()->IASetIndexBuffer(m_CPIndexBuffer, m_IndexBufferFormat, 0u);
 }
 
 UINT IndexBuffer::GetCount() const noexcept

@@ -2,7 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-CubeMap::CubeMap(Graphics& a_Gfx)
+CubeMap::CubeMap(IGraphics& a_Gfx)
 {
 	constexpr char* names[CUBEMAP_SIZE] = {"right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"};
 
@@ -10,7 +10,7 @@ CubeMap::CubeMap(Graphics& a_Gfx)
 	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
 	{
 		char path[MAX_PATH] = "Assets/Textures/skybox/";
-		std::strcat(path, names[i]);
+		strcat(path, names[i]);
 		images[i] = stbi_load(path, &sizeX, &sizeY, &Channels, 4);
 		assert(images[i] != nullptr);
 	}
@@ -49,7 +49,7 @@ CubeMap::CubeMap(Graphics& a_Gfx)
 }
 
 //Note(Stan): Only works for depth stencils now
-CubeMap::CubeMap(Graphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution /*= 1024u*/, char* a_TexturePaths /*= nullptr*/)
+CubeMap::CubeMap(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution /*= 1024u*/, char* a_TexturePaths /*= nullptr*/)
 {
 	HRESULT res;
 	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
@@ -101,7 +101,7 @@ CubeMap::CubeMap(Graphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution /*= 
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_TextureCubeMap, &image_rsv_desc, &m_ShaderResourceView);
 }
 
-void CubeMap::Bind(Graphics& a_Gfx) noexcept
+void CubeMap::Bind(IGraphics& a_Gfx) noexcept
 {
 	a_Gfx.GetContext()->PSSetShaderResources(0, 1, &m_ShaderResourceView);
 }
