@@ -162,7 +162,7 @@ inline ID3D11Device* Graphics::GetDevice() const noexcept {
 	return m_Device.Get();
 }
 
-inline Camera* Graphics::GetCamera()
+inline Camera* Graphics::GetCamera() const
 {
 	return m_Camera;
 }

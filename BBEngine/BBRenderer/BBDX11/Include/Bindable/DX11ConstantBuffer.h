@@ -82,7 +82,7 @@ public:
 			&msr
 			)
 		);
-		memcpy(msr.pData, &a_Consts, sizeof(T));
+		memcpy(msr.pData, &a_ConstantBuffer, sizeof(T));
 		a_Gfx.GetContext()->Unmap(m_ConstantBuffer, 0u);
 	}
 
