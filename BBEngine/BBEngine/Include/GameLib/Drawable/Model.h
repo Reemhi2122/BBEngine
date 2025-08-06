@@ -4,9 +4,13 @@
 //#include "Drawable/DrawableBase.h"
 
 #include "GameLib/TransformBuf.h"
-#include "Bindable/DX12IndexBuffer"
-#include "Bindable/DX12VertexBuffer.h"
-#include "Bindable/DX12Texture.h"
+//#include "Bindable/DX12IndexBuffer"
+//#include "Bindable/DX12VertexBuffer.h"
+//#include "Bindable/DX12Texture.h"
+
+#include "Bindable/IIndexBuffer.h"
+#include "Bindable/IVertexBuffer.h"
+#include "Bindable/ITexture.h"
 
 #include "Drawable.h"
 
