@@ -34,4 +34,8 @@ public:
 	virtual uint8_t GetCurrentFrame() const = 0;
 
 	virtual void DrawIndexed(uint32_t a_IndexCount) = 0;
+
+	//Note(Stan): DX11 specific
+	virtual BBRenderContext* GetContext() const = 0;
+	//End DX11 specific
 };

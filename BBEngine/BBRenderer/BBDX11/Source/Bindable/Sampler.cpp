@@ -1,6 +1,6 @@
 #include "Bindable/Sampler.h"
 
-Sampler::Sampler(Graphics& a_Gfx)
+Sampler::Sampler(IGraphics& a_Gfx)
 {
 	D3D11_SAMPLER_DESC image_sampler_desc = {};
 	image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -19,7 +19,8 @@ Sampler::Sampler(Graphics& a_Gfx)
 	a_Gfx.GetDevice()->CreateSamplerState(&image_sampler_desc, &m_SamplerState);
 }
 
-void Sampler::Bind(Graphics& a_Gfx) noexcept
+void Sampler::Bind(IGraphics& a_Gfx) noexcept
 {
-	a_Gfx.GetContext()->PSSetSamplers(0, 1, m_SamplerState.GetAddressOf());
+	ID3D11SamplerState* samplerStates[] { m_SamplerState };
+	a_Gfx.GetContext()->PSSetSamplers(0, 1, samplerStates);
 }

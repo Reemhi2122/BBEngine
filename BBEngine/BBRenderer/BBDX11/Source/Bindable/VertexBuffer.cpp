@@ -1,7 +1,9 @@
 #include "Bindable/VertexBuffer.h"
+#include "SharedRenderTypes.h"
+#include "BBException.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-VertexBuffer::VertexBuffer(Graphics& a_Gfx, void* a_Vertices, const uint32_t a_Count)
+VertexBuffer::VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
 	: m_Count(a_Count)
 {
 	INFOMAN;
@@ -38,7 +40,7 @@ VertexBuffer::VertexBuffer(Graphics& a_Gfx, void* a_Vertices, const uint32_t a_C
 //	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &m_InstanceBuffer));
 //}
 
-void VertexBuffer::Bind(Graphics& a_Gfx) noexcept
+void VertexBuffer::Bind(IGraphics& a_Gfx) noexcept
 {
 	//if (m_HasInstanceBuffer) {
 	//	const UINT stride[2] = { sizeof(BBE::Vertex), m_InstanceDataSize };
@@ -49,7 +51,9 @@ void VertexBuffer::Bind(Graphics& a_Gfx) noexcept
 	//else {
 		const UINT stride = sizeof(BBE::Vertex);
 		const UINT offset = 0;
-		a_Gfx.GetContext()->IASetVertexBuffers(0, 1, vertex_buffer.GetAddressOf(), &stride, &offset);
+
+		ID3D11Buffer* buffers[]{ vertex_buffer };
+		a_Gfx.GetContext()->IASetVertexBuffers(0, 1, buffers, &stride, &offset);
 	//}
 }
 
