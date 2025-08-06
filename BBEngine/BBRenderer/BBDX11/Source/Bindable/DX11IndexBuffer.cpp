@@ -1,8 +1,8 @@
-#include "Bindable/IndexBuffer.h"
+#include "Bindable/DX11IndexBuffer.h"
 #include "Utils/GraphicsThrowMacros.h"
 #include "BBException.h"
 
-IndexBuffer::IndexBuffer(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
+DX11IndexBuffer::DX11IndexBuffer(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
 	: m_Count(a_Count)
 {
 	INFOMAN;
@@ -38,12 +38,12 @@ IndexBuffer::IndexBuffer(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_
 	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&ibd, &isd, &m_CPIndexBuffer));
 }
 
-void IndexBuffer::Bind(IGraphics& a_Gfx) noexcept
+void DX11IndexBuffer::Bind(IGraphics& a_Gfx) noexcept
 {
 	a_Gfx.GetContext()->IASetIndexBuffer(m_CPIndexBuffer, m_IndexBufferFormat, 0u);
 }
 
-UINT IndexBuffer::GetCount() const noexcept
+UINT DX11IndexBuffer::GetCount() const noexcept
 {
 	return m_Count;
 }

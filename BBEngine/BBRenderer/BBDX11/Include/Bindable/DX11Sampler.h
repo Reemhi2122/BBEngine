@@ -1,11 +1,11 @@
 #pragma once
 #include "Bindable/Bindable.h"
 
-class Sampler : public Bindable
+class DX11Sampler : public Bindable
 {
 public:
-	Sampler(IGraphics& a_Gfx);
-	~Sampler() = default;
+	DX11Sampler(IGraphics& a_Gfx);
+	~DX11Sampler() = default;
 	void Bind(IGraphics& a_Gfx) noexcept override;
 
 private:

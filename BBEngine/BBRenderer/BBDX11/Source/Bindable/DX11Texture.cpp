@@ -1,7 +1,7 @@
-#include "Bindable/Texture.h"
+#include "Bindable/DX11Texture.h"
 #include "stb_image.h"
 
-Texture::Texture(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
+DX11Texture::DX11Texture(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
 	: m_StartSlot(a_StartSlot)
 {
 	int sizeX, sizeY, Channels;
@@ -36,13 +36,13 @@ Texture::Texture(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture, &image_rsv_desc, &m_ShaderResourceView);
 }
 
-void Texture::Bind(IGraphics& a_Gfx) noexcept
+void DX11Texture::Bind(IGraphics& a_Gfx) noexcept
 {
 	BBShaderResourceView* resourceViews[]{ m_ShaderResourceView };
 	a_Gfx.GetContext()->PSSetShaderResources(m_StartSlot, 1, resourceViews);
 }
 
-void Texture::UnBind(IGraphics& a_Gfx) noexcept
+void DX11Texture::UnBind(IGraphics& a_Gfx) noexcept
 {
 	ID3D11ShaderResourceView* nullSRV[1]{ nullptr };
 	a_Gfx.GetContext()->PSSetShaderResources(m_StartSlot, 1, nullSRV);

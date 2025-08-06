@@ -17,6 +17,9 @@
 
 #include <vector>
 
+constexpr uint16_t WINDOW_WIDTH = 1600;
+constexpr uint16_t WINDOW_HEIGHT = 900;
+
 typedef uint32_t TMPHANDLE;
 struct Model;
 

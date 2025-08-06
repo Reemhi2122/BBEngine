@@ -1,8 +1,8 @@
-#include "Bindable/InputLayout.h"
+#include "Bindable/DX11InputLayout.h"
 #include "BBException.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-InputLayout::InputLayout(IGraphics& a_Gfx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& a_Desc, ID3DBlob* a_Blob)
+DX11InputLayout::DX11InputLayout(IGraphics& a_Gfx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& a_Desc, ID3DBlob* a_Blob)
 {
 	INFOMAN;
 
@@ -14,7 +14,7 @@ InputLayout::InputLayout(IGraphics& a_Gfx, const std::vector<D3D11_INPUT_ELEMENT
 		&m_InputLayout));
 }
 
-void InputLayout::Bind(IGraphics& a_Gfx) noexcept
+void DX11InputLayout::Bind(IGraphics& a_Gfx) noexcept
 {
 	a_Gfx.GetContext()->IASetInputLayout(m_InputLayout);
 }

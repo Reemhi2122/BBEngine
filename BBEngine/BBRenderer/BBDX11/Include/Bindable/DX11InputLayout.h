@@ -2,9 +2,9 @@
 #include "Bindable/Bindable.h"
 #include <vector>
 
-class InputLayout : public Bindable {
+class DX11InputLayout : public Bindable {
 public:
-	InputLayout(IGraphics& a_Gfx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& a_Desc, ID3DBlob* a_Blob);
+	DX11InputLayout(IGraphics& a_Gfx, const std::vector<D3D11_INPUT_ELEMENT_DESC>& a_Desc, ID3DBlob* a_Blob);
 	void Bind(IGraphics& a_Gfx) noexcept override;
 
 private:

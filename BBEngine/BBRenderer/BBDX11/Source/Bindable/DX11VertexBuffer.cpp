@@ -1,9 +1,9 @@
-#include "Bindable/VertexBuffer.h"
+#include "Bindable/DX11VertexBuffer.h"
 #include "SharedRenderTypes.h"
 #include "BBException.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-VertexBuffer::VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
+DX11VertexBuffer::DX11VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
 	: m_Count(a_Count)
 {
 	INFOMAN;
@@ -40,7 +40,7 @@ VertexBuffer::VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vb
 //	GFX_THROW_FAILED(a_Gfx.GetDevice()->CreateBuffer(&desc, &source, &m_InstanceBuffer));
 //}
 
-void VertexBuffer::Bind(IGraphics& a_Gfx) noexcept
+void DX11VertexBuffer::Bind(IGraphics& a_Gfx) noexcept
 {
 	//if (m_HasInstanceBuffer) {
 	//	const UINT stride[2] = { sizeof(BBE::Vertex), m_InstanceDataSize };
@@ -57,7 +57,7 @@ void VertexBuffer::Bind(IGraphics& a_Gfx) noexcept
 	//}
 }
 
-UINT VertexBuffer::GetCount() const noexcept
+UINT DX11VertexBuffer::GetCount() const noexcept
 {
 	return m_Count;
 }

@@ -5,6 +5,7 @@
 #include <d3dcompiler.h>
 
 #include "Bindable/BindableInclude.h"
+#include "SharedRenderTypes.h"
 #include "Drawable/Model.h"
 
 #pragma comment(lib, "d3d11.lib")

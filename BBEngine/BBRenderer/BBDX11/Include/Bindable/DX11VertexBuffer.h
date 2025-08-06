@@ -2,10 +2,10 @@
 #include "Bindable/Bindable.h"
 //#include <vector>
 
-class VertexBuffer : public Bindable 
+class DX11VertexBuffer : public Bindable 
 {
 public:
-	VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count);
+	DX11VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count);
 
 	//void BindConstantBuffer(const ID3D11Buffer* a_buffer);
 

@@ -29,9 +29,9 @@ public:
 	//				But for now and testing I'm just hardcoding it here
 	virtual BBRenderDevice* GetDevice() const noexcept = 0;
 
-	virtual BBGraphicsCommandList* GetCommandList() const {};
-	virtual uint8_t GetFrameCount() const {};
-	virtual uint8_t GetCurrentFrame() const {};
+	virtual BBGraphicsCommandList* GetCommandList() const { return nullptr; };
+	virtual uint8_t GetFrameCount() const { return 0; };
+	virtual uint8_t GetCurrentFrame() const { return 0; };
 
 	virtual void DrawIndexed(uint32_t a_IndexCount) = 0;
 

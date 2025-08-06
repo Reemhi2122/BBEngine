@@ -1,10 +1,10 @@
 #pragma once
 #include "Bindable/Bindable.h"
 
-class Topology : public Bindable
+class DX11Topology : public Bindable
 {
 public:
-	Topology(IGraphics& a_Gfx, D3D11_PRIMITIVE_TOPOLOGY a_Type);
+	DX11Topology(IGraphics& a_Gfx, D3D11_PRIMITIVE_TOPOLOGY a_Type);
 	void Bind(IGraphics& a_Gfx) noexcept;
 
 protected:
