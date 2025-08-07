@@ -9,7 +9,7 @@ add_library (BBRenderer_DX12 STATIC
 	"Source/Bindable/DX12IndexBuffer.cpp"
 	"Source/DescriptorFreeList.cpp")
 
-#set_target_properties(Renderer PROPERTIES PREFIX "BBRender")
+target_compile_definitions(BBRenderer_DX12 PUBLIC BBDX12)
 
 target_include_directories(BBRenderer_DX12 PUBLIC
 "Include/"

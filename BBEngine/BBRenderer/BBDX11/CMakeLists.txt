@@ -22,7 +22,7 @@ add_library (BBRenderer_DX11 STATIC
 "Source/Drawable/Quad.cpp"
 )
 
-add_compile_definitions(BBX11)
+target_compile_definitions(BBRenderer_DX11 PUBLIC BBDX11)
 
 target_include_directories(BBRenderer_DX11 PUBLIC
 "Include/"

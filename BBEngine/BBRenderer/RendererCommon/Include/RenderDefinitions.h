@@ -1,6 +1,5 @@
 #pragma once
 
-#define BBDX11
 #if defined(BBDX12)
 
 typedef class ID3D12Resource BBShaderResourceView;
