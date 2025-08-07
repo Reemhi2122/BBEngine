@@ -1,14 +1,15 @@
 #pragma once
-#include "Bindable/Bindable.h"
+#include "Bindable/IVertexBuffer.h"
 //#include <vector>
 
-class DX11VertexBuffer : public Bindable 
+class DX11VertexBuffer : public IVertexBuffer
 {
 public:
-	DX11VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count);
-
+	DX11VertexBuffer() = default;
+	
 	//void BindConstantBuffer(const ID3D11Buffer* a_buffer);
 
+	bool Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count) override;
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 

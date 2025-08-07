@@ -3,10 +3,11 @@
 #include "BBException.h"
 #include "Utils/GraphicsThrowMacros.h"
 
-DX11VertexBuffer::DX11VertexBuffer(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
-	: m_Count(a_Count)
+bool DX11VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t vbSize, const uint32_t a_Count)
 {
 	INFOMAN;
+	
+	m_Count = a_Count;
 
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;

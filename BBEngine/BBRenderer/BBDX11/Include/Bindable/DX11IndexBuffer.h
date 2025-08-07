@@ -1,11 +1,13 @@
 #pragma once
-#include "Bindable/Bindable.h"
+#include "Bindable/IIndexBuffer.h"
 #include <vector>
 
-class DX11IndexBuffer : public Bindable
+class DX11IndexBuffer : public IIndexBuffer
 {
 public:
-	DX11IndexBuffer(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize);
+	DX11IndexBuffer() = default;
+
+	bool Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize) override;
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	UINT GetCount() const noexcept;
 

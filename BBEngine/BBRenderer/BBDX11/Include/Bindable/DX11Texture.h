@@ -1,16 +1,16 @@
 #pragma once
-#include "Bindable/Bindable.h"
+#include "Bindable/ITexture.h"
 
-class DX11Texture : public Bindable
+class DX11Texture : public ITexture
 {
 public:
 	DX11Texture() = default;
-	DX11Texture(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot = 0u);
-	
-	void Bind(IGraphics& a_Gfx) noexcept;
-	void UnBind(IGraphics& a_Gfx) noexcept;
 
-	ID3D11ShaderResourceView* GetRSV() { return m_ShaderResourceView; };
+	bool Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot = 0u, bool CreateRSV = true) override;
+	void Bind(IGraphics& a_Gfx) noexcept override;
+	void UnBind(IGraphics& a_Gfx) noexcept override;
+
+	ID3D11ShaderResourceView* GetSRVGPUHandle() { return m_ShaderResourceView; };
 
 private:
 	ID3D11ShaderResourceView* m_ShaderResourceView;

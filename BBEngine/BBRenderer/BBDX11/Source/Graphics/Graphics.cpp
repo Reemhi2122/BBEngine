@@ -324,6 +324,19 @@ void Graphics::SetBlendState(BBE::AlphaMode a_BlendMode)
 	}
 }
 
+void Graphics::StartFrame()
+{
+	FLOAT color[4]{ 0.32f, 0.40f, 0.45, 1.0f };
+	m_Context->ClearRenderTargetView(m_Target.Get(), color);
+	m_Context->ClearRenderTargetView(m_GameWindowRTV, color);
+	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+}
+
+
 void Graphics::EndFrame()
 {
 	ImGui::Render();
@@ -337,18 +350,6 @@ void Graphics::EndFrame()
 			GFX_THROW_FAILED(hr);
 		}
 	}
-}
-
-void Graphics::ClearBuffer(float a_Red, float a_Green, float a_Blue) noexcept
-{
-	const float color[] = { a_Red, a_Green, a_Blue, 1.0f };
-	m_Context->ClearRenderTargetView(m_Target.Get(), color);
-	m_Context->ClearRenderTargetView(m_GameWindowRTV, color);
-	m_Context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
-
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplWin32_NewFrame();
-	ImGui::NewFrame();
 }
 
 void Graphics::DrawIndexed(UINT a_Count) noexcept 

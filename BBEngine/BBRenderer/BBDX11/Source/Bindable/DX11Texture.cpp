@@ -1,9 +1,10 @@
 #include "Bindable/DX11Texture.h"
 #include "stb_image.h"
 
-DX11Texture::DX11Texture(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot)
-	: m_StartSlot(a_StartSlot)
+bool DX11Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartSlot, bool CreateRSV)
 {
+	m_StartSlot = a_StartSlot;
+
 	int sizeX, sizeY, Channels;
 	unsigned char* img = stbi_load(a_Path, &sizeX, &sizeY, &Channels, 4);
 
@@ -34,6 +35,7 @@ DX11Texture::DX11Texture(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 	image_rsv_desc.Texture2D.MipLevels = 1;
 
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_Texture, &image_rsv_desc, &m_ShaderResourceView);
+	return res;
 }
 
 void DX11Texture::Bind(IGraphics& a_Gfx) noexcept

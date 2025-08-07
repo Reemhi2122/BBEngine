@@ -1,6 +1,10 @@
 #include "GameLib/Drawable/Model.h"
 #include "Utils/GraphicsThrowMacros.h"
 
+#include "Bindable/DX11Texture.h"
+#include "Bindable/DX11VertexBuffer.h"
+#include "Bindable/DX11IndexBuffer.h"
+
 Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32_t a_VertexShader, uint32_t a_PixelShader)
 {
 	strcpy(m_Name, a_Name);
@@ -42,7 +46,7 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 				strcat(texturePath, a_File->gltfPath);
 				strcat(texturePath, gltfPrimitive.material.pbrMetallicRoughness.baseColorTexture.path);
 
-				modelPrimitive.m_Texture = new DX12Texture();
+				modelPrimitive.m_Texture = new DX11Texture();
 				modelPrimitive.m_Texture->Create(a_Gfx, texturePath);
 
 				//modelPrimitive.m_Sampler = new Sampler(a_Gfx);
@@ -80,10 +84,10 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 			//	}
 			//}
 
-			modelPrimitive.vBuffer = new DX12VertexBuffer();
+			modelPrimitive.vBuffer = new DX11VertexBuffer();
 			modelPrimitive.vBuffer->Create(a_Gfx, vertices, sizeof(BBE::Vertex), gltfPrimitive.vertexCount);
 
-			modelPrimitive.m_IndexBuffer = new DX12IndexBuffer();
+			modelPrimitive.m_IndexBuffer = new DX11IndexBuffer();
 			modelPrimitive.m_IndexBuffer->Create(a_Gfx, gltfPrimitive.indices, gltfPrimitive.indicesAmount, gltfPrimitive.indicesDataSize);
 			modelPrimitive.m_Blend = gltfPrimitive.material.alphaMode;
 		}

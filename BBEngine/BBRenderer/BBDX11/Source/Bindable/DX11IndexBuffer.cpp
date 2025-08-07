@@ -2,10 +2,10 @@
 #include "Utils/GraphicsThrowMacros.h"
 #include "BBException.h"
 
-DX11IndexBuffer::DX11IndexBuffer(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
-	: m_Count(a_Count)
+bool DX11IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_t a_Count, uint8_t a_IndexDataSize)
 {
 	INFOMAN;
+	m_Count = a_Count;
 
 	if (a_IndexDataSize < 2)
 	{
