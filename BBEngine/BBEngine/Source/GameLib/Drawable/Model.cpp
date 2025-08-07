@@ -137,45 +137,40 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 //				Only fixed for textures right now.
 void Model::Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept
 {
-	//m_ModelPixelBuffer->Bind(a_Gfx);
-	//for (size_t curNode = 0; curNode < m_nodeCount; curNode++)
-	//{
-		m_CurTransform->Bind(a_Gfx);
-		for (size_t i = 0; i < m_Nodes[a_NodeIndex].primitiveCount; i++)
+	m_CurTransform->Bind(a_Gfx);
+	for (size_t i = 0; i < m_Nodes[a_NodeIndex].primitiveCount; i++)
+	{
+		ModelNode::ModelPrimitive& curPrimitive = m_Nodes[a_NodeIndex].primitives[i];
+
+		if (curPrimitive.m_Texture != nullptr)
 		{
-			ModelNode::ModelPrimitive& curPrimitive = m_Nodes[a_NodeIndex].primitives[i];
-
-			if (curPrimitive.m_Texture != nullptr)
-			{
-				curPrimitive.m_Texture->Bind(a_Gfx);
-				//curPrimitive.m_Sampler->Bind(a_Gfx);
-			}
-
-			//if (curPrimitive.m_KhrVolumeTexture != nullptr)
-			//{
-			//	curPrimitive.m_KhrVolumeTexture->Bind(a_Gfx);
-			//}
-
-			//a_Gfx.SetBlendState(curPrimitive.m_Blend);
-
-			//m_ModelPixelBuffer->Update(a_Gfx, curPrimitive.m_MaterialConstant);
-
-			curPrimitive.vBuffer->Bind(a_Gfx);
-			curPrimitive.m_IndexBuffer->Bind(a_Gfx);
-
-			SetIndexBuffer(curPrimitive.m_IndexBuffer);
-			Drawable::Draw(a_Gfx);
-
-
-			if (curPrimitive.m_Texture != nullptr)
-			{
-				curPrimitive.m_Texture->UnBind(a_Gfx);
-			}
-
-			//a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
+			curPrimitive.m_Texture->Bind(a_Gfx);
+			//curPrimitive.m_Sampler->Bind(a_Gfx);
 		}
-	//}
 
+		//if (curPrimitive.m_KhrVolumeTexture != nullptr)
+		//{
+		//	curPrimitive.m_KhrVolumeTexture->Bind(a_Gfx);
+		//}
+
+		//a_Gfx.SetBlendState(curPrimitive.m_Blend);
+
+		//m_ModelPixelBuffer->Update(a_Gfx, curPrimitive.m_MaterialConstant);
+
+		curPrimitive.vBuffer->Bind(a_Gfx);
+		curPrimitive.m_IndexBuffer->Bind(a_Gfx);
+
+		SetIndexBuffer(curPrimitive.m_IndexBuffer);
+		Drawable::Draw(a_Gfx);
+
+
+		if (curPrimitive.m_Texture != nullptr)
+		{
+			curPrimitive.m_Texture->UnBind(a_Gfx);
+		}
+
+		//a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
+	}
 	//m_ModelPixelBuffer->UnBind(a_Gfx);
 }
 

@@ -61,6 +61,9 @@ namespace BBE {
 		std::vector<Model*> m_Models;
 		//DrawToTexture* m_DrawToTexture;
 
+		uint32_t m_BaseVertexShader;
+		uint32_t m_BasePixelShader;
+
 		uint32_t m_VertexShader;
 		uint32_t m_PixelShader;
 

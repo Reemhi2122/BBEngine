@@ -144,6 +144,9 @@ namespace BBE
         //m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, 1, 1);
         //m_LightMatrix.Bind(m_Graphics);
 
+        m_BaseVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/DefaultVS.hlsl");
+        m_BasePixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/DefaultPS.hlsl");
+
         //m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
         //m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
 
@@ -152,7 +155,7 @@ namespace BBE
 
         //m_VSShadowMapShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VSShadowMap.hlsl");
         //m_PSShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl");
-        //
+        
         //m_PSSpotLightShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl", "SpotLightPS");
 
         ////Models
@@ -240,8 +243,7 @@ namespace BBE
 
         m_Graphics.Render();
 
-    //    m_Graphics.SetGameViewRenderTarget();
-    //    m_Graphics.ClearBuffer(0.07f, 0.0f, 0.012f);
+        m_Graphics.SetGameViewRenderTarget();
 
     //    m_Skybox->Draw(m_Graphics);
 
@@ -271,11 +273,11 @@ namespace BBE
     //    m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
     //    m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
-        //for (size_t i = 0; i < m_GameObjects.size(); i++) {
-        //    //m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
-        //    //m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
-        //    m_GameObjects[i]->Draw(m_Graphics);
-        //}
+        for (size_t i = 0; i < m_GameObjects.size(); i++) {
+            m_Graphics.BindShader(ShaderType::VertexShader, m_BaseVertexShader);
+            m_Graphics.BindShader(ShaderType::PixelShader, m_BasePixelShader);
+            m_GameObjects[i]->Draw(m_Graphics);
+        }
 
     //    //m_Quad->Draw(m_Graphics);
 
@@ -284,7 +286,7 @@ namespace BBE
     //    m_Graphics.UnbindSRV(3);
     //    m_Graphics.UnbindSRV(4);
 
-    //    m_Graphics.ResetRenderTarget();
+        m_Graphics.ResetRenderTarget();
         
         m_Graphics.SetSwapBuffer();
 
