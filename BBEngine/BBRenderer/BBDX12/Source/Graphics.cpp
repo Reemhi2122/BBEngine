@@ -16,7 +16,6 @@
 Graphics::Graphics(HWND a_HWnd)
  : m_HWindow(a_HWnd)
 {
-
 }
 
 bool Graphics::Initialize()

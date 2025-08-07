@@ -12,6 +12,11 @@
 #pragma comment(lib, "D3DCompiler.lib")
 
 Graphics::Graphics(HWND a_HWnd)
+	: m_HWindow(a_HWnd)
+{
+}
+
+bool Graphics::Initialize()
 {
 	DXGI_SWAP_CHAIN_DESC sd = {};
 	sd.BufferDesc.Width = 0;
@@ -25,7 +30,7 @@ Graphics::Graphics(HWND a_HWnd)
 	sd.SampleDesc.Quality = 0;
 	sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	sd.BufferCount = 1;
-	sd.OutputWindow = a_HWnd;
+	sd.OutputWindow = m_HWindow;
 	sd.Windowed = true;
 	sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	sd.Flags = 0;
@@ -137,7 +142,7 @@ Graphics::Graphics(HWND a_HWnd)
 
 	ImGui::StyleColorsDark();
 
-	ImGui_ImplWin32_Init(a_HWnd);
+	ImGui_ImplWin32_Init(m_HWindow);
 	ImGui_ImplDX11_Init(m_Device.Get(), m_Context.Get());
 
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());

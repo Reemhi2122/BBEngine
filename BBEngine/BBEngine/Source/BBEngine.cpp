@@ -271,11 +271,11 @@ namespace BBE
     //    m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
     //    m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
-        for (size_t i = 0; i < m_GameObjects.size(); i++) {
-            //m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
-            //m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
-            m_GameObjects[i]->Draw(m_Graphics);
-        }
+        //for (size_t i = 0; i < m_GameObjects.size(); i++) {
+        //    //m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
+        //    //m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
+        //    m_GameObjects[i]->Draw(m_Graphics);
+        //}
 
     //    //m_Quad->Draw(m_Graphics);
 
@@ -285,7 +285,6 @@ namespace BBE
     //    m_Graphics.UnbindSRV(4);
 
     //    m_Graphics.ResetRenderTarget();
-    //   
         
         m_Graphics.SetSwapBuffer();
 

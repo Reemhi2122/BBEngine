@@ -61,7 +61,7 @@ public:
 	Graphics& operator=(const Graphics&) = delete;
 	~Graphics();
 
-	bool Initialize() override { return true; };
+	bool Initialize() override;
 	bool CloseInit() override { return true; };
 
 	void Update() override {};
@@ -126,6 +126,7 @@ public:
 	ID3D11ShaderResourceView* m_SpotLightsDepthTest = nullptr;
 
 private:
+	HWND	m_HWindow;
 	Camera* m_Camera;
 
 	Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
