@@ -9,6 +9,9 @@
 #include "Bindable/IVertexBuffer.h"
 #include "Bindable/ITexture.h"
 
+//Note(Stan): Temp only for DX11
+#include "Bindable/DX11Sampler.h"
+
 #include "Drawable.h"
 
 #include "Vector3.h"
@@ -23,7 +26,7 @@ struct ModelNode
 	{
 		IVertexBuffer* vBuffer;
 		ITexture* m_Texture;
-		//Sampler* m_Sampler;
+		DX11Sampler* m_Sampler;
 		IIndexBuffer* m_IndexBuffer;
 		BBE::AlphaMode m_Blend;
 

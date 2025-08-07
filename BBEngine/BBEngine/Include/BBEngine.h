@@ -28,6 +28,9 @@
 //#include "Lights.h"
 //#include "Vertexconstant.h"
 
+class DX11InputLayout;
+class DX11Topology;
+
 namespace BBE {
 	class BBEngine {
 	public:
@@ -73,6 +76,9 @@ namespace BBE {
 		uint32_t m_VSShadowMapShader;
 		uint32_t m_PSShadowMapShader;
 		uint32_t m_PSSpotLightShadowMapShader;
+
+		DX11InputLayout* m_InputLayout;
+		DX11Topology* m_Topology;
 
 		//PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
 		//PixelConstantBuffer<ShadowMapCreation> m_ShadowMapCB;

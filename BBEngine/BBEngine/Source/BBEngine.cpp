@@ -14,6 +14,9 @@
 //#include "GameLib/Components/LightComponents/PointLightComponent.h"
 //#include "GameLib/Components/LightComponents/SpotLightComponent.h"
 
+#include "Bindable/DX11InputLayout.h"
+#include "Bindable/DX11Topology.h"
+
 #include <chrono>
 #include <iostream>
 #include <cstdint>
@@ -146,6 +149,18 @@ namespace BBE
 
         m_BaseVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/DefaultVS.hlsl");
         m_BasePixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/DefaultPS.hlsl");
+
+        const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
+            {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA , 0},
+            {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA , 0},
+            { "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };
+
+        m_InputLayout = new DX11InputLayout(m_Graphics, ied, m_Graphics.GetVertexShaderByteCode(m_BaseVertexShader).Get());
+        m_InputLayout->Bind(m_Graphics);
+
+        m_Topology = new DX11Topology(m_Graphics, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        m_Topology->Bind(m_Graphics);
 
         //m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
         //m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
@@ -429,45 +444,51 @@ namespace BBE
         Camera* cam = m_Graphics.GetCamera();
         Keyboard& kBoard = m_Window.m_Keyboard;
 
+        //float stepSizeCamera = 0.00025f;
+        //float stepSizeMovement = 0.001f;
+
+        float stepSizeCamera = 0.025f;
+        float stepSizeMovement = 0.1f;
+
         if (kBoard.KeyIsPressed('W'))
         {
-            cam->camForwardMove += 0.001f;
+            cam->camForwardMove += stepSizeCamera;
         }
         if (kBoard.KeyIsPressed('S'))
         {
-            cam->camForwardMove += -0.001f;
+            cam->camForwardMove += -stepSizeCamera;
         }
         if (kBoard.KeyIsPressed('A'))
         {
-            cam->camRightMove += -0.001f;
+            cam->camRightMove += -stepSizeCamera;
         }
         if (kBoard.KeyIsPressed('D'))
         {
-            cam->camRightMove += 0.001f;
+            cam->camRightMove += stepSizeCamera;
         }
         if (kBoard.KeyIsPressed(VK_NUMPAD1))
         {
-            cam->camUpMove = 0.001f;
+            cam->camUpMove = stepSizeCamera;
         }
         if (kBoard.KeyIsPressed(VK_NUMPAD0))
         {
-            cam->camUpMove = -0.001f;
+            cam->camUpMove = -stepSizeCamera;
         }
         if (kBoard.KeyIsPressed(VK_LEFT))
         {
-            cam->camYaw += -0.00025f;
+            cam->camYaw += -stepSizeCamera;
         }
         if (kBoard.KeyIsPressed(VK_RIGHT))
         {
-            cam->camYaw += 0.00025f;
+            cam->camYaw += stepSizeCamera;
         }
         if (kBoard.KeyIsPressed(VK_UP))
         {
-            cam->camPitch += -0.00025f;
+            cam->camPitch += -stepSizeCamera;
         }
         if (kBoard.KeyIsPressed(VK_DOWN))
         {
-            cam->camPitch += 0.00025f;
+            cam->camPitch += stepSizeCamera;
         }
 
         if (kBoard.KeyIsPressed('1')) {

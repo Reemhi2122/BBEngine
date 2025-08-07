@@ -8,14 +8,15 @@ bool DX11VertexBuffer::Create(IGraphics& a_Gfx, void* a_Vertices, const uint32_t
 	INFOMAN;
 	
 	m_Count = a_Count;
+	uint32_t vbTotalSize = (vbSize * a_Count);
 
 	D3D11_BUFFER_DESC desc = {};
 	desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	desc.Usage = D3D11_USAGE_DEFAULT;
 	desc.CPUAccessFlags = 0;
 	desc.MiscFlags = 0;
-	desc.ByteWidth = m_Count * sizeof(BBE::Vertex);
-	desc.StructureByteStride = sizeof(BBE::Vertex);
+	desc.ByteWidth = vbTotalSize;
+	desc.StructureByteStride = vbSize;
 	D3D11_SUBRESOURCE_DATA source = {};
 	source.pSysMem = a_Vertices;
 
