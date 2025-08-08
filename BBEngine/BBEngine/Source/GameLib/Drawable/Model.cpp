@@ -46,7 +46,9 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 				modelPrimitive.m_Texture = GFXCreateTexture();
 				modelPrimitive.m_Texture->Create(a_Gfx, texturePath);
 
-				//modelPrimitive.m_Sampler = new DX11Sampler(a_Gfx);
+#ifdef BBDX11
+				modelPrimitive.m_Sampler = new DX11Sampler(a_Gfx);
+#endif
 			}
 
 			if (gltfPrimitive.material.pbrMetallicRoughness.baseColorTexture.path != nullptr)
@@ -142,7 +144,9 @@ void Model::Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept
 		if (curPrimitive.m_Texture != nullptr)
 		{
 			curPrimitive.m_Texture->Bind(a_Gfx);
-			//curPrimitive.m_Sampler->Bind(a_Gfx);
+#ifdef BBDX11
+			curPrimitive.m_Sampler->Bind(a_Gfx);
+#endif
 		}
 
 		//if (curPrimitive.m_KhrVolumeTexture != nullptr)

@@ -263,6 +263,9 @@ namespace BBE
 
         m_Graphics.Render();
 
+        double dt = 1 / m_Timer.Stamp();
+        printf("FPS: %f \n", dt);
+
 #ifdef BBDX11
         m_Graphics.SetGameViewRenderTarget();
 #endif

@@ -19,5 +19,4 @@ namespace BBE {
 	{
 		return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_Last).count();
 	}
-
 }

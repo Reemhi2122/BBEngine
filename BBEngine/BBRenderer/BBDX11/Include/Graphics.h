@@ -20,7 +20,6 @@
 constexpr uint16_t WINDOW_WIDTH = 1600;
 constexpr uint16_t WINDOW_HEIGHT = 900;
 
-typedef uint32_t TMPHANDLE;
 struct Model;
 
 namespace BBE
@@ -28,26 +27,16 @@ namespace BBE
 	enum class AlphaMode;
 }
 
-enum class ShaderType
-{
-	VertexShader,
-	PixelShader,
-	GeometryShader,
-	ComputeShader,
-	HullShader
-	//TODO: Add all shader types, not really using something else then PS and VS right now
-};
-
 struct VertexShader
 {
-	Microsoft::WRL::ComPtr <ID3D11VertexShader>	m_Shader;
+	Microsoft::WRL::ComPtr<ID3D11VertexShader>	m_Shader;
 	Microsoft::WRL::ComPtr<ID3DBlob> 			m_ByteCodeBlob;
 	std::string									m_Path;
 };
 
 struct PixelShader
 {
-	Microsoft::WRL::ComPtr <ID3D11PixelShader>	m_Shader;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	m_Shader;
 	std::string									m_Path;
 };
 
@@ -113,14 +102,14 @@ public:
 	ID3D11ShaderResourceView* GetSpotLightDepthMapArrayRSV()	{ return m_SpotLightsDepthArraySRV; };
 	ID3D11ShaderResourceView* GetGameViewRSV()					{ return m_GameWindowSRV; };
 
-	TMPHANDLE CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc = "main");
-	void BindShader(ShaderType a_Type, TMPHANDLE a_Shader);
-	void ReloadShader(ShaderType a_Type, TMPHANDLE a_Shader);
+	BBHandle CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc = "main");
+	void BindShader(ShaderType a_Type, BBHandle a_Shader);
+	void ReloadShader(ShaderType a_Type, BBHandle a_Shader);
 	
 	VertexShader* GetVertexShaderArray() noexcept { return (VertexShader*)m_VertexShaders; }
 	PixelShader* GetPixelShaderArray() noexcept { return (PixelShader*)m_PixelShaders; }
 
-	Microsoft::WRL::ComPtr<ID3DBlob> GetVertexShaderByteCode(TMPHANDLE a_Shader) const;
+	Microsoft::WRL::ComPtr<ID3DBlob> GetVertexShaderByteCode(BBHandle a_Shader) const;
 
 	ID3D11ShaderResourceView* m_TextureDepthSRV[6];
 	ID3D11ShaderResourceView* m_SpotLightsDepthTest = nullptr;

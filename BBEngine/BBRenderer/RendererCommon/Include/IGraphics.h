@@ -7,6 +7,17 @@
 #define FRAME_TEXTURE_TARGET 3
 #define TOTAL_RENDER_TARGETS 6
 
+typedef uint32_t BBHandle;
+
+enum class ShaderType
+{
+	VertexShader,
+	PixelShader,
+	GeometryShader,
+	ComputeShader,
+	HullShader
+};
+
 class IGraphics
 {
 public:
@@ -25,10 +36,8 @@ public:
 	virtual Camera* GetCamera() const  = 0;
 	virtual void SetCamera(Camera* a_Camera) = 0;
 
-	//Note(Stan): These should be in DX11 / DX12 specific grpahics classes
-	//				But for now and testing I'm just hardcoding it here
-	virtual BBRenderDevice* GetDevice() const noexcept = 0;
 
+	virtual BBRenderDevice* GetDevice() const noexcept = 0;
 	virtual BBGraphicsCommandList* GetCommandList() const { return nullptr; };
 	virtual uint8_t GetFrameCount() const { return 0; };
 	virtual uint8_t GetCurrentFrame() const { return 0; };
@@ -38,4 +47,8 @@ public:
 	//Note(Stan): DX11 specific
 	virtual BBRenderContext* GetContext() const noexcept { return nullptr; };
 	//End DX11 specific
+
+	//virtual BBHandle CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc = "main") = 0;
+	//virtual void BindShader(ShaderType a_Type, BBHandle a_Shader) = 0;
+	//virtual void ReloadShader(ShaderType a_Type, BBHandle a_Shader) = 0;
 };

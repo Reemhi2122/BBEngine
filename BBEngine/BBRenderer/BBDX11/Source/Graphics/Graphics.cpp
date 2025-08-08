@@ -176,9 +176,9 @@ bool Graphics::Initialize()
 	m_Device->CreateBlendState(&blendDesc, &m_TransparancyBlendState);
 }
 
-TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc /*= "main"*/)
+BBHandle Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc /*= "main"*/)
 {
-	TMPHANDLE handle = -1;
+	BBHandle handle = -1;
 	wchar_t pathString[MAX_PATH];
 	mbstowcs(pathString, a_Path.c_str(), MAX_PATH);
 
@@ -212,7 +212,7 @@ TMPHANDLE Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::str
 	return handle;
 }
 
-void Graphics::BindShader(ShaderType a_Type, TMPHANDLE a_Shader)
+void Graphics::BindShader(ShaderType a_Type, BBHandle a_Shader)
 {
 	switch (a_Type)
 	{
@@ -233,7 +233,7 @@ void Graphics::BindShader(ShaderType a_Type, TMPHANDLE a_Shader)
 	}
 }
 
-void Graphics::ReloadShader(ShaderType a_Type, TMPHANDLE a_Shader)
+void Graphics::ReloadShader(ShaderType a_Type, BBHandle a_Shader)
 {
 	switch (a_Type)
 	{
@@ -266,7 +266,7 @@ void Graphics::ReloadShader(ShaderType a_Type, TMPHANDLE a_Shader)
 	}
 }
 
-Microsoft::WRL::ComPtr<ID3DBlob> Graphics::GetVertexShaderByteCode(TMPHANDLE a_Shader) const
+Microsoft::WRL::ComPtr<ID3DBlob> Graphics::GetVertexShaderByteCode(BBHandle a_Shader) const
 {
 	return m_VertexShaders[a_Shader].m_ByteCodeBlob;
 }
@@ -347,7 +347,7 @@ void Graphics::EndFrame()
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	HRESULT hr;
-	if (FAILED(hr = m_SwapChain->Present(1u, 0u))) {
+	if (FAILED(hr = m_SwapChain->Present(0u, 0u))) {
 		if (hr == DXGI_ERROR_DEVICE_REMOVED) {
 			GFX_DEVICE_REMOVED_EXCEPT(m_Device->GetDeviceRemovedReason());
 		}
