@@ -7,6 +7,8 @@
 #define FRAME_TEXTURE_TARGET 3
 #define TOTAL_RENDER_TARGETS 6
 
+#define VSYNC 1
+
 typedef uint32_t BBHandle;
 
 enum class ShaderType

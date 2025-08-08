@@ -347,7 +347,7 @@ void Graphics::EndFrame()
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 	HRESULT hr;
-	if (FAILED(hr = m_SwapChain->Present(0u, 0u))) {
+	if (FAILED(hr = m_SwapChain->Present(VSYNC, 0u))) {
 		if (hr == DXGI_ERROR_DEVICE_REMOVED) {
 			GFX_DEVICE_REMOVED_EXCEPT(m_Device->GetDeviceRemovedReason());
 		}

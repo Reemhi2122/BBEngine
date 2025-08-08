@@ -94,8 +94,8 @@ namespace BBE
         GLTFParser parser;
         parser.Parse("Assets/Models/Sponza/Sponza/", "Sponza.gltf", &m_SponzaFile);
         parser.Parse("Assets/Models/Lantern/glTF/", "Lantern.gltf", &m_LanternFile);
-        //parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
-        //parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
+        parser.Parse("Assets/Models/ToyCar/glTF/", "ToyCar.gltf", &m_CarFile);
+        parser.Parse("Assets/Models/ABeautifulGame/glTF/", "ABeautifulGame.gltf", &m_ABeautifulGameFile);
         //parser.Parse("Assets/Models/GlassVaseFlowers/glTF/", "GlassVaseFlowers.gltf", &m_GlassVase);
 
         BBE:UI::InitializeUI(m_Graphics, &m_RootObjects);
@@ -183,12 +183,12 @@ namespace BBE
         m_Models.push_back(Sponza);
         Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(lantern);
-        //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
-        //m_Models.push_back(car);
+        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
+        m_Models.push_back(car);
         //Model* glassVase = BBNew(m_StackAllocator, Model)(m_Graphics, "GlassVase", &m_GlassVase, m_VertexShader, m_PixelShader);
         //m_Models.push_back(glassVase);
-        ////Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
-        ////m_Models.push_back(aBeautifulGame);
+        Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, "ChessGame", &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
+        m_Models.push_back(aBeautifulGame);
 
         ////Skybox
         //m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
@@ -203,8 +203,14 @@ namespace BBE
             }
         }
 
-        Transform lanternTransform = Transform(Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.1f, 0.1f, 0.1f));
-        BBObject::CreateObjectsFromModel(m_Graphics, lantern, &m_LanternFile, &m_GameObjects, &m_RootObjects, lanternTransform, "Lantern");
+        Transform LanternTransform = Transform(Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.1f, 0.1f, 0.1f));
+        BBObject::CreateObjectsFromModel(m_Graphics, lantern, &m_LanternFile, &m_GameObjects, &m_RootObjects, LanternTransform, "Lantern");
+
+        Transform carTransform = Transform(Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(1.0f, 1.0f, 1.0f));
+        BBObject::CreateObjectsFromModel(m_Graphics, car, &m_CarFile, &m_GameObjects, &m_RootObjects, carTransform, "Car");
+
+        Transform chessGame = Transform(Vector3(10, 0, 0), Vector3(0, 0, 0), Vector3(1.0f, 1.0f, 1.0f));
+        BBObject::CreateObjectsFromModel(m_Graphics, aBeautifulGame, &m_ABeautifulGameFile, &m_GameObjects, &m_RootObjects, chessGame, "Chess");
 
         //BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
         //Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-4, 2, 0), Vector3(0, 90, 0), Vector3(5.0f, 5.0f, 5.0f));

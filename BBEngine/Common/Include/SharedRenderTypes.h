@@ -149,7 +149,7 @@ namespace BBE {
 
 	struct GLTFFile {
 		GLTFNode* nodes = nullptr;
-		GLTFNode* rootNode = nullptr;
+		GLTFNode** rootNodes = nullptr;
 		uint32_t nodeAmount;
 		uint32_t rootNodeAmount;
 		const char* gltfPath;

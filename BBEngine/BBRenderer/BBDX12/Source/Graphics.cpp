@@ -815,7 +815,7 @@ void Graphics::EndFrame()
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 
-	hres = m_SwapChain->Present(0u, 0u);
+	hres = m_SwapChain->Present(VSYNC, 0u);
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed to present!");

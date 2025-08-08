@@ -62,12 +62,13 @@ namespace BBE {
 		{
 			BBE::JSONList& sceneNodesList = sceneList[curScene]->GetObjectBB()["nodes"]->GetListBB();
 			m_GLTFFile->rootNodeAmount = sceneNodesList.size();
+			m_GLTFFile->rootNodes = reinterpret_cast<GLTFNode**>(malloc(m_GLTFFile->rootNodeAmount * sizeof(GLTFNode*)));
 			for (uint32_t sceneHeadNodeIndex = 0; sceneHeadNodeIndex < sceneNodesList.size(); sceneHeadNodeIndex++)
 			{
 				uint32_t curIndex = sceneNodesList[sceneHeadNodeIndex]->GetFloatBB();
 				BBE::GLTFNode* curNode = &m_GLTFFile->nodes[curIndex];
 				curNode->NodeIndex = curIndex;
-				a_GLTFFile->rootNode = curNode;
+				a_GLTFFile->rootNodes[sceneHeadNodeIndex] = curNode;
 				CalculateNode(curNode, curIndex);
 			}
 		}

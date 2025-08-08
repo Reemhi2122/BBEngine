@@ -60,18 +60,38 @@ bool BBObject::SetChild(BBObject* a_Child)
 
 void BBObject::CreateObjectsFromModel(IGraphics& a_Gfx, Model* a_Model, const BBE::GLTFFile* a_GLTFFile, std::vector<BBObject*>* a_AllObjects, std::vector<BBObject*>* a_RootObjects, Transform& a_ObjectTransform, const char* a_Name)
 {
-	BBE::GLTFNode* parentNode = a_GLTFFile->rootNode;
-	BBObject* parentObj = CreateObject(a_Gfx, parentNode, a_Model, a_ObjectTransform, a_Name);
-	a_AllObjects->push_back(parentObj);
-	a_RootObjects->push_back(parentObj);
-
-	uint32_t childSize = parentNode->Children.size();
-	for (uint32_t childIndex = 0; childIndex < childSize; childIndex++)
+	BBObject* EmptyCollectionObj = nullptr;
+	if (a_GLTFFile->rootNodeAmount > 1)
 	{
-		BBE::GLTFNode* curNode = parentNode->Children[childIndex];
-		BBObject* childObject = CreateObject(a_Gfx, curNode, a_Model, a_ObjectTransform, curNode->name);
-		parentObj->m_Children.push_back(childObject);
-		a_AllObjects->push_back(childObject);
+		EmptyCollectionObj = new BBObject(a_Name);
+		a_RootObjects->push_back(EmptyCollectionObj);
+	}
+
+	for (uint32_t rootNodeIndex = 0; rootNodeIndex < a_GLTFFile->rootNodeAmount; rootNodeIndex++)
+	{
+		BBE::GLTFNode* parentNode = a_GLTFFile->rootNodes[rootNodeIndex];
+		
+		const char* objName = EmptyCollectionObj ? parentNode->name : a_Name;
+		BBObject* parentObj = CreateObject(a_Gfx, parentNode, a_Model, a_ObjectTransform, objName);
+		a_AllObjects->push_back(parentObj);
+
+		if (!EmptyCollectionObj)
+		{
+			a_RootObjects->push_back(parentObj);
+		}
+		else
+		{
+			EmptyCollectionObj->m_Children.push_back(parentObj);
+		}
+
+		uint32_t childSize = parentNode->Children.size();
+		for (uint32_t childIndex = 0; childIndex < childSize; childIndex++)
+		{
+			BBE::GLTFNode* curNode = parentNode->Children[childIndex];
+			BBObject* childObject = CreateObject(a_Gfx, curNode, a_Model, a_ObjectTransform, curNode->name);
+			parentObj->m_Children.push_back(childObject);
+			a_AllObjects->push_back(childObject);
+		}
 	}
 }
 
