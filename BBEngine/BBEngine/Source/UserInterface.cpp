@@ -1,8 +1,7 @@
 #include "UserInterface.h"
 #include "Graphics.h"
 #include "System/FileHandler.h"
-#include "Bindable/ITexture.h"
-#include "Bindable/DX11Texture.h"
+#include "GFXInclude/BBGFXPlatform.h"
 
 #include "GameLib/BBObject.h"
 
@@ -40,9 +39,9 @@ namespace BBE
             //Note(Stan): Not a big fan of doing it like this, prob want to just request it from engine when needed.
             m_GameObjectsPointer = a_GameObjectListPointer;
 
-            m_EmptyFolderTexture = new DX11Texture();
+            m_EmptyFolderTexture = GFXCreateTexture();
             m_EmptyFolderTexture->Create(a_Graphics, "Assets/Image/Icons/closed_folder.png");
-            m_FileTexture = new DX11Texture();
+            m_FileTexture = GFXCreateTexture();
             m_FileTexture->Create(a_Graphics, "Assets/Image/Icons/file.png");
             ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_DockingEnable;
         }
@@ -165,7 +164,7 @@ namespace BBE
                     ImGui::BeginGroup();
                     ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
 
-                    if (ImGui::ImageButton("Folder", (ImTextureID)reinterpret_cast<DX11Texture*>(m_EmptyFolderTexture)->GetSRVGPUHandle(), ImVec2(imgSize, imgSize)))
+                    if (ImGui::ImageButton("Folder", (ImTextureID)reinterpret_cast<ITexture*>(m_EmptyFolderTexture)->GetSRVGPUHandle(), ImVec2(imgSize, imgSize)))
                     {
                         history.push(curPath);
                         curPath.append(dir.directories[i].name + "\\");
@@ -191,7 +190,7 @@ namespace BBE
                     ImGui::BeginGroup();
                     ImGui::PushTextWrapPos(ImGui::GetCursorPos().x + imgSize);
 
-                    if (ImGui::ImageButton("Files", (ImTextureID)reinterpret_cast<DX11Texture*>(m_FileTexture)->GetSRVGPUHandle(), ImVec2(imgSize, imgSize)))
+                    if (ImGui::ImageButton("Files", (ImTextureID)reinterpret_cast<ITexture*>(m_FileTexture)->GetSRVGPUHandle(), ImVec2(imgSize, imgSize)))
                     {
                         std::string result(curPath + dir.files[i].name);
                         ShellExecute(0, 0, result.c_str(), 0, 0, SW_SHOW);

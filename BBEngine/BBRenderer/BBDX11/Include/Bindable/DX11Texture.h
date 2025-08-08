@@ -10,7 +10,7 @@ public:
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	void UnBind(IGraphics& a_Gfx) noexcept override;
 
-	ID3D11ShaderResourceView* GetSRVGPUHandle() { return m_ShaderResourceView; };
+	uintptr_t GetSRVGPUHandle() { return reinterpret_cast<uintptr_t>(m_ShaderResourceView); };
 
 private:
 	ID3D11ShaderResourceView* m_ShaderResourceView;

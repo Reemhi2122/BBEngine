@@ -102,7 +102,7 @@ void DX12Texture::UnBind(IGraphics& a_Gfx) noexcept
 {
 }
 
-CD3DX12_GPU_DESCRIPTOR_HANDLE DX12Texture::GetSRVGPUHandle()
+uintptr_t DX12Texture::GetSRVGPUHandle()
 {
-	return m_DescriptorInfo->gpuDescHandle;
+	return m_DescriptorInfo->gpuDescHandle.ptr;
 }

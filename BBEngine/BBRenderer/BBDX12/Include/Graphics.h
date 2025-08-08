@@ -86,14 +86,14 @@ public:
 	Camera* GetCamera() const override;
 	void SetCamera(Camera* a_Camera) override;
 
-	ID3D12Device* GetDevice() const override;
+	ID3D12Device* GetDevice() const noexcept override;
 	
 	ID3D12GraphicsCommandList* GetCommandList() const;
 
 	uint8_t GetFrameCount() const override { return FRAME_BUFFER_COUNT; };
 	uint8_t GetCurrentFrame() const override { return m_FrameIndex; };
 
-	CD3DX12_GPU_DESCRIPTOR_HANDLE GetGameViewRSV() { return m_GRTVShaderResourceView[m_FrameIndex].gpuDescHandle; };
+	uintptr_t GetGameViewRSV() { return m_GRTVShaderResourceView[m_FrameIndex].gpuDescHandle.ptr; };
 	void SetSwapBuffer();
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
@@ -175,7 +175,7 @@ private:
 	IConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;
 };
 
-inline ID3D12Device* Graphics::GetDevice() const
+inline ID3D12Device* Graphics::GetDevice() const noexcept
 {
 	return m_Device;
 }

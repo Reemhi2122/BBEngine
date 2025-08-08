@@ -14,8 +14,10 @@
 //#include "GameLib/Components/LightComponents/PointLightComponent.h"
 //#include "GameLib/Components/LightComponents/SpotLightComponent.h"
 
+#ifdef BBDX11
 #include "Bindable/DX11InputLayout.h"
 #include "Bindable/DX11Topology.h"
+#endif
 
 #include <chrono>
 #include <iostream>
@@ -147,6 +149,8 @@ namespace BBE
         //m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, 1, 1);
         //m_LightMatrix.Bind(m_Graphics);
 
+
+#ifdef BBDX11
         m_BaseVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/DefaultVS.hlsl");
         m_BasePixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/DefaultPS.hlsl");
 
@@ -161,6 +165,7 @@ namespace BBE
 
         m_Topology = new DX11Topology(m_Graphics, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
         m_Topology->Bind(m_Graphics);
+#endif
 
         //m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
         //m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
@@ -258,7 +263,9 @@ namespace BBE
 
         m_Graphics.Render();
 
+#ifdef BBDX11
         m_Graphics.SetGameViewRenderTarget();
+#endif
 
     //    m_Skybox->Draw(m_Graphics);
 
@@ -289,8 +296,10 @@ namespace BBE
     //    m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
+#ifdef BBDX11
             m_Graphics.BindShader(ShaderType::VertexShader, m_BaseVertexShader);
             m_Graphics.BindShader(ShaderType::PixelShader, m_BasePixelShader);
+#endif
             m_GameObjects[i]->Draw(m_Graphics);
         }
 
@@ -301,8 +310,10 @@ namespace BBE
     //    m_Graphics.UnbindSRV(3);
     //    m_Graphics.UnbindSRV(4);
 
+#ifdef BBDX11
         m_Graphics.ResetRenderTarget();
-        
+#endif
+
         m_Graphics.SetSwapBuffer();
 
         BBE:UI::UpdateUI(m_Graphics);

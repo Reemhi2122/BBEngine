@@ -36,6 +36,6 @@ public:
 	virtual void DrawIndexed(uint32_t a_IndexCount) = 0;
 
 	//Note(Stan): DX11 specific
-	virtual BBRenderContext* GetContext() const noexcept = 0;
+	virtual BBRenderContext* GetContext() const noexcept { return nullptr; };
 	//End DX11 specific
 };

@@ -7,12 +7,14 @@ typedef class ID3D12Resource BBTexture2D;
 
 typedef class ID3D12Device   BBRenderDevice;
 
-
 typedef class ID3D12GraphicsCommandList BBGraphicsCommandList;
+
+typedef	void BBRenderContext;
+
 
 #elif defined(BBDX11)
 
-typedef	int 						BBGraphicsCommandList;
+typedef	void 						BBGraphicsCommandList;
 typedef ID3D11ShaderResourceView	BBShaderResourceView;
 typedef ID3D11Texture2D				BBTexture2D;
 

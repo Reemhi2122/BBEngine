@@ -14,7 +14,7 @@ public:
 	void Bind(IGraphics& a_Gfx) noexcept override;
 	void UnBind(IGraphics& a_Gfx) noexcept override;
 
-	CD3DX12_GPU_DESCRIPTOR_HANDLE GetSRVGPUHandle();
+	uintptr_t GetSRVGPUHandle() override;
 
 	ID3D12Resource* GetTextureBuffer() const noexcept { return m_TextureBuffer; };
 
