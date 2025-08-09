@@ -16,6 +16,7 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 #include <queue>
+#include "Containers/FixedArray.h"
 
 #include "Camera.h"
 #include "IGraphics.h"
@@ -125,6 +126,9 @@ private:
 	ID3D12RootSignature*		m_RootSignature;
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
+
+	//Note(Stan): Creating some type of pool system for the pipeline states
+	BBE::FixedArray<ID3D12PipelineState*> m_PSOs;
 
 	//ID3D12DescriptorHeap*		m_MainDescriptorHeap;
 	DescriptorFreeList			m_MainDescriptorFreeList;

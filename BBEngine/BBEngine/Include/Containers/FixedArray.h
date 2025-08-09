@@ -25,11 +25,11 @@ namespace BBE
 		Type* m_InnerArray;
 	};
 
-	template<typename ArrayType>
-	inline FixedArray<ArrayType>::FixedArray(uint32_t a_Size)
+	template<typename Type>
+	inline FixedArray<Type>::FixedArray(uint32_t a_Size)
 	{
 		m_MaxSize = a_Size;
-		m_InnerArray = T[a_Size];
+		m_InnerArray = new Type[a_Size];
 	}
 
 	template<typename Type>

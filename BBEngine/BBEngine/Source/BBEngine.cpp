@@ -212,13 +212,6 @@ namespace BBE
         Transform chessGame = Transform(Vector3(10, 0, 0), Vector3(0, 0, 0), Vector3(1.0f, 1.0f, 1.0f));
         BBObject::CreateObjectsFromModel(m_Graphics, aBeautifulGame, &m_ABeautifulGameFile, &m_GameObjects, &m_RootObjects, chessGame, "Chess");
 
-        //BBObject* glassObject = BBNew(m_StackAllocator, BBObject)("GlassVase");
-        //Transform* glassTransform = BBNew(m_StackAllocator, Transform)(Vector3(-4, 2, 0), Vector3(0, 90, 0), Vector3(5.0f, 5.0f, 5.0f));
-        //glassObject->AddComponent(glassTransform);
-        //MeshComponent* glassVaseMesh = BBNew(m_StackAllocator, MeshComponent)(m_Graphics, glassVase, glassTransform);
-        //glassObject->AddComponent(glassVaseMesh);
-        //m_GameObjects.push_back(glassObject);
-
         ////m_Quad = BBNew(m_StackAllocator, Quad)(m_Graphics);
 
         ////Lights
