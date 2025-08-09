@@ -7,7 +7,7 @@ add_library (BBRenderer_DX12 STATIC
 	"Source/Bindable/DX12Texture.cpp"
 	"Source/Bindable/DX12VertexBuffer.cpp" 
 	"Source/Bindable/DX12IndexBuffer.cpp"
-	"Source/DescriptorFreeList.cpp")
+	"Source/DescriptorFreeList.cpp" "Include/Bindable/DX12CubeMap.h")
 
 target_compile_definitions(BBRenderer_DX12 PUBLIC BBDX12)
 

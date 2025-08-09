@@ -14,7 +14,7 @@ add_library (BBRenderer_DX11 STATIC
 
 "Source/Bindable/DX11Texture.cpp"
 "Source/Bindable/DX11Sampler.cpp"
-"Source/Bindable/CubeMap.cpp"
+"Source/Bindable/DX11CubeMap.cpp"
 )
 
 target_compile_definitions(BBRenderer_DX11 PUBLIC BBDX11)

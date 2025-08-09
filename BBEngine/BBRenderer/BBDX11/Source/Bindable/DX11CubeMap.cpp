@@ -1,8 +1,8 @@
-#include "Bindable/CubeMap.h"
+#include "Bindable/DX11CubeMap.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-CubeMap::CubeMap(IGraphics& a_Gfx)
+bool DX11CubeMap::Create(IGraphics& a_Gfx)
 {
 	constexpr char* names[CUBEMAP_SIZE] = {"right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg"};
 
@@ -48,8 +48,7 @@ CubeMap::CubeMap(IGraphics& a_Gfx)
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_TextureCubeMap, &image_rsv_desc, &m_ShaderResourceView);
 }
 
-//Note(Stan): Only works for depth stencils now
-CubeMap::CubeMap(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution /*= 1024u*/, char* a_TexturePaths /*= nullptr*/)
+bool DX11CubeMap::Create(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution /*= 1024u*/, char* a_TexturePaths /*= nullptr*/)
 {
 	HRESULT res;
 	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
@@ -101,7 +100,7 @@ CubeMap::CubeMap(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution /*=
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_TextureCubeMap, &image_rsv_desc, &m_ShaderResourceView);
 }
 
-void CubeMap::Bind(IGraphics& a_Gfx) noexcept
+void DX11CubeMap::Bind(IGraphics& a_Gfx) noexcept
 {
 	a_Gfx.GetContext()->PSSetShaderResources(0, 1, &m_ShaderResourceView);
 }
