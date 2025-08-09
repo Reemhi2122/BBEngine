@@ -117,7 +117,11 @@ private:
 	ID3D12GraphicsCommandList*	m_CommandList;
 	
 	//Note(Stan): Used for rendering the first triangle, likely to change later
-	ID3D12PipelineState*		m_DefaultPipelineState;
+	//ID3D12PipelineState*		m_DefaultPipelineState;
+
+	ID3D12PipelineState*		m_PSOArray[10];
+	uint32_t					m_PSOIndex = 0;
+
 	ID3D12RootSignature*		m_RootSignature;
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
@@ -134,17 +138,6 @@ private:
 	uint32_t m_MaxRootCBV = 1;
 	UploadHeap* m_RootCBV[1] = { nullptr };
 
-	//Note(Stan): Temp, these will be replaced by actual objects
-	DirectX::XMFLOAT4X4	m_Cube1WorldMatrix;
-	DirectX::XMFLOAT4X4	m_Cube1RotationMatrix;
-	DirectX::XMFLOAT4	m_Cube1Pos;
-
-	DirectX::XMFLOAT4X4	m_Cube2WorldMatrix;
-	DirectX::XMFLOAT4X4	m_Cube2RotationMatrix;
-	DirectX::XMFLOAT4	m_Cube2PosOffset;
-
-	uint32_t			m_NumOfCubeIndices;
-
 	//Shaders
 	ID3DBlob*	m_VertexShader;
 	D3D12_SHADER_BYTECODE m_VertexShaderByteCode;
@@ -160,16 +153,8 @@ private:
 	uint32_t m_FrameIndex;
 	uint32_t m_RTVDescriptorSize;
 
-	//Temp testing bindables
-	IVertexBuffer* m_CubeVertexBuffer;
-	IIndexBuffer* m_CubeIndexBuffer;
-	ITexture* m_Texture;
-
 	SRVDescriptorInfo m_TextureDescriptors[MAX_TEXTURES];
 	std::queue<SRVDescriptorInfo*> m_AvailableTextureDescriptors;
-
-	IConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube1;
-	IConstantBuffer<ConstantBufferPerObject>* m_ConstantBufferCube2;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const noexcept
