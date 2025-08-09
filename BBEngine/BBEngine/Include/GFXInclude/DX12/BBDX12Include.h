@@ -3,6 +3,7 @@
 #include "Bindable/DX12IndexBuffer.h"
 #include "Bindable/DX12VertexBuffer.h"
 #include "Bindable/DX12Texture.h"
+#include "Bindable/ICubeMap.h"
 
 static DX12Texture* GFXCreateTexture()
 {
@@ -25,7 +26,7 @@ static RootConstantBuffer<T>* GFXCreateConstantBuffer()
 	return new RootConstantBuffer<T>();
 };
 
-static void* GFXCreateCubeMap()
+static ICubeMap* GFXCreateCubeMap()
 {
 	return nullptr;
 };

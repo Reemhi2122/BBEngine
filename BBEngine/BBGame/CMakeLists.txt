@@ -5,7 +5,7 @@ add_executable (BBGame
 )
 
 target_link_libraries(BBGame 
-BBEngine
+    BBEngine
 )
 
 #copy shaders when a change happened.

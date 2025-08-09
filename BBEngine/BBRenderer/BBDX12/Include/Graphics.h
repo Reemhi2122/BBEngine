@@ -39,12 +39,6 @@ struct UV
 	float u, v;
 };
 
-struct TempVertex
-{
-	Vector3 vertex;
-	UV		texCoord;
-};
-
 struct ConstantBufferPerObject
 {
 	DirectX::XMFLOAT4X4 WVPMatrix;
@@ -102,6 +96,8 @@ public:
 
 protected:
 	bool CreatePipelineStateObject();
+
+	bool InitImGui();
 
 private:
 	HWND						m_HWindow;

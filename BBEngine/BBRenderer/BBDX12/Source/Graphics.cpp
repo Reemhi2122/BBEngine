@@ -326,92 +326,6 @@ bool Graphics::Initialize()
 
 	CreatePipelineStateObject();
 
-	TempVertex vertexList[] =
-	{
-		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 0.0f}},
-		{{  0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
-		{{ -0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
-		{{  0.5f,  0.5f, -0.5f}, {1.0f, 0.0f}},
-
-		// right side face
-		{{  0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
-		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
-		{{  0.5f, -0.5f,  0.5f}, {1.0f, 1.0f}},
-		{{  0.5f,  0.5f, -0.5f}, {0.0f, 0.0f}},
-
-		// left side face
-		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 0.0f}},
-		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
-		{{ -0.5f, -0.5f,  0.5f}, {0.0f, 1.0f}},
-		{{ -0.5f,  0.5f, -0.5f}, {1.0f, 0.0f}},
-
-		// back face
-		{{  0.5f,  0.5f,  0.5f}, {0.0f, 0.0f}},
-		{{ -0.5f, -0.5f,  0.5f}, {1.0f, 1.0f}},
-		{{  0.5f, -0.5f,  0.5f}, {0.0f, 1.0f}},
-		{{ -0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
-
-		// top face
-		{{ -0.5f,  0.5f, -0.5f}, {0.0f, 1.0f}},
-		{{  0.5f,  0.5f,  0.5f}, {1.0f, 0.0f}},
-		{{  0.5f,  0.5f, -0.5f}, {1.0f, 1.0f}},
-		{{ -0.5f,  0.5f,  0.5f}, {0.0f, 0.0f}},
-
-		// bottom face
-		{{  0.5f, -0.5f,  0.5f}, {0.0f, 0.0f}},
-		{{ -0.5f, -0.5f, -0.5f}, {1.0f, 1.0f}},
-		{{  0.5f, -0.5f, -0.5f}, {0.0f, 1.0f}},
-		{{ -0.5f, -0.5f,  0.5f}, {1.0f, 0.0f}},
-	};
-
-	uint32_t vertexBufferCount = sizeof(vertexList) / sizeof(TempVertex);
-	
-	m_CubeVertexBuffer = new DX12VertexBuffer();
-	res = m_CubeVertexBuffer->Create(*this, reinterpret_cast<void*>(vertexList), sizeof(TempVertex), vertexBufferCount);
-	if (!res)
-	{
-		printf("[GFX]: Failed to create Vertex Buffer!");
-		return false;
-	}
-
-	uint32_t indexList[] =
-	{
-		0, 1, 2,
-		0, 3, 1,
-
-		// left face
-		4, 5, 6,
-		4, 7, 5,
-
-		// right face
-		8, 9, 10,
-		8, 11, 9,
-
-		// back face
-		12, 13, 14,
-		12, 15, 13,
-
-		// top face
-		16, 17, 18,
-		16, 19, 17,
-
-		// bottom face
-		20, 21, 22,
-		20, 23, 21,
-	};
-	
-	uint32_t indexBufferSize = sizeof(indexList);
-
-	m_NumOfCubeIndices = indexBufferSize / (sizeof(uint32_t));
-
-	m_CubeIndexBuffer = new DX12IndexBuffer();
-	res = m_CubeIndexBuffer->Create(*this, reinterpret_cast<uint8_t*>(indexList), m_NumOfCubeIndices, sizeof(uint32_t));
-	if (!res)
-	{
-		printf("[GFX]: Failed to create Index Buffer!");
-		return false;
-	}
-
 	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
 	dsvDesc.NumDescriptors = 1;
 	dsvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
@@ -450,12 +364,6 @@ bool Graphics::Initialize()
 	}
 	
 	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-
-	m_ConstantBufferCube1 = new RootConstantBuffer<ConstantBufferPerObject>();
-	m_ConstantBufferCube1->Create(*this);
-
-	m_ConstantBufferCube2 = new RootConstantBuffer<ConstantBufferPerObject>();
-	m_ConstantBufferCube2->Create(*this);
 
 	//Creating a debug texture
 	{
@@ -528,28 +436,6 @@ bool Graphics::Initialize()
 	//	m_Device->CreateShaderResourceView(m_DebugTexture, &srvDescriptorDesc, cpuHandle);
 	//}
 
-	m_Texture = new DX12Texture();
-	res = m_Texture->Create(*this, "Assets/Textures/zoomStan.jpg", 0);
-	if (!res)
-	{
-		printf("[GFX]: Failed to create Texture!");
-		return false;
-	}
-
-	m_Cube1Pos = DirectX::XMFLOAT4(0.0f, 0.0f, -8.0f, 0.0f);
-	DirectX::XMVECTOR posVec = DirectX::XMLoadFloat4(&m_Cube1Pos);
-
-	DirectX::XMMATRIX tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
-	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, DirectX::XMMatrixIdentity());
-	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, tempMatrix);
-
-	m_Cube2PosOffset = DirectX::XMFLOAT4(1.5f, 0.0f, 0.0f, 0.0f);
-	posVec = DirectX::XMVectorAdd(DirectX::XMLoadFloat4(&m_Cube1Pos), DirectX::XMLoadFloat4(&m_Cube2PosOffset));
-
-	tempMatrix = DirectX::XMMatrixTranslationFromVector(posVec);
-	DirectX::XMStoreFloat4x4(&m_Cube2RotationMatrix, DirectX::XMMatrixIdentity());
-	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, tempMatrix);
-
 	m_Viewport.TopLeftX = 0;
 	m_Viewport.TopLeftY = 0;
 	m_Viewport.Width = WINDOW_WIDTH; // Check window size
@@ -562,43 +448,52 @@ bool Graphics::Initialize()
 	m_ScissorRect.right = WINDOW_WIDTH;
 	m_ScissorRect.bottom = WINDOW_HEIGHT;
 
-	//Init ImGui
+	m_Camera = new Camera();
+
+	res = InitImGui();
+	if (!res)
 	{
-		ImGui_ImplDX12_InitInfo imguiInitInfo;
-		imguiInitInfo.Device = m_Device;
-		imguiInitInfo.CommandQueue = m_CommandQueue;
-		imguiInitInfo.NumFramesInFlight = FRAME_BUFFER_COUNT;
-		imguiInitInfo.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
-		imguiInitInfo.DSVFormat = DXGI_FORMAT_D32_FLOAT;
-
-		imguiInitInfo.UserData = reinterpret_cast<void*>(&m_MainDescriptorFreeList);
-		imguiInitInfo.SrvDescriptorHeap = m_MainDescriptorFreeList.GetHeap(); //Note(Stan): Create a SRV descriptor heap for ImGui
-
-		imguiInitInfo.SrvDescriptorAllocFn =
-			[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle)
-			{
-				DescriptorFreeList* descriptorFreeList = reinterpret_cast<DescriptorFreeList*>(info->UserData);
-				descriptorFreeList->Alloc(a_CPUHandle, a_GPUHandle);
-			};
-
-		imguiInitInfo.SrvDescriptorFreeFn =
-			[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE a_GPUHandle)
-			{
-				reinterpret_cast<DescriptorFreeList*>(info->UserData)->Free(a_CPUHandle, a_GPUHandle);
-			};
-
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-		io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-		ImGui::StyleColorsDark();
-
-		ImGui_ImplWin32_Init(m_HWindow);
-		ImGui_ImplDX12_Init(&imguiInitInfo);
+		printf("[GFX]: Failed to initialize ImGui!");
+		return false;
 	}
 
-	m_Camera = new Camera();
+	return true;
+}
+
+bool Graphics::InitImGui()
+{
+	ImGui_ImplDX12_InitInfo imguiInitInfo;
+	imguiInitInfo.Device = m_Device;
+	imguiInitInfo.CommandQueue = m_CommandQueue;
+	imguiInitInfo.NumFramesInFlight = FRAME_BUFFER_COUNT;
+	imguiInitInfo.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	imguiInitInfo.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+
+	imguiInitInfo.UserData = reinterpret_cast<void*>(&m_MainDescriptorFreeList);
+	imguiInitInfo.SrvDescriptorHeap = m_MainDescriptorFreeList.GetHeap(); //Note(Stan): Create a SRV descriptor heap for ImGui
+
+	imguiInitInfo.SrvDescriptorAllocFn =
+		[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle)
+		{
+			DescriptorFreeList* descriptorFreeList = reinterpret_cast<DescriptorFreeList*>(info->UserData);
+			descriptorFreeList->Alloc(a_CPUHandle, a_GPUHandle);
+		};
+
+	imguiInitInfo.SrvDescriptorFreeFn =
+		[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE a_GPUHandle)
+		{
+			reinterpret_cast<DescriptorFreeList*>(info->UserData)->Free(a_CPUHandle, a_GPUHandle);
+		};
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplWin32_Init(m_HWindow);
+	ImGui_ImplDX12_Init(&imguiInitInfo);
 
 	return true;
 }
@@ -680,45 +575,7 @@ bool Graphics::CloseInit()
 
 void Graphics::Update()
 {
-	DirectX::XMMATRIX rotMatX = DirectX::XMMatrixRotationX(0.0001f);
-	DirectX::XMMATRIX rotMatY = DirectX::XMMatrixRotationY(0.0002f);
-	DirectX::XMMATRIX rotMatZ = DirectX::XMMatrixRotationZ(0.0003f);
-
-	DirectX::XMMATRIX rotMat = DirectX::XMLoadFloat4x4(&m_Cube1RotationMatrix) * rotMatX * rotMatY * rotMatZ;
-	DirectX::XMStoreFloat4x4(&m_Cube1RotationMatrix, rotMat);
-
-	DirectX::XMMATRIX translationMatrix = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube1Pos));
-	DirectX::XMMATRIX worldMatrix = rotMat * translationMatrix;
-
-	DirectX::XMStoreFloat4x4(&m_Cube1WorldMatrix, worldMatrix);
-
-	DirectX::XMMATRIX wvpMat = XMLoadFloat4x4(&m_Cube1WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
-	DirectX::XMMATRIX transposed = DirectX::XMMatrixTranspose(wvpMat);
-	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube1->GetConstantBuffer()->WVPMatrix, transposed);
-	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube1->GetConstantBuffer()->Transform, DirectX::XMMatrixIdentity());
-
-	m_ConstantBufferCube1->Update(*this);
-
-	rotMatX = DirectX::XMMatrixRotationX(0.0003f);
-	rotMatY = DirectX::XMMatrixRotationY(0.0002f);
-	rotMatZ = DirectX::XMMatrixRotationZ(0.0001f);
-
-	rotMat = rotMatZ * DirectX::XMLoadFloat4x4(&m_Cube2RotationMatrix) * (rotMatX * rotMatY);
-	DirectX::XMStoreFloat4x4(&m_Cube2RotationMatrix, rotMat);
-
-	DirectX::XMMATRIX translationOffsetMat = DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat4(&m_Cube2PosOffset));
-	DirectX::XMMATRIX scaleMat = DirectX::XMMatrixScaling(0.5f, 0.5f, 0.5f);
-
-	worldMatrix = scaleMat * translationOffsetMat * rotMat * translationMatrix;
-
-	wvpMat = XMLoadFloat4x4(&m_Cube2WorldMatrix) * m_Camera->GetViewMatrix() * m_Camera->GetProjection();
-	transposed = DirectX::XMMatrixTranspose(wvpMat);
-	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube2->GetConstantBuffer()->WVPMatrix, transposed);
-	DirectX::XMStoreFloat4x4(&m_ConstantBufferCube2->GetConstantBuffer()->Transform, DirectX::XMMatrixIdentity());
-
-	m_ConstantBufferCube2->Update(*this);
-
-	DirectX::XMStoreFloat4x4(&m_Cube2WorldMatrix, worldMatrix);
+	//Note(Stan): Currently not updating anything
 }
 
 void Graphics::StartFrame()
@@ -772,17 +629,6 @@ void Graphics::Render()
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
 	m_CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	m_Texture->Bind(*this);
-
-	m_CubeVertexBuffer->Bind(*this);
-	m_CubeIndexBuffer->Bind(*this);
-
-	m_ConstantBufferCube1->Bind(*this);
-	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
-
-	m_ConstantBufferCube2->Bind(*this);
-	m_CommandList->DrawIndexedInstanced(m_NumOfCubeIndices, 1, 0, 0, 0);
 }
 
 void Graphics::SetSwapBuffer()
