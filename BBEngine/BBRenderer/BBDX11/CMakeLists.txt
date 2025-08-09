@@ -11,14 +11,10 @@ add_library (BBRenderer_DX11 STATIC
 "Source/Bindable/PixelShader.cpp"
 "Source/Bindable/VertexShader.cpp"
 "Source/Bindable/DX11InputLayout.cpp"
-"../../BBEngine/Source/GameLib/Drawable/DrawToTexture.cpp"
-"../../BBEngine/Source/GameLib/Drawable/Box.cpp"
 
 "Source/Bindable/DX11Texture.cpp"
 "Source/Bindable/DX11Sampler.cpp"
 "Source/Bindable/CubeMap.cpp"
-
-"../../BBEngine/Source/GameLib/Drawable/Quad.cpp"
 )
 
 target_compile_definitions(BBRenderer_DX11 PUBLIC BBDX11)

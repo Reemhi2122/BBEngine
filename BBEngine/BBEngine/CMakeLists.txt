@@ -51,6 +51,9 @@ add_library (BBEngine
 
 "Source/GameLib/Drawable/Model.cpp"
 "Source/GameLib/Drawable/Drawable.cpp"
+"Source/GameLib/Drawable/Skybox.cpp"
+"Source/GameLib/Drawable/DrawToTexture.cpp"
+"Source/GameLib/Drawable/Quad.cpp"
 
 "Source/GameLib/TransformBuf.cpp"
 "Source/GameLib/Transform.cpp")

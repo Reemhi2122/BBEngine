@@ -1,8 +1,5 @@
 #pragma once
 #include "SharedRenderTypes.h"
-//#include "Bindable/BindableInclude.h"
-//#include "Drawable/DrawableBase.h"
-
 #include "GameLib/TransformBuf.h"
 
 #include "Bindable/IIndexBuffer.h"
