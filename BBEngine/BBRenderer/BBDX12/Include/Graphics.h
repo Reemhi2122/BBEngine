@@ -100,6 +100,9 @@ public:
 
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
+protected:
+	bool CreatePipelineStateObject();
+
 private:
 	HWND						m_HWindow;
 	Camera*						m_Camera;

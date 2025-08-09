@@ -464,35 +464,32 @@ namespace BBE
         Camera* cam = m_Graphics.GetCamera();
         Keyboard& kBoard = m_Window.m_Keyboard;
 
-        //float stepSizeCamera = 0.00025f;
-        //float stepSizeMovement = 0.001f;
-
-        float stepSizeCamera = 0.025f;
-        float stepSizeMovement = 0.1f;
+        float stepSizeCamera = 0.01f;
+        float stepSizeMovement = 0.05f;
 
         if (kBoard.KeyIsPressed('W'))
         {
-            cam->camForwardMove += stepSizeCamera;
+            cam->camForwardMove += stepSizeMovement;
         }
         if (kBoard.KeyIsPressed('S'))
         {
-            cam->camForwardMove += -stepSizeCamera;
+            cam->camForwardMove += -stepSizeMovement;
         }
         if (kBoard.KeyIsPressed('A'))
         {
-            cam->camRightMove += -stepSizeCamera;
+            cam->camRightMove += -stepSizeMovement;
         }
         if (kBoard.KeyIsPressed('D'))
         {
-            cam->camRightMove += stepSizeCamera;
+            cam->camRightMove += stepSizeMovement;
         }
         if (kBoard.KeyIsPressed(VK_NUMPAD1))
         {
-            cam->camUpMove = stepSizeCamera;
+            cam->camUpMove = stepSizeMovement;
         }
         if (kBoard.KeyIsPressed(VK_NUMPAD0))
         {
-            cam->camUpMove = -stepSizeCamera;
+            cam->camUpMove = -stepSizeMovement;
         }
         if (kBoard.KeyIsPressed(VK_LEFT))
         {
