@@ -46,6 +46,8 @@ bool DX11CubeMap::Create(IGraphics& a_Gfx)
 	image_rsv_desc.Texture2D.MipLevels = 1;
 
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_TextureCubeMap, &image_rsv_desc, &m_ShaderResourceView);
+
+	return true;
 }
 
 bool DX11CubeMap::Create(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution /*= 1024u*/, char* a_TexturePaths /*= nullptr*/)
@@ -98,6 +100,8 @@ bool DX11CubeMap::Create(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolu
 	image_rsv_desc.Texture2D.MipLevels = 1;
 
 	res = a_Gfx.GetDevice()->CreateShaderResourceView(m_TextureCubeMap, &image_rsv_desc, &m_ShaderResourceView);
+	
+	return true;
 }
 
 void DX11CubeMap::Bind(IGraphics& a_Gfx) noexcept

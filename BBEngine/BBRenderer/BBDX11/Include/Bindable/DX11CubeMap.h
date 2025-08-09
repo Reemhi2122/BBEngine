@@ -3,12 +3,6 @@
 
 #define CUBEMAP_SIZE 6
 
-enum class CubeMapType
-{
-	TEXTURE,
-	DEPTH
-};
-
 class DX11CubeMap : public ICubeMap
 {
 public:

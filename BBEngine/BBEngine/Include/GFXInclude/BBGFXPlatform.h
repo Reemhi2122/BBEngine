@@ -24,4 +24,9 @@ void* GFXCreateConstantBuffer()
 {
 	return nullptr;
 };
+
+void* GFXCreateCubeMap()
+{
+	return nullptr;
+};
 #endif

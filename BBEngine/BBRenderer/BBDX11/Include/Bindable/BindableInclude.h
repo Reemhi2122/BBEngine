@@ -4,6 +4,6 @@
 #include "Bindable/DX11ConstantBuffer.h"
 #include "Bindable/DX11Topology.h"
 #include "Bindable/DX11InputLayout.h"
-#include "Bindable/CubeMap.h"
+#include "Bindable/DX11CubeMap.h"
 #include "Bindable/Texture.h"
 #include "Bindable/DX11Sampler.h"

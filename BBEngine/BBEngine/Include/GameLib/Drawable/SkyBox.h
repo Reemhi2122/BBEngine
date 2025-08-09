@@ -5,7 +5,7 @@
 #include "Bindable/IVertexBuffer.h"
 #include "Bindable/IIndexBuffer.h"
 #include "GameLib/TransformBuf.h"
-//#include "Bindable/CubeMap.h"
+#include "Bindable/ICubeMap.h"
 
 class Skybox : public Drawable
 {
@@ -23,6 +23,6 @@ private:
 	//InputLayout*	m_InputLayout;
 	//Topology*		m_Topology;
 	TransformBuf*	m_TransformBuf;
-	//CubeMap*		m_CubeMap;
+	ICubeMap*		m_CubeMap;
 	//Sampler*		m_Sampler;
 };

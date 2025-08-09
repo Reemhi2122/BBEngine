@@ -24,3 +24,8 @@ static RootConstantBuffer<T>* GFXCreateConstantBuffer()
 {
 	return new RootConstantBuffer<T>();
 };
+
+static void* GFXCreateCubeMap()
+{
+	return nullptr;
+};

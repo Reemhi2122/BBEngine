@@ -14,7 +14,7 @@
 #include "FileLoaders/Models/GLTFParser.h"
 
 //Graphics includes
-//#include "Drawable/Skybox.h"
+#include "Gamelib/Drawable/Skybox.h"
 //#include "Drawable/DrawToTexture.h"
 #include "GameLib/Drawable/Model.h"
 //#include "Drawable/Quad.h"
@@ -109,7 +109,7 @@ namespace BBE {
 		Camera m_Cam1;
 		Camera m_Cam2;
 
-		//Skybox* m_Skybox;
+		Skybox* m_Skybox;
 
 		Allocators::ArenaAllocator m_ArenaAllocator;
 		Allocators::StackAllocator m_StackAllocator;

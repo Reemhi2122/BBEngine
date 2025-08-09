@@ -41,7 +41,9 @@ Skybox::Skybox(IGraphics& a_Gfx)
 		{ "Normal",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
-	//m_CubeMap = new CubeMap(a_Gfx);
+	m_CubeMap = GFXCreateCubeMap();
+	m_CubeMap->Create(a_Gfx);
+	AddBind(m_CubeMap);
 
 	//m_Sampler = new Sampler(a_Gfx);
 

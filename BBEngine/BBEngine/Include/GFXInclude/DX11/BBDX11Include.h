@@ -6,6 +6,7 @@
 #include "Bindable/DX11Sampler.h"
 #include "Bindable/DX11Texture.h"
 #include "Bindable/DX11Topology.h"
+#include "Bindable/DX11CubeMap.h"
 
 static DX11Texture* GFXCreateTexture()
 {
@@ -26,4 +27,9 @@ template<typename T>
 static VertexConstantBuffer<T>* GFXCreateConstantBuffer()
 {
 	return new VertexConstantBuffer<T>();
+};
+
+static DX11CubeMap* GFXCreateCubeMap()
+{
+	return new DX11CubeMap();
 };
