@@ -94,8 +94,7 @@ namespace BBE
         //parser.Parse("Assets/Models/GlassVaseFlowers/glTF/", "GlassVaseFlowers.gltf", &m_GlassVase);
 
         BBE:UI::InitializeUI(m_Graphics, &m_RootObjects);
-
-        //m_Window.m_Keyboard.EnableAutorepeat();
+        m_Window.m_Keyboard.EnableAutorepeat();
 
         //m_DirectionalLight = DirectionalLight(
         //    Vector3(0.0f, -1.0f, 0.0f),
@@ -222,7 +221,7 @@ namespace BBE
         m_Cam2.SetViewPort(1600, 900);
 
         float fov = 45.0f * (3.14f / 180.f);
-        float aspectRatio = WINDOW_WIDTH / WINDOW_HEIGHT;
+        float aspectRatio = (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT;
         m_Cam1.SetProjection(DirectX::XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.1f, 10000.0f));
 
         m_Cam2.SetPosition(DirectX::XMVectorSet(0, 0, 0, 0));

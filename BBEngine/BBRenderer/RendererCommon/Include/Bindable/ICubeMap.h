@@ -1,5 +1,6 @@
 #pragma once
 #include "Bindable.h"
+#define CUBEMAP_SIZE 6
 
 enum class CubeMapType
 {

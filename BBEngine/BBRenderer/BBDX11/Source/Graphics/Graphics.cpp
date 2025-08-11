@@ -274,33 +274,41 @@ Microsoft::WRL::ComPtr<ID3DBlob> Graphics::GetVertexShaderByteCode(BBHandle a_Sh
 
 bool Graphics::CreateAllGraphicsContext()
 {
-	GraphicsContext* context = &m_AllRenderContext[0];
-	context->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/DefaultVS.hlsl");
-	context->PixelShader = CreateShader(ShaderType::PixelShader, "Assets/DefaultPS.hlsl");
+	GraphicsContext* curContext = nullptr;
+
+	//////////////////////
+	// **** PSO 01 **** //
+	//////////////////////
+	curContext = &m_AllRenderContext[0];
+	curContext->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/DefaultVS.hlsl");
+	curContext->PixelShader = CreateShader(ShaderType::PixelShader, "Assets/DefaultPS.hlsl");
 	
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA , 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA , 0},
 		{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	context->Layout = new DX11InputLayout(*this, ied, GetVertexShaderByteCode(context->VertexShader).Get());
-	context->Topology = new DX11Topology(*this, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	context->Sampler = new DX11Sampler(*this);
-	m_RenderContextMap["main"] = context;
+	curContext->Layout = new DX11InputLayout(*this, ied, GetVertexShaderByteCode(curContext->VertexShader).Get());
+	curContext->Topology = new DX11Topology(*this, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	curContext->Sampler = new DX11Sampler(*this);
+	m_RenderContextMap["main"] = curContext;
 
-	context = &m_AllRenderContext[1];
-	context->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/VSCubeMap.hlsl");
-	context->PixelShader = CreateShader(ShaderType::PixelShader, "Assets/PSCubeMap.hlsl");
+	//////////////////////
+	// **** PSO 02 **** //
+	//////////////////////
+	curContext = &m_AllRenderContext[1];
+	curContext->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/VSCubeMap.hlsl");
+	curContext->PixelShader = CreateShader(ShaderType::PixelShader, "Assets/PSCubeMap.hlsl");
 
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied2 = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA , 0},
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA , 0},
 		{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
-	context->Layout = new DX11InputLayout(*this, ied2, GetVertexShaderByteCode(context->VertexShader).Get());
-	context->Topology = new DX11Topology(*this, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	context->Sampler = new DX11Sampler(*this);
-	m_RenderContextMap["cubeMap"] = context;
+	curContext->Layout = new DX11InputLayout(*this, ied2, GetVertexShaderByteCode(curContext->VertexShader).Get());
+	curContext->Topology = new DX11Topology(*this, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	curContext->Sampler = new DX11Sampler(*this);
+	m_RenderContextMap["cubeMap"] = curContext;
 	return true;
 }
 

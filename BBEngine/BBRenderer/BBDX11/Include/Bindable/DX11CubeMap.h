@@ -1,8 +1,6 @@
 #pragma once
 #include "Bindable/ICubeMap.h"
 
-#define CUBEMAP_SIZE 6
-
 class DX11CubeMap : public ICubeMap
 {
 public:
