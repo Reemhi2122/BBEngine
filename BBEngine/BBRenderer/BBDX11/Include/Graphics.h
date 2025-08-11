@@ -15,7 +15,9 @@
 
 #include "IGraphics.h"
 
+//Note(Stan): Switch these out with custom containers
 #include <vector>
+#include <unordered_map>
 
 constexpr uint16_t WINDOW_WIDTH = 1600;
 constexpr uint16_t WINDOW_HEIGHT = 900;
@@ -38,6 +40,29 @@ struct PixelShader
 {
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>	m_Shader;
 	std::string									m_Path;
+};
+
+class DX11InputLayout;
+class DX11Sampler;
+class DX11Topology;
+
+struct GraphicsContext
+{
+	BBHandle VertexShader;
+	BBHandle PixelShader;
+	DX11InputLayout* Layout;
+	DX11Sampler* Sampler;
+	DX11Topology* Topology;
+
+	~GraphicsContext()
+	{
+		delete Layout;
+		Layout = nullptr;
+		delete Sampler;
+		Sampler = nullptr;
+		delete Topology;
+		Topology = nullptr;
+	}
 };
 
 class Graphics : public IGraphics {
@@ -106,6 +131,13 @@ public:
 	void BindShader(ShaderType a_Type, BBHandle a_Shader);
 	void ReloadShader(ShaderType a_Type, BBHandle a_Shader);
 	
+	//Note(Stan): Testing out context switching (PSO for DX12)
+	//Note(Stan): Switch these out with custom containers
+	GraphicsContext m_AllRenderContext[5];
+	std::unordered_map<std::string, GraphicsContext*> m_RenderContextMap;
+	bool CreateAllGraphicsContext();
+	bool SetGraphicsContext(const char* a_Context);
+
 	VertexShader* GetVertexShaderArray() noexcept { return (VertexShader*)m_VertexShaders; }
 	PixelShader* GetPixelShaderArray() noexcept { return (PixelShader*)m_PixelShaders; }
 

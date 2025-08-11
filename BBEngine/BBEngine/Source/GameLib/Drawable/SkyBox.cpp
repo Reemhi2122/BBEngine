@@ -20,10 +20,6 @@ Skybox::Skybox(IGraphics& a_Gfx)
 	vBuffer->Create(a_Gfx, vertices, sizeof(BBE::Vertex), 8);
 	AddBind(vBuffer);
 
-	Graphics* gfx = reinterpret_cast<Graphics*>(&a_Gfx);
-	vShader = gfx->CreateShader(ShaderType::VertexShader, "Assets/VSCubeMap.hlsl");
-	pShader = gfx->CreateShader(ShaderType::PixelShader, "Assets/PSCubeMap.hlsl");
-
 	uint16_t indices[] = {
 		1,2,0, 1,3,2,
 		5,3,1, 5,7,3,
@@ -38,21 +34,9 @@ Skybox::Skybox(IGraphics& a_Gfx)
 	AddBind(IBuffer);
 	SetIndexBuffer(IBuffer);
 	
-	//const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
-	//	{ "Position",	0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "TexCoord",	0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//	{ "Normal",		0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	//};
-
 	m_CubeMap = GFXCreateCubeMap();
 	m_CubeMap->Create(a_Gfx);
 	AddBind(m_CubeMap);
-
-	//m_Sampler = new Sampler(a_Gfx);
-
-	//m_InputLayout = new InputLayout(a_Gfx, ied, a_Gfx.GetVertexShaderByteCode(vShader).Get());
-
-	//m_Topology = new Topology(a_Gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	m_TransformBuf = new TransformBuf(a_Gfx, Vector3(0, 0, 0), Vector4(0, 0, 0, 1), Vector3(2, 2, 2));
 	AddBind(m_TransformBuf);
@@ -63,8 +47,7 @@ void Skybox::Update(float a_DeltaTime) noexcept {};
 void Skybox::Draw(IGraphics& a_Gfx) noexcept
 {
 	Graphics* gfx = reinterpret_cast<Graphics*>(&a_Gfx);
-	gfx->BindShader(ShaderType::VertexShader, vShader);
-	gfx->BindShader(ShaderType::PixelShader, pShader);
-
+	gfx->SetGraphicsContext("cubeMap");
 	Drawable::Draw(a_Gfx);
+	gfx->SetGraphicsContext("main");
 }

@@ -14,11 +14,6 @@
 //#include "GameLib/Components/LightComponents/PointLightComponent.h"
 //#include "GameLib/Components/LightComponents/SpotLightComponent.h"
 
-#ifdef BBDX11
-#include "Bindable/DX11InputLayout.h"
-#include "Bindable/DX11Topology.h"
-#endif
-
 #include <chrono>
 #include <iostream>
 #include <cstdint>
@@ -149,23 +144,7 @@ namespace BBE
         //m_LightMatrix = VertexConstantBuffer<vcbPerFrame>(m_Graphics, 1, 1);
         //m_LightMatrix.Bind(m_Graphics);
 
-
-#ifdef BBDX11
-        m_BaseVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/DefaultVS.hlsl");
-        m_BasePixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/DefaultPS.hlsl");
-
-        const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
-            {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA , 0},
-            {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA , 0},
-            { "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        };
-
-        m_InputLayout = new DX11InputLayout(m_Graphics, ied, m_Graphics.GetVertexShaderByteCode(m_BaseVertexShader).Get());
-        m_InputLayout->Bind(m_Graphics);
-
-        m_Topology = new DX11Topology(m_Graphics, D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        m_Topology->Bind(m_Graphics);
-#endif
+        m_Graphics.SetGraphicsContext("main");
 
         //m_VertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
         //m_PixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
@@ -298,10 +277,10 @@ namespace BBE
     //    m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
-#ifdef BBDX11
-            m_Graphics.BindShader(ShaderType::VertexShader, m_BaseVertexShader);
-            m_Graphics.BindShader(ShaderType::PixelShader, m_BasePixelShader);
-#endif
+//#ifdef BBDX11
+//            m_Graphics.BindShader(ShaderType::VertexShader, m_BaseVertexShader);
+//            m_Graphics.BindShader(ShaderType::PixelShader, m_BasePixelShader);
+//#endif
             m_GameObjects[i]->Draw(m_Graphics);
         }
 
