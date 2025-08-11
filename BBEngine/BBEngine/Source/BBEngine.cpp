@@ -191,7 +191,7 @@ namespace BBE
         m_Models.push_back(aBeautifulGame);
 
         //Skybox
-        //m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
+        m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
 
         ////Objects
         int XSize = 2, YSize = 2;
@@ -269,7 +269,7 @@ namespace BBE
         m_Graphics.SetGameViewRenderTarget();
 #endif
 
-        //m_Skybox->Draw(m_Graphics);
+        m_Skybox->Draw(m_Graphics);
 
     //    cbPerFrame FrameConstantBuffer;
     //    FrameConstantBuffer.directionalLight = m_DirectionalLight;

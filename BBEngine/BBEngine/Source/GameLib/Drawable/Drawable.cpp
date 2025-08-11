@@ -2,9 +2,9 @@
 
 void Drawable::Draw(IGraphics& a_Gfx) noexcept
 {
-	//for (size_t i = 0; i < m_Binds.size(); i++) {
-	//	m_Binds[i]->Bind(a_Gfx);
-	//}
+	for (size_t i = 0; i < m_Binds.size(); i++) {
+		m_Binds[i]->Bind(a_Gfx);
+	}
 	//for (size_t i = 0; i < GetStaticBinds().size(); i++) {
 	//	GetStaticBinds()[i]->Bind(a_Gfx);
 	//}
@@ -25,8 +25,8 @@ void Drawable::DrawInstanced(IGraphics& a_Gfx, uint32_t a_InstanceCount) noexcep
 
 void Drawable::AddBind(Bindable* a_Bind) noexcept
 {
-	//assert(typeid(*a_Bind) != typeid(IndexBuffer) && "*Must* use AddIndexBuffer to bind index buffer!");
-	//m_Binds.push_back(a_Bind);
+	//assert(typeid(*a_Bind) != typeid(m_IndexBuffer) && "*Must* use AddIndexBuffer to bind index buffer!");
+	m_Binds.push_back(a_Bind);
 }
 
 //void Drawable::AddIndexBuffer(IndexBuffer* a_Buf) noexcept

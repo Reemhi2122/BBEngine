@@ -1,7 +1,7 @@
 cbuffer CBuf : register(b0)
 {
-    matrix WVP;
-    matrix transform;
+    matrix ViewProjectionMatrix;
+    matrix WorldMatrix;
 };
 
 struct VSOut
@@ -14,11 +14,13 @@ VSOut main(float3 pos : Position)
 {
     VSOut output;
     
-    matrix MVP = mul(transform, WVP);
-    output.pos = mul(float4(pos, 1.0f), MVP);
+    matrix WVP = mul(WorldMatrix, ViewProjectionMatrix);
+    
+    //Note(Stan): Used to debug
+    //output.pos = mul(float4(pos, 1.0f), WVP);
 
     output.worldPos = pos;
-    // output.pos = mul(float4(pos, 0.0f), WVP);
-    // output.pos.z = output.pos.w;
+    output.pos = mul(float4(pos, 0.0f), WVP);
+    output.pos.z = output.pos.w;
     return output;
 }
