@@ -1,6 +1,5 @@
 #include "Bindable/DX12CubeMap.h"
 
-#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 bool DX12CubeMap::Create(IGraphics& a_Gfx)
@@ -90,4 +89,14 @@ bool DX12CubeMap::Create(IGraphics& a_Gfx)
 	gfx->GetDevice()->CreateShaderResourceView(m_TextureBuffer, &srvDescriptorDesc, m_DescriptorInfo->cpuDescHandle);
 
 	return false;
+}
+
+bool DX12CubeMap::Create(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolution, char* a_TexturePaths)
+{
+	return false;
+}
+
+void DX12CubeMap::Bind(IGraphics& a_Gfx) noexcept
+{
+	a_Gfx.GetCommandList()->SetGraphicsRootDescriptorTable(1, m_DescriptorInfo->gpuDescHandle);
 }

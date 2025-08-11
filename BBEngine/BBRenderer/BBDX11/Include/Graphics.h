@@ -135,8 +135,8 @@ public:
 	//Note(Stan): Switch these out with custom containers
 	GraphicsContext m_AllRenderContext[5];
 	std::unordered_map<std::string, GraphicsContext*> m_RenderContextMap;
-	bool CreateAllGraphicsContext();
-	bool SetGraphicsContext(const char* a_Context);
+	bool CreateAllGraphicsContext() override;
+	bool SetGraphicsContext(const char* a_Context) override;
 
 	VertexShader* GetVertexShaderArray() noexcept { return (VertexShader*)m_VertexShaders; }
 	PixelShader* GetPixelShaderArray() noexcept { return (PixelShader*)m_PixelShaders; }

@@ -16,6 +16,7 @@
 #include "Vector4.h"
 #include "Matrix4x4.h"
 #include <queue>
+#include <unordered_map>
 
 #include "Camera.h"
 #include "IGraphics.h"
@@ -94,9 +95,10 @@ public:
 
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
-protected:
-	bool CreatePipelineStateObject();
+	bool CreateAllGraphicsContext() override;
+	bool SetGraphicsContext(const char* a_Context) override;
 
+protected:
 	bool InitImGui();
 
 private:
@@ -120,6 +122,8 @@ private:
 	//ID3D12PipelineState*		m_DefaultPipelineState;
 
 	ID3D12PipelineState*		m_PSOArray[10];
+	ID3D12PipelineState*		m_CurPSO;
+	std::unordered_map<std::string, ID3D12PipelineState*> m_RenderContextMap;
 	uint32_t					m_PSOIndex = 0;
 
 	ID3D12RootSignature*		m_RootSignature;
@@ -144,6 +148,13 @@ private:
 
 	ID3DBlob*	m_PixelShader;
 	D3D12_SHADER_BYTECODE m_PixelShaderByteCode;
+
+	//Note(Stan) Temporary testing second set of shaders
+	ID3DBlob* m_CubeMapVertexShader;
+	D3D12_SHADER_BYTECODE m_CubeMapVertexShaderByteCode;
+
+	ID3DBlob* m_CubeMapPixelShader;
+	D3D12_SHADER_BYTECODE m_CubeMapPixelShaderByteCode;
 
 	//Fence values
 	ID3D12Fence*	m_Fence[FRAME_BUFFER_COUNT];

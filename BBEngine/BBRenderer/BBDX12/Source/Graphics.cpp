@@ -324,7 +324,39 @@ bool Graphics::Initialize()
 	m_PixelShaderByteCode.BytecodeLength = m_PixelShader->GetBufferSize();
 	m_PixelShaderByteCode.pShaderBytecode = m_PixelShader->GetBufferPointer();
 
-	CreatePipelineStateObject();
+	// TEMP SET SECOND SHADER //
+	hres = D3DCompileFromFile(
+		L"Assets/VSCubeMap.hlsl", nullptr, nullptr,
+		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0, &m_CubeMapVertexShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	//Set the Vertex Shader Byte Code
+	m_CubeMapVertexShaderByteCode = {};
+	m_CubeMapVertexShaderByteCode.BytecodeLength = m_CubeMapVertexShader->GetBufferSize();
+	m_CubeMapVertexShaderByteCode.pShaderBytecode = m_CubeMapVertexShader->GetBufferPointer();
+
+	//Compile the Pixel Shader
+	hres = D3DCompileFromFile(
+		L"Assets/PSCubeMap.hlsl", nullptr, nullptr,
+		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0, &m_CubeMapPixelShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	m_CubeMapPixelShaderByteCode = {};
+	m_CubeMapPixelShaderByteCode.BytecodeLength = m_PixelShader->GetBufferSize();
+	m_CubeMapPixelShaderByteCode.pShaderBytecode = m_PixelShader->GetBufferPointer();
+	// END SET OF TEMP SHADER //
+
+	CreateAllGraphicsContext();
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
 	dsvDesc.NumDescriptors = 1;
@@ -498,7 +530,7 @@ bool Graphics::InitImGui()
 	return true;
 }
 
-bool Graphics::CreatePipelineStateObject()
+bool Graphics::CreateAllGraphicsContext()
 {
 	HRESULT hres = 0;
 
@@ -554,6 +586,7 @@ bool Graphics::CreatePipelineStateObject()
 		printf("[GFX]: Failed to create the Graphics Pipeline Object");
 		return false;
 	}
+	m_RenderContextMap["main"] = m_PSOArray[0];
 
 	//////////////////////
 	// **** PSO 02 **** //
@@ -590,8 +623,8 @@ bool Graphics::CreatePipelineStateObject()
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO2Desc = {};
 	PSO2Desc.InputLayout = PSO2InputLayoutDescs;
 	PSO2Desc.pRootSignature = m_RootSignature;
-	PSO2Desc.VS = m_VertexShaderByteCode;
-	PSO2Desc.PS = m_PixelShaderByteCode;
+	PSO2Desc.VS = m_CubeMapVertexShaderByteCode;
+	PSO2Desc.PS = m_CubeMapPixelShaderByteCode;
 	PSO2Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	PSO2Desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	PSO2Desc.SampleDesc = PSO2sampleDesc;
@@ -607,7 +640,14 @@ bool Graphics::CreatePipelineStateObject()
 		printf("[GFX]: Failed to create the Graphics Pipeline Object");
 		return false;
 	}
+	m_RenderContextMap["cubeMap"] = m_PSOArray[0];
 
+	return true;
+}
+
+bool Graphics::SetGraphicsContext(const char* a_Context)
+{
+	m_CurPSO = m_RenderContextMap[a_Context];
 	return true;
 }
 

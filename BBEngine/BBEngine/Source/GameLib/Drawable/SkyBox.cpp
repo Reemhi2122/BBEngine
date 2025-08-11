@@ -46,8 +46,7 @@ void Skybox::Update(float a_DeltaTime) noexcept {};
 
 void Skybox::Draw(IGraphics& a_Gfx) noexcept
 {
-	Graphics* gfx = reinterpret_cast<Graphics*>(&a_Gfx);
-	gfx->SetGraphicsContext("cubeMap");
+	a_Gfx.SetGraphicsContext("cubeMap");
 	Drawable::Draw(a_Gfx);
-	gfx->SetGraphicsContext("main");
+	a_Gfx.SetGraphicsContext("main");
 }
