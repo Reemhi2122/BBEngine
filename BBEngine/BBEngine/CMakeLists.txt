@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
-add_library (BBEngine 
+add_library (BBEngine_Base STATIC
 "Source/BBEngine.cpp"
 "Source/Timer/BBTimer.cpp"
 "Source/Logger/logger.cpp" 
@@ -61,18 +61,29 @@ add_library (BBEngine
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
 
 # TODO: Add tests and install targets if needed.
-target_link_libraries(BBEngine 
-BBRenderer_DX12
-#BBRenderer_DX11
+target_link_libraries(BBEngine_Base 
 BBMath
 ImGUI
 Common
 stb_image
 )
 
-target_include_directories(BBEngine PUBLIC
+target_include_directories(BBEngine_Base PUBLIC
 "Include/"
 )
+
+add_library(BBEngine_DX12 INTERFACE)
+target_link_libraries(BBEngine_DX12 INTERFACE
+BBEngine_Base
+BBRenderer_DX12
+)
+
+add_library(BBEngine_DX11 $<TARGET_OBJECTS:BBEngine_Base>)
+target_link_libraries(BBEngine_DX11 
+BBEngine_Base
+BBRenderer_DX11
+)
+
 
 #copy shaders when a change happened.
 #add_custom_target(game_copy_shaders ALL

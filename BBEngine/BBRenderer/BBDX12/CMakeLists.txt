@@ -17,7 +17,7 @@ target_include_directories(BBRenderer_DX12 PUBLIC
 "../Shader/"
 )
 
-target_link_libraries(BBRenderer_DX12 
+target_link_libraries(BBRenderer_DX12 PUBLIC
 ImGUI
 BBMath
 stb_image

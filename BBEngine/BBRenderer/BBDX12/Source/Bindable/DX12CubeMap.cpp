@@ -45,8 +45,8 @@ bool DX12CubeMap::Create(IGraphics& a_Gfx)
 	m_TextureBuffer->SetName(L"Texture Default Heap");
 
 	UINT64 textureUploadBufferSize = 0;
-	UINT64 rowSizeInBytes = 0;
-	a_Gfx.GetDevice()->GetCopyableFootprints(&textureDescription, 0, 1, 0, nullptr, nullptr, &rowSizeInBytes, &textureUploadBufferSize);
+	UINT64 rowSizeInBytes[6] = {};
+	a_Gfx.GetDevice()->GetCopyableFootprints(&textureDescription, 0, 6, 0, nullptr, nullptr, rowSizeInBytes, &textureUploadBufferSize);
 
 	hres = a_Gfx.GetDevice()->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
@@ -66,12 +66,12 @@ bool DX12CubeMap::Create(IGraphics& a_Gfx)
 	D3D12_SUBRESOURCE_DATA textureData[CUBEMAP_SIZE] = {};
 	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
 	{
-		textureData[i].pData = &images[i];
-		textureData[i].RowPitch = rowSizeInBytes;
-		textureData[i].SlicePitch = rowSizeInBytes * sizeY;
+		textureData[i].pData = images[i];
+		textureData[i].RowPitch = rowSizeInBytes[i];
+		textureData[i].SlicePitch = rowSizeInBytes[i] * sizeY;
 	}
 
-	UpdateSubresources(a_Gfx.GetCommandList(), m_TextureBuffer, m_TextureUploadBufferHeap, 0, 6, 1, textureData);
+	UpdateSubresources(a_Gfx.GetCommandList(), m_TextureBuffer, m_TextureUploadBufferHeap, 0, 0, 6, textureData);
 
 	a_Gfx.GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
@@ -83,9 +83,7 @@ bool DX12CubeMap::Create(IGraphics& a_Gfx)
 	srvDescriptorDesc.Format = textureDescription.Format;
 	srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
 	srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDescriptorDesc.TextureCube.MostDetailedMip = 0;
 	srvDescriptorDesc.TextureCube.MipLevels = textureDescription.MipLevels;
-	srvDescriptorDesc.TextureCube.ResourceMinLODClamp = 0.0f;
 
 	gfx->GetDevice()->CreateShaderResourceView(m_TextureBuffer, &srvDescriptorDesc, m_DescriptorInfo->cpuDescHandle);
 
