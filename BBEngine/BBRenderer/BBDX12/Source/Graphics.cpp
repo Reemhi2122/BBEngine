@@ -242,7 +242,7 @@ bool Graphics::Initialize()
 	rootCBVDescriptor.ShaderRegister = 0;
 	rootCBVDescriptor.RegisterSpace = 0;
 
-	D3D12_ROOT_PARAMETER rootParams[2];
+	D3D12_ROOT_PARAMETER rootParams[2] = {};
 	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	rootParams[0].Descriptor = rootCBVDescriptor;
 	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
@@ -352,8 +352,8 @@ bool Graphics::Initialize()
 	}
 
 	m_CubeMapPixelShaderByteCode = {};
-	m_CubeMapPixelShaderByteCode.BytecodeLength = m_PixelShader->GetBufferSize();
-	m_CubeMapPixelShaderByteCode.pShaderBytecode = m_PixelShader->GetBufferPointer();
+	m_CubeMapPixelShaderByteCode.BytecodeLength = m_CubeMapPixelShader->GetBufferSize();
+	m_CubeMapPixelShaderByteCode.pShaderBytecode = m_CubeMapPixelShader->GetBufferPointer();
 	// END SET OF TEMP SHADER //
 
 	CreateAllGraphicsContext();
@@ -640,7 +640,7 @@ bool Graphics::CreateAllGraphicsContext()
 		printf("[GFX]: Failed to create the Graphics Pipeline Object");
 		return false;
 	}
-	m_RenderContextMap["cubeMap"] = m_PSOArray[0];
+	m_RenderContextMap["cubeMap"] = m_PSOArray[1];
 
 	return true;
 }
@@ -822,15 +822,15 @@ void Graphics::ShutDown()
 		//SAFE_RELEASE(m_ConstantBufferUploadHeaps[i])
 	}
 
-	SAFE_RELEASE(m_PSOArray[0]);
-	SAFE_RELEASE(m_PSOArray[1]);
+	//SAFE_RELEASE(m_PSOArray[0]);
+	//SAFE_RELEASE(m_PSOArray[1]);
 
 	SAFE_RELEASE(m_RootSignature);
 	//SAFE_RELEASE(m_VertexBuffer);
 	//SAFE_RELEASE(m_IndexBuffer);
 
-	SAFE_RELEASE(m_DepthStenil);
-	SAFE_RELEASE(m_DSDescriptorHeap);
+	//SAFE_RELEASE(m_DepthStenil);
+	//SAFE_RELEASE(m_DSDescriptorHeap);
 }
 
 bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference& a_ConstBufferReference)

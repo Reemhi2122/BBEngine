@@ -71,10 +71,11 @@ bool DX12CubeMap::Create(IGraphics& a_Gfx)
 		textureData[i].SlicePitch = rowSizeInBytes * sizeY;
 	}
 
-	UpdateSubresources(a_Gfx.GetCommandList(), m_TextureBuffer, m_TextureUploadBufferHeap, 0, 0, 1, textureData);
+	UpdateSubresources(a_Gfx.GetCommandList(), m_TextureBuffer, m_TextureUploadBufferHeap, 0, 6, 1, textureData);
 
 	a_Gfx.GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
+	m_DescriptorInfo = new SRVDescriptorInfo();
 	Graphics* gfx = static_cast<Graphics*>(&a_Gfx);
 	gfx->GetMainDescriptorHeap()->Alloc(&m_DescriptorInfo->cpuDescHandle, &m_DescriptorInfo->gpuDescHandle);
 

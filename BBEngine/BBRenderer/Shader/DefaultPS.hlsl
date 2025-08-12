@@ -1,4 +1,3 @@
-
 Texture2D mainTex : register(t0);
 SamplerState texSampler : register(s0);
 
