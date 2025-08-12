@@ -4,9 +4,13 @@ bool DX12IndexBuffer::Create(IGraphics& a_Gfx, uint8_t* a_Indices, const uint32_
 {
 	HRESULT hres;
 
+	if (a_IndexDataSize < 2)
+	{
+		a_IndexDataSize = 2;
+	}
 	m_Count = a_Count;
 	uint32_t indexBufferSize = a_Count * a_IndexDataSize;
-
+	
 	hres = a_Gfx.GetDevice()->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE,

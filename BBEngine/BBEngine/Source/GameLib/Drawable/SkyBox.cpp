@@ -30,7 +30,7 @@ Skybox::Skybox(IGraphics& a_Gfx)
 	};
 
 	IBuffer = GFXCreateIndexBuffer();
-	IBuffer->Create(a_Gfx, (uint8_t*)indices, 36, 1);
+	IBuffer->Create(a_Gfx, (uint8_t*)indices, 36, sizeof(uint16_t));
 	AddBind(IBuffer);
 	SetIndexBuffer(IBuffer);
 	

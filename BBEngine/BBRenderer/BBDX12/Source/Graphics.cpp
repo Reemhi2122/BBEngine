@@ -619,6 +619,19 @@ bool Graphics::CreateAllGraphicsContext()
 	PSO2DepthStencilDesc.FrontFace = PSO2DefaultStencilOp;
 	PSO2DepthStencilDesc.BackFace = PSO2DefaultStencilOp;
 
+	D3D12_RASTERIZER_DESC rastirizerDesc = {};
+	rastirizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	rastirizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	rastirizerDesc.FrontCounterClockwise = FALSE;
+	rastirizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
+	rastirizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
+	rastirizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+	rastirizerDesc.DepthClipEnable = TRUE;
+	rastirizerDesc.MultisampleEnable = FALSE;
+	rastirizerDesc.AntialiasedLineEnable = FALSE;
+	rastirizerDesc.ForcedSampleCount = 0;
+	rastirizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
 	//Create the Pipeline State Object
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO2Desc = {};
 	PSO2Desc.InputLayout = PSO2InputLayoutDescs;
@@ -629,7 +642,7 @@ bool Graphics::CreateAllGraphicsContext()
 	PSO2Desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	PSO2Desc.SampleDesc = PSO2sampleDesc;
 	PSO2Desc.SampleMask = 0xffffffff;
-	PSO2Desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	PSO2Desc.RasterizerState = rastirizerDesc;
 	PSO2Desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	PSO2Desc.NumRenderTargets = 1;
 	PSO2Desc.DepthStencilState = PSO2DepthStencilDesc;
@@ -648,6 +661,7 @@ bool Graphics::CreateAllGraphicsContext()
 bool Graphics::SetGraphicsContext(const char* a_Context)
 {
 	m_CurPSO = m_RenderContextMap[a_Context];
+	m_CommandList->SetPipelineState(m_CurPSO);
 	return true;
 }
 
@@ -689,7 +703,7 @@ void Graphics::StartFrame()
 	}
 
 	//Puts command list into recording state
-	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], m_PSOArray[0]);
+	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], m_CurPSO);
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed reset the Command list!");
