@@ -612,7 +612,7 @@ bool Graphics::CreateAllGraphicsContext()
 	D3D12_DEPTH_STENCIL_DESC PSO2DepthStencilDesc = {};
 	PSO2DepthStencilDesc.DepthEnable = true;
 	PSO2DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	PSO2DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	PSO2DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 	PSO2DepthStencilDesc.StencilEnable = false;
 	PSO2DepthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
 	PSO2DepthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;

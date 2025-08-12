@@ -276,10 +276,6 @@ namespace BBE
     //    m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
-//#ifdef BBDX11
-//            m_Graphics.BindShader(ShaderType::VertexShader, m_BaseVertexShader);
-//            m_Graphics.BindShader(ShaderType::PixelShader, m_BasePixelShader);
-//#endif
             m_GameObjects[i]->Draw(m_Graphics);
         }
 
