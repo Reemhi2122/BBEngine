@@ -4,7 +4,7 @@
 cmake_minimum_required (VERSION 3.8)
 
 # Add source to this project's executable.
-add_library (BBEngine_Base STATIC
+add_library (BBEngine STATIC
 "Source/BBEngine.cpp"
 "Source/Timer/BBTimer.cpp"
 "Source/Logger/logger.cpp" 
@@ -59,31 +59,31 @@ add_library (BBEngine_Base STATIC
 "Source/GameLib/Transform.cpp")
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
+option(BUILD_DX11_EXECUTABLE "Build DX11 executable" ON)
+option(BUILD_DX12_EXECUTABLE "Build DX12 executable" OFF)
 
-# TODO: Add tests and install targets if needed.
-target_link_libraries(BBEngine_Base 
+if(BUILD_DX11_EXECUTABLE)
+target_link_libraries(BBEngine 
+BBRenderer_DX11
 BBMath
 ImGUI
 Common
 stb_image
 )
+endif()
+if(BUILD_DX12_EXECUTABLE)
+target_link_libraries(BBEngine 
+BBRenderer_DX12
+BBMath
+ImGUI
+Common
+stb_image
+)
+endif()
 
-target_include_directories(BBEngine_Base PUBLIC
+target_include_directories(BBEngine PUBLIC
 "Include/"
 )
-
-add_library(BBEngine_DX12 INTERFACE)
-target_link_libraries(BBEngine_DX12 INTERFACE
-BBEngine_Base
-BBRenderer_DX12
-)
-
-add_library(BBEngine_DX11 $<TARGET_OBJECTS:BBEngine_Base>)
-target_link_libraries(BBEngine_DX11 
-BBEngine_Base
-BBRenderer_DX11
-)
-
 
 #copy shaders when a change happened.
 #add_custom_target(game_copy_shaders ALL

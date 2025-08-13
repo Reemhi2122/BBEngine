@@ -1,17 +1,8 @@
 cmake_minimum_required (VERSION 3.8)
 
-set(COMMON_SOURCES
-"main.cpp"
-)
-
-add_executable (BBGame_DX11 ${COMMON_SOURCES})
-target_link_libraries(BBGame_DX11 
-    BBEngine_DX11
-)
-
-add_executable (BBGame_DX12 ${COMMON_SOURCES})
-target_link_libraries(BBGame_DX12 
-    BBEngine_DX12
+add_executable (BBGame "main.cpp")
+target_link_libraries(BBGame
+    BBEngine
 )
 
 #copy shaders when a change happened.
@@ -28,7 +19,5 @@ add_custom_target(game_copy_assets ALL
     COMMENT "Copying DX11 asset folder to output d1 folder")
 
     
-add_dependencies(BBGame_DX11 game_copy_shaders)
-add_dependencies(BBGame_DX11 game_copy_assets)
-add_dependencies(BBGame_DX12 game_copy_shaders)
-add_dependencies(BBGame_DX12 game_copy_assets)
+add_dependencies(BBGame game_copy_shaders)
+add_dependencies(BBGame game_copy_assets)
