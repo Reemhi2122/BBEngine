@@ -23,46 +23,9 @@ bool Graphics::Initialize()
 	HRESULT hres;
 	bool res = true;
 	
-	IDXGIFactory4* dxgiFactory = nullptr;
-	hres = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
-	if (FAILED(hres))
+	if (!CreateDevice())
 	{
-		return false;
-	}
-
-	IDXGIAdapter1* dxgiAdapter = nullptr;
-	uint32_t adapterIndex = 0;
-	bool adapterFound = false;
-
-	while (dxgiFactory->EnumAdapters1(adapterIndex, &dxgiAdapter) != DXGI_ERROR_NOT_FOUND)
-	{
-		DXGI_ADAPTER_DESC1 desc;
-		dxgiAdapter->GetDesc1(&desc);
-		if (!(desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
-		{
-			hres = D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
-			if (SUCCEEDED(hres))
-			{
-				adapterFound = true;
-				break;
-			}
-		}
-
-		adapterIndex++;
-	}
-
-	if (!adapterFound)
-	{
-		printf("[GFX]: No DX12 compatible device found!");
-		return false;
-	}
-
-	//Create the graphics device
-	hres = D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
-	//Prob want to move this into a macro
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to create GFX Device with min level 11!");
+		printf("[GFX]: Failed to create the GFX device!");
 		return false;
 	}
 
@@ -72,48 +35,17 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
-	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURES;
-	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-
-	res = m_MainDescriptorFreeList.Create(m_Device, &srvDescriptorHeapDesc);
-	if (!res)
+	if (!CreateDescriptorHeaps())
 	{
-		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		printf("[GFX]: Failed to create Descriptor Heaps!");
 		return false;
 	}
 
-	//Create the Back Buffer
-	DXGI_MODE_DESC backBufferDesc = {};
-	backBufferDesc.Width = WINDOW_WIDTH; // Width of the window
-	backBufferDesc.Height = WINDOW_HEIGHT; // Height of the window
-	backBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-
-	DXGI_SAMPLE_DESC sampleDesc = {};
-	sampleDesc.Count = 1;
-	sampleDesc.Quality = 0;
-
-	DXGI_SWAP_CHAIN_DESC  swapChainDesc = {};
-	swapChainDesc.BufferDesc = backBufferDesc;
-	swapChainDesc.SampleDesc = sampleDesc;
-	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.BufferCount = 3;
-	swapChainDesc.OutputWindow = m_HWindow;
-	swapChainDesc.Windowed = true;
-	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-	swapChainDesc.Flags = 0;
-
-	IDXGISwapChain* tempSwapChain = nullptr;
-	hres = dxgiFactory->CreateSwapChain(m_CommandQueue, &swapChainDesc, &tempSwapChain);
-	if (FAILED(hres))
+	if (!CreateSwapChain())
 	{
 		printf("[GFX]: Failed to create Swap Chain!");
 		return false;
 	}
-
-	m_SwapChain = static_cast<IDXGISwapChain3*>(tempSwapChain);
-	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
 
 	//Create the RTV Descriptor Heap
 	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeap = {};
@@ -405,6 +337,120 @@ bool Graphics::InitImGui()
 
 	ImGui_ImplWin32_Init(m_HWindow);
 	ImGui_ImplDX12_Init(&imguiInitInfo);
+
+	return true;
+}
+
+bool Graphics::CreateDevice()
+{
+	HRESULT hres = S_OK;
+	IDXGIFactory4* dxgiFactory = nullptr;
+	hres = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
+	if (FAILED(hres))
+	{
+		return false;
+	}
+
+	IDXGIAdapter1* dxgiAdapter = nullptr;
+	uint32_t adapterIndex = 0;
+	bool adapterFound = false;
+
+	while (dxgiFactory->EnumAdapters1(adapterIndex, &dxgiAdapter) != DXGI_ERROR_NOT_FOUND)
+	{
+		DXGI_ADAPTER_DESC1 desc;
+		dxgiAdapter->GetDesc1(&desc);
+		if (!(desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
+		{
+			hres = D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_11_0, __uuidof(ID3D12Device), nullptr);
+			if (SUCCEEDED(hres))
+			{
+				adapterFound = true;
+				break;
+			}
+		}
+
+		adapterIndex++;
+	}
+
+	if (!adapterFound)
+	{
+		printf("[GFX]: No DX12 compatible device found!");
+		return false;
+	}
+
+	hres = D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create GFX Device with min level 11!");
+		return false;
+	}
+
+	SAFE_RELEASE(dxgiAdapter);
+	SAFE_RELEASE(dxgiFactory);
+
+	return true;
+}
+
+bool Graphics::CreateSwapChain()
+{
+	HRESULT hres = S_OK;
+
+	IDXGIFactory4* dxgiFactory = nullptr;
+	hres = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
+	if (FAILED(hres))
+	{
+		return false;
+	}
+
+	DXGI_MODE_DESC backBufferDesc = {};
+	backBufferDesc.Width = WINDOW_WIDTH; // Width of the window
+	backBufferDesc.Height = WINDOW_HEIGHT; // Height of the window
+	backBufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+
+	DXGI_SAMPLE_DESC sampleDesc = {};
+	sampleDesc.Count = 1;
+	sampleDesc.Quality = 0;
+
+	DXGI_SWAP_CHAIN_DESC  swapChainDesc = {};
+	swapChainDesc.BufferDesc = backBufferDesc;
+	swapChainDesc.SampleDesc = sampleDesc;
+	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	swapChainDesc.BufferCount = 3;
+	swapChainDesc.OutputWindow = m_HWindow;
+	swapChainDesc.Windowed = true;
+	swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	swapChainDesc.Flags = 0;
+
+	IDXGISwapChain* tempSwapChain = nullptr;
+	hres = dxgiFactory->CreateSwapChain(m_CommandQueue, &swapChainDesc, &tempSwapChain);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create Swap Chain!");
+		return false;
+	}
+
+	m_SwapChain = static_cast<IDXGISwapChain3*>(tempSwapChain);
+	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
+
+	SAFE_RELEASE(dxgiFactory);
+
+	return true;
+}
+
+bool Graphics::CreateDescriptorHeaps()
+{
+	bool res = S_OK;
+	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
+	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURES;
+	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	res = m_MainDescriptorFreeList.Create(m_Device, &srvDescriptorHeapDesc);
+	if (!res)
+	{
+		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		return false;
+	}
 
 	return true;
 }
