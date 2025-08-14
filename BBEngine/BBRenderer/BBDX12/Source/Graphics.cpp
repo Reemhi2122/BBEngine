@@ -66,17 +66,9 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	//Create the Command Queue
-	D3D12_COMMAND_QUEUE_DESC commandQueueDesc = {};
-	commandQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-	commandQueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
-	commandQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-	commandQueueDesc.NodeMask = 0;
-
-	hres = m_Device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&m_CommandQueue));
-	if (FAILED(hres))
+	if (!CreateCommandQueue())
 	{
-		printf("[GFX]: Failed to create direct Command Queue!");
+		printf("[GFX]: Failed to create Command Queue!");
 		return false;
 	}
 
@@ -227,19 +219,19 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	if (!CreateRootSignatures())
+	if(!CreateRootSignatures())
 	{
 		printf("[GFX]: Failed to create root signatures!");
 		return false;
 	}
 
-	if (CreateShaders())
+	if(!CreateShaders())
 	{
 		printf("[GFX]: Failed to create shaders!");
 		return false;
 	}
 	
-	if(CreateAllGraphicsContext())
+	if(!CreateAllGraphicsContext())
 	{
 		printf("[GFX]: Failed to create PSOs!");
 		return false;
@@ -417,6 +409,25 @@ bool Graphics::InitImGui()
 	return true;
 }
 
+bool Graphics::CreateCommandQueue()
+{
+	HRESULT hres;
+	D3D12_COMMAND_QUEUE_DESC commandQueueDesc = {};
+	commandQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+	commandQueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+	commandQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	commandQueueDesc.NodeMask = 0;
+
+	hres = m_Device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&m_CommandQueue));
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create direct Command Queue!");
+		return false;
+	}
+
+	return true;
+}
+
 bool Graphics::CreateRootSignatures()
 {
 	HRESULT hres = 0;
@@ -484,6 +495,8 @@ bool Graphics::CreateRootSignatures()
 		printf("[GFX]: Failed to create Root Signature!");
 		return false;
 	}
+
+	return true;
 }
 
 bool Graphics::CreateShaders()
@@ -545,6 +558,8 @@ bool Graphics::CreateShaders()
 	m_CubeMapPixelShaderByteCode = {};
 	m_CubeMapPixelShaderByteCode.BytecodeLength = m_CubeMapPixelShader->GetBufferSize();
 	m_CubeMapPixelShaderByteCode.pShaderBytecode = m_CubeMapPixelShader->GetBufferPointer();
+
+	return true;
 }
 
 bool Graphics::CreateAllGraphicsContext()

@@ -98,6 +98,7 @@ public:
 	bool SetGraphicsContext(const char* a_Context) override;
 
 protected:
+	bool CreateCommandQueue();
 	bool CreateRootSignatures();
 	bool CreateShaders();
 	bool CreateAllGraphicsContext() override;
