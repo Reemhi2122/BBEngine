@@ -59,7 +59,7 @@ add_library (BBEngine STATIC
 "Source/GameLib/Transform.cpp")
 
 set (CMAKE_INCLUDE_DIRECTORIES_BEFORE ON)
-option(BUILD_DX11_EXECUTABLE "Build DX11 executable" ON)
+option(BUILD_DX11_EXECUTABLE "Build DX11 executable" OFF)
 option(BUILD_DX12_EXECUTABLE "Build DX12 executable" OFF)
 
 if(BUILD_DX11_EXECUTABLE)
@@ -70,7 +70,8 @@ ImGUI
 Common
 stb_image
 )
-endif()
+endif(BUILD_DX11_EXECUTABLE)
+
 if(BUILD_DX12_EXECUTABLE)
 target_link_libraries(BBEngine 
 BBRenderer_DX12
@@ -79,7 +80,7 @@ ImGUI
 Common
 stb_image
 )
-endif()
+endif(BUILD_DX12_EXECUTABLE)
 
 target_include_directories(BBEngine PUBLIC
 "Include/"
