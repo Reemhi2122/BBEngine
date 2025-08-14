@@ -227,136 +227,23 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
-	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
-	descriptorTableRange[0].BaseShaderRegister = 0;
-	descriptorTableRange[0].RegisterSpace = 0;
-	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-	D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
-	cbDescriptorTable.NumDescriptorRanges = 1;
-	cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
-
-	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
-	rootCBVDescriptor.ShaderRegister = 0;
-	rootCBVDescriptor.RegisterSpace = 0;
-
-	D3D12_ROOT_PARAMETER rootParams[2] = {};
-	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParams[0].Descriptor = rootCBVDescriptor;
-	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-
-	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParams[1].DescriptorTable = cbDescriptorTable;
-	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].MipLODBias = 0;
-	staticSamplers[0].MaxAnisotropy = 0;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
-	staticSamplers[0].MinLOD = 0;
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
-	staticSamplers[0].ShaderRegister = 0;
-	staticSamplers[0].RegisterSpace = 0;
-	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-	rootSignatureDesc.NumParameters = 2;
-	rootSignatureDesc.pParameters = rootParams;
-	rootSignatureDesc.NumStaticSamplers = 1;
-	rootSignatureDesc.pStaticSamplers = staticSamplers;
-	rootSignatureDesc.Flags = 
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
-
-	ID3DBlob* signature;
-	hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
-	if (FAILED(hres))
+	if (!CreateRootSignatures())
 	{
-		printf("[GFX]: Failed to serialize Root Signature!");
+		printf("[GFX]: Failed to create root signatures!");
 		return false;
 	}
 
-	hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
-	if (FAILED(hres))
+	if (CreateShaders())
 	{
-		printf("[GFX]: Failed to create Root Signature!");
+		printf("[GFX]: Failed to create shaders!");
 		return false;
 	}
-
-	//Compile Vertex Shader
-	ID3DBlob* errorBuf;
-	hres = D3DCompileFromFile(
-		L"Assets/DefaultVS.hlsl", nullptr, nullptr,
-		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0, &m_VertexShader, &errorBuf);
-	if (FAILED(hres))
+	
+	if(CreateAllGraphicsContext())
 	{
-		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		printf("[GFX]: Failed to create PSOs!");
 		return false;
 	}
-
-	//Set the Vertex Shader Byte Code
-	m_VertexShaderByteCode = {};
-	m_VertexShaderByteCode.BytecodeLength = m_VertexShader->GetBufferSize();
-	m_VertexShaderByteCode.pShaderBytecode = m_VertexShader->GetBufferPointer();
-
-	//Compile the Pixel Shader
-	hres = D3DCompileFromFile(
-		L"Assets/DefaultPS.hlsl", nullptr, nullptr,
-		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0, &m_PixelShader, &errorBuf);
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
-		return false;
-	}
-
-	m_PixelShaderByteCode = {};
-	m_PixelShaderByteCode.BytecodeLength = m_PixelShader->GetBufferSize();
-	m_PixelShaderByteCode.pShaderBytecode = m_PixelShader->GetBufferPointer();
-
-	// TEMP SET SECOND SHADER //
-	hres = D3DCompileFromFile(
-		L"Assets/VSCubeMap.hlsl", nullptr, nullptr,
-		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0, &m_CubeMapVertexShader, &errorBuf);
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
-		return false;
-	}
-
-	//Set the Vertex Shader Byte Code
-	m_CubeMapVertexShaderByteCode = {};
-	m_CubeMapVertexShaderByteCode.BytecodeLength = m_CubeMapVertexShader->GetBufferSize();
-	m_CubeMapVertexShaderByteCode.pShaderBytecode = m_CubeMapVertexShader->GetBufferPointer();
-
-	//Compile the Pixel Shader
-	hres = D3DCompileFromFile(
-		L"Assets/PSCubeMap.hlsl", nullptr, nullptr,
-		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-		0, &m_CubeMapPixelShader, &errorBuf);
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
-		return false;
-	}
-
-	m_CubeMapPixelShaderByteCode = {};
-	m_CubeMapPixelShaderByteCode.BytecodeLength = m_CubeMapPixelShader->GetBufferSize();
-	m_CubeMapPixelShaderByteCode.pShaderBytecode = m_CubeMapPixelShader->GetBufferPointer();
-	// END SET OF TEMP SHADER //
-
-	CreateAllGraphicsContext();
 
 	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
 	dsvDesc.NumDescriptors = 1;
@@ -528,6 +415,136 @@ bool Graphics::InitImGui()
 	ImGui_ImplDX12_Init(&imguiInitInfo);
 
 	return true;
+}
+
+bool Graphics::CreateRootSignatures()
+{
+	HRESULT hres = 0;
+	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
+	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
+	descriptorTableRange[0].BaseShaderRegister = 0;
+	descriptorTableRange[0].RegisterSpace = 0;
+	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+	cbDescriptorTable.NumDescriptorRanges = 1;
+	cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
+
+	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+	rootCBVDescriptor.ShaderRegister = 0;
+	rootCBVDescriptor.RegisterSpace = 0;
+
+	D3D12_ROOT_PARAMETER rootParams[2] = {};
+	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	rootParams[0].Descriptor = rootCBVDescriptor;
+	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+
+	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	rootParams[1].DescriptorTable = cbDescriptorTable;
+	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
+	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	staticSamplers[0].MipLODBias = 0;
+	staticSamplers[0].MaxAnisotropy = 0;
+	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+	staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+	staticSamplers[0].MinLOD = 0;
+	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+	staticSamplers[0].ShaderRegister = 0;
+	staticSamplers[0].RegisterSpace = 0;
+	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+	rootSignatureDesc.NumParameters = 2;
+	rootSignatureDesc.pParameters = rootParams;
+	rootSignatureDesc.NumStaticSamplers = 1;
+	rootSignatureDesc.pStaticSamplers = staticSamplers;
+	rootSignatureDesc.Flags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+
+	ID3DBlob* signature;
+	hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to serialize Root Signature!");
+		return false;
+	}
+
+	hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create Root Signature!");
+		return false;
+	}
+}
+
+bool Graphics::CreateShaders()
+{
+	HRESULT hres = 0;
+	ID3DBlob* errorBuf;
+	hres = D3DCompileFromFile(
+		L"Assets/DefaultVS.hlsl", nullptr, nullptr,
+		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0, &m_VertexShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	m_VertexShaderByteCode = {};
+	m_VertexShaderByteCode.BytecodeLength = m_VertexShader->GetBufferSize();
+	m_VertexShaderByteCode.pShaderBytecode = m_VertexShader->GetBufferPointer();
+
+	hres = D3DCompileFromFile(
+		L"Assets/DefaultPS.hlsl", nullptr, nullptr,
+		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0, &m_PixelShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	m_PixelShaderByteCode = {};
+	m_PixelShaderByteCode.BytecodeLength = m_PixelShader->GetBufferSize();
+	m_PixelShaderByteCode.pShaderBytecode = m_PixelShader->GetBufferPointer();
+
+	hres = D3DCompileFromFile(
+		L"Assets/VSCubeMap.hlsl", nullptr, nullptr,
+		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0, &m_CubeMapVertexShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	m_CubeMapVertexShaderByteCode = {};
+	m_CubeMapVertexShaderByteCode.BytecodeLength = m_CubeMapVertexShader->GetBufferSize();
+	m_CubeMapVertexShaderByteCode.pShaderBytecode = m_CubeMapVertexShader->GetBufferPointer();
+
+	hres = D3DCompileFromFile(
+		L"Assets/PSCubeMap.hlsl", nullptr, nullptr,
+		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
+		0, &m_CubeMapPixelShader, &errorBuf);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		return false;
+	}
+
+	m_CubeMapPixelShaderByteCode = {};
+	m_CubeMapPixelShaderByteCode.BytecodeLength = m_CubeMapPixelShader->GetBufferSize();
+	m_CubeMapPixelShaderByteCode.pShaderBytecode = m_CubeMapPixelShader->GetBufferPointer();
 }
 
 bool Graphics::CreateAllGraphicsContext()

@@ -50,10 +50,13 @@ public:
 	virtual BBRenderContext* GetContext() const noexcept { return nullptr; };
 	//End DX11 specific
 
-	virtual bool CreateAllGraphicsContext() = 0;
 	virtual bool SetGraphicsContext(const char* a_Context) = 0;
 
 	//virtual BBHandle CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc = "main") = 0;
 	//virtual void BindShader(ShaderType a_Type, BBHandle a_Shader) = 0;
 	//virtual void ReloadShader(ShaderType a_Type, BBHandle a_Shader) = 0;
+
+protected:
+	virtual bool CreateAllGraphicsContext() = 0;
+
 };

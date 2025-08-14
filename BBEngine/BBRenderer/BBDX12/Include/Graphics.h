@@ -95,10 +95,12 @@ public:
 
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
-	bool CreateAllGraphicsContext() override;
 	bool SetGraphicsContext(const char* a_Context) override;
 
 protected:
+	bool CreateRootSignatures();
+	bool CreateShaders();
+	bool CreateAllGraphicsContext() override;
 	bool InitImGui();
 
 private:
