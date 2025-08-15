@@ -46,7 +46,7 @@ struct ConstantBufferPerObject
 	DirectX::XMFLOAT4X4 Transform;
 };
 
-struct SRVDescriptorInfo
+struct DescriptorHandleInfo
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE cpuDescHandle;
 	CD3DX12_GPU_DESCRIPTOR_HANDLE gpuDescHandle;
@@ -91,7 +91,7 @@ public:
 	void SetSwapBuffer();
 
 	bool GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, struct ConstantUploadBufferReference& a_ConstBufferReference);
-	DescriptorFreeList* GetMainDescriptorHeap() { return &m_MainDescriptorFreeList; };
+	DescriptorFreeList* GetMainDescriptorHeap() { return &m_SRVDescriptorHeapFL; };
 
 	void DrawIndexed(uint32_t a_IndexCount) override;
 
@@ -101,6 +101,10 @@ protected:
 	bool CreateDevice();
 	bool CreateSwapChain();
 	bool CreateDescriptorHeaps();
+
+	bool CreateGameView();
+
+	bool CreateCommandAllocator();
 	bool CreateCommandQueue();
 	bool CreateCommandList();
 	bool CreateFence();
@@ -118,17 +122,16 @@ private:
 	ID3D12CommandQueue*			m_CommandQueue;
 	ID3D12DescriptorHeap*		m_RTVDescriptorHeap;
 	
-	SRVDescriptorInfo			m_GRTVShaderResourceView[FRAME_BUFFER_COUNT];
+	DescriptorHandleInfo		m_GRTVShaderResourceView[FRAME_BUFFER_COUNT];
+	DescriptorHandleInfo		m_GameRenderTargetViewRTHandle[FRAME_BUFFER_COUNT];
 	ID3D12Resource*				m_GameViewTarget[FRAME_BUFFER_COUNT];
 	
 	ID3D12Resource*				m_RenderTargets[FRAME_BUFFER_COUNT];
+	DescriptorHandleInfo		m_SwapChainRTHandle[FRAME_BUFFER_COUNT];
 
 	ID3D12CommandAllocator*		m_CommandAllocator[FRAME_BUFFER_COUNT];
 	ID3D12GraphicsCommandList*	m_CommandList;
 	
-	//Note(Stan): Used for rendering the first triangle, likely to change later
-	//ID3D12PipelineState*		m_DefaultPipelineState;
-
 	ID3D12PipelineState*		m_PSOArray[10];
 	ID3D12PipelineState*		m_CurPSO;
 	std::unordered_map<std::string, ID3D12PipelineState*> m_RenderContextMap;
@@ -138,8 +141,8 @@ private:
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
-	//ID3D12DescriptorHeap*		m_MainDescriptorHeap;
-	DescriptorFreeList			m_MainDescriptorFreeList;
+	DescriptorFreeList			m_SRVDescriptorHeapFL;
+	DescriptorFreeList			m_RTVDescriptorHeapFL;
 
 	ID3D12Resource*				m_DepthStenil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
@@ -172,8 +175,8 @@ private:
 	uint32_t m_FrameIndex;
 	uint32_t m_RTVDescriptorSize;
 
-	SRVDescriptorInfo m_TextureDescriptors[MAX_TEXTURES];
-	std::queue<SRVDescriptorInfo*> m_AvailableTextureDescriptors;
+	DescriptorHandleInfo m_TextureDescriptors[MAX_TEXTURES];
+	std::queue<DescriptorHandleInfo*> m_AvailableTextureDescriptors;
 };
 
 inline ID3D12Device* Graphics::GetDevice() const noexcept

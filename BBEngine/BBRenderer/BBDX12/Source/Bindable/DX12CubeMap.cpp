@@ -75,7 +75,7 @@ bool DX12CubeMap::Create(IGraphics& a_Gfx)
 
 	a_Gfx.GetCommandList()->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_TextureBuffer, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 
-	m_DescriptorInfo = new SRVDescriptorInfo();
+	m_DescriptorInfo = new DescriptorHandleInfo();
 	Graphics* gfx = static_cast<Graphics*>(&a_Gfx);
 	gfx->GetMainDescriptorHeap()->Alloc(&m_DescriptorInfo->cpuDescHandle, &m_DescriptorInfo->gpuDescHandle);
 

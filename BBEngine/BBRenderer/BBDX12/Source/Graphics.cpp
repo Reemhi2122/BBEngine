@@ -47,77 +47,18 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	//Create the RTV Descriptor Heap
-	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeap = {};
-	rtvDescriptorHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	rtvDescriptorHeap.NumDescriptors = TOTAL_RENDER_TARGETS;
-	rtvDescriptorHeap.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	rtvDescriptorHeap.NodeMask = 0;
-
-	hres = m_Device->CreateDescriptorHeap(&rtvDescriptorHeap, IID_PPV_ARGS(&m_RTVDescriptorHeap));
-	if (FAILED(hres))
+	if (!CreateGameView())
 	{
-		printf("[GFX]: Failed to create RTV descriptor heap!");
+
+	}
+
+	if(!CreateCommandAllocator())
+	{
+		printf("[GFX]: Failed to create Command Allocator!");
 		return false;
 	}
 
-	m_RTVDescriptorSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-
-	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	{
-		hres = m_SwapChain->GetBuffer(i, IID_PPV_ARGS(&m_RenderTargets[i]));
-		if (FAILED(hres))
-		{
-			printf("[GFX]: Failed to get RTV from Swap Chain!");
-			return false;
-		}
-
-		m_Device->CreateRenderTargetView(m_RenderTargets[i], nullptr, rtvHandle);
-		rtvHandle.Offset(1, m_RTVDescriptorSize);
-	}
-
-	for(uint32_t i = 0; i < FRAME_TEXTURE_TARGET; i++)
-	{
-		hres = m_Device->CreateCommittedResource(
-			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-			D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET),
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			nullptr,
-			IID_PPV_ARGS(&m_GameViewTarget[i])
-		);
-		if (FAILED(hres))
-		{
-			printf("[GFX]: Failed to get RTV for game view!");
-			return false;
-		}
-
-		m_Device->CreateRenderTargetView(m_GameViewTarget[i], nullptr, rtvHandle);
-		rtvHandle.Offset(1, m_RTVDescriptorSize);
-
-		D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
-		srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-		srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDescriptorDesc.Texture2D.MipLevels = 1;
-
-		m_MainDescriptorFreeList.Alloc(&m_GRTVShaderResourceView[i].cpuDescHandle, &m_GRTVShaderResourceView[i].gpuDescHandle);
-		m_Device->CreateShaderResourceView(m_GameViewTarget[i], &srvDescriptorDesc, m_GRTVShaderResourceView[i].cpuDescHandle);
-	}
-
-	//Create the Command Buffer Allocators
-	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
-	{
-		hres = m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_CommandAllocator[i]));
-		if (FAILED(hres))
-		{
-			printf("[GFX]: Failed to create Command Allocator!");
-			return false;
-		}
-	}
-
-	if (!CreateCommandList)
+	if (!CreateCommandList())
 	{
 		printf("[GFX]: Failed to create Command List!");
 		return false;
@@ -290,8 +231,8 @@ bool Graphics::InitImGui()
 	imguiInitInfo.RTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
 	imguiInitInfo.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
-	imguiInitInfo.UserData = reinterpret_cast<void*>(&m_MainDescriptorFreeList);
-	imguiInitInfo.SrvDescriptorHeap = m_MainDescriptorFreeList.GetHeap(); //Note(Stan): Create a SRV descriptor heap for ImGui
+	imguiInitInfo.UserData = reinterpret_cast<void*>(&m_SRVDescriptorHeapFL);
+	imguiInitInfo.SrvDescriptorHeap = m_SRVDescriptorHeapFL.GetHeap(); //Note(Stan): Create a SRV descriptor heap for ImGui
 
 	imguiInitInfo.SrvDescriptorAllocFn =
 		[](ImGui_ImplDX12_InitInfo* info, D3D12_CPU_DESCRIPTOR_HANDLE* a_CPUHandle, D3D12_GPU_DESCRIPTOR_HANDLE* a_GPUHandle)
@@ -369,6 +310,43 @@ bool Graphics::CreateDevice()
 	return true;
 }
 
+bool Graphics::CreateDescriptorHeaps()
+{
+	bool res = S_OK;
+
+	//////////////////////
+	//  SRV DESCRIPTOR  //
+	//////////////////////
+	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
+	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURES;
+	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+	res = m_SRVDescriptorHeapFL.Create(m_Device, &srvDescriptorHeapDesc);
+	if (!res)
+	{
+		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		return false;
+	}
+
+	//////////////////////
+	//  RTV DESCRIPTOR  //
+	//////////////////////
+	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeap = {};
+	rtvDescriptorHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvDescriptorHeap.NumDescriptors = TOTAL_RENDER_TARGETS;
+	rtvDescriptorHeap.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+	res = m_RTVDescriptorHeapFL.Create(m_Device, &rtvDescriptorHeap);
+	if (!res)
+	{
+		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		return false;
+	}
+
+	return true;
+}
+
 bool Graphics::CreateSwapChain()
 {
 	HRESULT hres = S_OK;
@@ -410,27 +388,69 @@ bool Graphics::CreateSwapChain()
 	m_SwapChain = static_cast<IDXGISwapChain3*>(tempSwapChain);
 	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
 
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_SwapChain->GetBuffer(i, IID_PPV_ARGS(&m_RenderTargets[i]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to get RTV from Swap Chain!");
+			return false;
+		}
+
+		m_RTVDescriptorHeapFL.Alloc(&m_SwapChainRTHandle[i].cpuDescHandle, &m_SwapChainRTHandle[i].gpuDescHandle);
+		m_Device->CreateRenderTargetView(m_RenderTargets[i], nullptr, m_SwapChainRTHandle[i].cpuDescHandle);
+	}
+
 	SAFE_RELEASE(dxgiFactory);
 
 	return true;
 }
 
-bool Graphics::CreateDescriptorHeaps()
+bool Graphics::CreateGameView()
 {
-	bool res = S_OK;
-	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
-	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURES;
-	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-	srvDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-
-	res = m_MainDescriptorFreeList.Create(m_Device, &srvDescriptorHeapDesc);
-	if (!res)
+	HRESULT hres = S_OK;
+	for (uint32_t i = 0; i < FRAME_TEXTURE_TARGET; i++)
 	{
-		printf("[GFX]: Failed to Create SRV Resource Heap!");
-		return false;
-	}
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			nullptr,
+			IID_PPV_ARGS(&m_GameViewTarget[i])
+		);
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to get RTV for game view!");
+			return false;
+		}
 
-	return true;
+		m_RTVDescriptorHeapFL.Alloc(&m_GameRenderTargetViewRTHandle[i].cpuDescHandle, &m_GameRenderTargetViewRTHandle[i].gpuDescHandle);
+		m_Device->CreateRenderTargetView(m_GameViewTarget[i], nullptr, m_GameRenderTargetViewRTHandle[i].cpuDescHandle);
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
+		srvDescriptorDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDescriptorDesc.Texture2D.MipLevels = 1;
+
+		m_SRVDescriptorHeapFL.Alloc(&m_GRTVShaderResourceView[i].cpuDescHandle, &m_GRTVShaderResourceView[i].gpuDescHandle);
+		m_Device->CreateShaderResourceView(m_GameViewTarget[i], &srvDescriptorDesc, m_GRTVShaderResourceView[i].cpuDescHandle);
+	}
+}
+
+bool Graphics::CreateCommandAllocator()
+{
+	HRESULT hres = S_OK;
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_CommandAllocator[i]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create Command Allocator!");
+			return false;
+		}
+	}
 }
 
 bool Graphics::CreateCommandQueue()
@@ -811,13 +831,12 @@ void Graphics::StartFrame()
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_GameViewTarget[m_FrameIndex], D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), 3 + m_FrameIndex, m_RTVDescriptorSize);
 	CD3DX12_CPU_DESCRIPTOR_HANDLE dsHandle(m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
-	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, &dsHandle);
+	m_CommandList->OMSetRenderTargets(1, &m_GameRenderTargetViewRTHandle[m_FrameIndex].cpuDescHandle, false, &dsHandle);
 
 	FLOAT color[4]{ 0.32f, 0.40f, 0.45, 1.0f };
-	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+	m_CommandList->ClearRenderTargetView(m_GameRenderTargetViewRTHandle[m_FrameIndex].cpuDescHandle, color, 0, nullptr);
 	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
@@ -830,10 +849,10 @@ void Graphics::StartFrame()
 void Graphics::Render()
 {
 	HRESULT hres;
-	ID3D12DescriptorHeap* descriptorHeaps[] = { m_MainDescriptorFreeList.GetHeap() };
+	ID3D12DescriptorHeap* descriptorHeaps[] = { m_SRVDescriptorHeapFL.GetHeap() };
 	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
 
-	m_CommandList->SetGraphicsRootDescriptorTable(1, m_MainDescriptorFreeList.GetGPUHandleStart());
+	m_CommandList->SetGraphicsRootDescriptorTable(1, m_SRVDescriptorHeapFL.GetGPUHandleStart());
 
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
@@ -844,11 +863,10 @@ void Graphics::SetSwapBuffer()
 {
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_RTVDescriptorHeap->GetCPUDescriptorHandleForHeapStart(), m_FrameIndex, m_RTVDescriptorSize);
-	m_CommandList->OMSetRenderTargets(1, &rtvHandle, false, nullptr);
+	m_CommandList->OMSetRenderTargets(1, &m_SwapChainRTHandle[m_FrameIndex].cpuDescHandle, false, nullptr);
 
 	FLOAT color[4]{ 0.32f, 0.40f, 0.45, 1.0f };
-	m_CommandList->ClearRenderTargetView(rtvHandle, color, 0, nullptr);
+	m_CommandList->ClearRenderTargetView(m_SwapChainRTHandle[m_FrameIndex].cpuDescHandle, color, 0, nullptr);
 
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_GameViewTarget[m_FrameIndex], D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
 }

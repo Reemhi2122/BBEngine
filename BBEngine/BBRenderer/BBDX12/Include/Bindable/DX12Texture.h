@@ -2,7 +2,7 @@
 #include "Bindable/ITexture.h"
 #include "Graphics.h"
 
-class SRVDescriptorInfo;
+class DescriptorHandleInfo;
 
 class DX12Texture : public ITexture
 {
@@ -22,5 +22,5 @@ private:
 	ID3D12Resource* m_TextureBuffer;
 	ID3D12Resource* m_TextureUploadBufferHeap;
 
-	SRVDescriptorInfo* m_DescriptorInfo;
+	DescriptorHandleInfo* m_DescriptorInfo;
 };

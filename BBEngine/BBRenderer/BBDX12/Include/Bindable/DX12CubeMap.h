@@ -17,7 +17,7 @@ private:
 	ID3D12Resource* m_TextureBuffer;
 	ID3D12Resource* m_TextureUploadBufferHeap;
 
-	SRVDescriptorInfo* m_DescriptorInfo;
+	DescriptorHandleInfo* m_DescriptorInfo;
 
 	unsigned char* images[CUBEMAP_SIZE];
 };
