@@ -117,37 +117,15 @@ bool Graphics::Initialize()
 		}
 	}
 
-	//Create the Command List
-	hres = m_Device->CreateCommandList(
-		0,
-		D3D12_COMMAND_LIST_TYPE_DIRECT,
-		m_CommandAllocator[0],
-		NULL,
-		IID_PPV_ARGS(&m_CommandList)
-	);
-	if (FAILED(hres))
+	if (!CreateCommandList)
 	{
 		printf("[GFX]: Failed to create Command List!");
 		return false;
 	}
 
-	//Create fence values
-	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	if (!CreateFence())
 	{
-		hres = m_Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence[i]));
-		if (FAILED(hres))
-		{
-			printf("[GFX]: Failed to create Fences!");
-			return false;
-		}
-		m_FenceValue[i] = 0;
-	}
-
-	//Create the actual fence event
-	m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);
-	if (!m_FenceEvent)
-	{
-		printf("[GFX]: Failed to create Fence Event!");
+		printf("[GFX]: Failed to create Fences!");
 		return false;
 	}
 
@@ -468,6 +446,49 @@ bool Graphics::CreateCommandQueue()
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed to create direct Command Queue!");
+		return false;
+	}
+
+	return true;
+}
+
+bool Graphics::CreateCommandList()
+{
+	HRESULT hres = S_OK;
+	hres = m_Device->CreateCommandList(
+		0,
+		D3D12_COMMAND_LIST_TYPE_DIRECT,
+		m_CommandAllocator[0],
+		NULL,
+		IID_PPV_ARGS(&m_CommandList)
+	);
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create Command List!");
+		return false;
+	}
+
+	return true;
+}
+
+bool Graphics::CreateFence()
+{
+	HRESULT hres = S_OK;
+	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
+	{
+		hres = m_Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence[i]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create Fences!");
+			return false;
+		}
+		m_FenceValue[i] = 0;
+	}
+
+	m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);
+	if (!m_FenceEvent)
+	{
+		printf("[GFX]: Failed to create Fence Event!");
 		return false;
 	}
 

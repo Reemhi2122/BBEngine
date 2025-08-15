@@ -102,6 +102,8 @@ protected:
 	bool CreateSwapChain();
 	bool CreateDescriptorHeaps();
 	bool CreateCommandQueue();
+	bool CreateCommandList();
+	bool CreateFence();
 	bool CreateRootSignatures();
 	bool CreateShaders();
 	bool CreateAllGraphicsContext() override;
