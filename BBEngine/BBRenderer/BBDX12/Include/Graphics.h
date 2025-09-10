@@ -33,6 +33,7 @@ constexpr uint16_t WINDOW_WIDTH = 1600;
 constexpr uint16_t WINDOW_HEIGHT = 900;
 
 #define MAX_TEXTURES 1024
+#define MAX_PSO_COUNT 16
 
 //Note(stan): Temp vertext buffer for test triangle
 struct UV
@@ -111,8 +112,9 @@ protected:
 	bool CreateRootSignatures();
 	bool CreateShaders();
 	bool CreateAllGraphicsContext() override;
-
 	bool CreateDepthStencils();
+
+	bool CreateDebugTexture();
 
 	bool InitImGui();
 
@@ -135,7 +137,7 @@ private:
 	ID3D12CommandAllocator*		m_CommandAllocator[FRAME_BUFFER_COUNT];
 	ID3D12GraphicsCommandList*	m_CommandList;
 	
-	ID3D12PipelineState*		m_PSOArray[10];
+	ID3D12PipelineState*		m_PSOArray[MAX_PSO_COUNT];
 	ID3D12PipelineState*		m_CurPSO;
 	std::unordered_map<std::string, ID3D12PipelineState*> m_RenderContextMap;
 	uint32_t					m_PSOIndex = 0;

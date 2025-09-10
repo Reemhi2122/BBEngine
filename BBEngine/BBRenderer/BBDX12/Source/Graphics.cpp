@@ -95,6 +95,39 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	//if (!CreateDebugTexture())
+	//{
+	//	printf("[GFX]: Failed to create debug textures!");
+	//	return false;
+	//}
+
+	m_Viewport.TopLeftX = 0;
+	m_Viewport.TopLeftY = 0;
+	m_Viewport.Width = WINDOW_WIDTH; // Check window size
+	m_Viewport.Height = WINDOW_HEIGHT; // Check window size
+	m_Viewport.MinDepth = 0.0f;
+	m_Viewport.MaxDepth = 1.0f;
+
+	m_ScissorRect.top = 0;
+	m_ScissorRect.left = 0;
+	m_ScissorRect.right = WINDOW_WIDTH;
+	m_ScissorRect.bottom = WINDOW_HEIGHT;
+
+	m_Camera = new Camera();
+
+	res = InitImGui();
+	if (!res)
+	{
+		printf("[GFX]: Failed to initialize ImGui!");
+		return false;
+	}
+
+	return true;
+}
+
+bool Graphics::CreateDebugTexture()
+{
+	HRESULT hres = S_OK;
 	//Creating a debug texture
 	{
 		D3D12_RESOURCE_DESC textureDescription = {};
@@ -165,29 +198,6 @@ bool Graphics::Initialize()
 	//	m_MainDescriptorFreeList.Alloc(&cpuHandle, &gpuHandle);
 	//	m_Device->CreateShaderResourceView(m_DebugTexture, &srvDescriptorDesc, cpuHandle);
 	//}
-
-	m_Viewport.TopLeftX = 0;
-	m_Viewport.TopLeftY = 0;
-	m_Viewport.Width = WINDOW_WIDTH; // Check window size
-	m_Viewport.Height = WINDOW_HEIGHT; // Check window size
-	m_Viewport.MinDepth = 0.0f;
-	m_Viewport.MaxDepth = 1.0f;
-
-	m_ScissorRect.top = 0;
-	m_ScissorRect.left = 0;
-	m_ScissorRect.right = WINDOW_WIDTH;
-	m_ScissorRect.bottom = WINDOW_HEIGHT;
-
-	m_Camera = new Camera();
-
-	res = InitImGui();
-	if (!res)
-	{
-		printf("[GFX]: Failed to initialize ImGui!");
-		return false;
-	}
-
-	return true;
 }
 
 bool Graphics::InitImGui()
@@ -336,7 +346,6 @@ bool Graphics::CreateDescriptorHeaps()
 bool Graphics::CreateSwapChain()
 {
 	HRESULT hres = S_OK;
-
 	IDXGIFactory4* dxgiFactory = nullptr;
 	hres = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
 	if (FAILED(hres))
@@ -443,7 +452,7 @@ bool Graphics::CreateCommandAllocator()
 
 bool Graphics::CreateCommandQueue()
 {
-	HRESULT hres;
+	HRESULT hres = S_OK;
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc = {};
 	commandQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 	commandQueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
@@ -505,7 +514,7 @@ bool Graphics::CreateFence()
 
 bool Graphics::CreateRootSignatures()
 {
-	HRESULT hres = 0;
+	HRESULT hres = S_OK;
 	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
@@ -576,7 +585,7 @@ bool Graphics::CreateRootSignatures()
 
 bool Graphics::CreateShaders()
 {
-	HRESULT hres = 0;
+	HRESULT hres = S_OK;
 	ID3DBlob* errorBuf;
 	hres = D3DCompileFromFile(
 		L"Assets/DefaultVS.hlsl", nullptr, nullptr,
@@ -639,7 +648,7 @@ bool Graphics::CreateShaders()
 
 bool Graphics::CreateAllGraphicsContext()
 {
-	HRESULT hres = 0;
+	HRESULT hres = S_OK;
 
 	//////////////////////
 	// **** PSO 01 **** //
@@ -767,7 +776,7 @@ bool Graphics::CreateAllGraphicsContext()
 
 bool Graphics::CreateDepthStencils()
 {
-	HRESULT hres = 0;
+	HRESULT hres = S_OK;
 	D3D12_DEPTH_STENCIL_VIEW_DESC dsViewDescription = {};
 	dsViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
 	dsViewDescription.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
@@ -806,8 +815,7 @@ bool Graphics::SetGraphicsContext(const char* a_Context)
 
 bool Graphics::CloseInit()
 {
-	HRESULT hres;
-
+	HRESULT hres = S_OK;
 	m_CommandList->Close();
 	ID3D12CommandList* commandLists[] = { m_CommandList };
 	m_CommandQueue->ExecuteCommandLists(_countof(commandLists), commandLists);
@@ -830,8 +838,7 @@ void Graphics::Update()
 
 void Graphics::StartFrame()
 {
-	HRESULT hres;
-
+	HRESULT hres = S_OK;
 	WaitForPreviousFrame();
 
 	hres = m_CommandAllocator[m_FrameIndex]->Reset();
@@ -868,7 +875,7 @@ void Graphics::StartFrame()
 
 void Graphics::Render()
 {
-	HRESULT hres;
+	HRESULT hres = S_OK;
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_SRVDescriptorHeapFL.GetHeap() };
 	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
 
@@ -893,8 +900,7 @@ void Graphics::SetSwapBuffer()
 
 void Graphics::EndFrame()
 {
-	HRESULT hres;
-
+	HRESULT hres = S_OK;
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_CommandList);
 
@@ -927,8 +933,7 @@ void Graphics::EndFrame()
 
 void Graphics::WaitForPreviousFrame()
 {
-	HRESULT hres;
-
+	HRESULT hres = S_OK;
 	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
 
 	if (m_Fence[m_FrameIndex]->GetCompletedValue() < m_FenceValue[m_FrameIndex])
@@ -963,31 +968,33 @@ void Graphics::ShutDown()
 	SAFE_RELEASE(m_SwapChain);
 	SAFE_RELEASE(m_CommandQueue);
 	SAFE_RELEASE(m_RTVDescriptorHeap);
-	SAFE_RELEASE(m_CommandList);
 
 	for (uint32_t i = 0; i < FRAME_BUFFER_COUNT; i++)
 	{
+		SAFE_RELEASE(m_GameViewTarget[i]);
 		SAFE_RELEASE(m_RenderTargets[i]);
 		SAFE_RELEASE(m_CommandAllocator[i]);
 		SAFE_RELEASE(m_Fence[i]);
-		//SAFE_RELEASE(m_ConstantBufferUploadHeaps[i])
 	}
 
-	//SAFE_RELEASE(m_PSOArray[0]);
-	//SAFE_RELEASE(m_PSOArray[1]);
+	SAFE_RELEASE(m_CommandList);
+
+	for (uint32_t i = 0; i < MAX_PSO_COUNT; i++)
+	{
+		SAFE_RELEASE(m_PSOArray[i]);
+	}
 
 	SAFE_RELEASE(m_RootSignature);
-	//SAFE_RELEASE(m_VertexBuffer);
-	//SAFE_RELEASE(m_IndexBuffer);
-
-	//SAFE_RELEASE(m_DepthStenil);
-	//SAFE_RELEASE(m_DSDescriptorHeap);
+	
+	SAFE_RELEASE(m_VertexShader);
+	SAFE_RELEASE(m_PixelShader);
+	SAFE_RELEASE(m_CubeMapVertexShader);
+	SAFE_RELEASE(m_CubeMapPixelShader);
 }
 
 bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32_t a_SizeOfCB, ConstantUploadBufferReference& a_ConstBufferReference)
 {
-	HRESULT hres;
-
+	HRESULT hres = S_OK;
 	if (a_RootParamIndex > m_MaxRootCBV)
 	{
 		printf("[GFX::GetRootConstantUploadBufferView]: No root CBV upload heap at [%d] available!", a_RootParamIndex);
