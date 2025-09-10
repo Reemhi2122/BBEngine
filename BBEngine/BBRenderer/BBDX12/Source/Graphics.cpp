@@ -49,7 +49,8 @@ bool Graphics::Initialize()
 
 	if (!CreateGameView())
 	{
-
+		printf("[GFX]: Failed to create Game View");
+		return false;
 	}
 
 	if(!CreateCommandAllocator())
@@ -88,44 +89,11 @@ bool Graphics::Initialize()
 		return false;
 	}
 
-	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
-	dsvDesc.NumDescriptors = 1;
-	dsvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	dsvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	
-	hres = m_Device->CreateDescriptorHeap(&dsvDesc, IID_PPV_ARGS(&m_DSDescriptorHeap));
-	if (FAILED(hres))
+	if(!CreateDepthStencils())
 	{
-		printf("[GFX]: Failed to create DSV Descriptor Heap!");
+		printf("[GFX]: Failed to create DSV!");
 		return false;
 	}
-
-	D3D12_DEPTH_STENCIL_VIEW_DESC dsViewDescription = {};
-	dsViewDescription.Format		= DXGI_FORMAT_D32_FLOAT;
-	dsViewDescription.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	dsViewDescription.Flags			= D3D12_DSV_FLAG_NONE;
-
-	D3D12_CLEAR_VALUE dsClearValue = {};
-	dsClearValue.Format = DXGI_FORMAT_D32_FLOAT;
-	dsClearValue.DepthStencil.Depth = 1.0f;
-	dsClearValue.DepthStencil.Stencil = 0.0f;
-
-	hres = m_Device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL),
-		D3D12_RESOURCE_STATE_DEPTH_WRITE,
-		&dsClearValue,
-		IID_PPV_ARGS(&m_DepthStenil)
-	);
-	m_DepthStenil->SetName(L"Depth Stencil Buffer");
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed create Depth Stencil Buffer heap descriptor!");
-		return false;
-	}
-	
-	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 
 	//Creating a debug texture
 	{
@@ -312,11 +280,12 @@ bool Graphics::CreateDevice()
 
 bool Graphics::CreateDescriptorHeaps()
 {
-	bool res = S_OK;
+	HRESULT hres = S_OK;
+	bool res = true;
 
-	//////////////////////
-	//  SRV DESCRIPTOR  //
-	//////////////////////
+	///////////////////////////
+	//  SRV DESCRIPTOR HEAP  //
+	///////////////////////////
 	D3D12_DESCRIPTOR_HEAP_DESC srvDescriptorHeapDesc = {};
 	srvDescriptorHeapDesc.NumDescriptors = MAX_TEXTURES;
 	srvDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
@@ -329,18 +298,35 @@ bool Graphics::CreateDescriptorHeaps()
 		return false;
 	}
 
-	//////////////////////
-	//  RTV DESCRIPTOR  //
-	//////////////////////
+	///////////////////////////
+	//  RTV DESCRIPTOR HEAP  //
+	///////////////////////////
 	D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptorHeap = {};
-	rtvDescriptorHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvDescriptorHeap.NumDescriptors = TOTAL_RENDER_TARGETS;
+	rtvDescriptorHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	rtvDescriptorHeap.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 
 	res = m_RTVDescriptorHeapFL.Create(m_Device, &rtvDescriptorHeap);
 	if (!res)
 	{
 		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		return false;
+	}
+	
+	///////////////////////////
+	//  DSV DESCRIPTOR HEAP  //
+	///////////////////////////
+	D3D12_DESCRIPTOR_HEAP_DESC dsvDesc = {};
+	dsvDesc.NumDescriptors = 1;
+	dsvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+
+	// Note(Stan):
+	// We should make the DSV descriptor heap also a free list
+	hres = m_Device->CreateDescriptorHeap(&dsvDesc, IID_PPV_ARGS(&m_DSDescriptorHeap));
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed to create DSV Descriptor Heap!");
 		return false;
 	}
 
@@ -437,6 +423,8 @@ bool Graphics::CreateGameView()
 		m_SRVDescriptorHeapFL.Alloc(&m_GRTVShaderResourceView[i].cpuDescHandle, &m_GRTVShaderResourceView[i].gpuDescHandle);
 		m_Device->CreateShaderResourceView(m_GameViewTarget[i], &srvDescriptorDesc, m_GRTVShaderResourceView[i].cpuDescHandle);
 	}
+
+	return true;
 }
 
 bool Graphics::CreateCommandAllocator()
@@ -774,6 +762,38 @@ bool Graphics::CreateAllGraphicsContext()
 	}
 	m_RenderContextMap["cubeMap"] = m_PSOArray[1];
 
+	return true;
+}
+
+bool Graphics::CreateDepthStencils()
+{
+	HRESULT hres = 0;
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsViewDescription = {};
+	dsViewDescription.Format = DXGI_FORMAT_D32_FLOAT;
+	dsViewDescription.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	dsViewDescription.Flags = D3D12_DSV_FLAG_NONE;
+
+	D3D12_CLEAR_VALUE dsClearValue = {};
+	dsClearValue.Format = DXGI_FORMAT_D32_FLOAT;
+	dsClearValue.DepthStencil.Depth = 1.0f;
+	dsClearValue.DepthStencil.Stencil = 0.0f;
+
+	hres = m_Device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL),
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		&dsClearValue,
+		IID_PPV_ARGS(&m_DepthStenil)
+	);
+	m_DepthStenil->SetName(L"Depth Stencil Buffer");
+	if (FAILED(hres))
+	{
+		printf("[GFX]: Failed create Depth Stencil Buffer heap descriptor!");
+		return false;
+	}
+
+	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
 	return true;
 }
 

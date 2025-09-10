@@ -111,6 +111,9 @@ protected:
 	bool CreateRootSignatures();
 	bool CreateShaders();
 	bool CreateAllGraphicsContext() override;
+
+	bool CreateDepthStencils();
+
 	bool InitImGui();
 
 private:
