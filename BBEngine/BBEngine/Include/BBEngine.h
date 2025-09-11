@@ -20,11 +20,11 @@
 //#include "Drawable/Quad.h"
 //
 //#include "DepthStencil.h"
-//
-//#include "Lights/PointLight.h"
-//#include "Lights/SpotLight.h"
-//#include "Lights/DirectionalLight.h"
-//
+
+#include "Lights/PointLight.h"
+#include "Lights/SpotLight.h"
+#include "Lights/DirectionalLight.h"
+
 //#include "Lights.h"
 //#include "Vertexconstant.h"
 
@@ -97,9 +97,9 @@ namespace BBE {
 		GLTFFile m_ABeautifulGameFile;
 		GLTFFile m_GlassVase;
 
-		//DirectionalLight m_DirectionalLight;
-		//Vector<SpotLight> m_SpotLights;
-		//Vector<PointLight> m_PointLights;
+		DirectionalLight m_DirectionalLight;
+		Vector<SpotLight> m_SpotLights;
+		Vector<PointLight> m_PointLights;
 
 		//Quad* m_Quad;
 
