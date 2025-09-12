@@ -169,50 +169,32 @@ namespace BBE
 
         ////m_Quad = BBNew(m_StackAllocator, Quad)(m_Graphics);
 
-        //m_DirectionalLight = 
-
-        //m_PointLights.Push_Back(PointLight(
-        //    Vector3(-5.0f, 2.0f, 0.0f),
-        //    Vector3(0.0f, 0.2f, 0.0f),
-        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-        //    1000.0f
-        //));
-
-        //m_SpotLights.Push_Back(SpotLight(
-        //    Vector3(0.0f, 2.0f, 0.0f),
-        //    Vector3(-1.0f, 0.0f, 0.0f),
-        //    5.f,
-        //    Vector3(0.4f, 0.2f, 0.0f),
-        //    Vector4(0.0f, 0.0f, 0.0f, 1.0f),
-        //    Vector4(1.0f, 1.0f, 1.0f, 1.0f),
-        //    1000.0f
-        //));
-
-        ////Lights
+        ////Directional light
         BBObject* dirLightObject = BBNew(m_StackAllocator, BBObject)("DirectionalLight");
-
         TransformComponent* dirlightTransform = BBNew(m_StackAllocator, TransformComponent)(m_Graphics, Vector3(-20.0f, 50.0f, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
         dirLightObject->AddComponent(dirlightTransform);
-        
         DirectionalLight dirLight = DirectionalLight(Vector3(0.0f, -1.0f, 0.0f), Vector4(0.1f, 0.1f, 0.1f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f));
         DirectionalLightComponent* directionalLightComponent = BBNew(m_StackAllocator, DirectionalLightComponent)(&dirLight, dirlightTransform);
         dirLightObject->AddComponent(directionalLightComponent);
         m_GameObjects.push_back(dirLightObject);
 
-        //BBObject* spotLightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
-        //Transform* spotLightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 2, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //spotLightObject->AddComponent(spotLightTransform);
-        //SpotlightComponent* spotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&m_SpotLights[0], spotLightTransform);
-        //spotLightObject->AddComponent(spotLightComponent);
-        //m_GameObjects.push_back(spotLightObject);
+        ////Spotlight
+        BBObject* spotLightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
+        TransformComponent* spotLightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-3, 2, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        spotLightObject->AddComponent(spotLightTransform);
+        SpotLight spotLight = SpotLight(Vector3(0.0f, 2.0f, 0.0f), Vector3(-1.0f, 0.0f, 0.0f), 5.f, Vector3(0.4f, 0.2f, 0.0f), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), 1000.0f);
+        SpotlightComponent* spotLightComponent = BBNew(m_StackAllocator, SpotlightComponent)(&spotLight, spotLightTransform);
+        spotLightObject->AddComponent(spotLightComponent);
+        m_GameObjects.push_back(spotLightObject);
 
-        //BBObject* pointLightObject = BBNew(m_StackAllocator, BBObject)("PointLight");
-        //Transform* pointlightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-5.0f, 2.0f, 0.0f), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        //pointLightObject->AddComponent(pointlightTransform);
-        //PointLightComponent* pointLightComponent = BBNew(m_StackAllocator, PointLightComponent)(&m_PointLights[0], pointlightTransform);
-        //pointLightObject->AddComponent(pointLightComponent);
-        //m_GameObjects.push_back(pointLightObject);
+        ////Pointlight
+        BBObject* pointLightObject = BBNew(m_StackAllocator, BBObject)("PointLight");
+        TransformComponent* pointlightTransform = BBNew(m_StackAllocator, Transform)(Vector3(-5.0f, 2.0f, 0.0f), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        pointLightObject->AddComponent(pointlightTransform);
+        PointLight pointLight = PointLight(Vector3(-5.0f, 2.0f, 0.0f), Vector3(0.0f, 0.2f, 0.0f), Vector4(0.0f, 0.0f, 0.0f, 1.0f), Vector4(1.0f, 1.0f, 1.0f, 1.0f), 1000.0f);
+        PointLightComponent* pointLightComponent = BBNew(m_StackAllocator, PointLightComponent)(&pointLight, pointlightTransform);
+        pointLightObject->AddComponent(pointLightComponent);
+        m_GameObjects.push_back(pointLightObject);
 
         m_Graphics.CloseInit();
 
@@ -298,16 +280,6 @@ namespace BBE
 
         CheckInput();
     }
-
-    //void BBEngine::DrawAllModels()
-    //{
-    //    for (uint32_t i = 0; i < m_Models.size(); i++)
-    //    {
-    //        m_Graphics.BindShader(ShaderType::VertexShader, m_VertexShader);
-    //        m_Graphics.BindShader(ShaderType::PixelShader, m_PixelShader);
-    //        m_Models[i]->Draw(m_Graphics);
-    //    }
-    //}
 
     //void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
     //{

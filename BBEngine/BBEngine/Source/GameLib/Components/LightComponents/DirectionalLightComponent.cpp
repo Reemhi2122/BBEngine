@@ -40,11 +40,9 @@ void DirectionalLightComponent::Draw(IGraphics& a_Graphics)
 	for (size_t i = 0; i < a_GameObjects.size(); i++)
 	{
 	    BBObject* obj = a_GameObjects[i];
-	    //obj->GetModel()->SetCurrentShader(a_VSShadowMapShader, a_PSShadowMapShader);
 	    m_Graphics.BindShader(ShaderType::VertexShader, a_VSShadowMapShader);
 	    m_Graphics.BindShader(ShaderType::PixelShader, a_PSShadowMapShader);
 	    obj->Draw(m_Graphics);
-	    //obj->GetModel()->ResetShaders();
 	}
 
 	m_Cam2.SetProjection(oldProjection);
