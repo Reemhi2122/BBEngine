@@ -97,9 +97,9 @@ namespace BBE {
 		GLTFFile m_ABeautifulGameFile;
 		GLTFFile m_GlassVase;
 
-		DirectionalLight m_DirectionalLight;
-		Vector<SpotLight> m_SpotLights;
-		Vector<PointLight> m_PointLights;
+		//DirectionalLight m_DirectionalLight;
+		//Vector<SpotLight> m_SpotLights;
+		//Vector<PointLight> m_PointLights;
 
 		//Quad* m_Quad;
 
