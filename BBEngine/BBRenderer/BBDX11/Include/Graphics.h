@@ -112,7 +112,7 @@ public:
 	void UnbindSRV(uint32_t a_Slot);
 
 	// == Lights functions ==
-	void CreateDirLightShadowBuffer(ID3D11DepthStencilView** a_DepthStencilArray);
+	void CreateDirLightShadowBuffer();
 
 	void CreatePointLightDepthCubeMapArray();
 	void CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index);
@@ -163,17 +163,23 @@ private:
 	ID3D11Texture2D*			m_TextureCubeMap = nullptr;
 	ID3D11SamplerState*			m_DepthTextureSampler = nullptr;
 
+	// Directional lights
 	ID3D11Texture2D*			m_DirLightDepthBuffer = nullptr;
+	ID3D11DepthStencilView*		m_DirLightTextureDSV = nullptr;
 	ID3D11ShaderResourceView*	m_DirLightDepthBufferSRV = nullptr;
 
+	// Spot lights
+	ID3D11Texture2D* m_SpotLightsDepthArray = nullptr;
+	ID3D11DepthStencilView* m_SpotLightTextureDSV[TOTAL_SPOTLIGHTS];
+	ID3D11ShaderResourceView* m_SpotLightsDepthArraySRV = nullptr;
+
+	// Point lights
 	ID3D11Texture2D*			m_PointLightDepthCubeArray = nullptr;
+	ID3D11DepthStencilView*		m_PointLightTextureDSV[TOTAL_POINTLIGHTS][6];
 	ID3D11ShaderResourceView*	m_PointLightDepthCubeArraySRV = nullptr;
 
-	ID3D11Texture2D*			m_SpotLightsDepthArray = nullptr;
-	ID3D11ShaderResourceView*	m_SpotLightsDepthArraySRV = nullptr;
-
 	ID3D11BlendState*			m_TransparancyBlendState;
-
+	
 	uint32_t			m_VertexIndex = 0u;
 	VertexShader		m_VertexShaders[100u];
 	uint32_t			m_PixelIndex = 0u;

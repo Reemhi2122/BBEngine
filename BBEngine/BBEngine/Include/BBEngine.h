@@ -86,11 +86,6 @@ namespace BBE {
 
 		//VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 
-		//Note(Stan): Fix this somewhere
-		//ID3D11DepthStencilView* m_PLTextureDepthStencilViews[20][6];
-		//ID3D11DepthStencilView* m_SLTextureDepthStencilViews[120];
-		//ID3D11DepthStencilView* m_DLTextureDepthStencilView;
-
 		GLTFFile m_SponzaFile;
 		GLTFFile m_LanternFile;
 		GLTFFile m_CarFile;

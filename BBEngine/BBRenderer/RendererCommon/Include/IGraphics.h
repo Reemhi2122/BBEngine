@@ -2,12 +2,14 @@
 #include "Camera.h"
 #include "RenderDefinitions.h"
 
-//constexpr uint8_t FRAME_BUFFER_COUNT = 3;
-#define FRAME_BUFFER_COUNT 3
-#define FRAME_TEXTURE_TARGET 3
-#define TOTAL_RENDER_TARGETS 6
-
 #define VSYNC 1
+
+constexpr uint16_t FRAME_BUFFER_COUNT = 3; 
+constexpr uint16_t FRAME_TEXTURE_TARGET = 3;
+constexpr uint16_t TOTAL_RENDER_TARGETS = 6;
+
+constexpr uint16_t TOTAL_SPOTLIGHTS = 120;
+constexpr uint16_t TOTAL_POINTLIGHTS = 20;
 
 typedef uint32_t BBHandle;
 

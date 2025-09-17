@@ -38,9 +38,9 @@ add_library (BBEngine STATIC
 "Source/GameLib/BBComponent.cpp"
 
 #components
-#"Source/GameLib/Components/LightComponents/DirectionalLightComponent.cpp" 
-#"Source/GameLib/Components/LightComponents/PointLightComponent.cpp" 
-#"Source/GameLib/Components/LightComponents/SpotLightComponent.cpp"
+"Source/GameLib/Components/LightComponents/DirectionalLightComponent.cpp" 
+"Source/GameLib/Components/LightComponents/PointLightComponent.cpp" 
+"Source/GameLib/Components/LightComponents/SpotLightComponent.cpp"
 
 "Source/Lights/DirectionalLight.cpp"
 "Source/Lights/SpotLight.cpp"

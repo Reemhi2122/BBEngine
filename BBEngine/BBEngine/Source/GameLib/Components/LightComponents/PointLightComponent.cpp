@@ -8,12 +8,11 @@ PointLightComponent::PointLightComponent(PointLight a_Pointlight, TransformCompo
 
 void PointLightComponent::Update(IGraphics& a_Graphics)
 {
-	m_PointLight->position = m_Transform->GetPosition();
+	m_PointLight.position = m_Transform->GetPosition();
 }
 
 void PointLightComponent::Draw(IGraphics& a_Graphics){}
 
 void PointLightComponent::InspectorDrawUI()
 {
-
 }

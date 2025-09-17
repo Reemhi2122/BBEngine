@@ -173,6 +173,8 @@ bool Graphics::Initialize()
 	m_Device->CreateBlendState(&blendDesc, &m_TransparancyBlendState);
 
 	CreateAllGraphicsContext();
+
+	CreateDirLightShadowBuffer();
 }
 
 BBHandle Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc /*= "main"*/)
@@ -422,7 +424,7 @@ void Graphics::ResetRenderTarget()
 	m_Context->OMSetRenderTargets(1u, m_Target.GetAddressOf(), m_DepthStencilView.Get());
 }
 
-void Graphics::CreateDirLightShadowBuffer(ID3D11DepthStencilView** a_DepthStencilArray)
+void Graphics::CreateDirLightShadowBuffer()
 {
 	INFOMAN;
 	D3D11_TEXTURE2D_DESC textureCubeMapDesc = {};
@@ -446,7 +448,7 @@ void Graphics::CreateDirLightShadowBuffer(ID3D11DepthStencilView** a_DepthStenci
 	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	TextureDepthStencilDesc.Texture2D.MipSlice = 0;
 
-	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_DirLightDepthBuffer, &TextureDepthStencilDesc, a_DepthStencilArray));
+	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_DirLightDepthBuffer, &TextureDepthStencilDesc, &m_DirLightTextureDSV));
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC RSV_desc = {};
 	RSV_desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
