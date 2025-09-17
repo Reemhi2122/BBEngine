@@ -97,20 +97,6 @@ namespace BBE
         BBE:UI::InitializeUI(m_Graphics, &m_RootObjects);
         m_Window.m_Keyboard.EnableAutorepeat();
 
-        //m_Graphics.CreateDirLightShadowBuffer(&m_DLTextureDepthStencilView);
-
-        //m_Graphics.CreatePointLightDepthCubeMapArray();
-        //for (uint32_t i = 0; i < m_PointLights.Size(); i++)
-        //{
-        //    m_Graphics.CreatePointLightDepthCubeMap(m_PLTextureDepthStencilViews[i], i);
-        //}
-
-        //m_Graphics.CreateSpotLightDepthMapArray();
-        //for (uint32_t i = 0; i < m_SpotLights.Size(); i++)
-        //{
-        //    m_Graphics.CreateSpotLightDepthTexture(&m_SLTextureDepthStencilViews[i], i);
-        //}
-        //
         //m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
         //m_PerFrameBuffer.Bind(m_Graphics);
 
