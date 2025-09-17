@@ -1,6 +1,6 @@
 #include "GameLib/Components/LightComponents/PointLightComponent.h"
 
-PointLightComponent::PointLightComponent(PointLight* a_Pointlight, TransformComponent* a_Transform)
+PointLightComponent::PointLightComponent(PointLight a_Pointlight, TransformComponent* a_Transform)
 {
 	m_PointLight = a_Pointlight;
 	m_Transform = a_Transform;

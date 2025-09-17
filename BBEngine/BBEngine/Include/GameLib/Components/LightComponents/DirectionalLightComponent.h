@@ -7,7 +7,7 @@
 class DirectionalLightComponent : public BBComponent
 {
 public:
-	DirectionalLightComponent(DirectionalLight* a_Spotlight, TransformComponent* a_Transform);
+	DirectionalLightComponent(DirectionalLight a_Spotlight, TransformComponent* a_Transform);
 	~DirectionalLightComponent() = default;
 
 	void Update(IGraphics& a_Graphics) override;
@@ -16,6 +16,6 @@ public:
 	void InspectorDrawUI() override;
 
 private:
-	DirectionalLight* m_DirectionalLight;
+	DirectionalLight m_DirectionalLight;
 	TransformComponent* m_Transform;
 };

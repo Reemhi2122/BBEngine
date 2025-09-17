@@ -54,7 +54,6 @@ bool Graphics::Initialize()
 	GFX_THROW_FAILED(m_SwapChain->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_FAILED(m_Device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_Target));
 
-#if 1
 	D3D11_TEXTURE2D_DESC tex_desc {};
 	tex_desc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	tex_desc.Width = 1600u;
@@ -83,7 +82,6 @@ bool Graphics::Initialize()
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
 	m_Device->CreateShaderResourceView(m_GameWindowRT, &shaderResourceViewDesc, &m_GameWindowSRV);
-#endif
 
 	D3D11_SAMPLER_DESC image_sampler_desc = {};
 	image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;

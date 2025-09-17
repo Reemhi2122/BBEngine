@@ -7,7 +7,7 @@
 class PointLightComponent : public BBComponent
 {
 public:
-	PointLightComponent(PointLight* a_Spotlight, TransformComponent* a_Transform);
+	PointLightComponent(PointLight a_Spotlight, TransformComponent* a_Transform);
 	~PointLightComponent() = default;
 
 	void Update(IGraphics& a_Graphics) override;
@@ -16,6 +16,6 @@ public:
 	void InspectorDrawUI() override;
 
 private:
-	PointLight* m_PointLight;
+	PointLight m_PointLight;
 	TransformComponent* m_Transform;
 };

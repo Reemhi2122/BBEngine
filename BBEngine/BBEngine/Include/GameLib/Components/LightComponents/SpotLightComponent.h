@@ -7,7 +7,7 @@
 class SpotlightComponent : public BBComponent
 {
 public:
-	SpotlightComponent(SpotLight* a_Spotlight, TransformComponent* a_Transform);
+	SpotlightComponent(SpotLight a_Spotlight, TransformComponent* a_Transform);
 	~SpotlightComponent() = default;
 
 	void Update(IGraphics& a_Graphics) override;
@@ -16,6 +16,6 @@ public:
 	void InspectorDrawUI() override;
 
 private:
-	SpotLight* m_Spotlight;
+	SpotLight m_Spotlight;
 	TransformComponent* m_Transform;
 };
