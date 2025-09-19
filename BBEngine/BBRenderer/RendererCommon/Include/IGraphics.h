@@ -11,7 +11,8 @@ constexpr uint16_t TOTAL_RENDER_TARGETS = 6;
 constexpr uint16_t TOTAL_SPOTLIGHTS = 120;
 constexpr uint16_t TOTAL_POINTLIGHTS = 20;
 
-typedef uint32_t BBHandle;
+typedef int32_t BBHandle;
+constexpr int32_t INVALID_HANDLE = -1;
 
 enum class ShaderType
 {

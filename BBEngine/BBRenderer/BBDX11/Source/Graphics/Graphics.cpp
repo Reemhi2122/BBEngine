@@ -174,7 +174,11 @@ bool Graphics::Initialize()
 
 	CreateAllGraphicsContext();
 
+	// Initialize lights
 	CreateDirLightShadowBuffer();
+
+	CreatePointLightDepthCubeMapArray();
+	CreateSpotLightDepthMapArray();
 }
 
 BBHandle Graphics::CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc /*= "main"*/)
@@ -500,9 +504,15 @@ void Graphics::CreatePointLightDepthCubeMapArray()
 	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_PointLightDepthCubeArray, &RSV_desc, &m_PointLightDepthCubeArraySRV));
 }
 
-void Graphics::CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index)
+BBHandle Graphics::CreatePointLightDepthCubeMap()
 {
 	INFOMAN;
+	
+	if (m_CurrentPointLightDSVIndex >= TOTAL_POINTLIGHTS)
+	{
+		return INVALID_HANDLE;
+	}
+
 	for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
 	{
 		D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
@@ -510,11 +520,15 @@ void Graphics::CreatePointLightDepthCubeMap(ID3D11DepthStencilView** a_DepthSten
 		TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 		TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
-		TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = (CUBEMAP_SIZE * index) + i;
+		TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = (CUBEMAP_SIZE * m_CurrentPointLightDSVIndex) + i;
 		TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
 
-		GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_PointLightDepthCubeArray, &TextureDepthStencilDesc, &a_DepthStencilArray[i]));
+		m_CurrentPointLightDSVIndex++;
+
+		GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_PointLightDepthCubeArray, &TextureDepthStencilDesc, &m_PointLightTextureDSV[m_CurrentPointLightDSVIndex][i]));
 	}
+
+	return m_CurrentPointLightDSVIndex;
 }
 
 void Graphics::CreateSpotLightDepthMapArray()
@@ -556,19 +570,26 @@ void Graphics::CreateSpotLightDepthMapArray()
 	GFX_THROW_FAILED(m_Device->CreateShaderResourceView(m_SpotLightsDepthArray, &TextureDepthShaderResourceViewDesc, &m_SpotLightsDepthArraySRV));
 }
 
-void Graphics::CreateSpotLightDepthTexture(ID3D11DepthStencilView** a_DepthStencilArray, uint32_t index)
+BBHandle Graphics::CreateSpotLightDepthTexture()
 {
 	INFOMAN;
+
+	if (m_CurrentPointLightDSVIndex >= TOTAL_POINTLIGHTS)
+	{
+		return INVALID_HANDLE;
+	}
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC TextureDepthStencilDesc{};
 	TextureDepthStencilDesc.Flags = 0;
 	TextureDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	TextureDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
 	TextureDepthStencilDesc.Texture2DArray.ArraySize = 1;
-	TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = index;
+	TextureDepthStencilDesc.Texture2DArray.FirstArraySlice = m_CurrentSpotLightDSVIndex;
 	TextureDepthStencilDesc.Texture2DArray.MipSlice = 0;
 
-	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightsDepthArray, &TextureDepthStencilDesc, a_DepthStencilArray));
+	GFX_THROW_FAILED(m_Device->CreateDepthStencilView(m_SpotLightsDepthArray, &TextureDepthStencilDesc, m_PointLightTextureDSV[m_CurrentSpotLightDSVIndex]));
+	
+	return m_CurrentSpotLightDSVIndex;
 }
 
 //uint32_t Graphics::CreateTexture(const char* a_Path)
