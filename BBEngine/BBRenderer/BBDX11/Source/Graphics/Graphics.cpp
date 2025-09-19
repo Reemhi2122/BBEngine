@@ -299,6 +299,7 @@ bool Graphics::CreateAllGraphicsContext()
 
 	//////////////////////
 	// **** PSO 02 **** //
+	// 	   CUBE MAP		//
 	//////////////////////
 	curContext = &m_AllRenderContext[1];
 	curContext->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/VSCubeMap.hlsl");
@@ -313,6 +314,25 @@ bool Graphics::CreateAllGraphicsContext()
 	curContext->Topology = new DX11Topology(*this, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	curContext->Sampler = new DX11Sampler(*this);
 	m_RenderContextMap["cubeMap"] = curContext;
+
+	//////////////////////
+	// **** PSO 02 **** //
+	//	   SHADOW MAP   //
+	//////////////////////
+	curContext = &m_AllRenderContext[2];
+	curContext->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/VSShadowMap.hlsl");
+	curContext->PixelShader = CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl");
+
+	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied3 = {
+		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA , 0},
+		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA , 0},
+		{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	};
+	curContext->Layout = new DX11InputLayout(*this, ied3, GetVertexShaderByteCode(curContext->VertexShader).Get());
+	curContext->Topology = new DX11Topology(*this, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	curContext->Sampler = new DX11Sampler(*this);
+	m_RenderContextMap["shadowMap"] = curContext;
+
 	return true;
 }
 
@@ -343,18 +363,21 @@ bool Graphics::BindDSVDirLight()
 {
 	m_Context->OMSetRenderTargets(0u, 0, m_DirLightTextureDSV);
 	m_Context->ClearDepthStencilView(m_DirLightTextureDSV, D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	return true;
 }
 
 bool Graphics::BindDSVSpotLight(BBHandle a_DepthStencilHandle)
 {
 	m_Context->OMSetRenderTargets(0u, 0, m_SpotLightTextureDSV[a_DepthStencilHandle]);
 	m_Context->ClearDepthStencilView(m_SpotLightTextureDSV[a_DepthStencilHandle], D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	return true;
 }
 
 bool Graphics::BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index)
 {
 	m_Context->OMSetRenderTargets(0u, 0, m_PointLightTextureDSV[a_DepthStencilHandle][a_Index]);
 	m_Context->ClearDepthStencilView(m_PointLightTextureDSV[a_DepthStencilHandle][a_Index], D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	return true;
 }
 
 void Graphics::BindDepthSampler() 

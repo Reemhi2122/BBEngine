@@ -114,7 +114,6 @@ namespace BBE
         //m_RTTVertexShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VSDrawToTexture.hlsl");
         //m_RTTPixelShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSDrawToTexture.hlsl");
 
-        //m_VSShadowMapShader = m_Graphics.CreateShader(ShaderType::VertexShader, "Assets/VSShadowMap.hlsl");
         //m_PSShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl");
         
         //m_PSSpotLightShadowMapShader = m_Graphics.CreateShader(ShaderType::PixelShader, "Assets/PSShadowMap.hlsl", "SpotLightPS");
@@ -215,9 +214,9 @@ namespace BBE
 
         m_Skybox->Draw(m_Graphics);
 
-    //    cbPerFrame FrameConstantBuffer;
-    //    FrameConstantBuffer.directionalLight = m_DirectionalLight;
-    //    CalculateLightShadowMapDirectionalLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader);
+        //cbPerFrame FrameConstantBuffer;
+        //FrameConstantBuffer.directionalLight = m_DirectionalLight;
+        CalculateLightShadowMapDirectionalLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader);
 
     //    for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
     //        FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
@@ -289,13 +288,15 @@ namespace BBE
         m_Graphics.SetCamera(&m_Cam2);
         m_Graphics.BindDSVDirLight();
     
+        m_Graphics.SetGraphicsContext("shadowMap");
+
         for (size_t i = 0; i < a_GameObjects.size(); i++)
         {
             BBObject* obj = a_GameObjects[i];
-            m_Graphics.BindShader(ShaderType::VertexShader, a_VSShadowMapShader);
-            m_Graphics.BindShader(ShaderType::PixelShader, a_PSShadowMapShader);
             obj->Draw(m_Graphics);
         }
+
+        m_Graphics.SetGraphicsContext("main");
 
         m_Cam2.SetProjection(oldProjection);
         m_Cam2.SetViewPort(1024, 1024);
