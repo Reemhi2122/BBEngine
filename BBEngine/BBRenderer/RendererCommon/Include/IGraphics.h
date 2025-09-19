@@ -43,7 +43,6 @@ public:
 	virtual Camera* GetCamera() const  = 0;
 	virtual void SetCamera(Camera* a_Camera) = 0;
 
-
 	virtual BBRenderDevice* GetDevice() const noexcept = 0;
 	virtual BBGraphicsCommandList* GetCommandList() const { return nullptr; };
 	virtual uint8_t GetFrameCount() const { return 0; };
@@ -56,6 +55,10 @@ public:
 	//End DX11 specific
 
 	virtual bool SetGraphicsContext(const char* a_Context) = 0;
+
+	virtual bool BindDSVDirLight() = 0;
+	virtual bool BindDSVSpotLight(BBHandle a_DepthStencilHandle) = 0;
+	virtual bool BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index) = 0;
 
 	//virtual BBHandle CreateShader(ShaderType a_Type, std::string a_Path, std::string a_EntryPointFunc = "main") = 0;
 	//virtual void BindShader(ShaderType a_Type, BBHandle a_Shader) = 0;

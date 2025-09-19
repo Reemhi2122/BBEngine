@@ -99,7 +99,9 @@ public:
 	void ResetRenderTarget();
 	void SetGameViewRenderTarget();
 
-	void BindDepthStencil(BBHandle a_DepthStencilHandle);
+	bool BindDSVDirLight() override;
+	bool BindDSVSpotLight(BBHandle a_DepthStencilHandle) override;
+	bool BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index) override;
 	
 	void BindDepthSampler();
 

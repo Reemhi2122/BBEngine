@@ -270,7 +270,7 @@ namespace BBE
         Vector3 focusPoint = Vector3(0, 0, 0);
 
         float length = sqrt(cx * cx + cy * cy + cz * cz);
-        m_DirectionalLight.direction = Vector3(cx / length, cy / length, cz / length);
+        //m_DirectionalLight.direction = Vector3(cx / length, cy / length, cz / length);
 
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(FakePos.x, FakePos.y, FakePos.z, 0),
@@ -283,11 +283,11 @@ namespace BBE
         m_Cam2.SetProjection(projection);
         m_Cam2.SetViewPort(8192, 8192);
 
-        m_DirectionalLight.lightView = DirectX::XMMatrixTranspose(lightView * projection);
+        //m_DirectionalLight.lightView = DirectX::XMMatrixTranspose(lightView * projection);
 
         m_Cam2.m_ViewMatrix = lightView;
         m_Graphics.SetCamera(&m_Cam2);
-        m_Graphics.SetDepthStencilTarget(m_DLTextureDepthStencilView);
+        m_Graphics.BindDSVDirLight();
     
         for (size_t i = 0; i < a_GameObjects.size(); i++)
         {

@@ -339,10 +339,22 @@ void Graphics::SetGameViewRenderTarget()
 	m_Context->OMSetRenderTargets(1u, &m_GameWindowRTV, m_DepthStencilView.Get());
 }
 
-void Graphics::BindDepthStencil(BBHandle a_DepthStencilHandle)
+bool Graphics::BindDSVDirLight()
 {
-	m_Context->OMSetRenderTargets(0u, 0, a_Target);
-	m_Context->ClearDepthStencilView(a_Target, D3D11_CLEAR_DEPTH, 1.0f, 0u);
+	m_Context->OMSetRenderTargets(0u, 0, m_DirLightTextureDSV);
+	m_Context->ClearDepthStencilView(m_DirLightTextureDSV, D3D11_CLEAR_DEPTH, 1.0f, 0u);
+}
+
+bool Graphics::BindDSVSpotLight(BBHandle a_DepthStencilHandle)
+{
+	m_Context->OMSetRenderTargets(0u, 0, m_SpotLightTextureDSV[a_DepthStencilHandle]);
+	m_Context->ClearDepthStencilView(m_SpotLightTextureDSV[a_DepthStencilHandle], D3D11_CLEAR_DEPTH, 1.0f, 0u);
+}
+
+bool Graphics::BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index)
+{
+	m_Context->OMSetRenderTargets(0u, 0, m_PointLightTextureDSV[a_DepthStencilHandle][a_Index]);
+	m_Context->ClearDepthStencilView(m_PointLightTextureDSV[a_DepthStencilHandle][a_Index], D3D11_CLEAR_DEPTH, 1.0f, 0u);
 }
 
 void Graphics::BindDepthSampler() 
