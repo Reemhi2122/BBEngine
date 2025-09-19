@@ -4,12 +4,14 @@
 
 #define VSYNC 1
 
-constexpr uint16_t FRAME_BUFFER_COUNT = 3; 
-constexpr uint16_t FRAME_TEXTURE_TARGET = 3;
-constexpr uint16_t TOTAL_RENDER_TARGETS = 6;
+constexpr uint8_t FRAME_BUFFER_COUNT = 3; 
+constexpr uint8_t FRAME_TEXTURE_TARGET = 3;
+constexpr uint8_t TOTAL_RENDER_TARGETS = 6;
 
-constexpr uint16_t TOTAL_SPOTLIGHTS = 120;
-constexpr uint16_t TOTAL_POINTLIGHTS = 20;
+constexpr uint8_t TOTAL_SPOTLIGHTS = 120;
+constexpr uint8_t TOTAL_POINTLIGHTS = 20;
+
+constexpr uint8_t CUBEMAP_SIZE = 20;
 
 typedef int32_t BBHandle;
 constexpr int32_t INVALID_HANDLE = -1;

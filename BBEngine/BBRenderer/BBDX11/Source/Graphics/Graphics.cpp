@@ -339,7 +339,7 @@ void Graphics::SetGameViewRenderTarget()
 	m_Context->OMSetRenderTargets(1u, &m_GameWindowRTV, m_DepthStencilView.Get());
 }
 
-void Graphics::SetDepthStencilTarget(ID3D11DepthStencilView* a_Target)
+void Graphics::BindDepthStencil(BBHandle a_DepthStencilHandle)
 {
 	m_Context->OMSetRenderTargets(0u, 0, a_Target);
 	m_Context->ClearDepthStencilView(a_Target, D3D11_CLEAR_DEPTH, 1.0f, 0u);

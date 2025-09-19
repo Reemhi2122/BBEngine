@@ -49,9 +49,9 @@ namespace BBE {
 		void DrawUI();
 		void RenderDebugOptions();
 
-		//void CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader);
-		//void CalculateLightShadowMapSpotLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index);
-		//void CalculateLightShadowMapPointLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index);
+		void CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader);
+		void CalculateLightShadowMapSpotLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index);
+		void CalculateLightShadowMapPointLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index);
 
 		std::vector<BBObject*>* GetGameObjects() { return &m_GameObjects; };
 

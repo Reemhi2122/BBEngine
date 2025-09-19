@@ -99,8 +99,7 @@ public:
 	void ResetRenderTarget();
 	void SetGameViewRenderTarget();
 
-	void SetDepthStencilTarget();
-	void SetDepthStencilTarget(ID3D11DepthStencilView* a_Target);
+	void BindDepthStencil(BBHandle a_DepthStencilHandle);
 	
 	void BindDepthSampler();
 
@@ -143,7 +142,7 @@ public:
 
 	Microsoft::WRL::ComPtr<ID3DBlob> GetVertexShaderByteCode(BBHandle a_Shader) const;
 
-	ID3D11ShaderResourceView* m_TextureDepthSRV[6];
+	ID3D11ShaderResourceView* m_TextureDepthSRV[CUBEMAP_SIZE];
 	ID3D11ShaderResourceView* m_SpotLightsDepthTest = nullptr;
 
 private:
@@ -174,14 +173,14 @@ private:
 	ID3D11ShaderResourceView* m_SpotLightsDepthArraySRV = nullptr;
 
 	ID3D11DepthStencilView* m_SpotLightTextureDSV[TOTAL_SPOTLIGHTS];
-	uint32_t				m_CurrentSpotLightDSVIndex = 0;
+	uint16_t				m_CurrentSpotLightDSVIndex = 0;
 
 	// Point lights
 	ID3D11Texture2D*			m_PointLightDepthCubeArray = nullptr;
 	ID3D11ShaderResourceView*	m_PointLightDepthCubeArraySRV = nullptr;
 
-	ID3D11DepthStencilView* m_PointLightTextureDSV[TOTAL_POINTLIGHTS][6];
-	uint32_t				m_CurrentPointLightDSVIndex = 0;
+	ID3D11DepthStencilView* m_PointLightTextureDSV[TOTAL_POINTLIGHTS][CUBEMAP_SIZE];
+	uint16_t				m_CurrentPointLightDSVIndex = 0;
 
 	ID3D11BlendState*			m_TransparancyBlendState;
 	
