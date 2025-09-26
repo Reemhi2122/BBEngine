@@ -143,40 +143,56 @@ float4 main(VSOut psin) : SV_Target
     psin.normal = normalize(psin.normal);
 
     float4 diffuse = baseColor;
-    if (hasBaseColorTexture)
-    {
+    //if (hasBaseColorTexture)
+    //{
         diffuse = tex.Sample(splr, psin.tex);
-        diffuse *= baseColor;
-    }
+        //diffuse *= baseColor;
+    //}
     
     //if (hasKhrVolumeTexture)
     //{
     //    diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
     //}
     
-    if (diffuse.a < 0.01f)
-        discard;
+    //if (diffuse.a < 0.01f)
+    //    discard;
     
-    float4 finalColor = float4(0, 0, 0, 1);
+    //float4 finalColor = float4(0, 0, 0, 1);
     
-    float4 curLightView;
-    float4 curFragLightPos;
+    //float4 curLightView;
+    //float4 curFragLightPos;
     
-    curLightView = mul(psin.worldPos, directionalLight.lightView);
-    curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
-    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight, curFragLightPos), diffuse.a);
+    //curLightView = mul(psin.worldPos, directionalLight.lightView);
+    //curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
+    //finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight, curFragLightPos), diffuse.a);
 
-    for (int i = 0; i < MAXLIGHTS; i++)
-    {
-        finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i], i), diffuse.a);
-    }
+    //for (int i = 0; i < MAXLIGHTS; i++)
+    //{
+    //    finalColor += float4(CalculatePointLight(psin, diffuse, pointlights[i], i), diffuse.a);
+    //}
 
-    for (int i = 0; i < MAXLIGHTS; i++)
-    {
-        curLightView = mul(psin.worldPos, spotlights[i].lightView);
-        curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
-        finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], curFragLightPos, i), diffuse.a);
-    }
+    //for (int i = 0; i < MAXLIGHTS; i++)
+    //{
+    //    curLightView = mul(psin.worldPos, spotlights[i].lightView);
+    //    curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
+    //    finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], curFragLightPos, i), diffuse.a);
+    //}
     
-    return finalColor;
+    //return finalColor;
+    
+    return diffuse;
 };
+
+//Texture2D mainTex : register(t0);
+//SamplerState texSampler : register(s0);
+
+//struct VS_OUT
+//{
+//    float4 pos : SV_POSITION;
+//    float2 texCoords : TEXCOORD;
+//};
+
+//float4 main(VS_OUT psin) : SV_TARGET
+//{
+//    return mainTex.Sample(texSampler, psin.texCoords.xy);
+//}

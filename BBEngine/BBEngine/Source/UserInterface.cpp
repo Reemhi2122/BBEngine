@@ -279,14 +279,21 @@ namespace BBE
                 }
             }
             ImGui::End();*/
-
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
             ImGui::Begin("GameWindow");
             {
-                ImVec2 size = ImGui::GetWindowSize();
-                ImGui::Image((ImTextureID)a_Graphics.GetGameViewRSV(), size);
+                ImVec2 vMin = ImGui::GetWindowContentRegionMin();
+                ImVec2 vMax = ImGui::GetWindowContentRegionMax();
+
+                vMax.x -= vMin.x;
+                vMax.y -= vMin.y;
+
+                ImVec2 size = ImGui::GetContentRegionMax();
+                ImGui::Image((ImTextureID)a_Graphics.GetGameViewRSV(), vMax);
                 //ImGui::Image((ImTextureID)(void*)a_Graphics.GetGameViewRSV(), size);
             }
             ImGui::End();
+            ImGui::PopStyleVar();
         }
     }
 }

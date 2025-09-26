@@ -284,8 +284,8 @@ bool Graphics::CreateAllGraphicsContext()
 	// **** PSO 01 **** //
 	//////////////////////
 	curContext = &m_AllRenderContext[0];
-	curContext->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/DefaultVS.hlsl");
-	curContext->PixelShader = CreateShader(ShaderType::PixelShader, "Assets/DefaultPS.hlsl");
+	curContext->VertexShader = CreateShader(ShaderType::VertexShader, "Assets/VertexShader.hlsl");
+	curContext->PixelShader = CreateShader(ShaderType::PixelShader, "Assets/PixelShader.hlsl");
 	
 	const std::vector <D3D11_INPUT_ELEMENT_DESC> ied = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA , 0},
@@ -316,7 +316,7 @@ bool Graphics::CreateAllGraphicsContext()
 	m_RenderContextMap["cubeMap"] = curContext;
 
 	//////////////////////
-	// **** PSO 02 **** //
+	// **** PSO 03 **** //
 	//	   SHADOW MAP   //
 	//////////////////////
 	curContext = &m_AllRenderContext[2];

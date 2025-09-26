@@ -2,8 +2,8 @@
 
 cbuffer CBuf : register(b0)
 {
-    matrix ViewProjectionMatrix;
-    matrix WorldMatrix;
+    matrix WVPMatrix;
+    matrix WorldTransform;
 };
 
 struct VSOut
@@ -19,12 +19,12 @@ VSOut main(float3 pos : Position, float2 tex : TexCoord, float3 normal : Normal)
 {
     VSOut vso;
     
-    matrix WVP = mul(WorldMatrix, ViewProjectionMatrix);
+    matrix MVP = mul(WorldTransform, WVPMatrix);
     
-    vso.pos = mul(float4(pos, 1.0f), WVP);
-    vso.worldPos = mul(float4(pos, 1.0f), WorldMatrix);
+    vso.pos = mul(float4(pos, 1.0f), MVP);
+    vso.worldPos = mul(float4(pos, 1.0f), WorldTransform);
     vso.tex = tex;
-    vso.normal = mul(normal, WorldMatrix);
+    vso.normal = mul(normal, WorldTransform);
     //const float4 test = mul(vso.worldPos, lightMatrix[0]);
     //vso.FragPosLightSpace = test * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * test.w);
     return vso;
