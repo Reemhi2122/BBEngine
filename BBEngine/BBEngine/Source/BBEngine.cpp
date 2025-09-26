@@ -121,14 +121,14 @@ namespace BBE
         ////Models
         Model* Sponza = BBNew(m_StackAllocator, Model)(m_Graphics, "Sponza", &m_SponzaFile, m_VertexShader, m_PixelShader);
         m_Models.push_back(Sponza);
-        Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
-        m_Models.push_back(lantern);
-        Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
-        m_Models.push_back(car);
+        //Model* lantern = BBNew(m_StackAllocator, Model)(m_Graphics, "Lantern", &m_LanternFile, m_VertexShader, m_PixelShader);
+        //m_Models.push_back(lantern);
+        //Model* car = BBNew(m_StackAllocator, Model)(m_Graphics, "Car", &m_CarFile, m_VertexShader, m_PixelShader);
+        //m_Models.push_back(car);
         //Model* glassVase = BBNew(m_StackAllocator, Model)(m_Graphics, "GlassVase", &m_GlassVase, m_VertexShader, m_PixelShader);
         //m_Models.push_back(glassVase);
-        Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, "ChessGame", &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
-        m_Models.push_back(aBeautifulGame);
+        //Model* aBeautifulGame = BBNew(m_StackAllocator, Model)(m_Graphics, "ChessGame", &m_ABeautifulGameFile, m_VertexShader, m_PixelShader);
+        //m_Models.push_back(aBeautifulGame);
 
         //Skybox
         m_Skybox = BBNew(m_StackAllocator, Skybox)(m_Graphics);
@@ -143,14 +143,14 @@ namespace BBE
             }
         }
 
-        Transform LanternTransform = Transform(Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.1f, 0.1f, 0.1f));
-        BBObject::CreateObjectsFromModel(m_Graphics, lantern, &m_LanternFile, &m_GameObjects, &m_RootObjects, LanternTransform, "Lantern");
+        //Transform LanternTransform = Transform(Vector3(3, 0, 0), Vector3(0, 0, 0), Vector3(0.1f, 0.1f, 0.1f));
+        //BBObject::CreateObjectsFromModel(m_Graphics, lantern, &m_LanternFile, &m_GameObjects, &m_RootObjects, LanternTransform, "Lantern");
 
-        Transform carTransform = Transform(Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(1.0f, 1.0f, 1.0f));
-        BBObject::CreateObjectsFromModel(m_Graphics, car, &m_CarFile, &m_GameObjects, &m_RootObjects, carTransform, "Car");
+        //Transform carTransform = Transform(Vector3(0, 2, 0), Vector3(0, 0, 0), Vector3(1.0f, 1.0f, 1.0f));
+        //BBObject::CreateObjectsFromModel(m_Graphics, car, &m_CarFile, &m_GameObjects, &m_RootObjects, carTransform, "Car");
 
-        Transform chessGame = Transform(Vector3(10, 0, 0), Vector3(0, 0, 0), Vector3(1.0f, 1.0f, 1.0f));
-        BBObject::CreateObjectsFromModel(m_Graphics, aBeautifulGame, &m_ABeautifulGameFile, &m_GameObjects, &m_RootObjects, chessGame, "Chess");
+        //Transform chessGame = Transform(Vector3(10, 0, 0), Vector3(0, 0, 0), Vector3(1.0f, 1.0f, 1.0f));
+        //BBObject::CreateObjectsFromModel(m_Graphics, aBeautifulGame, &m_ABeautifulGameFile, &m_GameObjects, &m_RootObjects, chessGame, "Chess");
 
         ////Directional light
         BBObject* dirLightObject = BBNew(m_StackAllocator, BBObject)("DirectionalLight");

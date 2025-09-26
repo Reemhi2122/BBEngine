@@ -25,7 +25,7 @@
 #include "Lights/SpotLight.h"
 #include "Lights/DirectionalLight.h"
 
-//#include "Lights.h"
+#include "Lights.h"
 //#include "Vertexconstant.h"
 
 class DX11InputLayout;
@@ -80,9 +80,9 @@ namespace BBE {
 		DX11InputLayout* m_InputLayout;
 		DX11Topology* m_Topology;
 
-		//PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
-		//PixelConstantBuffer<ShadowMapCreation> m_ShadowMapCB;
-		//ShadowMapCreation m_ShadowMapCBBuffer;
+		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
+		PixelConstantBuffer<ShadowMapCreation> m_ShadowMapCB;
+		ShadowMapCreation m_ShadowMapCBBuffer;
 
 		//VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
 
@@ -95,8 +95,6 @@ namespace BBE {
 		//DirectionalLight m_DirectionalLight;
 		//Vector<SpotLight> m_SpotLights;
 		//Vector<PointLight> m_PointLights;
-
-		//Quad* m_Quad;
 
 		//Note(Stan):	I hate this but it should work
 		Graphics& m_Graphics = m_Window.GetGraphics();

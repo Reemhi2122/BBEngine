@@ -143,19 +143,19 @@ float4 main(VSOut psin) : SV_Target
     psin.normal = normalize(psin.normal);
 
     float4 diffuse = baseColor;
-    //if (hasBaseColorTexture)
-    //{
+    if (hasBaseColorTexture)
+    {
         diffuse = tex.Sample(splr, psin.tex);
-        //diffuse *= baseColor;
-    //}
+        diffuse *= baseColor;
+    }
     
-    //if (hasKhrVolumeTexture)
-    //{
-    //    diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
-    //}
+    if (hasKhrVolumeTexture)
+    {
+        diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
+    }
     
-    //if (diffuse.a < 0.01f)
-    //    discard;
+    if (diffuse.a < 0.01f)
+        discard;
     
     //float4 finalColor = float4(0, 0, 0, 1);
     
@@ -182,17 +182,3 @@ float4 main(VSOut psin) : SV_Target
     
     return diffuse;
 };
-
-//Texture2D mainTex : register(t0);
-//SamplerState texSampler : register(s0);
-
-//struct VS_OUT
-//{
-//    float4 pos : SV_POSITION;
-//    float2 texCoords : TEXCOORD;
-//};
-
-//float4 main(VS_OUT psin) : SV_TARGET
-//{
-//    return mainTex.Sample(texSampler, psin.texCoords.xy);
-//}

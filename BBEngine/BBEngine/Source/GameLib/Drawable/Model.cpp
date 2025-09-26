@@ -92,8 +92,8 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 		}
 	}
 
-	//m_ModelPixelBuffer = new RootConstantBuffer<MaterialConstant>();
-	//m_ModelPixelBuffer->Create(a_Gfx, 2, 1);
+	m_ModelPixelBuffer = new PixelConstantBuffer<MaterialConstant>();
+	m_ModelPixelBuffer->Create(a_Gfx, 2, 1);
 
 	m_VertexShader = m_CurVertexShader = a_VertexShader;
 	m_PixelShader = m_CurPixelShader = a_PixelShader;
@@ -137,6 +137,7 @@ void Model::AddToDraw(DirectX::XMMATRIX a_Transform)
 void Model::Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept
 {
 	m_CurTransform->Bind(a_Gfx);
+	m_ModelPixelBuffer->Bind(a_Gfx);
 	for (size_t i = 0; i < m_Nodes[a_NodeIndex].primitiveCount; i++)
 	{
 		ModelNode::ModelPrimitive& curPrimitive = m_Nodes[a_NodeIndex].primitives[i];
@@ -156,7 +157,7 @@ void Model::Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept
 
 		//a_Gfx.SetBlendState(curPrimitive.m_Blend);
 
-		//m_ModelPixelBuffer->Update(a_Gfx, curPrimitive.m_MaterialConstant);
+		m_ModelPixelBuffer->Update(a_Gfx, curPrimitive.m_MaterialConstant);
 
 		curPrimitive.vBuffer->Bind(a_Gfx);
 		curPrimitive.m_IndexBuffer->Bind(a_Gfx);
@@ -172,7 +173,8 @@ void Model::Draw(IGraphics& a_Gfx, uint32_t a_NodeIndex) noexcept
 
 		//a_Gfx.SetBlendState(BBE::AlphaMode::OPAQUE_MODE);
 	}
-	//m_ModelPixelBuffer->UnBind(a_Gfx);
+	m_ModelPixelBuffer->UnBind(a_Gfx);
+	m_CurTransform->UnBind(a_Gfx);
 }
 
 void Model::DrawInstanced(IGraphics& a_Gfx, uint32_t a_InstanceCount) noexcept
