@@ -176,7 +176,6 @@ bool Graphics::Initialize()
 
 	// Initialize lights
 	CreateDirLightShadowBuffer();
-
 	CreatePointLightDepthCubeMapArray();
 	CreateSpotLightDepthMapArray();
 }

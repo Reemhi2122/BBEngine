@@ -61,6 +61,9 @@ namespace BBE {
 
 		std::vector<BBObject*> m_GameObjects;
 		std::vector<BBObject*> m_RootObjects;
+		
+		std::vector<BBObject*> m_Lights;
+
 		std::vector<Model*> m_Models;
 		//DrawToTexture* m_DrawToTexture;
 

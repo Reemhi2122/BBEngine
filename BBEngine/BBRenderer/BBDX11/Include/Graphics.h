@@ -168,14 +168,14 @@ private:
 	ID3D11Texture2D*			m_DirLightDepthBuffer = nullptr;
 	ID3D11ShaderResourceView*	m_DirLightDepthBufferSRV = nullptr;
 
-	ID3D11DepthStencilView* m_DirLightTextureDSV = nullptr;
+	ID3D11DepthStencilView*		m_DirLightTextureDSV = nullptr;
 
 	// Spot lights
-	ID3D11Texture2D* m_SpotLightsDepthArray = nullptr;
-	ID3D11ShaderResourceView* m_SpotLightsDepthArraySRV = nullptr;
+	ID3D11Texture2D*			m_SpotLightsDepthArray = nullptr;
+	ID3D11ShaderResourceView*	m_SpotLightsDepthArraySRV = nullptr;
 
-	ID3D11DepthStencilView* m_SpotLightTextureDSV[TOTAL_SPOTLIGHTS];
-	uint16_t				m_CurrentSpotLightDSVIndex = 0;
+	ID3D11DepthStencilView*		m_SpotLightTextureDSV[TOTAL_SPOTLIGHTS];
+	uint16_t					m_CurrentSpotLightDSVIndex = 0;
 
 	// Point lights
 	ID3D11Texture2D*			m_PointLightDepthCubeArray = nullptr;
