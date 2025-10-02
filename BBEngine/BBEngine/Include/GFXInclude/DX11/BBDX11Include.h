@@ -29,6 +29,12 @@ static VertexConstantBuffer<T>* GFXCreateConstantBuffer()
 	return new VertexConstantBuffer<T>();
 };
 
+template<typename T>
+static PixelConstantBuffer<T>* GFXCreatePixelConstantBuffer()
+{
+	return new PixelConstantBuffer<T>();
+};
+
 static DX11CubeMap* GFXCreateCubeMap()
 {
 	return new DX11CubeMap();

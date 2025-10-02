@@ -25,6 +25,12 @@ void* GFXCreateConstantBuffer()
 	return nullptr;
 };
 
+template<typename T>
+static void* GFXCreatePixelConstantBuffer()
+{
+	return nullptr;
+};
+
 void* GFXCreateCubeMap()
 {
 	return nullptr;

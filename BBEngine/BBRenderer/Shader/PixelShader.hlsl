@@ -157,14 +157,14 @@ float4 main(VSOut psin) : SV_Target
     if (diffuse.a < 0.01f)
         discard;
     
-    //float4 finalColor = float4(0, 0, 0, 1);
+    float4 finalColor = float4(0, 0, 0, 1);
     
-    //float4 curLightView;
-    //float4 curFragLightPos;
+    float4 curLightView;
+    float4 curFragLightPos;
     
-    //curLightView = mul(psin.worldPos, directionalLight.lightView);
-    //curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
-    //finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight, curFragLightPos), diffuse.a);
+    curLightView = mul(psin.worldPos, directionalLight.lightView);
+    curFragLightPos = curLightView * float4(0.5f, -0.5f, 1.0f, 1.0f) + (float4(0.5f, 0.5f, 0.0f, 0.0f) * curLightView.w);
+    finalColor += float4(CalculateDirectionalLight(psin, diffuse, directionalLight, curFragLightPos), diffuse.a);
 
     //for (int i = 0; i < MAXLIGHTS; i++)
     //{
@@ -178,7 +178,7 @@ float4 main(VSOut psin) : SV_Target
     //    finalColor += float4(CalculateSpotLight(psin, diffuse, spotlights[i], curFragLightPos, i), diffuse.a);
     //}
     
-    //return finalColor;
+    return finalColor;
     
-    return diffuse;
+    //return diffuse;
 };

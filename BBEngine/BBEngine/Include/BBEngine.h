@@ -49,7 +49,7 @@ namespace BBE {
 		void DrawUI();
 		void RenderDebugOptions();
 
-		void CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader);
+		void CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects);
 		void CalculateLightShadowMapSpotLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, uint32_t a_Index);
 		void CalculateLightShadowMapPointLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader, PointLight a_Spotlight, uint32_t a_Index);
 
@@ -83,8 +83,8 @@ namespace BBE {
 		DX11InputLayout* m_InputLayout;
 		DX11Topology* m_Topology;
 
-		PixelConstantBuffer<cbPerFrame> m_PerFrameBuffer;
-		PixelConstantBuffer<ShadowMapCreation> m_ShadowMapCB;
+		IConstantBuffer<cbPerFrame>* m_PerFrameBuffer;
+		IConstantBuffer<ShadowMapCreation>* m_ShadowMapCB;
 		ShadowMapCreation m_ShadowMapCBBuffer;
 
 		//VertexConstantBuffer<vcbPerFrame> m_LightMatrix;
@@ -95,7 +95,7 @@ namespace BBE {
 		GLTFFile m_ABeautifulGameFile;
 		GLTFFile m_GlassVase;
 
-		//DirectionalLight m_DirectionalLight;
+		DirectionalLight m_DirectionalLight;
 		//Vector<SpotLight> m_SpotLights;
 		//Vector<PointLight> m_PointLights;
 

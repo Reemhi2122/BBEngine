@@ -221,30 +221,29 @@ namespace BBE
 
         void DrawRandomUI(Graphics& a_Graphics)
         {
-            //ImGui::Begin("ShadowMapWindow");
-            //{
-            //    if (ImGui::TreeNode("Point Light"))
-            //    {
-            //        for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
-            //        {
-            //            ImGui::Image((ImTextureID)(void*)a_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
-            //        }
-            //        ImGui::TreePop();
-            //    }
+            ImGui::Begin("ShadowMapWindow");
+            {
+                //if (ImGui::TreeNode("Point Light"))
+                //{
+                //    for (uint32_t i = 0; i < CUBEMAP_SIZE; i++)
+                //    {
+                //        ImGui::Image((ImTextureID)(void*)a_Graphics.m_TextureDepthSRV[i], ImVec2(200, 200));
+                //    }
+                //    ImGui::TreePop();
+                //}
 
-            //    if (ImGui::TreeNode("Spot Light"))
-            //    {
-            //        ImGui::Image((ImTextureID)(void*)a_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
-            //        ImGui::TreePop();
-            //    }
-
-            //    if (ImGui::TreeNode("Directional Light"))
-            //    {
-            //        ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
-            //        ImGui::TreePop();
-            //    }
-            //}
-            //ImGui::End();
+                //if (ImGui::TreeNode("Spot Light"))
+                //{
+                //    ImGui::Image((ImTextureID)(void*)a_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
+                //    ImGui::TreePop();
+                //}
+                if (ImGui::TreeNode("Directional Light"))
+                {
+                    ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::End();
 
             /*if (ImGui::Begin("Game Options"))
             {

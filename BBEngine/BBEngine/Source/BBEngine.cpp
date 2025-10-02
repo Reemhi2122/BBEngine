@@ -97,8 +97,8 @@ namespace BBE
         BBE:UI::InitializeUI(m_Graphics, &m_RootObjects);
         m_Window.m_Keyboard.EnableAutorepeat();
 
-        //m_PerFrameBuffer = PixelConstantBuffer<cbPerFrame>(m_Graphics);
-        //m_PerFrameBuffer.Bind(m_Graphics);
+        m_PerFrameBuffer = GFXCreatePixelConstantBuffer<cbPerFrame>();
+        m_PerFrameBuffer->Create(m_Graphics);
 
         //m_ShadowMapCB = PixelConstantBuffer<ShadowMapCreation>(m_Graphics, 1, 1);
         //m_ShadowMapCB.Bind(m_Graphics);
@@ -143,13 +143,15 @@ namespace BBE
         //BBObject::CreateObjectsFromModel(m_Graphics, aBeautifulGame, &m_ABeautifulGameFile, &m_GameObjects, &m_RootObjects, chessGame, "Chess");
 
         ////Directional light
-        BBObject* dirLightObject = BBNew(m_StackAllocator, BBObject)("DirectionalLight");
-        TransformComponent* dirlightTransform = BBNew(m_StackAllocator, TransformComponent)(m_Graphics, Vector3(-20.0f, 50.0f, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
-        dirLightObject->AddComponent(dirlightTransform);
-        DirectionalLight dirLight = DirectionalLight(Vector3(0.0f, -1.0f, 0.0f), Vector4(0.1f, 0.1f, 0.1f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f));
-        DirectionalLightComponent* directionalLightComponent = BBNew(m_StackAllocator, DirectionalLightComponent)(dirLight, dirlightTransform);
-        dirLightObject->AddComponent(directionalLightComponent);
-        m_Lights.push_back(dirLightObject);
+        //BBObject* dirLightObject = BBNew(m_StackAllocator, BBObject)("DirectionalLight");
+        //TransformComponent* dirlightTransform = BBNew(m_StackAllocator, TransformComponent)(m_Graphics, Vector3(-20.0f, 50.0f, 0), Vector3(0, 0, 0), Vector3(0.2f, 0.2f, 0.2f));
+        //dirLightObject->AddComponent(dirlightTransform);
+        //DirectionalLight dirLight = DirectionalLight(Vector3(0.0f, -1.0f, 0.0f), Vector4(0.1f, 0.1f, 0.1f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f));
+        //DirectionalLightComponent* directionalLightComponent = BBNew(m_StackAllocator, DirectionalLightComponent)(dirLight, dirlightTransform);
+        //dirLightObject->AddComponent(directionalLightComponent);
+        //m_Lights.push_back(dirLightObject);
+
+        m_DirectionalLight = DirectionalLight(Vector3(0.0f, -1.0f, 0.0f), Vector4(0.1f, 0.1f, 0.1f, 1.0f), Vector4(0.5f, 0.5f, 0.5f, 1.0f));
 
         ////Spotlight
         //BBObject* spotLightObject = BBNew(m_StackAllocator, BBObject)("SpotLight");
@@ -204,9 +206,9 @@ namespace BBE
 
         m_Skybox->Draw(m_Graphics);
 
-        //cbPerFrame FrameConstantBuffer;
-        //FrameConstantBuffer.directionalLight = m_DirectionalLight;
-        CalculateLightShadowMapDirectionalLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader);
+        cbPerFrame FrameConstantBuffer;
+        FrameConstantBuffer.directionalLight = m_DirectionalLight;
+        CalculateLightShadowMapDirectionalLight(m_GameObjects);
 
     //    for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
     //        FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
@@ -218,26 +220,27 @@ namespace BBE
     //        CalculateLightShadowMapPointLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i], i);
     //    }
 
-    //    m_PerFrameBuffer.Update(m_Graphics, FrameConstantBuffer);
+        m_PerFrameBuffer->Update(m_Graphics, FrameConstantBuffer);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++)
         {
             m_GameObjects[i]->Update(m_Graphics);
         }
-    //   
-    //    m_Graphics.BindDepthSampler();
-    //    m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
+
+        m_Graphics.BindDepthSampler();
+        m_PerFrameBuffer->Bind(m_Graphics);
+        //m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
     //    m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
-    //    m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
+        m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
         }
 
-    //    m_Graphics.UnbindSRV(1);
+        //m_Graphics.UnbindSRV(1);
     //    m_Graphics.UnbindSRV(2);
     //    m_Graphics.UnbindSRV(3);
-    //    m_Graphics.UnbindSRV(4);
+        m_Graphics.UnbindSRV(4);
 
 #ifdef BBDX11
         m_Graphics.ResetRenderTarget();
@@ -252,14 +255,14 @@ namespace BBE
         CheckInput();
     }
 
-    void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects, uint32_t a_VSShadowMapShader, uint32_t a_PSShadowMapShader)
+    void BBEngine::CalculateLightShadowMapDirectionalLight(std::vector<BBObject*>& a_GameObjects)
     {
         float cx = -20.0f, cy = 50.0f, cz = 0.0f;
         Vector3 FakePos = Vector3(cx, cy, cz);
         Vector3 focusPoint = Vector3(0, 0, 0);
 
         float length = sqrt(cx * cx + cy * cy + cz * cz);
-        //m_DirectionalLight.direction = Vector3(cx / length, cy / length, cz / length);
+        m_DirectionalLight.direction = Vector3(cx / length, cy / length, cz / length);
 
         DirectX::XMMATRIX lightView = DirectX::XMMatrixLookAtLH(
             DirectX::XMVectorSet(FakePos.x, FakePos.y, FakePos.z, 0),
@@ -267,12 +270,12 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(150.f, 150.f, 0.5f, 500.f);
+        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(150.f, 150.f, 0.5f, 1000.f);
         DirectX::XMMATRIX oldProjection = m_Cam2.GetProjection();
         m_Cam2.SetProjection(projection);
         m_Cam2.SetViewPort(8192, 8192);
 
-        //m_DirectionalLight.lightView = DirectX::XMMatrixTranspose(lightView * projection);
+        m_DirectionalLight.lightView = DirectX::XMMatrixTranspose(lightView * projection);
 
         m_Cam2.m_ViewMatrix = lightView;
         m_Graphics.SetCamera(&m_Cam2);
