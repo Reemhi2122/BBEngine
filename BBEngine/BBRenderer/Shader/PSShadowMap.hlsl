@@ -6,7 +6,7 @@ struct VSOut
     float3 worldPos : WorldPosition;
 };
 
-float main(VSOut psin) : SV_Depth
+float PointLightPS(VSOut psin) : SV_Depth
 {
     float3 lightToPixelVec = psin.worldPos - pointlights[index].position;
     float lightDistance = length(lightToPixelVec);
@@ -14,5 +14,5 @@ float main(VSOut psin) : SV_Depth
     return lightDistance / 100;
 };
 
-void SpotLightPS(VSOut psin)
+void main(VSOut psin)
 {};

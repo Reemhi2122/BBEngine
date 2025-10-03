@@ -270,7 +270,7 @@ namespace BBE
             DirectX::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
         );
 
-        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(100.f, 100.f, 0.5f, 1000.f);
+        DirectX::XMMATRIX projection = DirectX::XMMatrixOrthographicLH(150.f, 150.f, 0.5f, 1000.f);
         DirectX::XMMATRIX oldProjection = m_Cam2.GetProjection();
         m_Cam2.SetProjection(projection);
         m_Cam2.SetViewPort(8192, 8192);

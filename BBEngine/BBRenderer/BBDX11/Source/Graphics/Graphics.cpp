@@ -360,21 +360,21 @@ void Graphics::SetGameViewRenderTarget()
 
 bool Graphics::BindDSVDirLight()
 {
-	m_Context->OMSetRenderTargets(0u, 0, m_DirLightTextureDSV);
+	m_Context->OMSetRenderTargets(0u, NULL, m_DirLightTextureDSV);
 	m_Context->ClearDepthStencilView(m_DirLightTextureDSV, D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	return true;
 }
 
 bool Graphics::BindDSVSpotLight(BBHandle a_DepthStencilHandle)
 {
-	m_Context->OMSetRenderTargets(0u, 0, m_SpotLightTextureDSV[a_DepthStencilHandle]);
+	m_Context->OMSetRenderTargets(0u, NULL, m_SpotLightTextureDSV[a_DepthStencilHandle]);
 	m_Context->ClearDepthStencilView(m_SpotLightTextureDSV[a_DepthStencilHandle], D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	return true;
 }
 
 bool Graphics::BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index)
 {
-	m_Context->OMSetRenderTargets(0u, 0, m_PointLightTextureDSV[a_DepthStencilHandle][a_Index]);
+	m_Context->OMSetRenderTargets(0u, NULL, m_PointLightTextureDSV[a_DepthStencilHandle][a_Index]);
 	m_Context->ClearDepthStencilView(m_PointLightTextureDSV[a_DepthStencilHandle][a_Index], D3D11_CLEAR_DEPTH, 1.0f, 0u);
 	return true;
 }
