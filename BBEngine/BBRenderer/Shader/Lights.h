@@ -7,6 +7,7 @@
 struct DirectionalLight
 {
     float3 dir;
+    float  pad0;
     float4 ambient;
     float4 diffuse;
     float4x4 lightView;

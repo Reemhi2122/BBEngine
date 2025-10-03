@@ -179,6 +179,4 @@ float4 main(VSOut psin) : SV_Target
     //}
     
     return finalColor;
-    
-    //return diffuse;
 };
