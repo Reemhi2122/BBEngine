@@ -653,129 +653,197 @@ bool Graphics::CreateAllGraphicsContext()
 	//////////////////////
 	// **** PSO 01 **** //
 	//////////////////////
-	D3D12_INPUT_ELEMENT_DESC PSO1InputLayout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
-		{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	};
+		D3D12_INPUT_ELEMENT_DESC PSO1InputLayout[] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+			{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		};
 
-	D3D12_INPUT_LAYOUT_DESC PSO1InputLayoutDesc = {};
-	PSO1InputLayoutDesc.NumElements = sizeof(PSO1InputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
-	PSO1InputLayoutDesc.pInputElementDescs = PSO1InputLayout;
+		D3D12_INPUT_LAYOUT_DESC PSO1InputLayoutDesc = {};
+		PSO1InputLayoutDesc.NumElements = sizeof(PSO1InputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
+		PSO1InputLayoutDesc.pInputElementDescs = PSO1InputLayout;
 
-	DXGI_SAMPLE_DESC PSO1SampleDesc = {};
-	PSO1SampleDesc.Count = 1;
-	PSO1SampleDesc.Quality = 0;
+		DXGI_SAMPLE_DESC PSO1SampleDesc = {};
+		PSO1SampleDesc.Count = 1;
+		PSO1SampleDesc.Quality = 0;
 
-	//Note(Stan): Standard STENCIL_OP for now
-	const D3D12_DEPTH_STENCILOP_DESC PSO1DefaultStencilOp = { D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_COMPARISON_FUNC_ALWAYS };
+		//Note(Stan): Standard STENCIL_OP for now
+		const D3D12_DEPTH_STENCILOP_DESC PSO1DefaultStencilOp = { D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_COMPARISON_FUNC_ALWAYS };
 
-	D3D12_DEPTH_STENCIL_DESC PSO1DepthStencilDesc = {};
-	PSO1DepthStencilDesc.DepthEnable = true;
-	PSO1DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	PSO1DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-	PSO1DepthStencilDesc.StencilEnable = false;
-	PSO1DepthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
-	PSO1DepthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
-	PSO1DepthStencilDesc.FrontFace = PSO1DefaultStencilOp;
-	PSO1DepthStencilDesc.BackFace = PSO1DefaultStencilOp;
+		D3D12_DEPTH_STENCIL_DESC PSO1DepthStencilDesc = {};
+		PSO1DepthStencilDesc.DepthEnable = true;
+		PSO1DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		PSO1DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		PSO1DepthStencilDesc.StencilEnable = false;
+		PSO1DepthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+		PSO1DepthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+		PSO1DepthStencilDesc.FrontFace = PSO1DefaultStencilOp;
+		PSO1DepthStencilDesc.BackFace = PSO1DefaultStencilOp;
 
-	//Create the Pipeline State Object
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO1Desc = {};
-	PSO1Desc.InputLayout = PSO1InputLayoutDesc;
-	PSO1Desc.pRootSignature = m_RootSignature;
-	PSO1Desc.VS = m_VertexShaderByteCode;
-	PSO1Desc.PS = m_PixelShaderByteCode;
-	PSO1Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	PSO1Desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	PSO1Desc.SampleDesc = PSO1SampleDesc;
-	PSO1Desc.SampleMask = 0xffffffff;
-	PSO1Desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	PSO1Desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	PSO1Desc.NumRenderTargets = 1;
-	PSO1Desc.DepthStencilState = PSO1DepthStencilDesc;
+		//Create the Pipeline State Object
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO1Desc = {};
+		PSO1Desc.InputLayout = PSO1InputLayoutDesc;
+		PSO1Desc.pRootSignature = m_RootSignature;
+		PSO1Desc.VS = m_VertexShaderByteCode;
+		PSO1Desc.PS = m_PixelShaderByteCode;
+		PSO1Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		PSO1Desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		PSO1Desc.SampleDesc = PSO1SampleDesc;
+		PSO1Desc.SampleMask = 0xffffffff;
+		PSO1Desc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+		PSO1Desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+		PSO1Desc.NumRenderTargets = 1;
+		PSO1Desc.DepthStencilState = PSO1DepthStencilDesc;
 
-	hres = m_Device->CreateGraphicsPipelineState(&PSO1Desc, IID_PPV_ARGS(&m_PSOArray[0]));
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to create the Graphics Pipeline Object");
-		return false;
+		hres = m_Device->CreateGraphicsPipelineState(&PSO1Desc, IID_PPV_ARGS(&m_PSOArray[0]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create the Graphics Pipeline Object");
+			return false;
+		}
+		m_RenderContextMap["main"] = m_PSOArray[0];
 	}
-	m_RenderContextMap["main"] = m_PSOArray[0];
 
 	//////////////////////
 	// **** PSO 02 **** //
 	//////////////////////
-	D3D12_INPUT_ELEMENT_DESC PSO2InputLayout[] =
 	{
-		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
-		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
-		{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	};
+		D3D12_INPUT_ELEMENT_DESC PSO2InputLayout[] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+			{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		};
 
-	D3D12_INPUT_LAYOUT_DESC PSO2InputLayoutDescs = {};
-	PSO2InputLayoutDescs.NumElements = sizeof(PSO2InputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
-	PSO2InputLayoutDescs.pInputElementDescs = PSO2InputLayout;
+		D3D12_INPUT_LAYOUT_DESC PSO2InputLayoutDescs = {};
+		PSO2InputLayoutDescs.NumElements = sizeof(PSO2InputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
+		PSO2InputLayoutDescs.pInputElementDescs = PSO2InputLayout;
 
-	DXGI_SAMPLE_DESC PSO2sampleDesc = {};
-	PSO2sampleDesc.Count = 1;
-	PSO2sampleDesc.Quality = 0;
+		DXGI_SAMPLE_DESC PSO2sampleDesc = {};
+		PSO2sampleDesc.Count = 1;
+		PSO2sampleDesc.Quality = 0;
 
-	//Note(Stan): Standard STENCIL_OP for now
-	const D3D12_DEPTH_STENCILOP_DESC PSO2DefaultStencilOp = { D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_COMPARISON_FUNC_ALWAYS };
+		//Note(Stan): Standard STENCIL_OP for now
+		const D3D12_DEPTH_STENCILOP_DESC PSO2DefaultStencilOp = { D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_COMPARISON_FUNC_ALWAYS };
 
-	D3D12_DEPTH_STENCIL_DESC PSO2DepthStencilDesc = {};
-	PSO2DepthStencilDesc.DepthEnable = true;
-	PSO2DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	PSO2DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-	PSO2DepthStencilDesc.StencilEnable = false;
-	PSO2DepthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
-	PSO2DepthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
-	PSO2DepthStencilDesc.FrontFace = PSO2DefaultStencilOp;
-	PSO2DepthStencilDesc.BackFace = PSO2DefaultStencilOp;
+		D3D12_DEPTH_STENCIL_DESC PSO2DepthStencilDesc = {};
+		PSO2DepthStencilDesc.DepthEnable = true;
+		PSO2DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		PSO2DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		PSO2DepthStencilDesc.StencilEnable = false;
+		PSO2DepthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+		PSO2DepthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+		PSO2DepthStencilDesc.FrontFace = PSO2DefaultStencilOp;
+		PSO2DepthStencilDesc.BackFace = PSO2DefaultStencilOp;
 
-	D3D12_RASTERIZER_DESC rastirizerDesc = {};
-	rastirizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	rastirizerDesc.CullMode = D3D12_CULL_MODE_BACK;
-	rastirizerDesc.FrontCounterClockwise = FALSE;
-	rastirizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
-	rastirizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
-	rastirizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-	rastirizerDesc.DepthClipEnable = TRUE;
-	rastirizerDesc.MultisampleEnable = FALSE;
-	rastirizerDesc.AntialiasedLineEnable = FALSE;
-	rastirizerDesc.ForcedSampleCount = 0;
-	rastirizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+		D3D12_RASTERIZER_DESC rastirizerDesc = {};
+		rastirizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+		rastirizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+		rastirizerDesc.FrontCounterClockwise = FALSE;
+		rastirizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
+		rastirizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
+		rastirizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+		rastirizerDesc.DepthClipEnable = TRUE;
+		rastirizerDesc.MultisampleEnable = FALSE;
+		rastirizerDesc.AntialiasedLineEnable = FALSE;
+		rastirizerDesc.ForcedSampleCount = 0;
+		rastirizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 
-	//Create the Pipeline State Object
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO2Desc = {};
-	PSO2Desc.InputLayout = PSO2InputLayoutDescs;
-	PSO2Desc.pRootSignature = m_RootSignature;
-	PSO2Desc.VS = m_CubeMapVertexShaderByteCode;
-	PSO2Desc.PS = m_CubeMapPixelShaderByteCode;
-	PSO2Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	PSO2Desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	PSO2Desc.SampleDesc = PSO2sampleDesc;
-	PSO2Desc.SampleMask = 0xffffffff;
-	PSO2Desc.RasterizerState = rastirizerDesc;
-	PSO2Desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	PSO2Desc.NumRenderTargets = 1;
-	PSO2Desc.DepthStencilState = PSO2DepthStencilDesc;
+		//Create the Pipeline State Object
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO2Desc = {};
+		PSO2Desc.InputLayout = PSO2InputLayoutDescs;
+		PSO2Desc.pRootSignature = m_RootSignature;
+		PSO2Desc.VS = m_CubeMapVertexShaderByteCode;
+		PSO2Desc.PS = m_CubeMapPixelShaderByteCode;
+		PSO2Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		PSO2Desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		PSO2Desc.SampleDesc = PSO2sampleDesc;
+		PSO2Desc.SampleMask = 0xffffffff;
+		PSO2Desc.RasterizerState = rastirizerDesc;
+		PSO2Desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+		PSO2Desc.NumRenderTargets = 1;
+		PSO2Desc.DepthStencilState = PSO2DepthStencilDesc;
 
-	hres = m_Device->CreateGraphicsPipelineState(&PSO2Desc, IID_PPV_ARGS(&m_PSOArray[1]));
-	if (FAILED(hres))
-	{
-		printf("[GFX]: Failed to create the Graphics Pipeline Object");
-		return false;
+		hres = m_Device->CreateGraphicsPipelineState(&PSO2Desc, IID_PPV_ARGS(&m_PSOArray[1]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create the Graphics Pipeline Object");
+			return false;
+		}
+		m_RenderContextMap["cubeMap"] = m_PSOArray[1];
 	}
-	m_RenderContextMap["cubeMap"] = m_PSOArray[1];
-
 
 	//////////////////////
 	// **** PSO 03 **** //
+	//	   SHADOW MAP   //
 	//////////////////////
+	{
+		D3D12_INPUT_ELEMENT_DESC shadowMapPSO_InputLayout[] =
+		{
+			{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+			{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA , 0},
+			{ "Normal",	 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		};
 
+		D3D12_INPUT_LAYOUT_DESC shadowMapPSO_InputLayoutDesc = {};
+		shadowMapPSO_InputLayoutDesc.NumElements = sizeof(shadowMapPSO_InputLayout) / sizeof(D3D12_INPUT_ELEMENT_DESC);
+		shadowMapPSO_InputLayoutDesc.pInputElementDescs = shadowMapPSO_InputLayout;
+
+		DXGI_SAMPLE_DESC shadowMapPSO_SampleDesc = {};
+		shadowMapPSO_SampleDesc.Count = 1;
+		shadowMapPSO_SampleDesc.Quality = 0;
+
+		const D3D12_DEPTH_STENCILOP_DESC shadowMapPSO_DefaultStencilOp = { D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_STENCIL_OP_KEEP, D3D12_COMPARISON_FUNC_ALWAYS };
+
+		D3D12_DEPTH_STENCIL_DESC shadowMapPSO_DepthStencilDesc = {};
+		shadowMapPSO_DepthStencilDesc.DepthEnable = true;
+		shadowMapPSO_DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		shadowMapPSO_DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		shadowMapPSO_DepthStencilDesc.StencilEnable = false;
+		shadowMapPSO_DepthStencilDesc.StencilReadMask = D3D12_DEFAULT_STENCIL_READ_MASK;
+		shadowMapPSO_DepthStencilDesc.StencilWriteMask = D3D12_DEFAULT_STENCIL_WRITE_MASK;
+		shadowMapPSO_DepthStencilDesc.FrontFace = shadowMapPSO_DefaultStencilOp;
+		shadowMapPSO_DepthStencilDesc.BackFace = shadowMapPSO_DefaultStencilOp;
+	
+		D3D12_RASTERIZER_DESC shadowMapPSO_RastirizerDesc = {};
+		shadowMapPSO_RastirizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+		shadowMapPSO_RastirizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+		shadowMapPSO_RastirizerDesc.FrontCounterClockwise = FALSE;
+		shadowMapPSO_RastirizerDesc.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
+		shadowMapPSO_RastirizerDesc.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
+		shadowMapPSO_RastirizerDesc.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+		shadowMapPSO_RastirizerDesc.DepthClipEnable = TRUE;
+		shadowMapPSO_RastirizerDesc.MultisampleEnable = FALSE;
+		shadowMapPSO_RastirizerDesc.AntialiasedLineEnable = FALSE;
+		shadowMapPSO_RastirizerDesc.ForcedSampleCount = 0;
+		shadowMapPSO_RastirizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
+		//Create the Pipeline State Object
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowMapPSO_Desc = {};
+		shadowMapPSO_Desc.InputLayout = shadowMapPSO_InputLayoutDesc;
+		shadowMapPSO_Desc.pRootSignature = m_RootSignature;
+		shadowMapPSO_Desc.VS = m_CubeMapVertexShaderByteCode;
+		shadowMapPSO_Desc.PS = m_CubeMapPixelShaderByteCode;
+		shadowMapPSO_Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		shadowMapPSO_Desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		shadowMapPSO_Desc.SampleDesc = shadowMapPSO_SampleDesc;
+		shadowMapPSO_Desc.SampleMask = 0xffffffff;
+		shadowMapPSO_Desc.RasterizerState = shadowMapPSO_RastirizerDesc;
+		shadowMapPSO_Desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+		shadowMapPSO_Desc.NumRenderTargets = 1;
+		shadowMapPSO_Desc.DepthStencilState = shadowMapPSO_DepthStencilDesc;
+
+
+		hres = m_Device->CreateGraphicsPipelineState(&shadowMapPSO_Desc, IID_PPV_ARGS(&m_PSOArray[2]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create the Graphics Pipeline Object");
+			return false;
+		}
+		m_RenderContextMap["shadowMap"] = m_PSOArray[2];
+	}
 
 	return true;
 }

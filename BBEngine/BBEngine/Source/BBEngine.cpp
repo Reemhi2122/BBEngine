@@ -210,15 +210,15 @@ namespace BBE
         FrameConstantBuffer.directionalLight = m_DirectionalLight;
         CalculateLightShadowMapDirectionalLight(m_GameObjects);
 
-    //    for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
-    //        FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
-    //        CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader, i);
-    //    }
-    //    
-    //    for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
-    //        FrameConstantBuffer.pointlights[i] = m_PointLights[i];
-    //        CalculateLightShadowMapPointLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i], i);
-    //    }
+        //for (uint32_t i = 0; i < m_SpotLights.Size(); i++) {
+        //    FrameConstantBuffer.spotlights[i] = m_SpotLights[i];
+        //    CalculateLightShadowMapSpotLight(m_GameObjects, m_VSShadowMapShader, m_PSSpotLightShadowMapShader, i);
+        //}
+        //
+        //for (uint32_t i = 0; i < m_PointLights.Size(); i++) {
+        //    FrameConstantBuffer.pointlights[i] = m_PointLights[i];
+        //    CalculateLightShadowMapPointLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i], i);
+        //}
 
         m_PerFrameBuffer->Update(m_Graphics, FrameConstantBuffer);
 
@@ -230,7 +230,7 @@ namespace BBE
         m_Graphics.BindDepthSampler();
         m_PerFrameBuffer->Bind(m_Graphics);
         //m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
-    //    m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
+        //m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
         m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
@@ -238,8 +238,8 @@ namespace BBE
         }
 
         //m_Graphics.UnbindSRV(1);
-    //    m_Graphics.UnbindSRV(2);
-    //    m_Graphics.UnbindSRV(3);
+        //m_Graphics.UnbindSRV(2);
+        //m_Graphics.UnbindSRV(3);
         m_Graphics.UnbindSRV(4);
 
 #ifdef BBDX11
