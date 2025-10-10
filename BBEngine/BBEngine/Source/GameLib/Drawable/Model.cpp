@@ -92,7 +92,7 @@ Model::Model(IGraphics& a_Gfx, const char* a_Name, BBE::GLTFFile* a_File, uint32
 		}
 	}
 
-	m_ModelPixelBuffer = new PixelConstantBuffer<MaterialConstant>();
+	m_ModelPixelBuffer = GFXCreatePixelConstantBuffer<MaterialConstant>();
 	m_ModelPixelBuffer->Create(a_Gfx, 2, 1);
 
 	m_VertexShader = m_CurVertexShader = a_VertexShader;

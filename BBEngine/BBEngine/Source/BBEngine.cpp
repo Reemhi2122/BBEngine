@@ -227,22 +227,23 @@ namespace BBE
             m_GameObjects[i]->Update(m_Graphics);
         }
 
+#ifdef BBDX11
         m_Graphics.BindDepthSampler();
         m_PerFrameBuffer->Bind(m_Graphics);
         //m_Graphics.BindDepthTexture(m_Graphics.GetPointLightDepthCubeArrayRSV(), 2, 1);
         //m_Graphics.BindDepthTexture(m_Graphics.GetSpotLightDepthMapArrayRSV(), 3, 1);
         m_Graphics.BindDepthTexture(m_Graphics.GetDirectionLightDepthMapRSV(), 4, 1);
+#endif
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {
             m_GameObjects[i]->Draw(m_Graphics);
         }
 
+#ifdef BBDX11
         //m_Graphics.UnbindSRV(1);
         //m_Graphics.UnbindSRV(2);
         //m_Graphics.UnbindSRV(3);
         m_Graphics.UnbindSRV(4);
-
-#ifdef BBDX11
         m_Graphics.ResetRenderTarget();
 #endif
 
@@ -293,7 +294,9 @@ namespace BBE
 
         m_Cam2.SetProjection(oldProjection);
         m_Cam2.SetViewPort(1024, 1024);
+#ifdef BBDX11
         m_Graphics.SetGameViewRenderTarget();
+#endif
         m_Graphics.SetCamera(&m_Cam1);
     }
 

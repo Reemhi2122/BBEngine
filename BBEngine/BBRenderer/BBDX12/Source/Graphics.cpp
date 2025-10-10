@@ -887,6 +887,21 @@ bool Graphics::SetGraphicsContext(const char* a_Context)
 	return true;
 }
 
+bool Graphics::BindDSVDirLight()
+{
+	return true;
+}
+
+bool Graphics::BindDSVSpotLight(BBHandle a_DepthStencilHandle)
+{
+	return true;
+}
+
+bool Graphics::BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index)
+{
+	return true;
+}
+
 bool Graphics::CloseInit()
 {
 	HRESULT hres = S_OK;

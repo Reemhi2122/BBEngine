@@ -98,6 +98,10 @@ public:
 
 	bool SetGraphicsContext(const char* a_Context) override;
 
+	bool BindDSVDirLight() override;
+	bool BindDSVSpotLight(BBHandle a_DepthStencilHandle) override;
+	bool BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index) override;
+
 protected:
 	bool CreateDevice();
 	bool CreateSwapChain();

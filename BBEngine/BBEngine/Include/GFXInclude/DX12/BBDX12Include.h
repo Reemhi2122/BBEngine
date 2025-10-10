@@ -26,6 +26,12 @@ static RootConstantBuffer<T>* GFXCreateConstantBuffer()
 	return new RootConstantBuffer<T>();
 };
 
+template<typename T>
+static RootConstantBuffer<T>* GFXCreatePixelConstantBuffer()
+{
+	return new RootConstantBuffer<T>();
+};
+
 static DX12CubeMap* GFXCreateCubeMap()
 {
 	return new DX12CubeMap();
