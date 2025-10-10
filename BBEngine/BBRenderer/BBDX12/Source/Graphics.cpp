@@ -515,69 +515,113 @@ bool Graphics::CreateFence()
 bool Graphics::CreateRootSignatures()
 {
 	HRESULT hres = S_OK;
-	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
-	descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
-	descriptorTableRange[0].BaseShaderRegister = 0;
-	descriptorTableRange[0].RegisterSpace = 0;
-	descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
-	cbDescriptorTable.NumDescriptorRanges = 1;
-	cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
-
-	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
-	rootCBVDescriptor.ShaderRegister = 0;
-	rootCBVDescriptor.RegisterSpace = 0;
-
-	D3D12_ROOT_PARAMETER rootParams[2] = {};
-	rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	rootParams[0].Descriptor = rootCBVDescriptor;
-	rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-
-	rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	rootParams[1].DescriptorTable = cbDescriptorTable;
-	rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
-	staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
-	staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	staticSamplers[0].MipLODBias = 0;
-	staticSamplers[0].MaxAnisotropy = 0;
-	staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-	staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
-	staticSamplers[0].MinLOD = 0;
-	staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
-	staticSamplers[0].ShaderRegister = 0;
-	staticSamplers[0].RegisterSpace = 0;
-	staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-	rootSignatureDesc.NumParameters = 2;
-	rootSignatureDesc.pParameters = rootParams;
-	rootSignatureDesc.NumStaticSamplers = 1;
-	rootSignatureDesc.pStaticSamplers = staticSamplers;
-	rootSignatureDesc.Flags =
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
-
-	ID3DBlob* signature;
-	hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
-	if (FAILED(hres))
+	///////////////////////
+	// **** ROOT 01 **** //
+	///////////////////////
 	{
-		printf("[GFX]: Failed to serialize Root Signature!");
-		return false;
+		D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
+		descriptorTableRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+		descriptorTableRange[0].NumDescriptors = MAX_TEXTURES;
+		descriptorTableRange[0].BaseShaderRegister = 0;
+		descriptorTableRange[0].RegisterSpace = 0;
+		descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+		D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+		cbDescriptorTable.NumDescriptorRanges = 1;
+		cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
+
+		D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+		rootCBVDescriptor.ShaderRegister = 0;
+		rootCBVDescriptor.RegisterSpace = 0;
+
+		D3D12_ROOT_PARAMETER rootParams[2] = {};
+		rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParams[0].Descriptor = rootCBVDescriptor;
+		rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+
+		rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		rootParams[1].DescriptorTable = cbDescriptorTable;
+		rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
+		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+		staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].MipLODBias = 0;
+		staticSamplers[0].MaxAnisotropy = 0;
+		staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+		staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+		staticSamplers[0].MinLOD = 0;
+		staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+		staticSamplers[0].ShaderRegister = 0;
+		staticSamplers[0].RegisterSpace = 0;
+		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+		rootSignatureDesc.NumParameters = 2;
+		rootSignatureDesc.pParameters = rootParams;
+		rootSignatureDesc.NumStaticSamplers = 1;
+		rootSignatureDesc.pStaticSamplers = staticSamplers;
+		rootSignatureDesc.Flags =
+			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+
+		ID3DBlob* signature;
+		hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to serialize Root Signature!");
+			return false;
+		}
+
+		hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature[0]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create Root Signature!");
+			return false;
+		}
 	}
 
-	hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
-	if (FAILED(hres))
+	///////////////////////
+	// **** ROOT 02 **** //
+	///////////////////////
 	{
-		printf("[GFX]: Failed to create Root Signature!");
-		return false;
+		D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
+
+
+		D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+
+
+		D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+
+
+		D3D12_ROOT_PARAMETER rootParams[2] = {};
+
+
+		D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
+
+
+		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+
+
+		ID3DBlob* signature;
+		hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to serialize Root Signature!");
+			return false;
+		}
+
+		hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature[1]));
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to create Root Signature!");
+			return false;
+		}
 	}
 
 	return true;

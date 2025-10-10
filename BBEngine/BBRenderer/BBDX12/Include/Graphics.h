@@ -34,6 +34,7 @@ constexpr uint16_t WINDOW_HEIGHT = 900;
 
 #define MAX_TEXTURES 1024
 #define MAX_PSO_COUNT 16
+#define MAX_ROOT_COUNT 16
 
 //Note(stan): Temp vertext buffer for test triangle
 struct UV
@@ -146,7 +147,8 @@ private:
 	std::unordered_map<std::string, ID3D12PipelineState*> m_RenderContextMap;
 	uint32_t					m_PSOIndex = 0;
 
-	ID3D12RootSignature*		m_RootSignature;
+	ID3D12RootSignature*		m_RootSignature[MAX_ROOT_COUNT];
+	
 	D3D12_VIEWPORT				m_Viewport;
 	D3D12_RECT					m_ScissorRect;
 
