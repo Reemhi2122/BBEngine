@@ -25,73 +25,73 @@ bool Graphics::Initialize()
 	
 	if (!CreateDevice())
 	{
-		printf("[GFX]: Failed to create the GFX device!");
+		printf("[GFX]: Failed to create the GFX device!\n");
 		return false;
 	}
 
 	if (!CreateCommandQueue())
 	{
-		printf("[GFX]: Failed to create Command Queue!");
+		printf("[GFX]: Failed to create Command Queue!\n");
 		return false;
 	}
 
 	if (!CreateDescriptorHeaps())
 	{
-		printf("[GFX]: Failed to create Descriptor Heaps!");
+		printf("[GFX]: Failed to create Descriptor Heaps!\n");
 		return false;
 	}
 
 	if (!CreateSwapChain())
 	{
-		printf("[GFX]: Failed to create Swap Chain!");
+		printf("[GFX]: Failed to create Swap Chain!\n");
 		return false;
 	}
 
 	if (!CreateGameView())
 	{
-		printf("[GFX]: Failed to create Game View");
+		printf("[GFX]: Failed to create Game View!\n");
 		return false;
 	}
 
 	if(!CreateCommandAllocator())
 	{
-		printf("[GFX]: Failed to create Command Allocator!");
+		printf("[GFX]: Failed to create Command Allocator!\n");
 		return false;
 	}
 
 	if (!CreateCommandList())
 	{
-		printf("[GFX]: Failed to create Command List!");
+		printf("[GFX]: Failed to create Command List!\n");
 		return false;
 	}
 
 	if (!CreateFence())
 	{
-		printf("[GFX]: Failed to create Fences!");
+		printf("[GFX]: Failed to create Fences!\n");
 		return false;
 	}
 
 	if(!CreateRootSignatures())
 	{
-		printf("[GFX]: Failed to create root signatures!");
+		printf("[GFX]: Failed to create root signatures!\n");
 		return false;
 	}
 
 	if(!CreateShaders())
 	{
-		printf("[GFX]: Failed to create shaders!");
+		printf("[GFX]: Failed to create shaders!\n");
 		return false;
 	}
 	
 	if(!CreateAllGraphicsContext())
 	{
-		printf("[GFX]: Failed to create PSOs!");
+		printf("[GFX]: Failed to create PSOs!\n");
 		return false;
 	}
 
 	if(!CreateDepthStencils())
 	{
-		printf("[GFX]: Failed to create DSV!");
+		printf("[GFX]: Failed to create DSV!\n");
 		return false;
 	}
 
@@ -118,7 +118,7 @@ bool Graphics::Initialize()
 	res = InitImGui();
 	if (!res)
 	{
-		printf("[GFX]: Failed to initialize ImGui!");
+		printf("[GFX]: Failed to initialize ImGui!\n");
 		return false;
 	}
 
@@ -153,7 +153,7 @@ bool Graphics::CreateDebugTexture()
 		);
 		if (FAILED(hres))
 		{
-			printf("[GFX::DX12:TEXTURE]: Failed to create Texture Default Heap!");
+			printf("[GFX::DX12:TEXTURE]: Failed to create Texture Default Heap!\n");
 			return false;
 		}
 		m_DebugTexture->SetName(L"Debug Texture Heap");
@@ -169,7 +169,7 @@ bool Graphics::CreateDebugTexture()
 		);
 		if (FAILED(hres))
 		{
-			printf("[GFX::DX12:TEXTURE]: Failed to create Texture Upload Heap!");
+			printf("[GFX::DX12:TEXTURE]: Failed to create Texture Upload Heap!\n");
 			return false;
 		}
 		debugTextureUploadHeap->SetName(L"Texture Upload Heap");
@@ -271,14 +271,14 @@ bool Graphics::CreateDevice()
 
 	if (!adapterFound)
 	{
-		printf("[GFX]: No DX12 compatible device found!");
+		printf("[GFX]: No DX12 compatible device found!\n");
 		return false;
 	}
 
 	hres = D3D12CreateDevice(dxgiAdapter, D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&m_Device));
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to create GFX Device with min level 11!");
+		printf("[GFX]: Failed to create GFX Device with min level 11!\n");
 		return false;
 	}
 
@@ -304,7 +304,7 @@ bool Graphics::CreateDescriptorHeaps()
 	res = m_SRVDescriptorHeapFL.Create(m_Device, &srvDescriptorHeapDesc);
 	if (!res)
 	{
-		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		printf("[GFX]: Failed to Create SRV Resource Heap!\n");
 		return false;
 	}
 
@@ -319,7 +319,7 @@ bool Graphics::CreateDescriptorHeaps()
 	res = m_RTVDescriptorHeapFL.Create(m_Device, &rtvDescriptorHeap);
 	if (!res)
 	{
-		printf("[GFX]: Failed to Create SRV Resource Heap!");
+		printf("[GFX]: Failed to Create SRV Resource Heap!\n");
 		return false;
 	}
 	
@@ -336,7 +336,7 @@ bool Graphics::CreateDescriptorHeaps()
 	hres = m_Device->CreateDescriptorHeap(&dsvDesc, IID_PPV_ARGS(&m_DSDescriptorHeap));
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to create DSV Descriptor Heap!");
+		printf("[GFX]: Failed to create DSV Descriptor Heap!\n");
 		return false;
 	}
 
@@ -376,7 +376,7 @@ bool Graphics::CreateSwapChain()
 	hres = dxgiFactory->CreateSwapChain(m_CommandQueue, &swapChainDesc, &tempSwapChain);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to create Swap Chain!");
+		printf("[GFX]: Failed to create Swap Chain!\n");
 		return false;
 	}
 
@@ -388,7 +388,7 @@ bool Graphics::CreateSwapChain()
 		hres = m_SwapChain->GetBuffer(i, IID_PPV_ARGS(&m_RenderTargets[i]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to get RTV from Swap Chain!");
+			printf("[GFX]: Failed to get RTV from Swap Chain!\n");
 			return false;
 		}
 
@@ -416,7 +416,7 @@ bool Graphics::CreateGameView()
 		);
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to get RTV for game view!");
+			printf("[GFX]: Failed to get RTV for game view!\n");
 			return false;
 		}
 
@@ -444,7 +444,7 @@ bool Graphics::CreateCommandAllocator()
 		hres = m_Device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_CommandAllocator[i]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create Command Allocator!");
+			printf("[GFX]: Failed to create Command Allocator!\n");
 			return false;
 		}
 	}
@@ -462,7 +462,7 @@ bool Graphics::CreateCommandQueue()
 	hres = m_Device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&m_CommandQueue));
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to create direct Command Queue!");
+		printf("[GFX]: Failed to create direct Command Queue!\n");
 		return false;
 	}
 
@@ -481,7 +481,7 @@ bool Graphics::CreateCommandList()
 	);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to create Command List!");
+		printf("[GFX]: Failed to create Command List!\n");
 		return false;
 	}
 
@@ -496,7 +496,7 @@ bool Graphics::CreateFence()
 		hres = m_Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_Fence[i]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create Fences!");
+			printf("[GFX]: Failed to create Fences!\n");
 			return false;
 		}
 		m_FenceValue[i] = 0;
@@ -505,7 +505,7 @@ bool Graphics::CreateFence()
 	m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);
 	if (!m_FenceEvent)
 	{
-		printf("[GFX]: Failed to create Fence Event!");
+		printf("[GFX]: Failed to create Fence Event!\n");
 		return false;
 	}
 
@@ -531,18 +531,59 @@ bool Graphics::CreateRootSignatures()
 		cbDescriptorTable.NumDescriptorRanges = 1;
 		cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
 
-		D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
-		rootCBVDescriptor.ShaderRegister = 0;
-		rootCBVDescriptor.RegisterSpace = 0;
+		D3D12_ROOT_PARAMETER rootParams[5] = {};
 
-		D3D12_ROOT_PARAMETER rootParams[2] = {};
-		rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParams[0].Descriptor = rootCBVDescriptor;
-		rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+		// Vertex shader
+		{
+			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+			rootCBVDescriptor.ShaderRegister = 0;
+			rootCBVDescriptor.RegisterSpace = 0;
 
-		rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		rootParams[1].DescriptorTable = cbDescriptorTable;
-		rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+			rootParams[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+			rootParams[0].Descriptor = rootCBVDescriptor;
+			rootParams[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+		}
+
+		{
+			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+			rootCBVDescriptor.ShaderRegister = 1;
+			rootCBVDescriptor.RegisterSpace = 0;
+
+			rootParams[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+			rootParams[1].Descriptor = rootCBVDescriptor;
+			rootParams[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+		}
+		
+		//Pixel shader
+		{
+			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+			rootCBVDescriptor.ShaderRegister = 0;
+			rootCBVDescriptor.RegisterSpace = 0;
+
+			rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+			rootParams[2].DescriptorTable = cbDescriptorTable;
+			rootParams[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		}
+
+		{
+			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+			rootCBVDescriptor.ShaderRegister = 1;
+			rootCBVDescriptor.RegisterSpace = 0;
+
+			rootParams[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+			rootParams[3].Descriptor = rootCBVDescriptor;
+			rootParams[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		}
+
+		{
+			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+			rootCBVDescriptor.ShaderRegister = 2;
+			rootCBVDescriptor.RegisterSpace = 0;
+
+			rootParams[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+			rootParams[4].Descriptor = rootCBVDescriptor;
+			rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		}
 
 		D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
 		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
@@ -570,18 +611,19 @@ bool Graphics::CreateRootSignatures()
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
 			D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
+		ID3DBlob* errorBuf;
 		ID3DBlob* signature;
-		hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
+		hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &errorBuf);
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to serialize Root Signature!");
+			printf("[GFX]: Failed to serialize Root Signature! Error code: %s.\n", (char*)errorBuf->GetBufferPointer());
 			return false;
 		}
 
 		hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature[0]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create Root Signature!");
+			printf("[GFX]: Failed to create Root Signature!\n");
 			return false;
 		}
 	}
@@ -612,14 +654,14 @@ bool Graphics::CreateRootSignatures()
 		hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to serialize Root Signature!");
+			printf("[GFX]: Failed to serialize Root Signature!\n");
 			return false;
 		}
 
 		hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature[1]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create Root Signature!");
+			printf("[GFX]: Failed to create Root Signature!\n");
 			return false;
 		}
 	}
@@ -632,12 +674,12 @@ bool Graphics::CreateShaders()
 	HRESULT hres = S_OK;
 	ID3DBlob* errorBuf;
 	hres = D3DCompileFromFile(
-		L"Assets/DefaultVS.hlsl", nullptr, nullptr,
+		L"Assets/VertexShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 		0, &m_VertexShader, &errorBuf);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		printf("[GFX]: Failed to compile Vertex Shader with error code %s.\n", (char*)errorBuf->GetBufferPointer());
 		return false;
 	}
 
@@ -646,12 +688,12 @@ bool Graphics::CreateShaders()
 	m_VertexShaderByteCode.pShaderBytecode = m_VertexShader->GetBufferPointer();
 
 	hres = D3DCompileFromFile(
-		L"Assets/DefaultPS.hlsl", nullptr, nullptr,
+		L"Assets/PixelShader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 		0, &m_PixelShader, &errorBuf);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		printf("[GFX]: Failed to compile Pixel Shader with error code %s.\n", (char*)errorBuf->GetBufferPointer());
 		return false;
 	}
 
@@ -660,12 +702,12 @@ bool Graphics::CreateShaders()
 	m_PixelShaderByteCode.pShaderBytecode = m_PixelShader->GetBufferPointer();
 
 	hres = D3DCompileFromFile(
-		L"Assets/VSCubeMap.hlsl", nullptr, nullptr,
+		L"Assets/VSCubeMap.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		"main", "vs_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 		0, &m_CubeMapVertexShader, &errorBuf);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to compile Vertex Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		printf("[GFX]: Failed to compile Vertex Shader with error code %s.\n", (char*)errorBuf->GetBufferPointer());
 		return false;
 	}
 
@@ -674,12 +716,12 @@ bool Graphics::CreateShaders()
 	m_CubeMapVertexShaderByteCode.pShaderBytecode = m_CubeMapVertexShader->GetBufferPointer();
 
 	hres = D3DCompileFromFile(
-		L"Assets/PSCubeMap.hlsl", nullptr, nullptr,
+		L"Assets/PSCubeMap.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		"main", "ps_5_0", D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
 		0, &m_CubeMapPixelShader, &errorBuf);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to compile Pixel Shader with error code %s", (char*)errorBuf->GetBufferPointer());
+		printf("[GFX]: Failed to compile Pixel Shader with error code %s.\n", (char*)errorBuf->GetBufferPointer());
 		return false;
 	}
 
@@ -744,7 +786,7 @@ bool Graphics::CreateAllGraphicsContext()
 		hres = m_Device->CreateGraphicsPipelineState(&PSO1Desc, IID_PPV_ARGS(&m_PSOArray[0]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create the Graphics Pipeline Object");
+			printf("[GFX]: Failed to create the Graphics Pipeline Object.\n");
 			return false;
 		}
 		m_RenderContextMap["main"] = m_PSOArray[0];
@@ -813,7 +855,7 @@ bool Graphics::CreateAllGraphicsContext()
 		hres = m_Device->CreateGraphicsPipelineState(&PSO2Desc, IID_PPV_ARGS(&m_PSOArray[1]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create the Graphics Pipeline Object");
+			printf("[GFX]: Failed to create the Graphics Pipeline Object.\n");
 			return false;
 		}
 		m_RenderContextMap["cubeMap"] = m_PSOArray[1];
@@ -883,7 +925,7 @@ bool Graphics::CreateAllGraphicsContext()
 		hres = m_Device->CreateGraphicsPipelineState(&shadowMapPSO_Desc, IID_PPV_ARGS(&m_PSOArray[2]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create the Graphics Pipeline Object");
+			printf("[GFX]: Failed to create the Graphics Pipeline Object.\n");
 			return false;
 		}
 		m_RenderContextMap["shadowMap"] = m_PSOArray[2];
@@ -916,7 +958,7 @@ bool Graphics::CreateDepthStencils()
 	m_DepthStenil->SetName(L"Depth Stencil Buffer");
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed create Depth Stencil Buffer heap descriptor!");
+		printf("[GFX]: Failed create Depth Stencil Buffer heap descriptor!.\n");
 		return false;
 	}
 
@@ -957,7 +999,7 @@ bool Graphics::CloseInit()
 	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to signal the Command Queue Fence!");
+		printf("[GFX]: Failed to signal the Command Queue Fence!.\n");
 		return false;
 	}
 
@@ -977,7 +1019,7 @@ void Graphics::StartFrame()
 	hres = m_CommandAllocator[m_FrameIndex]->Reset();
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed reset the Command Allocator!");
+		printf("[GFX]: Failed reset the Command Allocator!.\n");
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 
@@ -985,7 +1027,7 @@ void Graphics::StartFrame()
 	hres = m_CommandList->Reset(m_CommandAllocator[m_FrameIndex], m_CurPSO);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed reset the Command list!");
+		printf("[GFX]: Failed reset the Command list!.\n");
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 
@@ -1043,7 +1085,7 @@ void Graphics::EndFrame()
 	hres = m_CommandList->Close();
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to close the Command List!");
+		printf("[GFX]: Failed to close the Command List!.\n");
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 
@@ -1053,14 +1095,14 @@ void Graphics::EndFrame()
 	hres = m_CommandQueue->Signal(m_Fence[m_FrameIndex], m_FenceValue[m_FrameIndex]);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to signal the Command Queue!");
+		printf("[GFX]: Failed to signal the Command Queue!.\n");
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 
 	hres = m_SwapChain->Present(VSYNC, 0u);
 	if (FAILED(hres))
 	{
-		printf("[GFX]: Failed to present!");
+		printf("[GFX]: Failed to present!.\n");
 		//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 	}
 }
@@ -1075,7 +1117,7 @@ void Graphics::WaitForPreviousFrame()
 		hres = m_Fence[m_FrameIndex]->SetEventOnCompletion(m_FenceValue[m_FrameIndex], m_FenceEvent);
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to set event on completion!");
+			printf("[GFX]: Failed to set event on completion!.\n");
 			//TODO(Stan): Make a good way to cancel the update / graphics pipeline		
 		}
 
@@ -1134,13 +1176,13 @@ bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32
 	HRESULT hres = S_OK;
 	if (a_RootParamIndex > m_MaxRootCBV)
 	{
-		printf("[GFX::GetRootConstantUploadBufferView]: No root CBV upload heap at [%d] available!", a_RootParamIndex);
+		printf("[GFX::GetRootConstantUploadBufferView]: No root CBV upload heap at [%d] available!.\n", a_RootParamIndex);
 		return false;
 	}
 
 	if (a_SizeOfCB <= 0)
 	{
-		printf("[GFX::GetRootConstantUploadBufferView]: Cannot create / get root CBV upload buffer for CB with size of 0!");
+		printf("[GFX::GetRootConstantUploadBufferView]: Cannot create / get root CBV upload buffer for CB with size of 0!.\n");
 		return false;
 	}
 
@@ -1173,7 +1215,7 @@ bool Graphics::GetRootConstantUploadBufferView(uint32_t a_RootParamIndex, uint32
 
 	if ((curRootCBV->curOffset + a_SizeOfCB) > curRootCBV->size)
 	{
-		printf("[GFX::GetRootConstantUploadBufferView]: CBV heap at index [%d] is full!", a_RootParamIndex);
+		printf("[GFX::GetRootConstantUploadBufferView]: CBV heap at index [%d] is full!.\n", a_RootParamIndex);
 		return false;
 	}
 
