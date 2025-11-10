@@ -729,7 +729,7 @@ bool Graphics::CreateAllGraphicsContext()
 		//Create the Pipeline State Object
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO1Desc = {};
 		PSO1Desc.InputLayout = PSO1InputLayoutDesc;
-		PSO1Desc.pRootSignature = m_RootSignature;
+		PSO1Desc.pRootSignature = m_RootSignature[0];
 		PSO1Desc.VS = m_VertexShaderByteCode;
 		PSO1Desc.PS = m_PixelShaderByteCode;
 		PSO1Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -798,7 +798,7 @@ bool Graphics::CreateAllGraphicsContext()
 		//Create the Pipeline State Object
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC PSO2Desc = {};
 		PSO2Desc.InputLayout = PSO2InputLayoutDescs;
-		PSO2Desc.pRootSignature = m_RootSignature;
+		PSO2Desc.pRootSignature = m_RootSignature[0];
 		PSO2Desc.VS = m_CubeMapVertexShaderByteCode;
 		PSO2Desc.PS = m_CubeMapPixelShaderByteCode;
 		PSO2Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -867,7 +867,7 @@ bool Graphics::CreateAllGraphicsContext()
 		//Create the Pipeline State Object
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC shadowMapPSO_Desc = {};
 		shadowMapPSO_Desc.InputLayout = shadowMapPSO_InputLayoutDesc;
-		shadowMapPSO_Desc.pRootSignature = m_RootSignature;
+		shadowMapPSO_Desc.pRootSignature = m_RootSignature[0];
 		shadowMapPSO_Desc.VS = m_CubeMapVertexShaderByteCode;
 		shadowMapPSO_Desc.PS = m_CubeMapPixelShaderByteCode;
 		shadowMapPSO_Desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -999,7 +999,8 @@ void Graphics::StartFrame()
 	m_CommandList->ClearRenderTargetView(m_GameRenderTargetViewRTHandle[m_FrameIndex].cpuDescHandle, color, 0, nullptr);
 	m_CommandList->ClearDepthStencilView(dsHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
-	m_CommandList->SetGraphicsRootSignature(m_RootSignature);
+	//TODO(Stan): Currently hard setting this root signature but we'd want to dynamically do this.
+	m_CommandList->SetGraphicsRootSignature(m_RootSignature[0]);
 
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -1117,7 +1118,10 @@ void Graphics::ShutDown()
 		SAFE_RELEASE(m_PSOArray[i]);
 	}
 
-	SAFE_RELEASE(m_RootSignature);
+	for (uint32_t i = 0; i < MAX_ROOT_COUNT; i++)
+	{
+		SAFE_RELEASE(m_RootSignature[0]);
+	}
 	
 	SAFE_RELEASE(m_VertexShader);
 	SAFE_RELEASE(m_PixelShader);
