@@ -35,6 +35,7 @@ constexpr uint16_t WINDOW_HEIGHT = 900;
 #define MAX_TEXTURES 1024
 #define MAX_PSO_COUNT 16
 #define MAX_ROOT_COUNT 16
+#define MAX_ROOT_CBV_COUNT 8
 
 //Note(stan): Temp vertext buffer for test triangle
 struct UV
@@ -161,8 +162,8 @@ private:
 	ID3D12Resource*				m_DebugTexture;
 
 	uint32_t m_StandardCBSize = (1024 * 64);
-	uint32_t m_MaxRootCBV = 1;
-	UploadHeap* m_RootCBV[1] = { nullptr };
+	uint32_t m_MaxRootCBV = MAX_ROOT_CBV_COUNT;
+	UploadHeap* m_RootCBV[MAX_ROOT_CBV_COUNT] = {};
 
 	//Shaders
 	ID3DBlob*	m_VertexShader;
