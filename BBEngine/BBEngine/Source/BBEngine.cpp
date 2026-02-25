@@ -97,8 +97,8 @@ namespace BBE
         BBE:UI::InitializeUI(m_Graphics, &m_RootObjects);
         m_Window.m_Keyboard.EnableAutorepeat();
 
-        //m_PerFrameBuffer = GFXCreatePixelConstantBuffer<cbPerFrame>();
-        //m_PerFrameBuffer->Create(m_Graphics);
+        m_PerFrameBuffer = GFXCreatePixelConstantBuffer<cbPerFrame>();
+        m_PerFrameBuffer->Create(m_Graphics);
 
         //m_ShadowMapCB = PixelConstantBuffer<ShadowMapCreation>(m_Graphics, 1, 1);
         //m_ShadowMapCB.Bind(m_Graphics);
@@ -220,7 +220,7 @@ namespace BBE
         //    CalculateLightShadowMapPointLight(m_GameObjects, m_VSShadowMapShader, m_PSShadowMapShader, m_PointLights[i], i);
         //}
 
-        //m_PerFrameBuffer->Update(m_Graphics, FrameConstantBuffer);
+        m_PerFrameBuffer->Update(m_Graphics, FrameConstantBuffer);
 
         for (size_t i = 0; i < m_GameObjects.size(); i++)
         {
