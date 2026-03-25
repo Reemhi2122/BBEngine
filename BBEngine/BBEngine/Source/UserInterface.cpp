@@ -237,11 +237,11 @@ namespace BBE
                 //    ImGui::Image((ImTextureID)(void*)a_Graphics.m_SpotLightsDepthTest, ImVec2(200, 200));
                 //    ImGui::TreePop();
                 //}
-                if (ImGui::TreeNode("Directional Light"))
-                {
-                    ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
-                    ImGui::TreePop();
-                }
+                //if (ImGui::TreeNode("Directional Light"))
+                //{
+                //    ImGui::Image((ImTextureID)(void*)a_Graphics.GetDirectionLightDepthMapRSV(), ImVec2(200, 200));
+                //    ImGui::TreePop();
+                //}
             }
             ImGui::End();
 

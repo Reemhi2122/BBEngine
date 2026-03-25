@@ -631,40 +631,40 @@ bool Graphics::CreateRootSignatures()
 	///////////////////////
 	// **** ROOT 02 **** //
 	///////////////////////
-	{
-		D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
+	//{
+	//	D3D12_DESCRIPTOR_RANGE descriptorTableRange[1];
 
 
-		D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+	//	D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
 
 
-		D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+	//	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 
 
-		D3D12_ROOT_PARAMETER rootParams[2] = {};
+	//	D3D12_ROOT_PARAMETER rootParams[2] = {};
 
 
-		D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
+	//	D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
 
 
-		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
+	//	CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
 
 
-		ID3DBlob* signature;
-		hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
-		if (FAILED(hres))
-		{
-			printf("[GFX]: Failed to serialize Root Signature!\n");
-			return false;
-		}
+	//	ID3DBlob* signature;
+	//	hres = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, nullptr);
+	//	if (FAILED(hres))
+	//	{
+	//		printf("[GFX]: Failed to serialize Root Signature!\n");
+	//		return false;
+	//	}
 
-		hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature[1]));
-		if (FAILED(hres))
-		{
-			printf("[GFX]: Failed to create Root Signature!\n");
-			return false;
-		}
-	}
+	//	hres = m_Device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature[1]));
+	//	if (FAILED(hres))
+	//	{
+	//		printf("[GFX]: Failed to create Root Signature!\n");
+	//		return false;
+	//	}
+	//}
 
 	return true;
 }
@@ -786,7 +786,7 @@ bool Graphics::CreateAllGraphicsContext()
 		hres = m_Device->CreateGraphicsPipelineState(&PSO1Desc, IID_PPV_ARGS(&m_PSOArray[0]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create the Graphics Pipeline Object.\n");
+			printf("[GFX]: Failed to create the Graphics Pipeline Object [main].\n");
 			return false;
 		}
 		m_RenderContextMap["main"] = m_PSOArray[0];
@@ -855,7 +855,7 @@ bool Graphics::CreateAllGraphicsContext()
 		hres = m_Device->CreateGraphicsPipelineState(&PSO2Desc, IID_PPV_ARGS(&m_PSOArray[1]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create the Graphics Pipeline Object.\n");
+			printf("[GFX]: Failed to create the Graphics Pipeline Object. [cubeMap]\n");
 			return false;
 		}
 		m_RenderContextMap["cubeMap"] = m_PSOArray[1];
@@ -925,7 +925,7 @@ bool Graphics::CreateAllGraphicsContext()
 		hres = m_Device->CreateGraphicsPipelineState(&shadowMapPSO_Desc, IID_PPV_ARGS(&m_PSOArray[2]));
 		if (FAILED(hres))
 		{
-			printf("[GFX]: Failed to create the Graphics Pipeline Object.\n");
+			printf("[GFX]: Failed to create the Graphics Pipeline Object. [shadowMap]\n");
 			return false;
 		}
 		m_RenderContextMap["shadowMap"] = m_PSOArray[2];
