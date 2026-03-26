@@ -1,5 +1,5 @@
 #include "Lights.h"
-//#include "Materials.h"
+#include "Materials.h"
 
 Texture2D tex                       : register(ps, t0);
 Texture2D depthBuffer               : register(ps, t1);
@@ -142,19 +142,19 @@ float4 main(VSOut psin) : SV_Target
 {
     psin.normal = normalize(psin.normal);
 
-    //float4 diffuse = baseColor;
-    //if (hasBaseColorTexture)
-    //{
-    //    diffuse = tex.Sample(splr, psin.tex);
-    //    diffuse *= baseColor;
-    //}
+    float4 diffuse = baseColor;
+    if (hasBaseColorTexture)
+    {
+        diffuse = tex.Sample(splr, psin.tex);
+        diffuse *= baseColor;
+    }
     
-    //if (hasKhrVolumeTexture)
-    //{
-    //    diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
-    //}
+    if (hasKhrVolumeTexture)
+    {
+        diffuse *= khrThicknessTexture.Sample(splr, psin.tex);
+    }
     
-    float4 diffuse = tex.Sample(splr, psin.tex);
+    //float4 diffuse = tex.Sample(splr, psin.tex);
     
     if (diffuse.a < 0.01f)
         discard;

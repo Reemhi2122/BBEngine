@@ -254,6 +254,13 @@ bool Graphics::CreateDevice()
 
 	while (dxgiFactory->EnumAdapters1(adapterIndex, &dxgiAdapter) != DXGI_ERROR_NOT_FOUND)
 	{
+		ID3D12Debug* debugController = nullptr;
+		if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+		{
+			debugController->EnableDebugLayer();
+			debugController->Release();
+		}
+
 		DXGI_ADAPTER_DESC1 desc;
 		dxgiAdapter->GetDesc1(&desc);
 		if (!(desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
@@ -527,10 +534,6 @@ bool Graphics::CreateRootSignatures()
 		descriptorTableRange[0].RegisterSpace = 0;
 		descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-		D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
-		cbDescriptorTable.NumDescriptorRanges = 1;
-		cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
-
 		D3D12_ROOT_PARAMETER rootParams[5] = {};
 
 		// Vertex shader
@@ -556,9 +559,9 @@ bool Graphics::CreateRootSignatures()
 		
 		//Pixel shader
 		{
-			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
-			rootCBVDescriptor.ShaderRegister = 0;
-			rootCBVDescriptor.RegisterSpace = 0;
+			D3D12_ROOT_DESCRIPTOR_TABLE cbDescriptorTable = {};
+			cbDescriptorTable.NumDescriptorRanges = 1;
+			cbDescriptorTable.pDescriptorRanges = descriptorTableRange;
 
 			rootParams[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 			rootParams[2].DescriptorTable = cbDescriptorTable;
@@ -567,13 +570,23 @@ bool Graphics::CreateRootSignatures()
 
 		{
 			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
-			rootCBVDescriptor.ShaderRegister = 1;
+			rootCBVDescriptor.ShaderRegister = 0;
 			rootCBVDescriptor.RegisterSpace = 0;
 
 			rootParams[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 			rootParams[3].Descriptor = rootCBVDescriptor;
 			rootParams[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 		}
+
+		//{
+		//	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+		//	rootCBVDescriptor.ShaderRegister = 1;
+		//	rootCBVDescriptor.RegisterSpace = 0;
+
+		//	rootParams[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		//	rootParams[4].Descriptor = rootCBVDescriptor;
+		//	rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		//}
 
 		{
 			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
@@ -585,7 +598,7 @@ bool Graphics::CreateRootSignatures()
 			rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 		}
 
-		D3D12_STATIC_SAMPLER_DESC staticSamplers[1];
+		D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
 		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
 		staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 		staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -600,10 +613,24 @@ bool Graphics::CreateRootSignatures()
 		staticSamplers[0].RegisterSpace = 0;
 		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
+		staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[1].MipLODBias = 0;
+		staticSamplers[1].MaxAnisotropy = 0;
+		staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+		staticSamplers[1].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+		staticSamplers[1].MinLOD = 0;
+		staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;
+		staticSamplers[1].ShaderRegister = 1;  // s1
+		staticSamplers[1].RegisterSpace = 0;
+		staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
 		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-		rootSignatureDesc.NumParameters = 2;
+		rootSignatureDesc.NumParameters = _countof(rootParams);
 		rootSignatureDesc.pParameters = rootParams;
-		rootSignatureDesc.NumStaticSamplers = 1;
+		rootSignatureDesc.NumStaticSamplers = 2;
 		rootSignatureDesc.pStaticSamplers = staticSamplers;
 		rootSignatureDesc.Flags =
 			D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
