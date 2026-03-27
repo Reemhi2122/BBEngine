@@ -534,7 +534,7 @@ bool Graphics::CreateRootSignatures()
 		descriptorTableRange[0].RegisterSpace = 0;
 		descriptorTableRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-		D3D12_ROOT_PARAMETER rootParams[5] = {};
+		D3D12_ROOT_PARAMETER rootParams[6] = {};
 
 		// Vertex shader
 		{
@@ -578,24 +578,24 @@ bool Graphics::CreateRootSignatures()
 			rootParams[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 		}
 
-		//{
-		//	D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
-		//	rootCBVDescriptor.ShaderRegister = 1;
-		//	rootCBVDescriptor.RegisterSpace = 0;
+		{
+			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
+			rootCBVDescriptor.ShaderRegister = 1;
+			rootCBVDescriptor.RegisterSpace = 0;
 
-		//	rootParams[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		//	rootParams[4].Descriptor = rootCBVDescriptor;
-		//	rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-		//}
+			rootParams[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+			rootParams[4].Descriptor = rootCBVDescriptor;
+			rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		}
 
 		{
 			D3D12_ROOT_DESCRIPTOR rootCBVDescriptor;
 			rootCBVDescriptor.ShaderRegister = 2;
 			rootCBVDescriptor.RegisterSpace = 0;
 
-			rootParams[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-			rootParams[4].Descriptor = rootCBVDescriptor;
-			rootParams[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+			rootParams[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+			rootParams[5].Descriptor = rootCBVDescriptor;
+			rootParams[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 		}
 
 		D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
@@ -1082,7 +1082,7 @@ void Graphics::Render()
 	ID3D12DescriptorHeap* descriptorHeaps[] = { m_SRVDescriptorHeapFL.GetHeap() };
 	m_CommandList->SetDescriptorHeaps(1, descriptorHeaps);
 
-	m_CommandList->SetGraphicsRootDescriptorTable(1, m_SRVDescriptorHeapFL.GetGPUHandleStart());
+	m_CommandList->SetGraphicsRootDescriptorTable(2, m_SRVDescriptorHeapFL.GetGPUHandleStart());
 
 	m_CommandList->RSSetViewports(1, &m_Viewport);
 	m_CommandList->RSSetScissorRects(1, &m_ScissorRect);
