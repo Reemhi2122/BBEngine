@@ -104,12 +104,15 @@ public:
 	bool BindDSVSpotLight(BBHandle a_DepthStencilHandle) override;
 	bool BindDSVPointLight(BBHandle a_DepthStencilHandle, uint32_t a_Index) override;
 
+	//bool BindDepthTexture(ID3D12ShaderResourceView* a_View, uint32_t a_StartSlot, uint32_t a_NumViews);
+
 protected:
 	bool CreateDevice();
 	bool CreateSwapChain();
 	bool CreateDescriptorHeaps();
 
 	bool CreateGameView();
+	bool CreateDSVDirLight();
 
 	bool CreateCommandAllocator();
 	bool CreateCommandQueue();
@@ -137,6 +140,10 @@ private:
 	DescriptorHandleInfo		m_GameRenderTargetViewRTHandle[FRAME_BUFFER_COUNT];
 	ID3D12Resource*				m_GameViewTarget[FRAME_BUFFER_COUNT];
 	
+	DescriptorHandleInfo		m_SpotLightDepthRSV[FRAME_BUFFER_COUNT];
+	DescriptorHandleInfo		m_SpotLightDepthRTHandle[FRAME_BUFFER_COUNT];
+	ID3D12Resource*				m_SpotLightDepthTarget[FRAME_BUFFER_COUNT];
+
 	ID3D12Resource*				m_RenderTargets[FRAME_BUFFER_COUNT];
 	DescriptorHandleInfo		m_SwapChainRTHandle[FRAME_BUFFER_COUNT];
 

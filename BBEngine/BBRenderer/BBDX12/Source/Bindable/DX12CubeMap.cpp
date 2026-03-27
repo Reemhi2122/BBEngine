@@ -97,5 +97,5 @@ bool DX12CubeMap::Create(IGraphics& a_Gfx, CubeMapType a_Type, uint32_t a_Resolu
 
 void DX12CubeMap::Bind(IGraphics& a_Gfx) noexcept
 {
-	a_Gfx.GetCommandList()->SetGraphicsRootDescriptorTable(1, m_DescriptorInfo->gpuDescHandle);
+	a_Gfx.GetCommandList()->SetGraphicsRootDescriptorTable(2, m_DescriptorInfo->gpuDescHandle);
 }

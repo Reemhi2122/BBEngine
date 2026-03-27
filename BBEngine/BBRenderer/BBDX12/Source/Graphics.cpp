@@ -53,6 +53,12 @@ bool Graphics::Initialize()
 		return false;
 	}
 
+	if (!CreateDSVDirLight())
+	{
+		printf("[GFX]: Failed to create dir light DSV!\n");
+		return false;
+	}
+
 	if(!CreateCommandAllocator())
 	{
 		printf("[GFX]: Failed to create Command Allocator!\n");
@@ -443,6 +449,41 @@ bool Graphics::CreateGameView()
 	return true;
 }
 
+bool Graphics::CreateDSVDirLight()
+{
+	HRESULT hres = S_OK;
+	for (uint32_t i = 0; i < FRAME_TEXTURE_TARGET; i++)
+	{
+		hres = m_Device->CreateCommittedResource(
+			&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE,
+			&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R32_FLOAT, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET),
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			nullptr,
+			IID_PPV_ARGS(&m_SpotLightDepthTarget[i])
+		);
+		if (FAILED(hres))
+		{
+			printf("[GFX]: Failed to get RTV for game view!\n");
+			return false;
+		}
+
+		m_RTVDescriptorHeapFL.Alloc(&m_SpotLightDepthRTHandle[i].cpuDescHandle, &m_SpotLightDepthRTHandle[i].gpuDescHandle);
+		m_Device->CreateRenderTargetView(m_SpotLightDepthTarget[i], nullptr, m_SpotLightDepthRTHandle[i].cpuDescHandle);
+
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDescriptorDesc = {};
+		srvDescriptorDesc.Format = DXGI_FORMAT_R32_FLOAT;
+		srvDescriptorDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDescriptorDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+		srvDescriptorDesc.Texture2D.MipLevels = 1;
+
+		m_SRVDescriptorHeapFL.Alloc(&m_SpotLightDepthRSV[i].cpuDescHandle, &m_SpotLightDepthRSV[i].gpuDescHandle);
+		m_Device->CreateShaderResourceView(m_SpotLightDepthTarget[i], &srvDescriptorDesc, m_SpotLightDepthRSV[i].cpuDescHandle);
+	}
+
+	return true;
+}
+
 bool Graphics::CreateCommandAllocator()
 {
 	HRESULT hres = S_OK;
@@ -599,33 +640,37 @@ bool Graphics::CreateRootSignatures()
 		}
 
 		D3D12_STATIC_SAMPLER_DESC staticSamplers[2];
-		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
-		staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[0].MipLODBias = 0;
-		staticSamplers[0].MaxAnisotropy = 0;
-		staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-		staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
-		staticSamplers[0].MinLOD = 0;
-		staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
-		staticSamplers[0].ShaderRegister = 0;
-		staticSamplers[0].RegisterSpace = 0;
-		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		{
+			staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
+			staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			staticSamplers[0].MipLODBias = 0;
+			staticSamplers[0].MaxAnisotropy = 0;
+			staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+			staticSamplers[0].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+			staticSamplers[0].MinLOD = 0;
+			staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+			staticSamplers[0].ShaderRegister = 0;
+			staticSamplers[0].RegisterSpace = 0;
+			staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		}
 
-		staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-		staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-		staticSamplers[1].MipLODBias = 0;
-		staticSamplers[1].MaxAnisotropy = 0;
-		staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
-		staticSamplers[1].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
-		staticSamplers[1].MinLOD = 0;
-		staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;
-		staticSamplers[1].ShaderRegister = 1;  // s1
-		staticSamplers[1].RegisterSpace = 0;
-		staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		{
+			staticSamplers[1].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+			staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+			staticSamplers[1].MipLODBias = 0;
+			staticSamplers[1].MaxAnisotropy = 0;
+			staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+			staticSamplers[1].BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;
+			staticSamplers[1].MinLOD = 0;
+			staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;
+			staticSamplers[1].ShaderRegister = 1;
+			staticSamplers[1].RegisterSpace = 0;
+			staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		}
 
 		CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
 		rootSignatureDesc.NumParameters = _countof(rootParams);
@@ -809,6 +854,7 @@ bool Graphics::CreateAllGraphicsContext()
 		PSO1Desc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 		PSO1Desc.NumRenderTargets = 1;
 		PSO1Desc.DepthStencilState = PSO1DepthStencilDesc;
+		PSO1Desc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
 		hres = m_Device->CreateGraphicsPipelineState(&PSO1Desc, IID_PPV_ARGS(&m_PSOArray[0]));
 		if (FAILED(hres))

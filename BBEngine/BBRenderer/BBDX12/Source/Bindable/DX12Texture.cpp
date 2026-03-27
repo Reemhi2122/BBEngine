@@ -95,7 +95,7 @@ bool DX12Texture::Create(IGraphics& a_Gfx, const char* a_Path, uint32_t a_StartS
 
 void DX12Texture::Bind(IGraphics& a_Gfx) noexcept
 {
-	a_Gfx.GetCommandList()->SetGraphicsRootDescriptorTable(1, m_DescriptorInfo->gpuDescHandle);
+	a_Gfx.GetCommandList()->SetGraphicsRootDescriptorTable(2, m_DescriptorInfo->gpuDescHandle);
 }
 
 void DX12Texture::UnBind(IGraphics& a_Gfx) noexcept
