@@ -156,6 +156,8 @@ float4 main(VSOut psin) : SV_Target
     
     float4 diffuse = tex.Sample(splr, psin.tex);
     
+    return diffuse;
+    
     //if (diffuse.a < 0.01f)
     //    discard;
     

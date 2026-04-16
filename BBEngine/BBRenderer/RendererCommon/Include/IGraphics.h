@@ -6,7 +6,7 @@
 
 constexpr uint8_t FRAME_BUFFER_COUNT = 3; 
 constexpr uint8_t FRAME_TEXTURE_TARGET = 3;
-constexpr uint8_t TOTAL_RENDER_TARGETS = 6;
+constexpr uint8_t TOTAL_RENDER_TARGETS = 9;
 
 constexpr uint8_t TOTAL_SPOTLIGHTS = 120;
 constexpr uint8_t TOTAL_POINTLIGHTS = 20;

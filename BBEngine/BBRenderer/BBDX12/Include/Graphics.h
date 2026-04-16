@@ -163,8 +163,10 @@ private:
 	DescriptorFreeList			m_SRVDescriptorHeapFL;
 	DescriptorFreeList			m_RTVDescriptorHeapFL;
 
-	ID3D12Resource*				m_DepthStenil;
+	ID3D12Resource*				m_DepthStencil;
 	ID3D12DescriptorHeap*		m_DSDescriptorHeap;
+	DescriptorHandleInfo		m_DepthStencilHandle;
+
 
 	ID3D12Resource*				m_DebugTexture;
 

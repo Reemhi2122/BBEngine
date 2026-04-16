@@ -1026,16 +1026,21 @@ bool Graphics::CreateDepthStencils()
 		&CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_D32_FLOAT, WINDOW_WIDTH, WINDOW_HEIGHT, 1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL),
 		D3D12_RESOURCE_STATE_DEPTH_WRITE,
 		&dsClearValue,
-		IID_PPV_ARGS(&m_DepthStenil)
+		IID_PPV_ARGS(&m_DepthStencil)
 	);
-	m_DepthStenil->SetName(L"Depth Stencil Buffer");
+	m_DepthStencil->SetName(L"Depth Stencil Buffer");
 	if (FAILED(hres))
 	{
 		printf("[GFX]: Failed create Depth Stencil Buffer heap descriptor!.\n");
 		return false;
 	}
 
-	m_Device->CreateDepthStencilView(m_DepthStenil, &dsViewDescription, m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	m_DepthStencilHandle.cpuDescHandle = m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	m_DepthStencilHandle.gpuDescHandle = m_DSDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+
+	m_Device->CreateDepthStencilView(m_DepthStencil, &dsViewDescription, m_DepthStencilHandle.cpuDescHandle);
+
+
 	return true;
 }
 
@@ -1139,7 +1144,8 @@ void Graphics::SetSwapBuffer()
 {
 	m_CommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex], D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET));
 
-	m_CommandList->OMSetRenderTargets(1, &m_SwapChainRTHandle[m_FrameIndex].cpuDescHandle, false, nullptr);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE dsHandle(m_DSDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
+	m_CommandList->OMSetRenderTargets(1, &m_SwapChainRTHandle[m_FrameIndex].cpuDescHandle, false, &dsHandle);
 
 	FLOAT color[4]{ 0.32f, 0.40f, 0.45, 1.0f };
 	m_CommandList->ClearRenderTargetView(m_SwapChainRTHandle[m_FrameIndex].cpuDescHandle, color, 0, nullptr);
